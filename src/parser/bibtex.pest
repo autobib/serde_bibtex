@@ -1,0 +1,44 @@
+/// Core components
+
+// whitespace and comments
+ws = _{ (" " |  "\t" | "\n")* }
+comment = _{ (!"@" ~ ANY)* }
+
+// identifier used for entry_type, field keys, and string definitions
+identifier = { !ASCII_DIGIT ~ (!(" " | "\t" | "\\" | "#" | "%" | "'" | "(" | ")" | "," | "=" | "{" | "}") ~ ' '..'~')+ }
+
+// contents of a {...}, (...), "...", or digits 1234; joined by #
+value = ${ token ~ (ws ~ "#" ~ ws ~ token)* }
+token = _{ token_number | "{" ~ token_curly ~ "}" | "\"" ~ token_quote ~ "\"" | identifier }
+token_number = { ASCII_DIGIT+ }
+token_curly = { balanced* }
+token_quote = { (!"\"" ~ balanced)* }
+balanced = _{ "{" ~ balanced* ~ "}" | (!("{" | "}") ~ ANY) }
+
+
+/// Main parsing
+
+// entrypoints
+bibtex = _{ SOI ~ comment ~ (command_or_entry ~ comment)* ~ EOI }
+bibtex_entry = _{ SOI ~ ws ~ "@" ~ ws ~ entry ~ ws ~ EOI }
+
+
+command_or_entry = _{ "@" ~ ws ~ (comment_command | preamble | string | entry) }
+
+// @comment{...}
+comment_command = _{ ^"comment" ~ &(" " | "\t" | "\n" | "{" | "(") }
+
+// @preamble{...}
+preamble = { ^"preamble" ~ ws ~ ("{" ~ ws ~ value ~ ws ~ "}" | "(" ~ ws ~ value ~ ws ~ ")") }
+
+// @string{...}
+string = { ^"string" ~ ws ~ ("{" ~ ws ~ string_body ~ ws ~ "}" | "(" ~ ws ~ string_body ~ ws ~ ")") }
+string_body = _{ identifier ~ ws ~ "=" ~ ws ~ value }
+
+// @entry{...}
+entry = { identifier ~ ws ~ ("{" ~ ws ~ entry_key ~ fields? ~ ws ~ "}" | "(" ~ ws ~ entry_key ~ fields? ~ ws ~ ")") }
+
+field_sep = _{ ws ~ "," ~ ws }
+entry_key = { (!("{" | "}" | ")" | "(" | "," | " " | "\t" | "\n") ~ ANY)+ }
+fields = _{ (field_sep ~ field)* ~ field_sep? }
+field = { identifier ~ ws ~ "=" ~ ws ~ value }
