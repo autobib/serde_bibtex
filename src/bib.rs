@@ -1,139 +1,223 @@
 use std::borrow::Cow;
-use std::fmt::{Display, Error, Formatter};
+use std::fmt;
+// ::{fmt::Display, Error, fmt::Formatter};
+use std::iter::FromIterator;
 
 use itertools::Itertools;
 
-use crate::error::ConversionError;
+use crate::error::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Identifier<'de>(Cow<'de, str>);
+pub struct Identifier<'r>(Cow<'r, str>);
 
-impl<'de> From<&'de str> for Identifier<'de> {
-    fn from(s: &'de str) -> Self {
+impl<'r> From<&'r str> for Identifier<'r> {
+    fn from(s: &'r str) -> Self {
         Identifier(Cow::Borrowed(s))
     }
 }
 
-impl Display for Identifier<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(f, "{}", self.0)
+impl fmt::Display for Identifier<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        self.0.fmt(f)
     }
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum Token<'de> {
-    Abbrev(Identifier<'de>),
-    Text(Cow<'de, str>),
+pub enum Token<'r> {
+    Abbrev(Identifier<'r>),
+    Text(Cow<'r, str>),
 }
 
-impl<'de> TryFrom<Token<'de>> for Cow<'de, str> {
-    type Error = ConversionError;
-    fn try_from(token: Token<'de>) -> Result<Self, Self::Error> {
+impl<'r> TryFrom<Token<'r>> for Cow<'r, str> {
+    type Error = Error;
+    fn try_from(token: Token<'r>) -> Result<Self, Self::Error> {
         match token {
-            Token::Abbrev(_) => Err(ConversionError::NotText),
+            Token::Abbrev(Identifier(cow)) => Err(Error::UnresolvedAbbreviation(cow.to_string())),
             Token::Text(cow) => Ok(cow),
         }
     }
 }
 
-impl<'de> Token<'de> {
-    pub fn abbrev_from(s: &'de str) -> Self {
+impl<'r> Token<'r> {
+    pub fn abbrev_from(s: &'r str) -> Self {
         Token::Abbrev(Identifier::from(s))
     }
 
-    pub fn text_from(s: &'de str) -> Self {
+    pub fn text_from(s: &'r str) -> Self {
         Token::Text(Cow::Borrowed(s))
     }
 }
 
-impl Display for Token<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        match self {
-            Self::Abbrev(s) => write!(f, "{}", s),
-            Self::Text(s) => write!(f, "{{{}}}", s),
-        }
-    }
-}
-
-impl<'de> From<Identifier<'de>> for Token<'de> {
-    fn from(identifier: Identifier<'de>) -> Self {
+impl<'r> From<Identifier<'r>> for Token<'r> {
+    fn from(identifier: Identifier<'r>) -> Self {
         Self::Abbrev(identifier)
     }
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct Value<'de>(pub Vec<Token<'de>>);
-
-impl Display for Value<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        write!(f, "{}", self.0.iter().format(" # "))
-    }
+pub enum Value<'r> {
+    Seq(Vec<Token<'r>>),
+    Unit(Token<'r>),
 }
 
-impl<'de> IntoIterator for Value<'de> {
-    type Item = Token<'de>;
-    type IntoIter = std::vec::IntoIter<Token<'de>>;
+impl<'r> FromIterator<Token<'r>> for Value<'r> {
+    fn from_iter<T: IntoIterator<Item = Token<'r>>>(i: T) -> Value<'r> {
+        let mut iter = i.into_iter();
 
-    fn into_iter(self) -> Self::IntoIter {
-        self.0.into_iter()
-    }
-}
-
-impl<'de> TryFrom<Value<'de>> for Cow<'de, str> {
-    type Error = ConversionError;
-    fn try_from(mut value: Value<'de>) -> Result<Self, Self::Error> {
-        if value.0.len() == 1 {
-            Ok(Cow::try_from(value.0.remove(0))?)
-        } else {
-            let mut ret = String::new();
-            for token in value.0.drain(..) {
-                if let Token::Text(cow) = token {
-                    ret.push_str(&cow);
-                } else {
-                    return Err(ConversionError::NotText);
-                }
+        match (iter.next(), iter.next()) {
+            (None, _) => Value::Unit(Token::Text(Cow::Owned(String::new()))),
+            (Some(token), None) => Value::Unit(token),
+            (Some(token1), Some(token2)) => {
+                let mut vec: Vec<Token<'r>> = vec![token1, token2];
+                vec.extend(iter);
+                Value::Seq(vec)
             }
-            Ok(ret.into())
         }
     }
 }
 
-#[derive(Debug, PartialEq)]
-pub struct Field<'de> {
-    pub identifier: Identifier<'de>,
-    pub value: Value<'de>,
+impl fmt::Display for Value<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        match self {
+            Self::Unit(Token::Abbrev(ident)) => write!(f, "{}", ident),
+            Self::Unit(Token::Text(cow)) => write!(f, "{{{}}}", cow),
+            Self::Seq(vec) => {
+                let mut preceded_by_text = false;
+                let mut is_first = true;
+                for token in vec {
+                    match (token, preceded_by_text) {
+                        (Token::Text(s), false) => {
+                            if !is_first {
+                                write!(f, " # ")?;
+                            }
+                            write!(f, "{{{}", s)?;
+                            preceded_by_text = true;
+                        }
+                        (Token::Text(s), true) => {
+                            write!(f, "{}", s)?;
+                            preceded_by_text = true;
+                        }
+                        (Token::Abbrev(s), true) => {
+                            write!(f, "}} # {}", s)?;
+                            preceded_by_text = false;
+                        }
+                        (Token::Abbrev(s), false) => {
+                            if !is_first {
+                                write!(f, " # ")?;
+                            }
+                            write!(f, "{}", s)?;
+                            preceded_by_text = false;
+                        }
+                    }
+                    is_first = false;
+                }
+
+                if preceded_by_text {
+                    write!(f, "}}")?;
+                }
+
+                Ok(())
+            }
+        }
+    }
 }
 
-impl Display for Field<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+impl<'r> Value<'r> {
+    pub fn resolve(&mut self) -> Result<(), Error> {
+        match self {
+            Value::Unit(Token::Text(_)) => {}
+            Value::Unit(Token::Abbrev(Identifier(cow))) => {
+                return Err(Error::UnresolvedAbbreviation(cow.to_string()));
+            }
+            Value::Seq(ref mut tokens) => {
+                if tokens.len() == 1 {
+                    let only = tokens.remove(0);
+                    match only {
+                        Token::Text(_) => *self = Self::Unit(only),
+                        Token::Abbrev(Identifier(cow)) => {
+                            return Err(Error::UnresolvedAbbreviation(cow.to_string()));
+                        }
+                    }
+                } else {
+                    let mut ret = String::new();
+                    for token in tokens.iter() {
+                        match token {
+                            Token::Text(cow) => {
+                                ret.push_str(&cow);
+                            }
+                            Token::Abbrev(Identifier(cow)) => {
+                                return Err(Error::UnresolvedAbbreviation(cow.to_string()));
+                            }
+                        }
+                    }
+                    *self = Self::Unit(Token::Text(ret.into()));
+                }
+            }
+        }
+        Ok(())
+    }
+
+    pub fn as_unit<'a>(&'a mut self) -> Result<&'a str, Error> {
+        self.resolve()?;
+
+        match self {
+            Value::Unit(Token::Text(ref cow)) => Ok(cow),
+            // SAFETY: If resolve() succeeds, self must be a Value::Unit(Token::Text(_))
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn into_unit(mut self) -> Result<Cow<'r, str>, Error> {
+        self.resolve()?;
+
+        match self {
+            Value::Unit(Token::Text(cow)) => Ok(cow),
+            // SAFETY: If resolve() succeeds, self must be a Value::Unit(Token::Text(_))
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn is_unit(&self) -> bool {
+        matches!(self, Self::Unit(Token::Text(_)))
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Field<'r> {
+    pub identifier: Identifier<'r>,
+    pub value: Value<'r>,
+}
+
+impl fmt::Display for Field<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(f, "{} = {}", self.identifier, self.value)
     }
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub struct EntryKey<'de>(Cow<'de, str>);
+pub struct EntryKey<'r>(Cow<'r, str>);
 
-impl<'de> From<&'de str> for EntryKey<'de> {
-    fn from(s: &'de str) -> Self {
+impl<'r> From<&'r str> for EntryKey<'r> {
+    fn from(s: &'r str) -> Self {
         EntryKey(Cow::Borrowed(s))
     }
 }
 
-impl Display for EntryKey<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+impl fmt::Display for EntryKey<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(f, "{}", self.0)
     }
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Entry<'de> {
-    pub entry_type: Identifier<'de>,
-    pub key: EntryKey<'de>,
-    pub fields: Vec<Field<'de>>,
+pub struct Entry<'r> {
+    pub entry_type: Identifier<'r>,
+    pub key: EntryKey<'r>,
+    pub fields: Vec<Field<'r>>,
 }
 
-impl Display for Entry<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+impl fmt::Display for Entry<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let align = ",\n  ";
 
         write!(f, "@{}", self.entry_type)?;
@@ -144,61 +228,61 @@ impl Display for Entry<'_> {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Abbreviation<'de>(pub Field<'de>);
+pub struct Abbreviation<'r>(pub Field<'r>);
 
-impl Display for Abbreviation<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+impl fmt::Display for Abbreviation<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(f, "@string{{{}}}", self.0)
     }
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Comment<'de>(pub &'de str);
+pub struct Comment<'r>(pub &'r str);
 
-impl Display for Comment<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+impl fmt::Display for Comment<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(f, "@comment{{{}}}", self.0)
     }
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Preamble<'de>(pub Value<'de>);
+pub struct Preamble<'r>(pub Value<'r>);
 
-impl Display for Preamble<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+impl fmt::Display for Preamble<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(f, "@preamble{{{}}}", self.0)
     }
 }
 
 #[derive(Debug, PartialEq)]
-pub enum Event<'de> {
-    Entry(Entry<'de>),
-    String(Abbreviation<'de>),
-    Comment(Comment<'de>),
-    Preamble(Preamble<'de>),
+pub enum Event<'r> {
+    Entry(Entry<'r>),
+    String(Abbreviation<'r>),
+    Comment(Comment<'r>),
+    Preamble(Preamble<'r>),
     Eof,
 }
 
-impl<'de> From<Entry<'de>> for Event<'de> {
-    fn from(entry: Entry<'de>) -> Self {
+impl<'r> From<Entry<'r>> for Event<'r> {
+    fn from(entry: Entry<'r>) -> Self {
         Event::Entry(entry)
     }
 }
 
-impl<'de> From<Abbreviation<'de>> for Event<'de> {
-    fn from(abbrev: Abbreviation<'de>) -> Self {
+impl<'r> From<Abbreviation<'r>> for Event<'r> {
+    fn from(abbrev: Abbreviation<'r>) -> Self {
         Event::String(abbrev)
     }
 }
 
-impl<'de> From<Comment<'de>> for Event<'de> {
-    fn from(comment: Comment<'de>) -> Self {
+impl<'r> From<Comment<'r>> for Event<'r> {
+    fn from(comment: Comment<'r>) -> Self {
         Event::Comment(comment)
     }
 }
 
-impl<'de> From<Preamble<'de>> for Event<'de> {
-    fn from(preamble: Preamble<'de>) -> Self {
+impl<'r> From<Preamble<'r>> for Event<'r> {
+    fn from(preamble: Preamble<'r>) -> Self {
         Event::Preamble(preamble)
     }
 }
@@ -208,71 +292,140 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_value_into_cow() {
-        let value = Value(vec![
+    fn test_value_resolve() {
+        // The match asserts are necessary since Cow is transparent
+
+        // a vector of Token::Text are merged, which requires Owning
+        let mut value = Value::Seq(vec![
             Token::text_from("a"),
             Token::text_from("b"),
             Token::text_from("c"),
         ]);
+        value.resolve().unwrap();
+        assert!(matches!(value, Value::Unit(Token::Text(Cow::Owned(_)))));
+        assert_eq!(value, Value::Unit(Token::text_from("abc")));
 
-        assert!(matches!(Cow::try_from(value.clone()), Ok(Cow::Owned(_))));
-        assert_eq!(Cow::try_from(value), Ok(Cow::Owned("abc".to_string())),);
+        // A single Token::Text in a vector can be borrowed
+        let mut value = Value::Seq(vec![Token::text_from("a")]);
+        value.resolve().unwrap();
+        assert!(matches!(value, Value::Unit(Token::Text(Cow::Borrowed(_)))));
+        assert_eq!(value, Value::Unit(Token::text_from("a")));
 
-        let value = Value(vec![Token::text_from("a")]);
-        assert!(matches!(Cow::try_from(value.clone()), Ok(Cow::Borrowed(_))));
-        assert_eq!(Cow::try_from(value.clone()), Ok(Cow::Borrowed("a")));
+        // A single Token::Text in a unit can be borrowed
+        let mut value = Value::Unit(Token::text_from("a"));
+        value.resolve().unwrap();
+        assert!(matches!(value, Value::Unit(Token::Text(Cow::Borrowed(_)))));
+        assert_eq!(value, Value::Unit(Token::text_from("a")));
 
-        let value = Value(vec![Token::abbrev_from("A")]);
-        assert!(Cow::try_from(value).is_err());
+        // A sequence value containing an empty vector resolves to ""
+        let mut value = Value::Seq(Vec::new());
+        value.resolve().unwrap();
+        assert!(matches!(value, Value::Unit(Token::Text(Cow::Owned(_)))));
+        assert_eq!(value, Value::Unit(Token::text_from("")));
 
-        let value = Value(vec![Token::text_from("a"), Token::abbrev_from("B")]);
-        assert!(Cow::try_from(value).is_err());
+        // Abbreviations cannot be resolved
+        assert!(Value::from_iter([Token::abbrev_from("A")])
+            .resolve()
+            .is_err());
+
+        assert!(
+            Value::from_iter([Token::text_from("a"), Token::abbrev_from("B")])
+                .resolve()
+                .is_err()
+        );
+
+        // Failed resolution does not mutate the Value
+        let mut value = Value::from_iter([
+            Token::text_from("a"),
+            Token::text_from("b"),
+            Token::abbrev_from("C"),
+            Token::text_from("d"),
+        ]);
+        let value_copy = value.clone();
+        assert!(value.resolve().is_err());
+        assert_eq!(value, value_copy);
     }
 
     #[test]
-    fn test_identifier_display() {
-        assert_eq!(format!("{}", Identifier::from("A")), "A");
-    }
+    fn test_value_from_iter() {
+        // the empty Value defaults to an empty owned string
+        let value = Value::from_iter([]);
+        assert!(matches!(value, Value::Unit(Token::Text(Cow::Owned(_)))));
+        assert_eq!(value, Value::Unit(Token::text_from("")));
 
-    #[test]
-    fn test_token_display() {
-        assert_eq!(format!("{}", Token::abbrev_from("auth")), "auth");
-
-        assert_eq!(format!("{}", Token::text_from("contents")), "{contents}");
-
-        assert_eq!(format!("{}", Token::text_from("{")), "{{}");
+        assert_eq!(
+            Value::from_iter([Token::abbrev_from("a")]),
+            Value::Unit(Token::abbrev_from("a"))
+        );
+        assert_eq!(
+            Value::from_iter([Token::text_from("b")]),
+            Value::Unit(Token::text_from("b"))
+        );
+        assert_eq!(
+            Value::from_iter([Token::abbrev_from("a"), Token::text_from("b")]),
+            Value::Seq(vec![Token::abbrev_from("a"), Token::text_from("b")])
+        );
     }
 
     #[test]
     fn test_value_display() {
         assert_eq!(
-            format!("{}", Value(vec![Token::abbrev_from("auth")])),
+            Value::Seq(vec![Token::abbrev_from("auth")]).to_string(),
             "auth"
+        );
+        assert_eq!(Value::Unit(Token::abbrev_from("auth")).to_string(), "auth");
+
+        assert_eq!(
+            Value::Seq(vec![
+                Token::abbrev_from("A"),
+                Token::text_from("b"),
+                Token::text_from("c"),
+            ])
+            .to_string(),
+            "A # {bc}"
         );
 
         assert_eq!(
-            format!(
-                "{}",
-                Value(vec![
-                    Token::abbrev_from("a"),
-                    Token::text_from("b"),
-                    Token::text_from("c"),
-                ])
-            ),
-            "a # {b} # {c}"
+            Value::Seq(vec![
+                Token::text_from("a"),
+                Token::abbrev_from("B"),
+                Token::text_from("c"),
+            ])
+            .to_string(),
+            "{a} # B # {c}"
+        );
+
+        assert_eq!(Value::Seq(vec![Token::text_from("a"),]).to_string(), "{a}");
+
+        assert_eq!(
+            Value::Seq(vec![Token::text_from("a"), Token::abbrev_from("B"),]).to_string(),
+            "{a} # B"
+        );
+
+        assert_eq!(
+            Value::Seq(vec![Token::abbrev_from("A"), Token::abbrev_from("B"),]).to_string(),
+            "A # B"
+        );
+
+        assert_eq!(
+            Value::Seq(vec![
+                Token::text_from("a"),
+                Token::text_from("b"),
+                Token::text_from("c"),
+            ])
+            .to_string(),
+            "{abc}"
         );
     }
 
     #[test]
     fn test_field_display() {
         assert_eq!(
-            format!(
-                "{}",
-                Field {
-                    identifier: Identifier::from("title"),
-                    value: Value(vec![Token::abbrev_from("a"), Token::text_from("b"),])
-                }
-            ),
+            Field {
+                identifier: Identifier::from("title"),
+                value: Value::Seq(vec![Token::abbrev_from("a"), Token::text_from("b"),])
+            }
+            .to_string(),
             "title = a # {b}"
         );
     }
@@ -285,23 +438,23 @@ mod tests {
             fields: vec![
                 Field {
                     identifier: Identifier::from("author"),
-                    value: Value(vec![
+                    value: Value::Seq(vec![
                         Token::text_from("One, "),
                         Token::Abbrev(Identifier::from("A")),
                     ]),
                 },
                 Field {
                     identifier: Identifier::from("title"),
-                    value: Value(vec![Token::text_from("A title")]),
+                    value: Value::Seq(vec![Token::text_from("A title")]),
                 },
                 Field {
                     identifier: Identifier::from("year"),
-                    value: Value(vec![Token::text_from("2014")]),
+                    value: Value::Seq(vec![Token::text_from("2014")]),
                 },
             ],
         };
         assert_eq!(
-            format!("{}", entry),
+            entry.to_string(),
             "@article{key:0,\n  author = {One, } # A,\n  title = {A title},\n  year = {2014},\n}"
         )
     }

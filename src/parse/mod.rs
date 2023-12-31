@@ -3,11 +3,10 @@ mod balanced;
 use nom::{
     branch::alt,
     bytes::complete::{is_not, tag_no_case, take_until},
-    character::complete::{char, digit1, multispace0},
-    combinator::value as nom_value,
-    combinator::{map, not, opt, verify},
+    character::complete::{char, digit1, multispace0, none_of, one_of},
+    combinator::{map, not, opt, peek, value as nom_value, verify},
     multi::{separated_list0, separated_list1},
-    sequence::{delimited, pair, separated_pair, tuple},
+    sequence::{delimited, pair, preceded, separated_pair, tuple},
     IResult,
 };
 
@@ -16,11 +15,90 @@ use crate::bib::{
 };
 use balanced::{is_balanced, take_until_unbalanced};
 
+pub struct FlagError {
+    expected: Flag,
+    received: Flag,
+}
+
+/// An enum containing the current state of the reader (i.e. what do we parse next?).
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum Flag {
+    EntryType,
+    EntryKey,
+    FieldKey,
+    FieldValue,
+    EndOfEntry,
+}
+
+impl Flag {
+    pub fn expect(self, other: Flag) -> Result<(), FlagError> {
+        if self == other {
+            Ok(())
+        } else {
+            Err(FlagError {
+                received: self,
+                expected: other,
+            })
+        }
+    }
+}
+
 pub fn bibtex_comment(i: &str) -> IResult<&str, ()> {
     nom_value(
         (), // Output is thrown away.
         pair(char('%'), is_not("\n\r")),
     )(i)
+}
+
+// TODO: incorporate bibtex_comment
+pub fn bibtex_ignored(input: &str) -> IResult<&str, ()> {
+    nom_value((), multispace0)(input)
+}
+
+/// Consume the next flag, updating the input, stepping forward, and consuming trailing
+/// whitespace.
+///
+pub fn take_flag(input: &str) -> IResult<&str, Flag> {
+    let (input, _) = bibtex_ignored(input)?;
+    let (input, pos) = alt((
+        // TODO: optimize order?
+        nom_value(Flag::FieldValue, char('=')),
+        nom_value(Flag::EntryType, char('@')),
+        nom_value(Flag::EntryKey, one_of("({")),
+        nom_value(
+            Flag::FieldKey,
+            tuple((char(','), bibtex_ignored, peek(none_of(")}")))),
+        ),
+        nom_value(
+            Flag::EndOfEntry,
+            tuple((opt(char(',')), bibtex_ignored, one_of(")}"))),
+        ),
+    ))(input)?;
+    let (input, _) = bibtex_ignored(input)?;
+    Ok((input, pos))
+}
+
+pub fn field_sep(input: &str) -> IResult<&str, ()> {
+    let (input, _) = tuple((multispace0, char('='), multispace0))(input)?;
+    Ok((input, ()))
+}
+
+// TODO: make this optional? we can definitely support it...
+pub fn first_token(input: &str) -> IResult<&str, Token> {
+    token(input)
+}
+
+pub fn subsequent_token(input: &str) -> IResult<&str, Option<Token>> {
+    let (input, opt) = opt(tuple((multispace0, char('#'), multispace0, token)))(input)?;
+    match opt {
+        Some((_, _, _, token)) => Ok((input, Some(token))),
+        None => Ok((input, None)),
+    }
+}
+
+pub fn identifier_str(input: &str) -> IResult<&str, &str> {
+    let (input, ()) = not(digit1)(input)?;
+    is_not(" \t\\#%'\",=(){}")(input)
 }
 
 /// Parse an abbreviation, which is any sequence of characters not in ` \t\\#%'\",=(){}` with
@@ -39,8 +117,7 @@ pub fn bibtex_comment(i: &str) -> IResult<&str, ()> {
 /// assert!(identifier("(i)dent").is_err());
 /// ```
 pub fn identifier(input: &str) -> IResult<&str, Identifier> {
-    let (input, ()) = not(digit1)(input)?;
-    map(is_not(" \t\\#%'\",=(){}"), Identifier::from)(input)
+    map(identifier_str, Identifier::from)(input)
 }
 
 fn curly(input: &str) -> IResult<&str, &str> {
@@ -96,7 +173,7 @@ pub fn token(input: &str) -> IResult<&str, Token> {
 /// use serde_bibtex::bib::{Token, Value};
 /// assert_eq!(
 ///     value("123 # abbrev # {bracketed} # \"quoted\","),
-///     Ok((",", Value(vec![Token::text_from("123"), Token::Abbrev("abbrev".into()), Token::text_from("bracketed"), Token::text_from("quoted")])))
+///     Ok((",", Value::from_iter([Token::text_from("123"), Token::Abbrev("abbrev".into()), Token::text_from("bracketed"), Token::text_from("quoted")])))
 /// );
 /// ```
 /// The value cannot have leading whitespace and must contain at least one valid identifier.
@@ -108,7 +185,17 @@ pub fn token(input: &str) -> IResult<&str, Token> {
 pub fn value(input: &str) -> IResult<&str, Value> {
     let (input, tokens) =
         separated_list1(tuple((multispace0, char('#'), multispace0)), token)(input)?;
-    Ok((input, Value(tokens)))
+
+    // TODO: avoid intermediate Vec allocation if there is only a single Token
+    Ok((input, Value::from_iter(tokens)))
+}
+
+pub fn value_unit(input: &str) -> IResult<&str, Vec<Token>> {
+    let (input, tokens) =
+        separated_list1(tuple((multispace0, char('#'), multispace0)), token)(input)?;
+
+    // TODO: avoid intermediate Vec allocation if there is only a single Token
+    Ok((input, tokens))
 }
 
 /// Parse a field `abbrev = {value}`.
@@ -122,7 +209,7 @@ pub fn value(input: &str) -> IResult<&str, Value> {
 ///         "",
 ///         Field {
 ///             identifier: Identifier::from("title"),
-///             value: Value(vec![Token::text_from("A"), Token::text_from("Title")])
+///             value: Value::from_iter([Token::text_from("A"), Token::text_from("Title")])
 ///         }
 ///     ))
 /// );
@@ -139,13 +226,21 @@ pub fn field(input: &str) -> IResult<&str, Field> {
 }
 
 /// Consume a field separator.
-fn field_sep(input: &str) -> IResult<&str, ()> {
+fn entry_sep(input: &str) -> IResult<&str, ()> {
     nom_value((), tuple((multispace0, char(','), multispace0)))(input)
+}
+
+pub fn opt_field_key(input: &str) -> IResult<&str, Option<&str>> {
+    opt(preceded(entry_sep, identifier_str))(input)
 }
 
 /// Parse a list of fields.
 fn fields(input: &str) -> IResult<&str, Vec<Field>> {
-    separated_list0(field_sep, field)(input)
+    separated_list0(entry_sep, field)(input)
+}
+
+pub fn entry_key(input: &str) -> IResult<&str, &str> {
+    is_not("{}(), \t\n")(input)
 }
 
 /// Parse an entry body.
@@ -153,9 +248,9 @@ fn entry_body(input: &str) -> IResult<&str, (&str, Vec<Field>)> {
     let (input, (_, entry_key, _, fields, _)) = tuple((
         multispace0,
         is_not("{}(), \t\n"),
-        field_sep,
+        entry_sep,
         fields,
-        opt(field_sep),
+        opt(entry_sep),
     ))(input)?;
     Ok((input, (entry_key, fields)))
 }
@@ -254,7 +349,7 @@ fn padded_value_lenient(input: &str) -> IResult<&str, Value> {
         separated_list1(tuple((multispace0, char('#'), multispace0)), token_lenient);
 
     let (input, (_, tokens, _)) = tuple((multispace0, value_lenient, multispace0))(input)?;
-    Ok((input, Value(tokens)))
+    Ok((input, Value::Seq(tokens)))
 }
 
 /// Parse an `@preamble` event. Note that unmatched brackets inside quoted `Token`s are allowed.
@@ -268,7 +363,7 @@ fn padded_value_lenient(input: &str) -> IResult<&str, Value> {
 ///     preamble(bibfile),
 ///     Ok((
 ///         "",
-///         Preamble(Value(vec![
+///         Preamble(Value::from_iter(vec![
 ///             Token::text_from(r#"\mymacro{"#),
 ///             Token::abbrev_from("A"),
 ///             Token::text_from("}")
@@ -303,7 +398,7 @@ pub fn preamble(input: &str) -> IResult<&str, Preamble> {
 ///     fields: vec![
 ///         Field {
 ///             identifier: "author".into(),
-///             value: Value(vec![
+///             value: Value::from_iter(vec![
 ///                 Token::abbrev_from("A1"),
 ///                 Token::text_from(" and "),
 ///                 Token::abbrev_from("A2"),
@@ -311,11 +406,11 @@ pub fn preamble(input: &str) -> IResult<&str, Preamble> {
 ///         },
 ///         Field {
 ///             identifier: "title".into(),
-///             value: Value(vec![Token::text_from("A title")]),
+///             value: Value::from_iter(vec![Token::text_from("A title")]),
 ///         },
 ///         Field {
 ///             identifier: "year".into(),
-///             value: Value(vec![Token::text_from("2014")]),
+///             value: Value::from_iter(vec![Token::text_from("2014")]),
 ///         },
 ///     ],
 /// };
@@ -382,8 +477,8 @@ mod tests {
 
     #[test]
     fn test_field_sep() {
-        assert_eq!(field_sep("     \n,  \t"), Ok(("", ())));
-        assert_eq!(field_sep(", next ="), Ok(("next =", ())));
+        assert_eq!(entry_sep("     \n,  \t"), Ok(("", ())));
+        assert_eq!(entry_sep(", next ="), Ok(("next =", ())));
     }
 
     #[test]
@@ -392,10 +487,7 @@ mod tests {
             value("{first} # {second # }\n}"),
             Ok((
                 "\n}",
-                Value(vec![
-                    Token::text_from("first"),
-                    Token::text_from("second # ")
-                ])
+                Value::from_iter([Token::text_from("first"), Token::text_from("second # ")])
             ))
         );
         assert!(value(" {first}").is_err());
@@ -416,7 +508,7 @@ mod tests {
 
         let abbrev = Abbreviation(Field {
             identifier: Identifier::from("A"),
-            value: Value(vec![Token::text_from("Author")]),
+            value: Value::from_iter([Token::text_from("Author")]),
         });
 
         let entry = Entry {
@@ -425,25 +517,25 @@ mod tests {
             fields: vec![
                 Field {
                     identifier: Identifier::from("author"),
-                    value: Value(vec![
+                    value: Value::from_iter([
                         Token::text_from("One, "),
                         Token::Abbrev(Identifier::from("A")),
                     ]),
                 },
                 Field {
                     identifier: Identifier::from("title"),
-                    value: Value(vec![Token::text_from("A title")]),
+                    value: Value::from_iter([Token::text_from("A title")]),
                 },
                 Field {
                     identifier: Identifier::from("year"),
-                    value: Value(vec![Token::text_from("2014")]),
+                    value: Value::from_iter([Token::text_from("2014")]),
                 },
             ],
         };
-        let (bibfile, parsed) = read_event(&bibfile).unwrap();
+        let (bibfile, parsed) = read_event(bibfile).unwrap();
         assert_eq!(parsed, Event::from(abbrev));
 
-        let (bibfile, parsed) = read_event(&bibfile).unwrap();
+        let (bibfile, parsed) = read_event(bibfile).unwrap();
         assert_eq!(parsed, Event::from(entry));
         assert_eq!(bibfile, "");
     }

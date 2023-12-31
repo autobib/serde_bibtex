@@ -5,29 +5,30 @@ use crate::error::ParseError;
 use crate::reader::Reader;
 
 #[derive(Default)]
-pub struct Bibliography<'de> {
-    entries: HashMap<EntryKey<'de>, Entry<'de>>,
+pub struct Bibliography<'r> {
+    entries: HashMap<EntryKey<'r>, Entry<'r>>,
 }
 
-impl<'de> Bibliography<'de> {
-    pub fn get_entry<T>(&self, key: T) -> Option<&Entry<'de>>
+impl<'r> Bibliography<'r> {
+    pub fn get_entry<T>(&self, key: T) -> Option<&Entry<'r>>
     where
-        T: Into<EntryKey<'de>>,
+        T: Into<EntryKey<'r>>,
     {
         self.entries.get(&key.into())
     }
+
     /// Insert an [`Event`] into the bibliography.
     /// ```
     /// use serde_bibtex::Bibliography;
     /// ```
-    pub fn insert(&mut self, entry: Entry<'de>) {
+    pub fn insert(&mut self, entry: Entry<'r>) {
         self.entries.insert(entry.key.clone(), entry);
     }
 }
 
-impl<'de> Bibliography<'de> {
+impl<'r> Bibliography<'r> {
     #[allow(clippy::should_implement_trait)]
-    pub fn from_str(input: &'de str) -> Result<Self, ParseError> {
+    pub fn from_str(input: &'r str) -> Result<Self, ParseError> {
         let mut reader = Reader::from_str(input);
         reader.config.resolve_abbreviations = true;
 
@@ -75,7 +76,7 @@ mod tests {
         assert_eq!(
             entry.to_string(),
             "@article{key:0,\n  \
-               author = {One, } # {Auth} # {or} # { and } # {Two, } # {Auth} # {or},\n  \
+               author = {One, Author and Two, Author},\n  \
                title = {A title},\n  \
                year = {2014},\n\
                }",

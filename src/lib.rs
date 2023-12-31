@@ -24,7 +24,10 @@
 //! let bibliography = Bibliography::from_str(bibfile);
 //! ```
 
-mod db;
+// mod bibliography;
+// pub mod reader;
+// pub use bibliography::Bibliography;
+// pub use reader::Reader;
 
 /// Representations of BibTex components.
 pub mod bib;
@@ -33,12 +36,12 @@ pub mod bib;
 pub mod error;
 
 /// Reader for lower-level document parsing.
-pub mod reader;
+pub mod abbrev;
 
 /// Fundamental parsers.
 pub mod parse;
 
+pub mod de;
+
 // re-exports
 pub use bib::{Entry, Event};
-pub use db::Bibliography;
-pub use reader::Reader;
