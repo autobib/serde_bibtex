@@ -304,8 +304,9 @@ impl<'de> de::Deserializer<'de> for IdentifierDeserializer<'de> {
     }
 }
 
+// TODO: implement map
 /// A deserializer for a [`Token`].
-/// This only supports deserialization as an Enum.
+/// This supports deserialization as an Enum or as a map, with two entries.
 pub struct TokenDeserializer<'r> {
     value: Token<'r>,
 }

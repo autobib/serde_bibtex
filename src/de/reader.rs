@@ -3,9 +3,7 @@ use std::borrow::Cow;
 use crate::abbrev::Abbreviations;
 use crate::bib::{Identifier, Token};
 use crate::error::Error;
-use crate::parse::{
-    entry_key, first_token, identifier, subsequent_token, take_flag, Flag,
-};
+use crate::parse::{entry_key, first_token, identifier, subsequent_token, take_flag, Flag};
 
 // TODO: parsing variants
 // resolving parser (for abbreviations)
@@ -197,7 +195,12 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
     }
 
     pub fn take_token(&mut self) -> Result<Option<Token<'r>>, Error> {
-        take_token_resolved(&mut self.input, &mut self.is_first_token, &mut self.token_buffer, &self.abbrevs)
+        take_token_resolved(
+            &mut self.input,
+            &mut self.is_first_token,
+            &mut self.token_buffer,
+            &self.abbrevs,
+        )
     }
 }
 

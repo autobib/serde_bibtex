@@ -1,6 +1,5 @@
 use std::borrow::Cow;
 use std::fmt;
-// ::{fmt::Display, Error, fmt::Formatter};
 use std::iter::FromIterator;
 
 use itertools::Itertools;

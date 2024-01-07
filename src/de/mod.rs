@@ -46,7 +46,6 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for &'a mut EntryDeserializer<'s, 'd
     where
         V: de::Visitor<'de>,
     {
-        // TODO: check length three
         if len != 3 {
             Err(Error::Message(
                 "Tuple deserialization requires exactly three fields".to_string(),
