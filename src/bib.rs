@@ -129,65 +129,65 @@ impl fmt::Display for Value<'_> {
     }
 }
 
-impl<'r> Value<'r> {
-    pub fn resolve(&mut self) -> Result<(), Error> {
-        match self {
-            Value::Unit(Token::Text(_)) => {}
-            Value::Unit(Token::Abbrev(Identifier(s))) => {
-                return Err(Error::UnresolvedAbbreviation(s.to_string()));
-            }
-            Value::Seq(ref mut tokens) => {
-                if tokens.len() == 1 {
-                    let only = tokens.remove(0);
-                    match only {
-                        Token::Text(_) => *self = Self::Unit(only),
-                        Token::Abbrev(Identifier(s)) => {
-                            return Err(Error::UnresolvedAbbreviation(s.to_string()));
-                        }
-                    }
-                } else {
-                    let mut ret = String::new();
-                    for token in tokens.iter() {
-                        match token {
-                            Token::Text(cow) => {
-                                ret.push_str(&cow);
-                            }
-                            Token::Abbrev(Identifier(s)) => {
-                                return Err(Error::UnresolvedAbbreviation(s.to_string()));
-                            }
-                        }
-                    }
-                    *self = Self::Unit(Token::Text(ret.into()));
-                }
-            }
-        }
-        Ok(())
-    }
+// impl<'r> Value<'r> {
+//     pub fn resolve(&mut self) -> Result<(), Error> {
+//         match self {
+//             Value::Unit(Token::Text(_)) => {}
+//             Value::Unit(Token::Abbrev(Identifier(s))) => {
+//                 return Err(Error::UnresolvedAbbreviation(s.to_string()));
+//             }
+//             Value::Seq(ref mut tokens) => {
+//                 if tokens.len() == 1 {
+//                     let only = tokens.remove(0);
+//                     match only {
+//                         Token::Text(_) => *self = Self::Unit(only),
+//                         Token::Abbrev(Identifier(s)) => {
+//                             return Err(Error::UnresolvedAbbreviation(s.to_string()));
+//                         }
+//                     }
+//                 } else {
+//                     let mut ret = String::new();
+//                     for token in tokens.iter() {
+//                         match token {
+//                             Token::Text(cow) => {
+//                                 ret.push_str(&cow);
+//                             }
+//                             Token::Abbrev(Identifier(s)) => {
+//                                 return Err(Error::UnresolvedAbbreviation(s.to_string()));
+//                             }
+//                         }
+//                     }
+//                     *self = Self::Unit(Token::Text(ret.into()));
+//                 }
+//             }
+//         }
+//         Ok(())
+//     }
 
-    pub fn as_unit<'a>(&'a mut self) -> Result<&'a str, Error> {
-        self.resolve()?;
+//     pub fn as_unit<'a>(&'a mut self) -> Result<&'a str, Error> {
+//         self.resolve()?;
 
-        match self {
-            Value::Unit(Token::Text(ref cow)) => Ok(cow),
-            // SAFETY: If resolve() succeeds, self must be a Value::Unit(Token::Text(_))
-            _ => unreachable!(),
-        }
-    }
+//         match self {
+//             Value::Unit(Token::Text(ref cow)) => Ok(cow),
+//             // SAFETY: If resolve() succeeds, self must be a Value::Unit(Token::Text(_))
+//             _ => unreachable!(),
+//         }
+//     }
 
-    pub fn into_unit(mut self) -> Result<Cow<'r, str>, Error> {
-        self.resolve()?;
+//     pub fn into_unit(mut self) -> Result<Cow<'r, str>, Error> {
+//         self.resolve()?;
 
-        match self {
-            Value::Unit(Token::Text(cow)) => Ok(cow),
-            // SAFETY: If resolve() succeeds, self must be a Value::Unit(Token::Text(_))
-            _ => unreachable!(),
-        }
-    }
+//         match self {
+//             Value::Unit(Token::Text(cow)) => Ok(cow),
+//             // SAFETY: If resolve() succeeds, self must be a Value::Unit(Token::Text(_))
+//             _ => unreachable!(),
+//         }
+//     }
 
-    pub fn is_unit(&self) -> bool {
-        matches!(self, Self::Unit(Token::Text(_)))
-    }
-}
+//     pub fn is_unit(&self) -> bool {
+//         matches!(self, Self::Unit(Token::Text(_)))
+//     }
+// }
 
 #[derive(Debug, PartialEq)]
 pub struct Field<'r> {
@@ -297,61 +297,6 @@ impl<'r> From<Preamble<'r>> for Event<'r> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_value_resolve() {
-        // The match asserts are necessary since Cow is transparent
-
-        // a vector of Token::Text are merged, which requires Owning
-        let mut value = Value::Seq(vec![
-            Token::text_from("a"),
-            Token::text_from("b"),
-            Token::text_from("c"),
-        ]);
-        value.resolve().unwrap();
-        assert!(matches!(value, Value::Unit(Token::Text(Cow::Owned(_)))));
-        assert_eq!(value, Value::Unit(Token::text_from("abc")));
-
-        // A single Token::Text in a vector can be borrowed
-        let mut value = Value::Seq(vec![Token::text_from("a")]);
-        value.resolve().unwrap();
-        assert!(matches!(value, Value::Unit(Token::Text(Cow::Borrowed(_)))));
-        assert_eq!(value, Value::Unit(Token::text_from("a")));
-
-        // A single Token::Text in a unit can be borrowed
-        let mut value = Value::Unit(Token::text_from("a"));
-        value.resolve().unwrap();
-        assert!(matches!(value, Value::Unit(Token::Text(Cow::Borrowed(_)))));
-        assert_eq!(value, Value::Unit(Token::text_from("a")));
-
-        // A sequence value containing an empty vector resolves to ""
-        let mut value = Value::Seq(Vec::new());
-        value.resolve().unwrap();
-        assert!(matches!(value, Value::Unit(Token::Text(Cow::Owned(_)))));
-        assert_eq!(value, Value::Unit(Token::text_from("")));
-
-        // Abbreviations cannot be resolved
-        assert!(Value::from_iter([Token::abbrev_from("A")])
-            .resolve()
-            .is_err());
-
-        assert!(
-            Value::from_iter([Token::text_from("a"), Token::abbrev_from("B")])
-                .resolve()
-                .is_err()
-        );
-
-        // Failed resolution does not mutate the Value
-        let mut value = Value::from_iter([
-            Token::text_from("a"),
-            Token::text_from("b"),
-            Token::abbrev_from("C"),
-            Token::text_from("d"),
-        ]);
-        let value_copy = value.clone();
-        assert!(value.resolve().is_err());
-        assert_eq!(value, value_copy);
-    }
 
     #[test]
     fn test_value_from_iter() {

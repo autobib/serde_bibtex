@@ -587,4 +587,36 @@ mod tests {
         assert_eq!(data, ReToken::T(Cow::Borrowed("key")));
         assert!(matches!(data, ReToken::T(Cow::Borrowed(_))));
     }
+
+    #[test]
+    fn test_value_de_owned() {
+        // Test that we only take ownership when necessary.
+
+        #[derive(Deserialize, Debug, PartialEq, Eq)]
+        struct Val<'r>(#[serde(borrow)] Cow<'r, str>);
+
+        macro_rules! assert_value_matching {
+            ($input:expr, $expected:expr, $cow:pat) => {
+                let abbrevs = Abbreviations::default();
+                let mut entry_de = EntryDeserializer::new($input, &abbrevs);
+                let deserializer = ValueDeserializer::new(&mut entry_de);
+                let data = Val::deserialize(deserializer);
+                let expected = Val($expected.into());
+                assert_eq!(data, Ok(expected));
+                assert!(matches!(data, Ok(Val($cow))));
+            };
+        }
+
+        // separated Token::Text are merged
+        assert_value_matching!(" = {a} # {b} # {c}", "abc", Cow::Owned(_));
+
+        // a single Token::Text can be borrowed
+        assert_value_matching!(" = {a}", "a", Cow::Borrowed(_));
+
+        // empty values still allow owning
+        assert_value_matching!(" = {} # {abc}", "abc", Cow::Borrowed(_));
+        assert_value_matching!(" = {} # {abc} # {} # {}", "abc", Cow::Borrowed(_));
+        assert_value_matching!(" = {abc} # {}", "abc", Cow::Borrowed(_));
+        assert_value_matching!(" = {a} # {} # {b}", "ab", Cow::Owned(_));
+    }
 }

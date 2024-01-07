@@ -261,12 +261,20 @@ fn parse_unit<'r>(
     token_buffer: &mut Vec<Token<'r>>,
     abbrevs: &Abbreviations<'r>,
 ) -> Result<Cow<'r, str>, Error> {
-    let token = match take_token_resolved(input, is_first_token, token_buffer, abbrevs)? {
-        Some(cow) => cow,
-        None => return Ok(Cow::Borrowed("")),
+    // get the first non-empty Token
+    let mut init = loop {
+        match take_token_resolved(input, is_first_token, token_buffer, abbrevs)? {
+            Some(token) => {
+                let cow: Cow<'r, str> = token.try_into()?;
+                if cow.len() > 0 {
+                    break cow;
+                }
+            }
+            None => return Ok(Cow::Borrowed("")),
+        }
     };
-    let mut init: Cow<'r, str> = token.try_into()?;
 
+    // append subsequent Tokens to it
     while let Some(token) = take_token_resolved(input, is_first_token, token_buffer, abbrevs)? {
         let cow: Cow<'r, str> = token.try_into()?;
         if cow.len() > 0 {
