@@ -232,7 +232,7 @@ mod tests {
         let deserializer = ValueDeserializer::new(&mut entry_de);
 
         assert_eq!(
-            Ok(Cow::Borrowed("Alex Rutar")),
+            Ok(Cow::Borrowed("Alex Rutar").to_owned()),
             Cow::deserialize(deserializer),
         );
 

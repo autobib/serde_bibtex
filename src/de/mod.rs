@@ -102,17 +102,17 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for &'a mut EntryDeserializer<'s, 'd
         enum identifier);
 }
 
-struct EntryAccess<'a, 's, 'de> {
-    de: &'a mut EntryDeserializer<'s, 'de>,
+struct EntryAccess<'a, 's, 'r> {
+    de: &'a mut EntryDeserializer<'s, 'r>,
 }
 
-impl<'a, 's, 'de> EntryAccess<'a, 's, 'de> {
+impl<'a, 's, 'de: 'a> EntryAccess<'a, 's, 'de> {
     fn new(de: &'a mut EntryDeserializer<'s, 'de>) -> Self {
         EntryAccess { de }
     }
 }
 
-impl<'a, 's, 'de> MapAccess<'de> for EntryAccess<'a, 's, 'de> {
+impl<'a, 's, 'de: 'a> MapAccess<'de> for EntryAccess<'a, 's, 'de> {
     type Error = Error;
 
     fn next_key_seed<K>(&mut self, seed: K) -> Result<Option<K::Value>, Self::Error>
@@ -246,7 +246,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for FieldDeserializer<'a, 's, 'de> {
         string bytes byte_buf option unit unit_struct newtype_struct enum);
 }
 
-impl<'a, 's, 'de> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
+impl<'a, 's, 'de: 'a> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
     type Error = Error;
 
     fn next_key_seed<K>(&mut self, seed: K) -> Result<Option<K::Value>, Self::Error>
@@ -274,32 +274,6 @@ impl<'a, 's, 'de> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
         seed.deserialize(ValueDeserializer::new(&mut *self.de))
     }
 }
-
-// struct DeValueSeq<'a, 's, 'de> {
-//     de: &'a mut EntryDeserializer<'s, 'de>,
-//     first: bool,
-// }
-
-// impl<'a, 's, 'de> DeValueSeq<'a, 's, 'de> {
-//     fn new(de: &'a mut EntryDeserializer<'s, 'de>) -> Self {
-//         Self { de, first: true }
-//     }
-// }
-
-// impl<'a, 's, 'de> SeqAccess<'de> for DeValueSeq<'a, 's, 'de> {
-//     type Error = Error;
-
-//     fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
-//     where
-//         T: DeserializeSeed<'de>,
-//     {
-//         // if self.first {
-//         // let token = self.de.reader.take_first_token()?;
-//         // }
-//         todo!()
-//     }
-// }
-
 // pub struct TokenDeserializer<'de> {
 //     value: Token<'de>,
 // }
@@ -353,25 +327,74 @@ mod tests {
     use serde::Deserialize;
     use std::collections::HashMap;
 
+    use std::borrow::Cow;
+
+    // The basic target struct for testing
+    #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+    #[serde(rename_all = "lowercase")]
+    enum TestEntryType {
+        Article,
+        Book,
+    }
+    #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+    struct TestEntry<'a> {
+        entry_type: TestEntryType,
+        entry_key: &'a str,
+        #[serde(borrow)]
+        fields: TestFields<'a>,
+    }
+
+    #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+    struct TestFields<'a> {
+        #[serde(borrow)]
+        author: Cow<'a, str>,
+        #[serde(borrow)]
+        title: Cow<'a, str>,
+        year: u64,
+    }
+
     #[test]
     fn test_entry() {
+        let abbrevs = Abbreviations::default();
+        let mut de_entry = EntryDeserializer::new(
+            r#"
+            @article{key:0,
+              author = {Auth} # {or},
+              title = "Title",
+              year = 2012,
+            }"#,
+            &abbrevs,
+        );
+
+        let data: TestEntry = TestEntry::deserialize(&mut de_entry).unwrap();
+        let expected_data = TestEntry {
+            entry_type: TestEntryType::Article,
+            entry_key: "key:0",
+            fields: TestFields {
+                author: "Author".into(),
+                title: "Title".into(),
+                year: 2012,
+            },
+        };
+
+        assert_eq!(data, expected_data);
+        assert!(matches!(data.fields.author, Cow::Owned(_)));
+        assert!(matches!(data.fields.title, Cow::Borrowed(_)));
+    }
+
+    #[test]
+    fn test_entry_skipped() {
         #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
-        #[serde(rename_all = "lowercase")]
-        enum EntryType {
-            Article,
-            Book,
-        }
-        #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
-        struct Entry<'a> {
-            entry_type: EntryType,
-            entry_key: &'a str,
-            fields: Fields<'a>,
+        struct TestSkipEntry<'a> {
+            entry_type: TestEntryType,
+            #[serde(borrow)]
+            fields: TestSkipFields<'a>,
         }
 
         #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
-        struct Fields<'a> {
-            author: &'a str,
-            title: &'a str,
+        struct TestSkipFields<'a> {
+            #[serde(borrow)]
+            title: Cow<'a, str>,
             year: u64,
         }
 
@@ -386,13 +409,11 @@ mod tests {
             &abbrevs,
         );
 
-        let data: Entry = Entry::deserialize(&mut de_entry).unwrap();
-        let expected_data = Entry {
-            entry_type: EntryType::Article,
-            entry_key: "key:0",
-            fields: Fields {
-                author: "Author",
-                title: "Title",
+        let data: TestSkipEntry = TestSkipEntry::deserialize(&mut de_entry).unwrap();
+        let expected_data = TestSkipEntry {
+            entry_type: TestEntryType::Article,
+            fields: TestSkipFields {
+                title: Cow::Borrowed("Title"),
                 year: 2012,
             },
         };
