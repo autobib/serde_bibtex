@@ -8,17 +8,24 @@ use itertools::Itertools;
 use crate::error::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Identifier<'r>(Cow<'r, str>);
+pub struct Identifier<'r>(&'r str);
 
 impl<'r> From<&'r str> for Identifier<'r> {
     fn from(s: &'r str) -> Self {
-        Identifier(Cow::Borrowed(s))
+        Identifier(s)
     }
 }
 
 impl fmt::Display for Identifier<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         self.0.fmt(f)
+    }
+}
+
+impl<'r> Identifier<'r> {
+    pub fn into_raw(self) -> &'r str {
+        let Identifier(cow) = self;
+        cow
     }
 }
 
@@ -32,7 +39,7 @@ impl<'r> TryFrom<Token<'r>> for Cow<'r, str> {
     type Error = Error;
     fn try_from(token: Token<'r>) -> Result<Self, Self::Error> {
         match token {
-            Token::Abbrev(Identifier(cow)) => Err(Error::UnresolvedAbbreviation(cow.to_string())),
+            Token::Abbrev(Identifier(s)) => Err(Error::UnresolvedAbbreviation(s.to_string())),
             Token::Text(cow) => Ok(cow),
         }
     }
@@ -126,16 +133,16 @@ impl<'r> Value<'r> {
     pub fn resolve(&mut self) -> Result<(), Error> {
         match self {
             Value::Unit(Token::Text(_)) => {}
-            Value::Unit(Token::Abbrev(Identifier(cow))) => {
-                return Err(Error::UnresolvedAbbreviation(cow.to_string()));
+            Value::Unit(Token::Abbrev(Identifier(s))) => {
+                return Err(Error::UnresolvedAbbreviation(s.to_string()));
             }
             Value::Seq(ref mut tokens) => {
                 if tokens.len() == 1 {
                     let only = tokens.remove(0);
                     match only {
                         Token::Text(_) => *self = Self::Unit(only),
-                        Token::Abbrev(Identifier(cow)) => {
-                            return Err(Error::UnresolvedAbbreviation(cow.to_string()));
+                        Token::Abbrev(Identifier(s)) => {
+                            return Err(Error::UnresolvedAbbreviation(s.to_string()));
                         }
                     }
                 } else {
@@ -145,8 +152,8 @@ impl<'r> Value<'r> {
                             Token::Text(cow) => {
                                 ret.push_str(&cow);
                             }
-                            Token::Abbrev(Identifier(cow)) => {
-                                return Err(Error::UnresolvedAbbreviation(cow.to_string()));
+                            Token::Abbrev(Identifier(s)) => {
+                                return Err(Error::UnresolvedAbbreviation(s.to_string()));
                             }
                         }
                     }

@@ -1,10 +1,11 @@
 use std::borrow::Cow;
 
-use serde::de::{self, value::BorrowedStrDeserializer, DeserializeSeed, SeqAccess, Visitor};
+use serde::de::{self, value::BorrowedStrDeserializer, DeserializeSeed, SeqAccess, VariantAccess, Visitor, IntoDeserializer};
 use serde::forward_to_deserialize_any;
 
 use crate::error::Error;
 use crate::parse::Flag;
+use crate::bib::{Token, Identifier};
 
 use super::EntryDeserializer;
 

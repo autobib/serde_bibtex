@@ -1,5 +1,6 @@
 mod reader;
 mod value;
+mod token;
 
 use reader::ResolvingReader;
 use serde::de::{self, value::BorrowedStrDeserializer, DeserializeSeed, MapAccess};
@@ -10,6 +11,7 @@ use crate::error::Error;
 use crate::parse::Flag;
 
 use value::ValueDeserializer;
+use token::IdentifierDeserializer;
 
 /// The top level deserializer.
 pub struct EntryDeserializer<'s, 'r> {
@@ -141,7 +143,7 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for EntryAccess<'a, 's, 'de> {
         match self.de.reader.peek_flag()? {
             Flag::EntryType => {
                 self.de.reader.clear_buffered_flag();
-                seed.deserialize(BorrowedStrDeserializer::new(
+                seed.deserialize(IdentifierDeserializer::new(
                     self.de.reader.take_entry_type()?,
                 ))
             }
@@ -256,7 +258,7 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
         match self.de.reader.peek_flag()? {
             Flag::FieldKey => {
                 self.de.reader.take_flag()?;
-                seed.deserialize(BorrowedStrDeserializer::new(
+                seed.deserialize(IdentifierDeserializer::new(
                     self.de.reader.take_field_key()?,
                 ))
                 .map(Some)
@@ -274,52 +276,6 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
         seed.deserialize(ValueDeserializer::new(&mut *self.de))
     }
 }
-// pub struct TokenDeserializer<'de> {
-//     value: Token<'de>,
-// }
-
-// impl<'de> de::Deserializer<'de> for TokenDeserializer<'de> {
-//     type Error = Error;
-
-//     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
-//     where
-//         V: de::Visitor<'de>,
-//     {
-//         visitor.visit_borrowed_str(self.value)
-//     }
-
-//     fn deserialize_enum<V>(
-//         self,
-//         name: &str,
-//         variants: &'static [&'static str],
-//         visitor: V,
-//     ) -> Result<V::Value, Self::Error>
-//     where
-//         V: de::Visitor<'de>,
-//     {
-//         let _ = name;
-//         let _ = variants;
-//         visitor.visit_enum(self)
-//     }
-
-//     forward_to_deserialize_any! {
-//         bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
-//         bytes byte_buf option unit unit_struct newtype_struct seq tuple
-//         tuple_struct map struct identifier ignored_any
-//     }
-// }
-
-// impl<'de> de::EnumAccess<'de> for TokenDeserializer<'de> {
-//     type Error = Error;
-//     type Variant = Self;
-
-//     fn variant_seed<T>(self, seed: T) -> Result<(T::Value, Self::Variant), Self::Error>
-//     where
-//         T: de::DeserializeSeed<'de>,
-//     {
-//         seed.deserialize(self).map(private::unit_only)
-//     }
-// }
 
 #[cfg(test)]
 mod tests {

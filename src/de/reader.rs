@@ -1,9 +1,9 @@
 use std::borrow::Cow;
 
 use crate::abbrev::Abbreviations;
-use crate::bib::Token;
+use crate::bib::{Identifier, Token};
 use crate::error::Error;
-use crate::parse::{entry_key, first_token, identifier_str, subsequent_token, take_flag, Flag};
+use crate::parse::{entry_key, first_token, identifier, subsequent_token, take_flag, Flag, identifier_str};
 
 // @article{key,
 //   author = {Auth},
@@ -93,8 +93,8 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
         }
     }
 
-    pub fn take_entry_type(&mut self) -> Result<&'r str, Error> {
-        let (input, key) = identifier_str(self.input)?;
+    pub fn take_entry_type(&mut self) -> Result<Identifier<'r>, Error> {
+        let (input, key) = identifier(self.input)?;
         self.input = input;
         Ok(key)
     }
@@ -105,8 +105,8 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
         Ok(key)
     }
 
-    pub fn take_field_key(&mut self) -> Result<&'r str, Error> {
-        let (input, key) = identifier_str(self.input)?;
+    pub fn take_field_key(&mut self) -> Result<Identifier<'r>, Error> {
+        let (input, key) = identifier(self.input)?;
         self.input = input;
         Ok(key)
     }
