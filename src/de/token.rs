@@ -1,11 +1,12 @@
-use crate::bib::{Identifier, Token};
 use serde::de::{
-    self, value::BorrowedStrDeserializer, value::CowStrDeserializer, DeserializeSeed,
-    IntoDeserializer, SeqAccess, VariantAccess, Visitor,
+    self,
+    value::{BorrowedStrDeserializer, CowStrDeserializer},
+    DeserializeSeed, VariantAccess, Visitor,
 };
-
-use crate::error::Error;
 use serde::forward_to_deserialize_any;
+
+use crate::bib::{Identifier, Token};
+use crate::error::Error;
 
 /// A deserializer for an [`Identifier`].
 ///
