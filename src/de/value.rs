@@ -394,47 +394,45 @@ mod tests {
     use crate::de::EntryDeserializer;
     use serde::Deserialize;
 
+    #[derive(Debug, Deserialize, PartialEq)]
+    enum Tok<'a> {
+        #[serde(rename = "Abbrev")]
+        A(&'a str),
+        #[serde(rename = "Text")]
+        T(&'a str),
+    }
+
     #[test]
     fn test_value_string() {
         let abbrevs = Abbreviations::default();
         let mut entry_de = EntryDeserializer::new(" = {a} # { b}", &abbrevs);
         let deserializer = ValueDeserializer::new(&mut entry_de);
-
         assert_eq!(Ok("a b".to_string()), String::deserialize(deserializer),);
 
         let abbrevs = Abbreviations::default();
         let mut entry_de = EntryDeserializer::new(" = {a}", &abbrevs);
         let deserializer = ValueDeserializer::new(&mut entry_de);
-
         assert_eq!(Ok("a".to_string()), String::deserialize(deserializer),);
     }
 
     #[test]
     fn test_value_seq() {
-        #[derive(Debug, Deserialize, PartialEq)]
-        enum ShortToken<'a> {
-            #[serde(rename = "Abbrev")]
-            A(&'a str),
-            #[serde(rename = "Text")]
-            T(&'a str),
-        }
-
         let abbrevs = Abbreviations::default();
         let mut entry_de = EntryDeserializer::new(" = {1} # a # {3}", &abbrevs);
         let deserializer = ValueDeserializer::new(&mut entry_de);
 
-        let data: Vec<ShortToken> = Vec::deserialize(deserializer).unwrap();
-        let expected_data = vec![ShortToken::T("1"), ShortToken::A("a"), ShortToken::T("3")];
+        let data: Vec<Tok> = Vec::deserialize(deserializer).unwrap();
+        let expected_data = vec![Tok::T("1"), Tok::A("a"), Tok::T("3")];
         assert_eq!(data, expected_data);
 
         let abbrevs = Abbreviations::default();
         let mut entry_de = EntryDeserializer::new(" = {1} # a", &abbrevs);
         let deserializer = ValueDeserializer::new(&mut entry_de);
 
-        type DoubleToken<'a> = (ShortToken<'a>, ShortToken<'a>);
+        type DoubleToken<'a> = (Tok<'a>, Tok<'a>);
 
         let data = DoubleToken::deserialize(deserializer).unwrap();
-        let expected_data = (ShortToken::T("1"), ShortToken::A("a"));
+        let expected_data = (Tok::T("1"), Tok::A("a"));
         assert_eq!(data, expected_data);
     }
 
@@ -443,7 +441,6 @@ mod tests {
         let abbrevs = Abbreviations::default();
         let mut entry_de = EntryDeserializer::new(" = {a} # { b}", &abbrevs);
         let deserializer = ValueDeserializer::new(&mut entry_de);
-
         assert_eq!(
             Ok(Cow::Borrowed("a b").to_owned()),
             Cow::deserialize(deserializer),
@@ -452,7 +449,6 @@ mod tests {
         let abbrevs = Abbreviations::default();
         let mut entry_de = EntryDeserializer::new(" = {a}", &abbrevs);
         let deserializer = ValueDeserializer::new(&mut entry_de);
-
         assert_eq!(Ok(Cow::Borrowed("a")), Cow::deserialize(deserializer),);
     }
 
@@ -589,15 +585,119 @@ mod tests {
     }
 
     #[test]
-    fn test_value_de_owned() {
+    fn test_value_abbrev_expansion() {
+        // Test expansion of Abbreviations
+
+        let mut abbrevs = Abbreviations::default();
+        abbrevs.insert(Identifier::from("a"), vec![Token::text_from("1")]);
+        abbrevs.insert(
+            Identifier::from("b"),
+            vec![Token::text_from("2"), Token::text_from("3")],
+        );
+        abbrevs.insert(Identifier::from("c"), Vec::new());
+        abbrevs.insert(Identifier::from("d"), vec![Token::text_from("")]);
+        abbrevs.insert(Identifier::from("e"), vec![Token::abbrev_from("b")]);
+
+        macro_rules! assert_value_string {
+            ($input:expr, $expected:expr) => {
+                let mut entry_de = EntryDeserializer::new($input, &abbrevs);
+                let deserializer = ValueDeserializer::new(&mut entry_de);
+                let data = String::deserialize(deserializer);
+                let expected = $expected.to_string();
+                assert_eq!(data, Ok(expected));
+            };
+        }
+
+        macro_rules! assert_value_fail {
+            ($input:expr) => {
+                let mut entry_de = EntryDeserializer::new($input, &abbrevs);
+                let deserializer = ValueDeserializer::new(&mut entry_de);
+                let data = String::deserialize(deserializer);
+                assert!(data.is_err());
+            };
+        }
+
+        macro_rules! assert_value_seq {
+            ($input:expr, $expected:expr) => {
+                let mut entry_de = EntryDeserializer::new($input, &abbrevs);
+                let deserializer = ValueDeserializer::new(&mut entry_de);
+
+                let data: Result<Vec<Tok>, _> = Vec::deserialize(deserializer);
+                assert_eq!(data, Ok($expected));
+            };
+        }
+
+        // basic expansion
+        let input = " = a";
+        assert_value_string!(input, "1");
+        assert_value_seq!(input, vec![Tok::T("1")]);
+
+        // characters are inserted in order if they are multiple characters long
+        let input = " = {0} # a # b";
+        assert_value_string!(input, "0123");
+        assert_value_seq!(
+            input,
+            vec![Tok::T("0"), Tok::T("1"), Tok::T("2"), Tok::T("3")]
+        );
+
+        // abbreviations referencing other abbreviations are resolved, if
+        // the previous abbreviation appeared
+        let input = " = e";
+        assert_value_string!(input, "23");
+        assert_value_seq!(input, vec![Tok::T("2"), Tok::T("3")]);
+
+        // lenth 0 abbreviations are skipped...
+        let input = " = c # a # c";
+        assert_value_string!(input, "1");
+        // ...and they do not appear in the Token stream
+        assert_value_seq!(input, vec![Tok::T("1")]);
+
+        // abbreviations which expand to {} are skiped...
+        let input = " = {0} # d # {0}";
+        assert_value_string!(input, "00");
+        // ...but they do appear in the Token stream
+        assert_value_seq!(input, vec![Tok::T("0"), Tok::T(""), Tok::T("0")]);
+
+        // use same abbreviation repeatedly
+        let input = " = b # b # c # {1} # b";
+        assert_value_string!(input, "2323123");
+        assert_value_seq!(
+            input,
+            vec![
+                Tok::T("2"),
+                Tok::T("3"),
+                Tok::T("2"),
+                Tok::T("3"),
+                Tok::T("1"),
+                Tok::T("2"),
+                Tok::T("3"),
+            ]
+        );
+
+        // unresolved abbreviations fail, but still appear as raw tokens
+        let input = " = {} # f # b";
+        assert_value_fail!(input);
+        assert_value_seq!(
+            input,
+            vec![Tok::T(""), Tok::A("f"), Tok::T("2"), Tok::T("3"),]
+        );
+    }
+
+    #[test]
+    fn test_value_ownership() {
         // Test that we only take ownership when necessary.
 
         #[derive(Deserialize, Debug, PartialEq, Eq)]
         struct Val<'r>(#[serde(borrow)] Cow<'r, str>);
 
+        let mut abbrevs = Abbreviations::default();
+
+        abbrevs.insert(Identifier::from("a"), vec![Token::text_from("")]);
+        abbrevs.insert(Identifier::from("b"), Vec::new());
+        abbrevs.insert(Identifier::from("c"), vec![Token::text_from("1")]);
+
         macro_rules! assert_value_matching {
             ($input:expr, $expected:expr, $cow:pat) => {
-                let abbrevs = Abbreviations::default();
                 let mut entry_de = EntryDeserializer::new($input, &abbrevs);
                 let deserializer = ValueDeserializer::new(&mut entry_de);
                 let data = Val::deserialize(deserializer);
@@ -609,14 +709,22 @@ mod tests {
 
         // separated Token::Text are merged
         assert_value_matching!(" = {a} # {b} # {c}", "abc", Cow::Owned(_));
+        assert_value_matching!(" = {a} # {} # {b}", "ab", Cow::Owned(_));
 
         // a single Token::Text can be borrowed
         assert_value_matching!(" = {a}", "a", Cow::Borrowed(_));
 
-        // empty values still allow owning
+        // empty values also allow owning
         assert_value_matching!(" = {} # {abc}", "abc", Cow::Borrowed(_));
         assert_value_matching!(" = {} # {abc} # {} # {}", "abc", Cow::Borrowed(_));
         assert_value_matching!(" = {abc} # {}", "abc", Cow::Borrowed(_));
-        assert_value_matching!(" = {a} # {} # {b}", "ab", Cow::Owned(_));
+
+        // empty abbreviations can be spliced in without owning
+        assert_value_matching!(" = a # b # {abc} # a", "abc", Cow::Borrowed(_));
+
+        // can borrow from abbreviations, if possible
+        assert_value_matching!(" = c", "1", Cow::Borrowed(_));
+        assert_value_matching!(" = c # c", "11", Cow::Owned(_));
+        assert_value_matching!(" = {} # c # {} # a # b", "1", Cow::Borrowed(_));
     }
 }

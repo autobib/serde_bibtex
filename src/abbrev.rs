@@ -41,7 +41,6 @@ fn try_merge<'r>(tokens: &Vec<Token<'r>>) -> Option<Cow<'r, str>> {
 
 impl<'r> Abbreviations<'r> {
     pub fn insert(&mut self, identifier: Identifier<'r>, mut value: Vec<Token<'r>>) {
-        assert!(!value.is_empty());
         self.resolve(&mut value);
         self.abbrevs.insert(identifier, value);
     }

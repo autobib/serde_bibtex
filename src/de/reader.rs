@@ -4,44 +4,8 @@ use crate::abbrev::Abbreviations;
 use crate::bib::{Identifier, Token};
 use crate::error::Error;
 use crate::parse::{
-    entry_key, first_token, identifier, identifier_str, subsequent_token, take_flag, Flag,
+    entry_key, first_token, identifier, subsequent_token, take_flag, Flag,
 };
-
-// @article{key,
-//   author = {Auth},
-//   year = 20 # undefined,
-// }
-//
-// is equivalent to the JSON
-//
-// {
-//   "entry_type": "article",
-//   "entry_key": "key",
-//   "fields": {
-//     "author": [{"text": "Auth"}],
-//     "year": [{"text": "2023"}, {"abbrev": "undefined"}],
-//   }
-// }
-//
-// But we also have fancier processing. For instance, if we first have
-//
-// @string{undefined = {23}}
-//
-// we can parse this into the struct
-//
-// #[derive(Deserialize)]
-// struct Entry<'a> {
-//     #[serde(rename = "entry_type")]
-//     type: &'a str,
-//     #[serde(rename = "entry_key")]
-//     key: &'a str,
-//     fields: Fields<'a>
-// }
-//
-// struct Fields<'a> {
-//     author: &'a str,
-//     year: i64,
-// }
 
 // TODO: parsing variants
 // resolving parser (for abbreviations)
@@ -233,10 +197,11 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
     }
 
     pub fn take_token(&mut self) -> Result<Option<Token<'r>>, Error> {
-        take_token(&mut self.input, &mut self.is_first_token)
+        take_token_resolved(&mut self.input, &mut self.is_first_token, &mut self.token_buffer, &self.abbrevs)
     }
 }
 
+// TODO: abstract over a token iterator
 fn parse_null<'r>(
     input: &mut &'r str,
     is_first_token: &mut bool,
