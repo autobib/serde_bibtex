@@ -55,6 +55,10 @@ pub fn bibtex_ignored(input: &str) -> IResult<&str, ()> {
     nom_value((), multispace0)(input)
 }
 
+pub fn take_flag_value(input: &str) -> IResult<&str, ()> {
+    nom_value((), tuple((bibtex_ignored, char('='), bibtex_ignored)))(input)
+}
+
 /// Consume the next flag, updating the input, stepping forward, and consuming trailing
 /// whitespace.
 ///

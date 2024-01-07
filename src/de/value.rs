@@ -29,7 +29,7 @@ macro_rules! deserialize_parse {
         where
             V: Visitor<'de>,
         {
-            self.de.reader.take_flag()?.expect(Flag::FieldValue)?;
+            self.de.reader.take_flag_value()?;
             visitor.$visit(self.de.reader.take_unit()?.parse()?)
         }
     };
@@ -42,7 +42,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.take_flag()?.expect(Flag::FieldValue)?;
+        self.de.reader.take_flag_value()?;
         match self.de.reader.take_unit()? {
             Cow::Borrowed(s) => visitor.visit_borrowed_str(s),
             Cow::Owned(s) => visitor.visit_str(&s),
@@ -53,7 +53,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.take_flag()?.expect(Flag::FieldValue)?;
+        self.de.reader.take_flag_value()?;
         visitor.visit_char(self.de.reader.take_char()?)
     }
 
@@ -90,7 +90,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.take_flag()?.expect(Flag::FieldValue)?;
+        self.de.reader.take_flag_value()?;
         self.de.reader.take_null()?;
         visitor.visit_unit()
     }
@@ -123,7 +123,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.take_flag()?.expect(Flag::FieldValue)?;
+        self.de.reader.take_flag_value()?;
         visitor.visit_seq(self)
     }
 

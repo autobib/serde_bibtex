@@ -3,7 +3,9 @@ use std::borrow::Cow;
 use crate::abbrev::Abbreviations;
 use crate::bib::{Identifier, Token};
 use crate::error::Error;
-use crate::parse::{entry_key, first_token, identifier, subsequent_token, take_flag, Flag};
+use crate::parse::{
+    entry_key, first_token, identifier, subsequent_token, take_flag, take_flag_value, Flag,
+};
 
 // TODO: parsing variants
 // resolving parser (for abbreviations)
@@ -177,6 +179,21 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
                 let (input, received) = take_flag(self.input)?;
                 self.input = input;
                 self.buffered_flag = Some(received);
+                Ok(received)
+            }
+        }
+    }
+
+    /// Take any `Flag` and return it.
+    pub fn take_flag_value(&mut self) -> Result<(), Error> {
+        match self.buffered_flag.take() {
+            Some(Flag::FieldValue) => Ok(()),
+            Some(_) => Err(Error::Message(
+                "Expected value, get something else".to_string(),
+            )),
+            None => {
+                let (input, received) = take_flag_value(self.input)?;
+                self.input = input;
                 Ok(received)
             }
         }
