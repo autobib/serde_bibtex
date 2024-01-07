@@ -231,6 +231,10 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
             }
         }
     }
+
+    pub fn take_token(&mut self) -> Result<Option<Token<'r>>, Error> {
+        take_token(&mut self.input, &mut self.is_first_token)
+    }
 }
 
 fn parse_null<'r>(

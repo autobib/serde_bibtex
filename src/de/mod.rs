@@ -1,5 +1,4 @@
 mod reader;
-mod token;
 mod value;
 
 use reader::ResolvingReader;
@@ -10,8 +9,7 @@ use crate::abbrev::Abbreviations;
 use crate::error::Error;
 use crate::parse::Flag;
 
-use token::IdentifierDeserializer;
-use value::ValueDeserializer;
+use value::{IdentifierDeserializer, ValueDeserializer};
 
 /// The top level deserializer.
 pub struct EntryDeserializer<'s, 'r> {
