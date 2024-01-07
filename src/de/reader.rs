@@ -3,48 +3,43 @@ use std::borrow::Cow;
 use crate::abbrev::Abbreviations;
 use crate::bib::{Identifier, Token};
 use crate::error::Error;
-use crate::parse::{
-    entry_key, first_token, identifier, subsequent_token, take_flag, take_flag_value, Flag,
+use crate::parse::core::{
+    citation_key, entry_type, field_key, field_sep, subsequent_token, terminal, token,
 };
 
 // TODO: parsing variants
 // resolving parser (for abbreviations)
 // enforcing valid (to check parsing grammar)
 // comment style (bibtex vs biber)
-//
-// TODO
-// Use DeserializeSeed to build a custom receiver so all of the Value are slices of a fixed
-// pre-allocated array.
 
-/// A struct to sequentially read from an entry stored in `self.input`. Rather than record the
-/// internal of the parser, we instead determine the current position based on the subsequent
-/// characters. This correctly parses valid BibTex, but also correctly parses a wide variety of
-/// non-bibtex input.
-///
-/// The general structure of an entry as as follows:
-/// ```bib
-/// @entry_type{entry_key,
-///   field_key = field_value,
-///   ...,
-/// }
-/// ```
-/// Here are the cases depending on the prefix of `self.input` after whitespace stripping.
-/// 1. `@`: we are parsing `entry_type`.
-/// 2. `{` or `(`: we are parsing `entry_key`.
-/// 3. `,` followed by optional whitespace and not one of `})`: we are parsing `field_key`.
-/// 4. `,` followed by optional whitespace and one of `})`: we have reached the end of the fields.
-/// 4. `=`: we are parsing `field_value`.
-/// We enforce that `self.input` is always whitespace-stripped.
-///
-/// Note that this parsing grammar is more flexible than the classic BibTex parser. For example,
-/// we do not enforce matching brackets at the beginning and end of the entry.
+/// An enum to track the current parsing position inside an entry.
+#[derive(Debug, Copy, Clone)]
+pub(crate) enum Position {
+    EntryType,
+    CitationKey,
+    Fields,
+    EndOfEntry,
+}
+
+impl Position {
+    pub fn step(&mut self) {
+        *self = match self {
+            Self::EntryType => Self::CitationKey,
+            Self::CitationKey => Self::Fields,
+            Self::Fields => Self::EndOfEntry,
+            Self::EndOfEntry => Self::EntryType,
+        };
+    }
+}
+
+#[derive(Debug)]
 pub struct ResolvingReader<'s, 'r> {
-    pub input: &'r str,
+    input: &'r str,
     abbrevs: &'s Abbreviations<'r>,
-    buffered_unit: Option<Cow<'r, str>>,
-    buffered_flag: Option<Flag>,
     token_buffer: Vec<Token<'r>>,
     is_first_token: bool,
+    parsing_state: Position,
+    matching: char,
 }
 
 impl<'s, 'r> ResolvingReader<'s, 'r> {
@@ -52,83 +47,54 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
         Self {
             input,
             abbrevs,
-            buffered_unit: None,
-            buffered_flag: None,
             token_buffer: Vec::new(),
             is_first_token: true,
+            parsing_state: Position::EndOfEntry,
+            matching: '}', // default for self.take_citation_key()
         }
+    }
+
+    pub fn update_position(&mut self) -> &Position {
+        self.parsing_state.step();
+        &self.parsing_state
+    }
+
+    pub fn get_position(&self) -> &Position {
+        &self.parsing_state
     }
 
     pub fn take_entry_type(&mut self) -> Result<Identifier<'r>, Error> {
-        let (input, key) = identifier(self.input)?;
+        let (input, key) = entry_type(self.input)?;
         self.input = input;
         Ok(key)
     }
 
-    pub fn take_entry_key(&mut self) -> Result<&'r str, Error> {
-        let (input, key) = entry_key(self.input)?;
+    pub fn take_citation_key(&mut self) -> Result<&'r str, Error> {
+        let (input, (key, open)) = citation_key(self.input)?;
         self.input = input;
-        Ok(key)
-    }
-
-    pub fn take_field_key(&mut self) -> Result<Identifier<'r>, Error> {
-        let (input, key) = identifier(self.input)?;
-        self.input = input;
-        Ok(key)
-    }
-
-    /// Consume a Flag and the subsequent value.
-    pub fn skip(&mut self) -> Result<(), Error> {
-        match self.take_flag()? {
-            Flag::EntryType => todo!(),
-            Flag::EntryKey => todo!(),
-            Flag::FieldKey => todo!(),
-            Flag::FieldValue => {
-                while let Some(_) = take_token(&mut self.input, &mut self.is_first_token)? {}
-                Ok(())
-            }
-            Flag::EndOfEntry => Ok(()),
+        // defaults to '}' in Self::new(...)
+        if open == '(' {
+            self.matching = ')';
         }
+        Ok(key)
     }
 
-    pub fn clear_buffered_unit(&mut self) {
-        self.buffered_unit = None;
+    pub fn take_field_key(&mut self) -> Result<Option<Identifier<'r>>, Error> {
+        let (input, key) = field_key(self.input)?;
+        self.input = input;
+        Ok(key)
     }
 
-    pub fn clear_buffered_flag(&mut self) {
-        self.buffered_flag = None;
+    pub fn take_terminal(&mut self) -> Result<(), Error> {
+        let (input, ()) = terminal(self.input, self.matching)?;
+        self.input = input;
+        Ok(())
     }
 
-    // pub fn clear_buffer(&mut self) {
-    //     self.buffered_unit = None;
-    //     self.buffered_flag = None;
-    //     self.token_buffer.clear();
-    //     self.is_first_token = true;
-    // }
-
-    pub fn take_null(&mut self) -> Result<(), Error> {
-        match self.buffered_unit.take() {
-            None => parse_null(
-                &mut self.input,
-                &mut self.is_first_token,
-                &mut self.token_buffer,
-                &self.abbrevs,
-            ),
-            Some(cow) => {
-                if cow.len() > 0 {
-                    Ok(())
-                } else {
-                    Err(Error::Message("Expected null".to_string()))
-                }
-            }
-        }
-    }
-
-    /// Take a `FieldValue` as a `char`.
-    pub fn take_char(&mut self) -> Result<char, Error> {
+    pub fn take_value_as_char(&mut self) -> Result<char, Error> {
         // TODO: this could be optimized with a customied parse_char that
         // short-circuits when it sees more than one char.
-        let parsed = self.take_unit()?;
+        let parsed = self.take_value_as_cow()?;
         let mut char_iter = parsed.chars();
         match (char_iter.next(), char_iter.next()) {
             (Some(c), None) => Ok(c),
@@ -137,78 +103,37 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
     }
 
     /// Take a `FieldValue` as `Cow<'r, str>`.
-    pub fn take_unit(&mut self) -> Result<Cow<'r, str>, Error> {
-        match self.buffered_unit.take() {
-            Some(cow) => Ok(cow),
-            None => parse_unit(
-                &mut self.input,
-                &mut self.is_first_token,
-                &mut self.token_buffer,
-                &self.abbrevs,
-            ),
-        }
+    pub fn take_value_as_cow(&mut self) -> Result<Cow<'r, str>, Error> {
+        self.take_flag_value()?;
+        parse_unit(
+            &mut self.input,
+            &mut self.is_first_token,
+            &mut self.token_buffer,
+            &self.abbrevs,
+        )
     }
 
-    fn insert_buffered<'a>(
-        buffered_unit: &'a mut Option<Cow<'r, str>>,
-        parsed: Cow<'r, str>,
-    ) -> &'a mut Cow<'r, str> {
-        buffered_unit.insert(parsed)
-    }
-    /// Peek a `FieldValue` as a `&Cow<'r, str>`.
-    pub fn peek_unit(&mut self) -> Result<&Cow<'r, str>, Error> {
-        match self.buffered_unit {
-            Some(ref cow) => Ok(cow),
-            None => {
-                let parsed = parse_unit(
-                    &mut self.input,
-                    &mut self.is_first_token,
-                    &mut self.token_buffer,
-                    &self.abbrevs,
-                )?;
-                Ok(Self::insert_buffered(&mut self.buffered_unit, parsed))
-            }
+    pub fn ignore_entry(&mut self) -> Result<(), Error> {
+        let _ = self.take_entry_type()?;
+        let _ = self.take_citation_key()?;
+        while let Some(_) = self.take_field_key()? {
+            self.ignore_value()?
         }
+        self.take_terminal()?;
+        Ok(())
     }
 
-    /// Peek a `Flag`, returning the value, but do not consume it.
-    pub fn peek_flag(&mut self) -> Result<Flag, Error> {
-        match self.buffered_flag {
-            Some(flag) => Ok(flag),
-            None => {
-                let (input, received) = take_flag(self.input)?;
-                self.input = input;
-                self.buffered_flag = Some(received);
-                Ok(received)
-            }
-        }
+    pub fn ignore_value(&mut self) -> Result<(), Error> {
+        self.take_flag_value()?;
+        while let Some(_) = take_token(&mut self.input, &mut self.is_first_token)? {}
+        Ok(())
     }
 
     /// Take any `Flag` and return it.
     pub fn take_flag_value(&mut self) -> Result<(), Error> {
-        match self.buffered_flag.take() {
-            Some(Flag::FieldValue) => Ok(()),
-            Some(_) => Err(Error::Message(
-                "Expected value, get something else".to_string(),
-            )),
-            None => {
-                let (input, received) = take_flag_value(self.input)?;
-                self.input = input;
-                Ok(received)
-            }
-        }
-    }
-
-    /// Take any `Flag` and return it.
-    pub fn take_flag(&mut self) -> Result<Flag, Error> {
-        match self.buffered_flag.take() {
-            Some(flag) => Ok(flag),
-            None => {
-                let (input, received) = take_flag(self.input)?;
-                self.input = input;
-                Ok(received)
-            }
-        }
+        let (input, received) = field_sep(self.input)?;
+        self.input = input;
+        Ok(received)
     }
 
     pub fn take_token(&mut self) -> Result<Option<Token<'r>>, Error> {
@@ -219,22 +144,6 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
             &self.abbrevs,
         )
     }
-}
-
-// TODO: abstract over a token iterator
-fn parse_null<'r>(
-    input: &mut &'r str,
-    is_first_token: &mut bool,
-    token_buffer: &mut Vec<Token<'r>>,
-    abbrevs: &Abbreviations<'r>,
-) -> Result<(), Error> {
-    while let Some(token) = take_token_resolved(input, is_first_token, token_buffer, abbrevs)? {
-        match token {
-            Token::Text(cow) if cow.len() == 0 => {}
-            _ => return Err(Error::Message("Expected null, get something".to_string())),
-        }
-    }
-    Ok(())
 }
 
 /// Attempt to combine all of the tokens in a FieldValue into a single string. If there is only a
@@ -319,7 +228,7 @@ fn take_token<'r>(
     is_first_token: &mut bool,
 ) -> Result<Option<Token<'r>>, Error> {
     if *is_first_token {
-        let (updated, token) = first_token(input)?;
+        let (updated, token) = token(input)?;
         *is_first_token = false;
         *input = updated;
         Ok(Some(token))

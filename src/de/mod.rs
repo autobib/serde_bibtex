@@ -1,13 +1,12 @@
 mod reader;
 mod value;
 
-use reader::ResolvingReader;
+use reader::{Position, ResolvingReader};
 use serde::de::{self, value::BorrowedStrDeserializer, DeserializeSeed, MapAccess};
 use serde::forward_to_deserialize_any;
 
 use crate::abbrev::Abbreviations;
 use crate::error::Error;
-use crate::parse::Flag;
 
 use value::{IdentifierDeserializer, ValueDeserializer};
 
@@ -72,7 +71,9 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for &'a mut EntryDeserializer<'s, 'd
     where
         V: de::Visitor<'de>,
     {
-        visitor.visit_map(EntryAccess::new(self))
+        let value = visitor.visit_map(EntryAccess::new(self))?;
+        self.reader.take_terminal()?;
+        Ok(value)
     }
 
     #[inline]
@@ -92,7 +93,8 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for &'a mut EntryDeserializer<'s, 'd
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        self.reader.ignore_entry()?;
+        visitor.visit_unit()
     }
 
     forward_to_deserialize_any!(
@@ -118,18 +120,17 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for EntryAccess<'a, 's, 'de> {
     where
         K: DeserializeSeed<'de>,
     {
-        match self.de.reader.peek_flag()? {
-            Flag::EntryType => seed
+        match self.de.reader.update_position() {
+            Position::EntryType => seed
                 .deserialize(BorrowedStrDeserializer::new("entry_type"))
                 .map(Some),
-            Flag::EntryKey => seed
+            Position::CitationKey => seed
                 .deserialize(BorrowedStrDeserializer::new("entry_key"))
                 .map(Some),
-            Flag::FieldKey => seed
+            Position::Fields => seed
                 .deserialize(BorrowedStrDeserializer::new("fields"))
                 .map(Some),
-            Flag::EndOfEntry => Ok(None),
-            _ => Err(Error::Message("Unexpected flag".to_string())),
+            Position::EndOfEntry => Ok(None),
         }
     }
 
@@ -137,23 +138,16 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for EntryAccess<'a, 's, 'de> {
     where
         V: DeserializeSeed<'de>,
     {
-        match self.de.reader.peek_flag()? {
-            Flag::EntryType => {
-                self.de.reader.clear_buffered_flag();
-                seed.deserialize(IdentifierDeserializer::new(
-                    self.de.reader.take_entry_type()?,
-                ))
-            }
-            Flag::EntryKey => {
-                self.de.reader.clear_buffered_flag();
-                seed.deserialize(BorrowedStrDeserializer::new(
-                    self.de.reader.take_entry_key()?,
-                ))
-            }
-            Flag::FieldKey => seed.deserialize(FieldDeserializer::new(&mut *self.de)),
-            _ => Err(Error::Message(
-                "expected entry type entry key or field key".to_string(),
+        match self.de.reader.get_position() {
+            Position::EntryType => seed.deserialize(IdentifierDeserializer::new(
+                self.de.reader.take_entry_type()?,
             )),
+            Position::CitationKey => seed.deserialize(BorrowedStrDeserializer::new(
+                self.de.reader.take_citation_key()?,
+            )),
+            Position::Fields => seed.deserialize(FieldDeserializer::new(&mut *self.de)),
+            // SAFETY: MapAccess ends when Parsed::EndOfEntry is reached in `self.next_key_seed`
+            Position::EndOfEntry => unreachable!(),
         }
     }
 }
@@ -252,24 +246,29 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
     where
         K: DeserializeSeed<'de>,
     {
-        match self.de.reader.peek_flag()? {
-            Flag::FieldKey => {
-                self.de.reader.take_flag()?;
-                seed.deserialize(IdentifierDeserializer::new(
-                    self.de.reader.take_field_key()?,
-                ))
-                .map(Some)
-            }
-            Flag::EndOfEntry => Ok(None),
-            _ => Err(Error::Message("Unexpected flag".to_string())),
+        match self.de.reader.take_field_key()? {
+            Some(identifier) => seed
+                .deserialize(IdentifierDeserializer::new(identifier))
+                .map(Some),
+            None => Ok(None),
         }
+        // match self.de.reader.peek_flag()? {
+        //     Flag::FieldKey => {
+        //         self.de.reader.clear_buffered_flag();
+        //         seed.deserialize(IdentifierDeserializer::new(
+        //             self.de.reader.take_field_key()?,
+        //         ))
+        //         .map(Some)
+        //     }
+        //     Flag::EndOfEntry => Ok(None),
+        //     _ => Err(Error::Message("Unexpected flag".to_string())),
+        // }
     }
 
     fn next_value_seed<V>(&mut self, seed: V) -> Result<V::Value, Self::Error>
     where
         V: DeserializeSeed<'de>,
     {
-        self.de.reader.peek_flag()?.expect(Flag::FieldValue)?;
         seed.deserialize(ValueDeserializer::new(&mut *self.de))
     }
 }
@@ -289,21 +288,38 @@ mod tests {
         Article,
         Book,
     }
-    #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
-    struct TestEntry<'a> {
+    #[derive(Deserialize, Debug, PartialEq, Eq)]
+    struct TestEntryStruct<'a> {
         entry_type: TestEntryType,
         entry_key: &'a str,
         #[serde(borrow)]
         fields: TestFields<'a>,
     }
 
-    #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+    #[derive(Deserialize, Debug, PartialEq, Eq)]
     struct TestFields<'a> {
         #[serde(borrow)]
         author: Cow<'a, str>,
         #[serde(borrow)]
         title: Cow<'a, str>,
         year: u64,
+    }
+
+    // Anonymous field names and flexible receiver type
+    #[derive(Debug, Deserialize, PartialEq)]
+    enum Tok<'a> {
+        #[serde(rename = "Abbrev")]
+        A(&'a str),
+        #[serde(rename = "Text")]
+        T(&'a str),
+    }
+
+    #[derive(Deserialize, Debug, PartialEq)]
+    struct TestEntryMap<'a> {
+        entry_type: &'a str,
+        entry_key: &'a str,
+        #[serde(borrow)]
+        fields: HashMap<&'a str, Vec<Tok<'a>>>,
     }
 
     #[test]
@@ -319,8 +335,8 @@ mod tests {
             &abbrevs,
         );
 
-        let data: TestEntry = TestEntry::deserialize(&mut de_entry).unwrap();
-        let expected_data = TestEntry {
+        let data: TestEntryStruct = TestEntryStruct::deserialize(&mut de_entry).unwrap();
+        let expected_data = TestEntryStruct {
             entry_type: TestEntryType::Article,
             entry_key: "key:0",
             fields: TestFields {
@@ -336,7 +352,74 @@ mod tests {
     }
 
     #[test]
-    fn test_entry_skipped() {
+    fn test_syntax() {
+        use serde::de::IgnoredAny;
+
+        macro_rules! assert_syntax {
+            ($input:expr, $expect:ident) => {
+                let abbrevs = Abbreviations::default();
+
+                let mut de_entry = EntryDeserializer::new($input, &abbrevs);
+                let data: Result<IgnoredAny, Error> = IgnoredAny::deserialize(&mut de_entry);
+                assert!(data.$expect(), "{:?} : {:?}", data, de_entry.reader);
+
+                let mut de_entry = EntryDeserializer::new($input, &abbrevs);
+                let data: Result<TestEntryMap, Error> = TestEntryMap::deserialize(&mut de_entry);
+                assert!(data.$expect(), "{:?} : {:?}", data, de_entry.reader);
+            };
+        }
+
+        // basic example
+        assert_syntax!(
+            r#"@a{key:0,
+              a= {A} # b,
+              t= "T",
+              y= 1,}"#,
+            is_ok
+        );
+
+        // whitespace and unicode allowed in potentially surprising places
+        assert_syntax!(
+            r#"@   a🍄ticle {k🍄:0  ,
+              au🍄hor ={A🍄th}
+                #  
+                {or}
+                ,title =
+              "Tit🍄e" # 🍄}"#,
+            is_ok
+        );
+
+        // no fields, trailing comma
+        assert_syntax!(r#"@a{k,}"#, is_ok);
+        // no fields, no trailing comma
+        assert_syntax!(r#"@a{k}"#, is_ok);
+        // single field, trailing comma
+        assert_syntax!(r#"@a{k,t=v,}"#, is_ok);
+        // single field, no trailing comma
+        assert_syntax!(r#"@a{k,t=v}"#, is_ok);
+
+        // err: multiple trailing comma
+        assert_syntax!(r#"@a{k,,}"#, is_err);
+        // err: missing field value
+        assert_syntax!(r#"@a{k,t=,}"#, is_err);
+        // err: missing leading @
+        assert_syntax!(r#"a{k,t=v}"#, is_err);
+        // err: missing citation key
+        assert_syntax!(r#"@a{,t=v}"#, is_err);
+        // err: invalid char in citation key
+        assert_syntax!(r#"@a{t=b}"#, is_err);
+        assert_syntax!(r#"@a{t#b}"#, is_err);
+        assert_syntax!(r#"@a{t\b}"#, is_err);
+
+        // opening and closing brackets must match
+        assert_syntax!("@a(k}", is_err);
+        assert_syntax!("@a{k)", is_err);
+        assert_syntax!("@a{k}", is_ok);
+        assert_syntax!("@a(k)", is_ok);
+    }
+
+    #[test]
+    fn test_ignore_entry_meta() {
         #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
         struct TestSkipEntry<'a> {
             entry_type: TestEntryType,

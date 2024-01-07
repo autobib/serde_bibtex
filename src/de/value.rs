@@ -8,7 +8,6 @@ use serde::forward_to_deserialize_any;
 
 use crate::bib::{Identifier, Token};
 use crate::error::Error;
-use crate::parse::Flag;
 
 use super::EntryDeserializer;
 
@@ -29,8 +28,7 @@ macro_rules! deserialize_parse {
         where
             V: Visitor<'de>,
         {
-            self.de.reader.take_flag_value()?;
-            visitor.$visit(self.de.reader.take_unit()?.parse()?)
+            visitor.$visit(self.de.reader.take_value_as_cow()?.parse()?)
         }
     };
 }
@@ -42,8 +40,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.take_flag_value()?;
-        match self.de.reader.take_unit()? {
+        match self.de.reader.take_value_as_cow()? {
             Cow::Borrowed(s) => visitor.visit_borrowed_str(s),
             Cow::Owned(s) => visitor.visit_str(&s),
         }
@@ -53,8 +50,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.take_flag_value()?;
-        visitor.visit_char(self.de.reader.take_char()?)
+        visitor.visit_char(self.de.reader.take_value_as_char()?)
     }
 
     fn deserialize_bytes<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
@@ -71,27 +67,11 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
         unimplemented!()
     }
 
-    fn deserialize_option<V>(self, visitor: V) -> Result<V::Value, Self::Error>
-    where
-        V: Visitor<'de>,
-    {
-        self.de.reader.peek_flag()?.expect(Flag::FieldValue)?;
-        let unit = self.de.reader.peek_unit()?;
-        if unit.len() == 0 {
-            // Manually clear the buffer.
-            self.de.reader.clear_buffered_unit();
-            visitor.visit_none()
-        } else {
-            visitor.visit_some(self)
-        }
-    }
-
     fn deserialize_unit<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        self.de.reader.take_flag_value()?;
-        self.de.reader.take_null()?;
+        self.de.reader.ignore_value()?;
         visitor.visit_unit()
     }
 
@@ -165,8 +145,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.peek_flag()?.expect(Flag::FieldValue)?;
-        self.de.reader.skip()?;
+        self.de.reader.ignore_value()?;
         visitor.visit_unit()
     }
 
@@ -182,7 +161,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     deserialize_parse!(deserialize_f32, visit_f32);
     deserialize_parse!(deserialize_f64, visit_f64);
 
-    forward_to_deserialize_any!(map struct str string identifier);
+    forward_to_deserialize_any!(map struct str string identifier option);
 }
 
 impl<'a, 's, 'de: 'a> SeqAccess<'de> for ValueDeserializer<'a, 's, 'de> {

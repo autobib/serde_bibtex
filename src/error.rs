@@ -5,7 +5,6 @@ use std::fmt::{self, Display};
 use serde::{de, ser};
 
 pub type Result<T> = std::result::Result<T, Error>;
-use crate::parse::FlagError;
 
 // This is a bare-bones implementation. A real library would provide additional
 // information in its error type, for example the line and column at which the
@@ -79,12 +78,6 @@ impl Display for Error {
 }
 
 impl std::error::Error for Error {}
-
-impl From<FlagError> for Error {
-    fn from(err: FlagError) -> Self {
-        Self::FlagError
-    }
-}
 
 impl From<std::str::ParseBoolError> for Error {
     fn from(err: std::str::ParseBoolError) -> Self {

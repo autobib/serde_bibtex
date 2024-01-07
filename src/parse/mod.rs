@@ -1,175 +1,19 @@
 mod balanced;
+pub mod core;
 
 use nom::{
     branch::alt,
     bytes::complete::{is_not, tag_no_case, take_until},
-    character::complete::{char, digit1, multispace0, none_of, one_of},
-    combinator::{map, not, opt, peek, value as nom_value, verify},
+    character::complete::{char, digit1, multispace0},
+    combinator::{map, opt, value as nom_value, verify},
     multi::{separated_list0, separated_list1},
-    sequence::{delimited, pair, preceded, separated_pair, tuple},
+    sequence::{delimited, separated_pair, tuple},
     IResult,
 };
 
-use crate::bib::{
-    Abbreviation, Comment, Entry, EntryKey, Event, Field, Identifier, Preamble, Token, Value,
-};
+use crate::bib::{Abbreviation, Comment, Entry, EntryKey, Event, Field, Preamble, Token, Value};
 use balanced::{is_balanced, take_until_unbalanced};
-
-pub struct FlagError {
-    expected: Flag,
-    received: Flag,
-}
-
-/// An enum containing the current state of the reader (i.e. what do we parse next?).
-#[derive(Debug, PartialEq, Clone, Copy)]
-pub enum Flag {
-    EntryType,
-    EntryKey,
-    FieldKey,
-    FieldValue,
-    EndOfEntry,
-}
-
-impl Flag {
-    pub fn expect(self, other: Flag) -> Result<(), FlagError> {
-        if self == other {
-            Ok(())
-        } else {
-            Err(FlagError {
-                received: self,
-                expected: other,
-            })
-        }
-    }
-}
-
-pub fn bibtex_comment(i: &str) -> IResult<&str, ()> {
-    nom_value(
-        (), // Output is thrown away.
-        pair(char('%'), is_not("\n\r")),
-    )(i)
-}
-
-// TODO: incorporate bibtex_comment
-pub fn bibtex_ignored(input: &str) -> IResult<&str, ()> {
-    nom_value((), multispace0)(input)
-}
-
-pub fn take_flag_value(input: &str) -> IResult<&str, ()> {
-    nom_value((), tuple((bibtex_ignored, char('='), bibtex_ignored)))(input)
-}
-
-/// Consume the next flag, updating the input, stepping forward, and consuming trailing
-/// whitespace.
-///
-pub fn take_flag(input: &str) -> IResult<&str, Flag> {
-    let (input, _) = bibtex_ignored(input)?;
-    let (input, pos) = alt((
-        // TODO: optimize order?
-        nom_value(Flag::FieldValue, char('=')),
-        nom_value(Flag::EntryType, char('@')),
-        nom_value(Flag::EntryKey, one_of("({")),
-        nom_value(
-            Flag::FieldKey,
-            tuple((char(','), bibtex_ignored, peek(none_of(")}")))),
-        ),
-        nom_value(
-            Flag::EndOfEntry,
-            tuple((opt(char(',')), bibtex_ignored, one_of(")}"))),
-        ),
-    ))(input)?;
-    let (input, _) = bibtex_ignored(input)?;
-    Ok((input, pos))
-}
-
-pub fn field_sep(input: &str) -> IResult<&str, ()> {
-    let (input, _) = tuple((multispace0, char('='), multispace0))(input)?;
-    Ok((input, ()))
-}
-
-// TODO: make this optional? we can definitely support it...
-pub fn first_token(input: &str) -> IResult<&str, Token> {
-    token(input)
-}
-
-pub fn subsequent_token(input: &str) -> IResult<&str, Option<Token>> {
-    let (input, opt) = opt(tuple((multispace0, char('#'), multispace0, token)))(input)?;
-    match opt {
-        Some((_, _, _, token)) => Ok((input, Some(token))),
-        None => Ok((input, None)),
-    }
-}
-
-pub fn identifier_str(input: &str) -> IResult<&str, &str> {
-    let (input, ()) = not(digit1)(input)?;
-    is_not(" \t\\#%'\",=(){}")(input)
-}
-
-/// Parse an abbreviation, which is any sequence of characters not in ` \t\\#%'\",=(){}` with
-/// has length at least 1 and does not start with a digit.
-/// ```
-/// use serde_bibtex::parse::identifier;
-/// use serde_bibtex::bib::Identifier;
-///
-/// assert_eq!(
-///     identifier("key0"),
-///     Ok(("", Identifier::from("key0")))
-/// );
-///
-/// assert!(identifier("0key").is_err());
-///
-/// assert!(identifier("(i)dent").is_err());
-/// ```
-pub fn identifier(input: &str) -> IResult<&str, Identifier> {
-    map(identifier_str, Identifier::from)(input)
-}
-
-fn curly(input: &str) -> IResult<&str, &str> {
-    delimited(char('{'), take_until_unbalanced('{', '}'), char('}'))(input)
-}
-
-/// Parse a field token, which is either `{curly}`, `"quoted"`, an abbreviation, or a sequence of
-/// digits.
-/// ```
-/// use serde_bibtex::parse::token;
-/// use serde_bibtex::bib::Token;
-///
-/// assert_eq!(
-///     token("1234"),
-///     Ok(("", Token::text_from("1234")))
-/// );
-/// ```
-/// The `{` and `}` brackets need to be balanced:
-/// ```
-/// # use serde_bibtex::parse::token;
-/// # use serde_bibtex::bib::Token;
-/// assert_eq!(
-///     token("\"{outside{inside}}\""),
-///     Ok(("", Token::text_from("{outside{inside}}")))
-/// );
-///
-/// assert!(token("\"{unbalanced\"").is_err())
-/// ```
-/// For a `{curly}` token, the parser eats characters until the brackets are balanced.
-/// ```
-/// # use serde_bibtex::parse::token;
-/// # use serde_bibtex::bib::Token;
-/// assert_eq!(token("{a{b} }}"), Ok(("}", Token::text_from("a{b} "))));
-/// ```
-pub fn token(input: &str) -> IResult<&str, Token> {
-    let quoted = delimited(
-        char('"'),
-        verify(take_until("\""), is_balanced('{', '}')),
-        char('"'),
-    );
-
-    alt((
-        map(curly, Token::text_from),
-        map(quoted, Token::text_from),
-        map(digit1, Token::text_from),
-        map(identifier, Token::Abbrev),
-    ))(input)
-}
+use core::{curly, identifier, token};
 
 /// Parse a field value by splitting at '#', and removing excess whitespace.
 /// ```
@@ -192,14 +36,6 @@ pub fn value(input: &str) -> IResult<&str, Value> {
 
     // TODO: avoid intermediate Vec allocation if there is only a single Token
     Ok((input, Value::from_iter(tokens)))
-}
-
-pub fn value_unit(input: &str) -> IResult<&str, Vec<Token>> {
-    let (input, tokens) =
-        separated_list1(tuple((multispace0, char('#'), multispace0)), token)(input)?;
-
-    // TODO: avoid intermediate Vec allocation if there is only a single Token
-    Ok((input, tokens))
 }
 
 /// Parse a field `abbrev = {value}`.
@@ -234,17 +70,9 @@ fn entry_sep(input: &str) -> IResult<&str, ()> {
     nom_value((), tuple((multispace0, char(','), multispace0)))(input)
 }
 
-pub fn opt_field_key(input: &str) -> IResult<&str, Option<&str>> {
-    opt(preceded(entry_sep, identifier_str))(input)
-}
-
 /// Parse a list of fields.
 fn fields(input: &str) -> IResult<&str, Vec<Field>> {
     separated_list0(entry_sep, field)(input)
-}
-
-pub fn entry_key(input: &str) -> IResult<&str, &str> {
-    is_not("{}(), \t\n")(input)
 }
 
 /// Parse an entry body.
@@ -437,6 +265,7 @@ pub fn read_event(input: &str) -> IResult<&str, Event> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::bib::Identifier;
 
     #[test]
     fn test_identifier() {
@@ -494,7 +323,7 @@ mod tests {
                 Value::from_iter([Token::text_from("first"), Token::text_from("second # ")])
             ))
         );
-        assert!(value(" {first}").is_err());
+        assert!(value("= {first}").is_err());
     }
 
     #[test]
