@@ -7,7 +7,7 @@ use itertools::Itertools;
 
 use crate::error::Error;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Identifier<'r>(&'r str);
 
 impl<'r> From<&'r str> for Identifier<'r> {

@@ -3,7 +3,9 @@ use std::borrow::Cow;
 use crate::abbrev::Abbreviations;
 use crate::bib::{Identifier, Token};
 use crate::error::Error;
-use crate::parse::{entry_key, first_token, identifier, subsequent_token, take_flag, Flag, identifier_str};
+use crate::parse::{
+    entry_key, first_token, identifier, identifier_str, subsequent_token, take_flag, Flag,
+};
 
 // @article{key,
 //   author = {Auth},

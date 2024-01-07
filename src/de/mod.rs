@@ -1,6 +1,6 @@
 mod reader;
-mod value;
 mod token;
+mod value;
 
 use reader::ResolvingReader;
 use serde::de::{self, value::BorrowedStrDeserializer, DeserializeSeed, MapAccess};
@@ -10,8 +10,8 @@ use crate::abbrev::Abbreviations;
 use crate::error::Error;
 use crate::parse::Flag;
 
-use value::ValueDeserializer;
 use token::IdentifierDeserializer;
+use value::ValueDeserializer;
 
 /// The top level deserializer.
 pub struct EntryDeserializer<'s, 'r> {
