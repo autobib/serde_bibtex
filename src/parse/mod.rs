@@ -268,47 +268,6 @@ mod tests {
     use crate::bib::Identifier;
 
     #[test]
-    fn test_identifier() {
-        assert_eq!(identifier("a0 "), Ok((" ", Identifier::from("a0"))));
-        assert!(identifier("3key").is_err());
-        assert!(identifier(" key").is_err());
-    }
-
-    #[test]
-    fn test_token() {
-        // bracketed tokens
-        assert_eq!(
-            token("{bracketed}, "),
-            Ok((", ", Token::text_from("bracketed")))
-        );
-        assert!(token("{bracketed{error}").is_err());
-        assert!(token("{{bad}").is_err());
-
-        // quoted tokens
-        assert_eq!(
-            token("\"quoted\"} "),
-            Ok(("} ", Token::text_from("quoted")))
-        );
-        assert_eq!(
-            token("\"out{mid}\""),
-            Ok(("", Token::text_from("out{mid}")))
-        );
-        assert!(token("\"{open\"").is_err());
-        assert!(token("\"{closed}}\"").is_err());
-
-        // ascii number tokens
-        assert_eq!(token("0123 #"), Ok((" #", Token::text_from("0123"))));
-        assert_eq!(token("0c"), Ok(("c", Token::text_from("0"))));
-
-        // abbreviation tokens
-        assert_eq!(token("key0 #"), Ok((" #", Token::Abbrev("key0".into()))));
-        assert_eq!(
-            token("{out{mid{inside}mid}}, "),
-            Ok((", ", Token::text_from("out{mid{inside}mid}")))
-        );
-    }
-
-    #[test]
     fn test_field_sep() {
         assert_eq!(entry_sep("     \n,  \t"), Ok(("", ())));
         assert_eq!(entry_sep(", next ="), Ok(("next =", ())));

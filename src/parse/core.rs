@@ -1,12 +1,12 @@
 //! Core entry parsing methods.
 //!
-//! Ignored characters are parsed by [`bibtex_ignored`]. In general, all parsing methods assume
-//! that the input can have preceding ignored characters, and do not attempt to delete ignored
+//! Ignored characters are parsed by [`ignored`]. In general, all parsing methods assume
+//! that the input can have preceding ignored characters, and do not attempt to consume ignored
 //! characters following the successful parse.
 use nom::{
     branch::alt,
     bytes::complete::{is_not, take_until},
-    character::complete::{char, digit1, multispace0, one_of},
+    character::complete::{anychar, char, digit1, multispace0, not_line_ending, one_of},
     combinator::{map, not, opt, value as nom_value, verify},
     sequence::{delimited, preceded, tuple},
     IResult,
@@ -15,16 +15,26 @@ use nom::{
 use super::balanced::{is_balanced, take_until_unbalanced};
 use crate::bib::{Identifier, Token};
 
-/// Consume characters ignored by bib(la)tex
-pub fn bibtex_ignored(input: &str) -> IResult<&str, ()> {
-    // TODO: incorporate bibtex_comment
-    //     nom_value(
-    //         (), // Output is thrown away.
-    //         pair(char('%'), is_not("\n\r")),
-    //     )(i)
-
-    // TODO: incorporate bibtex skips, e.g. \% is discarded, or '%
-    nom_value((), multispace0)(input)
+/// Consume ignored characters.
+pub fn ignored(input: &str) -> IResult<&str, ()> {
+    let mut buffer = input;
+    loop {
+        let (stepped, _) = multispace0(buffer)?;
+        match stepped.as_bytes().get(0) {
+            // consume until line ending and loop
+            Some(b'%') => {
+                let (stepped, _) = tuple((anychar, not_line_ending))(stepped)?;
+                buffer = stepped;
+            }
+            // ignore the next char and loop
+            Some(b'\'') => {
+                let (stepped, _) = tuple((anychar, anychar))(stepped)?;
+                buffer = stepped
+            }
+            // break
+            _ => break Ok((stepped, ())),
+        }
+    }
 }
 
 /// Parse the entry type including preceding characters.
@@ -38,13 +48,11 @@ pub fn bibtex_ignored(input: &str) -> IResult<&str, ()> {
 /// ```
 /// consumes `@article` and returns `article.
 pub fn entry_type(input: &str) -> IResult<&str, Identifier> {
-    preceded(
-        tuple((bibtex_ignored, char('@'), bibtex_ignored)),
-        identifier,
-    )(input)
+    preceded(tuple((ignored, char('@'), ignored)), identifier)(input)
 }
 
-fn key_chars(input: &str) -> IResult<&str, &str> {
+/// Characters allowed in [`citation_key`] or [`identifier`].
+pub fn key_chars(input: &str) -> IResult<&str, &str> {
     is_not("{}(),= \t\n\\#%'\"")(input)
 }
 
@@ -59,8 +67,7 @@ fn key_chars(input: &str) -> IResult<&str, &str> {
 /// ```
 /// consumes `{key` and returns `key`.
 pub fn citation_key(input: &str) -> IResult<&str, (&str, char)> {
-    let (input, (_, open, _, key)) =
-        tuple((bibtex_ignored, one_of("{("), bibtex_ignored, key_chars))(input)?;
+    let (input, (_, open, _, key)) = tuple((ignored, one_of("{("), ignored, key_chars))(input)?;
     Ok((input, (key, open)))
 }
 
@@ -77,11 +84,7 @@ pub fn citation_key(input: &str) -> IResult<&str, (&str, char)> {
 pub fn terminal(input: &str, matching: char) -> IResult<&str, ()> {
     nom_value(
         (),
-        tuple((
-            bibtex_ignored,
-            opt(tuple((char(','), bibtex_ignored))),
-            char(matching),
-        )),
+        tuple((ignored, opt(tuple((char(','), ignored))), char(matching))),
     )(input)
 }
 
@@ -114,10 +117,7 @@ pub fn identifier(input: &str) -> IResult<&str, Identifier> {
 /// ```
 /// consumes `,\n  title` and returns `title`.
 pub fn field_key(input: &str) -> IResult<&str, Option<Identifier>> {
-    opt(preceded(
-        tuple((bibtex_ignored, char(','), bibtex_ignored)),
-        identifier,
-    ))(input)
+    opt(preceded(tuple((ignored, char(','), ignored)), identifier))(input)
 }
 
 /// Parse a field separator.
@@ -131,7 +131,7 @@ pub fn field_key(input: &str) -> IResult<&str, Option<Identifier>> {
 /// ```
 /// consumes ` =`.
 pub fn field_sep(input: &str) -> IResult<&str, ()> {
-    nom_value((), tuple((bibtex_ignored, char('='))))(input)
+    nom_value((), tuple((ignored, char('='))))(input)
 }
 
 /// Parse a token separator.
@@ -145,7 +145,7 @@ pub fn field_sep(input: &str) -> IResult<&str, ()> {
 /// ```
 /// consumes ` #`.
 pub fn token_sep(input: &str) -> IResult<&str, ()> {
-    nom_value((), tuple((bibtex_ignored, char('#'))))(input)
+    nom_value((), tuple((ignored, char('#'))))(input)
 }
 
 /// Parse a field value delimited by curly braces.
@@ -174,7 +174,7 @@ pub fn token(input: &str) -> IResult<&str, Token> {
     );
 
     preceded(
-        bibtex_ignored,
+        ignored,
         alt((
             map(curly, Token::text_from),
             map(quoted, Token::text_from),
@@ -189,5 +189,65 @@ pub fn subsequent_token(input: &str) -> IResult<&str, Option<Token>> {
     match opt {
         Some((_, token)) => Ok((input, Some(token))),
         None => Ok((input, None)),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_ignored() {
+        assert_eq!(ignored("  "), Ok(("", ())));
+        assert_eq!(ignored("% ignored\n rest"), Ok(("rest", ())));
+        assert_eq!(ignored("'i'g'n'o'r'e'd rest"), Ok(("rest", ())));
+        assert_eq!(ignored("'🍄 rest"), Ok(("rest", ()))); // note: errors in biber because of
+                                                           // unicode handling
+        assert_eq!(ignored("'i%ig\nrest"), Ok(("rest", ())));
+        assert_eq!(ignored("'%rest"), Ok(("rest", ())));
+        assert_eq!(ignored("%"), Ok(("", ())));
+        assert_eq!(ignored("%%'\nrest"), Ok(("rest", ())));
+        assert_eq!(ignored("% i\r\n 'rrest"), Ok(("rest", ())));
+    }
+
+    #[test]
+    fn test_identifier() {
+        assert_eq!(identifier("a0 "), Ok((" ", Identifier::from("a0"))));
+        assert!(identifier("3key").is_err());
+        assert!(identifier(" key").is_err());
+    }
+
+    #[test]
+    fn test_token() {
+        // bracketed tokens
+        assert_eq!(
+            token("{bracketed}, "),
+            Ok((", ", Token::text_from("bracketed")))
+        );
+        assert!(token("{bracketed{error}").is_err());
+        assert!(token("{{bad}").is_err());
+
+        // quoted tokens
+        assert_eq!(
+            token("\"quoted\"} "),
+            Ok(("} ", Token::text_from("quoted")))
+        );
+        assert_eq!(
+            token("\"out{mid}\""),
+            Ok(("", Token::text_from("out{mid}")))
+        );
+        assert!(token("\"{open\"").is_err());
+        assert!(token("\"{closed}}\"").is_err());
+
+        // ascii number tokens
+        assert_eq!(token("0123 #"), Ok((" #", Token::text_from("0123"))));
+        assert_eq!(token("0c"), Ok(("c", Token::text_from("0"))));
+
+        // abbreviation tokens
+        assert_eq!(token("key0 #"), Ok((" #", Token::Abbrev("key0".into()))));
+        assert_eq!(
+            token("{out{mid{inside}mid}}, "),
+            Ok((", ", Token::text_from("out{mid{inside}mid}")))
+        );
     }
 }

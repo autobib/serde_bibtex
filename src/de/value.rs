@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 
 use serde::de::{
-    self, value::BorrowedStrDeserializer, DeserializeSeed, EnumAccess, IntoDeserializer, SeqAccess,
-    VariantAccess, Visitor,
+    self, value::BorrowedStrDeserializer, DeserializeSeed, EnumAccess, IntoDeserializer, MapAccess,
+    SeqAccess, VariantAccess, Visitor,
 };
 use serde::forward_to_deserialize_any;
 
@@ -11,6 +11,58 @@ use crate::error::Error;
 
 use super::EntryDeserializer;
 
+pub struct KeyValueDeserializer<'a, 's, 'r> {
+    id: Identifier<'r>,
+    de: &'a mut EntryDeserializer<'s, 'r>,
+    count: u8,
+}
+
+impl<'a, 's, 'r> KeyValueDeserializer<'a, 's, 'r> {
+    pub fn new(id: Identifier<'r>, de: &'a mut EntryDeserializer<'s, 'r>) -> Self {
+        Self { id, de, count: 0 }
+    }
+}
+
+impl<'a, 's, 'de: 'a> de::Deserializer<'de> for KeyValueDeserializer<'a, 's, 'de> {
+    type Error = Error;
+
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    where
+        V: de::Visitor<'de>,
+    {
+        visitor.visit_seq(self)
+    }
+
+    forward_to_deserialize_any! {
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
+            bytes byte_buf option unit unit_struct newtype_struct seq tuple
+            tuple_struct map struct enum identifier ignored_any
+    }
+}
+
+impl<'a, 's, 'de: 'a> SeqAccess<'de> for KeyValueDeserializer<'a, 's, 'de> {
+    type Error = Error;
+
+    fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
+    where
+        T: DeserializeSeed<'de>,
+    {
+        match self.count {
+            0 => {
+                self.count = 1;
+                seed.deserialize(IdentifierDeserializer::new(self.id))
+                    .map(Some)
+            }
+            1 => {
+                self.count = 2;
+                seed.deserialize(ValueDeserializer::new(&mut *self.de))
+                    .map(Some)
+            }
+            _ => Ok(None),
+        }
+    }
+}
+
 /// Deserialize a [`Flag::FieldValue`].
 pub struct ValueDeserializer<'a, 's, 'r> {
     de: &'a mut EntryDeserializer<'s, 'r>,
@@ -18,7 +70,7 @@ pub struct ValueDeserializer<'a, 's, 'r> {
 
 impl<'a, 's, 'r> ValueDeserializer<'a, 's, 'r> {
     pub fn new(de: &'a mut EntryDeserializer<'s, 'r>) -> Self {
-        ValueDeserializer { de }
+        Self { de }
     }
 }
 
@@ -103,7 +155,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.take_flag_value()?;
+        self.de.reader.ignore_field_sep()?;
         visitor.visit_seq(self)
     }
 
@@ -283,9 +335,7 @@ impl<'de> de::Deserializer<'de> for IdentifierDeserializer<'de> {
     }
 }
 
-// TODO: implement map
-/// A deserializer for a [`Token`].
-/// This supports deserialization as an Enum or as a map, with two entries.
+/// A deserializer for a [`Token`]. This only supports deserialization as an Enum.
 pub struct TokenDeserializer<'r> {
     value: Token<'r>,
 }

@@ -2,15 +2,22 @@ mod reader;
 mod value;
 
 use reader::{Position, ResolvingReader};
-use serde::de::{self, value::BorrowedStrDeserializer, DeserializeSeed, MapAccess};
+use serde::de::{self, value::BorrowedStrDeserializer, DeserializeSeed, MapAccess, SeqAccess};
 use serde::forward_to_deserialize_any;
 
 use crate::abbrev::Abbreviations;
 use crate::error::Error;
 
-use value::{IdentifierDeserializer, ValueDeserializer};
+use value::{IdentifierDeserializer, KeyValueDeserializer, ValueDeserializer};
 
 /// The top level deserializer.
+///
+/// The input is held by the [`ResolvingReader`], which contains all of the methods for
+/// incrementing.
+///
+/// Lifetimes:
+/// - `'r`: underlying record
+/// - `'s`: abbreviations
 pub struct EntryDeserializer<'s, 'r> {
     reader: ResolvingReader<'s, 'r>,
 }
@@ -38,33 +45,30 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for &'a mut EntryDeserializer<'s, 'd
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        let value = visitor.visit_seq(EntryAccess::new(self))?;
+        self.reader.ignore_terminal()?;
+        Ok(value)
     }
 
-    fn deserialize_tuple<V>(self, len: usize, visitor: V) -> Result<V::Value, Self::Error>
+    #[inline]
+    fn deserialize_tuple<V>(self, _len: usize, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
-        if len != 3 {
-            Err(Error::Message(
-                "Tuple deserialization requires exactly three fields".to_string(),
-            ))
-        } else {
-            self.deserialize_seq(visitor)
-        }
+        self.deserialize_seq(visitor)
     }
 
     #[inline]
     fn deserialize_tuple_struct<V>(
         self,
         _name: &'static str,
-        len: usize,
+        _len: usize,
         visitor: V,
     ) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
-        self.deserialize_tuple(len, visitor)
+        self.deserialize_seq(visitor)
     }
 
     fn deserialize_map<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -72,7 +76,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for &'a mut EntryDeserializer<'s, 'd
         V: de::Visitor<'de>,
     {
         let value = visitor.visit_map(EntryAccess::new(self))?;
-        self.reader.take_terminal()?;
+        self.reader.ignore_terminal()?;
         Ok(value)
     }
 
@@ -152,6 +156,32 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for EntryAccess<'a, 's, 'de> {
     }
 }
 
+impl<'a, 's, 'de: 'a> SeqAccess<'de> for EntryAccess<'a, 's, 'de> {
+    type Error = Error;
+
+    fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
+    where
+        T: DeserializeSeed<'de>,
+    {
+        match self.de.reader.update_position() {
+            Position::EntryType => seed
+                .deserialize(IdentifierDeserializer::new(
+                    self.de.reader.take_entry_type()?,
+                ))
+                .map(Some),
+            Position::CitationKey => seed
+                .deserialize(BorrowedStrDeserializer::new(
+                    self.de.reader.take_citation_key()?,
+                ))
+                .map(Some),
+            Position::Fields => seed
+                .deserialize(FieldDeserializer::new(&mut *self.de))
+                .map(Some),
+            Position::EndOfEntry => Ok(None),
+        }
+    }
+}
+
 /// Used to deserialize the fields key = value, ..
 struct FieldDeserializer<'a, 's, 'r> {
     de: &'a mut EntryDeserializer<'s, 'r>,
@@ -166,21 +196,21 @@ impl<'a, 's, 'r> FieldDeserializer<'a, 's, 'r> {
 impl<'a, 's, 'de: 'a> de::Deserializer<'de> for FieldDeserializer<'a, 's, 'de> {
     type Error = Error;
 
-    #[inline]
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
-        self.deserialize_map(visitor)
+        visitor.visit_map(self)
     }
 
     fn deserialize_seq<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        visitor.visit_seq(self)
     }
 
+    #[inline]
     fn deserialize_tuple<V>(self, _len: usize, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
@@ -188,6 +218,7 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for FieldDeserializer<'a, 's, 'de> {
         self.deserialize_seq(visitor)
     }
 
+    #[inline]
     fn deserialize_tuple_struct<V>(
         self,
         _name: &'static str,
@@ -198,26 +229,6 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for FieldDeserializer<'a, 's, 'de> {
         V: de::Visitor<'de>,
     {
         self.deserialize_seq(visitor)
-    }
-
-    fn deserialize_map<V>(self, visitor: V) -> Result<V::Value, Self::Error>
-    where
-        V: de::Visitor<'de>,
-    {
-        visitor.visit_map(self)
-    }
-
-    #[inline]
-    fn deserialize_struct<V>(
-        self,
-        _name: &'static str,
-        _fields: &'static [&'static str],
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
-    where
-        V: de::Visitor<'de>,
-    {
-        self.deserialize_map(visitor)
     }
 
     fn deserialize_identifier<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -231,12 +242,13 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for FieldDeserializer<'a, 's, 'de> {
     where
         V: de::Visitor<'de>,
     {
-        todo!()
+        self.de.reader.ignore_fields()?;
+        visitor.visit_unit()
     }
 
     forward_to_deserialize_any!(
         bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str
-        string bytes byte_buf option unit unit_struct newtype_struct enum);
+        string bytes byte_buf option unit unit_struct newtype_struct enum map struct);
 }
 
 impl<'a, 's, 'de: 'a> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
@@ -252,17 +264,6 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
                 .map(Some),
             None => Ok(None),
         }
-        // match self.de.reader.peek_flag()? {
-        //     Flag::FieldKey => {
-        //         self.de.reader.clear_buffered_flag();
-        //         seed.deserialize(IdentifierDeserializer::new(
-        //             self.de.reader.take_field_key()?,
-        //         ))
-        //         .map(Some)
-        //     }
-        //     Flag::EndOfEntry => Ok(None),
-        //     _ => Err(Error::Message("Unexpected flag".to_string())),
-        // }
     }
 
     fn next_value_seed<V>(&mut self, seed: V) -> Result<V::Value, Self::Error>
@@ -270,6 +271,22 @@ impl<'a, 's, 'de: 'a> MapAccess<'de> for FieldDeserializer<'a, 's, 'de> {
         V: DeserializeSeed<'de>,
     {
         seed.deserialize(ValueDeserializer::new(&mut *self.de))
+    }
+}
+
+impl<'a, 's, 'de: 'a> SeqAccess<'de> for FieldDeserializer<'a, 's, 'de> {
+    type Error = Error;
+
+    fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
+    where
+        T: DeserializeSeed<'de>,
+    {
+        let identifier = match self.de.reader.take_field_key()? {
+            Some(identifier) => identifier,
+            None => return Ok(None),
+        };
+        seed.deserialize(KeyValueDeserializer::new(identifier, &mut *self.de))
+            .map(Some)
     }
 }
 
@@ -323,7 +340,7 @@ mod tests {
     }
 
     #[test]
-    fn test_entry() {
+    fn test_entry_as_struct() {
         let abbrevs = Abbreviations::default();
         let mut de_entry = EntryDeserializer::new(
             r#"
@@ -349,6 +366,60 @@ mod tests {
         assert_eq!(data, expected_data);
         assert!(matches!(data.fields.author, Cow::Owned(_)));
         assert!(matches!(data.fields.title, Cow::Borrowed(_)));
+    }
+
+    #[test]
+    fn test_entry_as_map() {
+        let abbrevs = Abbreviations::default();
+        let mut de_entry = EntryDeserializer::new(
+            r#"
+            @article{key:0,
+              author = {Auth} # {or},
+              title = title,
+              year = 2012,
+            }"#,
+            &abbrevs,
+        );
+
+        let data: TestEntryMap = TestEntryMap::deserialize(&mut de_entry).unwrap();
+
+        let mut expected_fields = HashMap::new();
+        expected_fields.insert("author", vec![Tok::T("Auth"), Tok::T("or")]);
+        expected_fields.insert("title", vec![Tok::A("title")]);
+        expected_fields.insert("year", vec![Tok::T("2012")]);
+        let expected_data = TestEntryMap {
+            entry_type: "article",
+            entry_key: "key:0",
+            fields: expected_fields,
+        };
+
+        assert_eq!(data, expected_data);
+    }
+
+    #[test]
+    fn test_entry_as_seq() {
+        #[derive(Deserialize, Debug, PartialEq)]
+        struct TupleEntry<'a>(&'a str, &'a str, TestFields<'a>);
+
+        let abbrevs = Abbreviations::default();
+        let mut de_entry = EntryDeserializer::new(
+            r#"
+            @article{key:0,
+              author = {Auth} # {or},
+              title = "Title",
+              year = 2012,
+            }"#,
+            &abbrevs,
+        );
+
+        let data: TupleEntry = TupleEntry::deserialize(&mut de_entry).unwrap();
+        let expected_field_data = TestFields {
+            author: "Author".into(),
+            title: "Title".into(),
+            year: 2012,
+        };
+
+        assert_eq!(data, TupleEntry("article", "key:0", expected_field_data));
     }
 
     #[test]
@@ -472,6 +543,28 @@ mod tests {
         expected_data.insert("title", "A nice title");
 
         assert_eq!(data, expected_data);
+    }
+
+    #[test]
+    fn test_fields_as_seq() {
+        let abbrevs = Abbreviations::default();
+        let mut de_entry = EntryDeserializer::new(
+            ", author = {Alex Rutar}, title = {A nice title},}",
+            &abbrevs,
+        );
+        let deserializer = FieldDeserializer::new(&mut de_entry);
+
+        type VecFields<'a> = Vec<(&'a str, String)>;
+
+        let data = VecFields::deserialize(deserializer).unwrap();
+
+        assert_eq!(
+            data,
+            vec![
+                ("author", "Alex Rutar".to_string()),
+                ("title", "A nice title".to_string())
+            ]
+        );
     }
 
     #[test]

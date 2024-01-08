@@ -36,10 +36,10 @@ impl Position {
 pub struct ResolvingReader<'s, 'r> {
     input: &'r str,
     abbrevs: &'s Abbreviations<'r>,
-    token_buffer: Vec<Token<'r>>,
-    is_first_token: bool,
     parsing_state: Position,
     matching: char,
+    token_buffer: Vec<Token<'r>>,
+    is_first_token: bool,
 }
 
 impl<'s, 'r> ResolvingReader<'s, 'r> {
@@ -85,7 +85,7 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
         Ok(key)
     }
 
-    pub fn take_terminal(&mut self) -> Result<(), Error> {
+    pub fn ignore_terminal(&mut self) -> Result<(), Error> {
         let (input, ()) = terminal(self.input, self.matching)?;
         self.input = input;
         Ok(())
@@ -104,7 +104,7 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
 
     /// Take a `FieldValue` as `Cow<'r, str>`.
     pub fn take_value_as_cow(&mut self) -> Result<Cow<'r, str>, Error> {
-        self.take_flag_value()?;
+        self.ignore_field_sep()?;
         parse_unit(
             &mut self.input,
             &mut self.is_first_token,
@@ -116,21 +116,26 @@ impl<'s, 'r> ResolvingReader<'s, 'r> {
     pub fn ignore_entry(&mut self) -> Result<(), Error> {
         let _ = self.take_entry_type()?;
         let _ = self.take_citation_key()?;
+        self.ignore_fields()?;
+        self.ignore_terminal()?;
+        Ok(())
+    }
+
+    pub fn ignore_fields(&mut self) -> Result<(), Error> {
         while let Some(_) = self.take_field_key()? {
             self.ignore_value()?
         }
-        self.take_terminal()?;
         Ok(())
     }
 
     pub fn ignore_value(&mut self) -> Result<(), Error> {
-        self.take_flag_value()?;
+        self.ignore_field_sep()?;
         while let Some(_) = take_token(&mut self.input, &mut self.is_first_token)? {}
         Ok(())
     }
 
-    /// Take any `Flag` and return it.
-    pub fn take_flag_value(&mut self) -> Result<(), Error> {
+    /// Consume a field separator.
+    pub fn ignore_field_sep(&mut self) -> Result<(), Error> {
         let (input, received) = field_sep(self.input)?;
         self.input = input;
         Ok(received)
