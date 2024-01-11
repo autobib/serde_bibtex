@@ -1,0 +1,387 @@
+//! Core entry parsing methods.
+//!
+//! Ignored characters are parsed by [`ignored`]. In general, all parsing methods assume
+//! that the input can have preceding ignored characters, and do not attempt to consume ignored
+//! characters following the successful parse.
+
+mod balanced;
+mod ignored;
+
+use nom::{
+    branch::alt,
+    bytes::complete::{is_not, tag_no_case, take_until},
+    character::complete::{anychar, char, digit1, multispace0, not_line_ending, one_of},
+    combinator::{eof, map, not, opt, value as nom_value, verify},
+    sequence::{delimited, preceded, tuple},
+    IResult,
+};
+
+use crate::value::{Identifier, Token};
+use balanced::{is_balanced, take_until_protected, take_until_unbalanced};
+use ignored::ignore_junk;
+
+/// Consume ignored characters.
+pub fn ignored(input: &str) -> IResult<&str, ()> {
+    let mut buffer = input;
+    loop {
+        let (stepped, _) = multispace0(buffer)?;
+        match stepped.as_bytes().get(0) {
+            // consume until line ending and loop
+            Some(b'%') => {
+                let (stepped, _) = tuple((anychar, not_line_ending))(stepped)?;
+                buffer = stepped;
+            }
+            // ignore the next char and loop
+            Some(b'\'') => {
+                let (stepped, _) = tuple((anychar, anychar))(stepped)?;
+                buffer = stepped
+            }
+            // break
+            _ => break Ok((stepped, ())),
+        }
+    }
+}
+
+/// Consume a comma.
+pub fn comma(input: &str) -> IResult<&str, ()> {
+    nom_value((), tuple((ignored, char(','))))(input)
+}
+
+/// Consume a comma optionally.
+pub fn opt_comma(input: &str) -> IResult<&str, ()> {
+    nom_value((), opt(comma))(input)
+}
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum ChunkType<'r> {
+    Preamble,
+    Comment,
+    Abbreviation,
+    Entry(Identifier<'r>),
+}
+
+fn special_chunk_type<'r>(label: &'static str) -> impl FnMut(&'r str) -> IResult<&'r str, ()> {
+    nom_value((), tuple((char('@'), ignored, tag_no_case(label))))
+}
+
+/// Parse the chunk type including preceding characters. Returns None of we hit EOF.
+///
+/// # Example
+/// In the below entry with the cursor at `<>`
+/// ```bib
+/// <>@article{key,
+///   title = {text} # abbrev
+/// }
+/// ```
+/// consumes `@article` and returns `article` wrapped in [`ChunkType::Entry`].
+///
+/// Most chunks are matched as [`ChunkType::Entry`], but there are three
+/// special chunk types: `@preamble`, `@comment`, and `@string`.
+/// These are matched case-insensitively into [`ChunkType::Preamble`], [`ChunkType::Comment`], and
+/// [`ChunkType::Abbreviation`] respectively.
+pub fn chunk_type(input: &str) -> IResult<&str, Option<ChunkType>> {
+    let input = ignore_junk(input);
+    let (input, not_entry) = opt(alt((
+        nom_value(Some(ChunkType::Preamble), special_chunk_type("preamble")),
+        nom_value(Some(ChunkType::Comment), special_chunk_type("comment")),
+        nom_value(Some(ChunkType::Abbreviation), special_chunk_type("string")),
+        nom_value(None, eof),
+    )))(input)?;
+
+    match not_entry {
+        Some(chunk_type) => Ok((input, chunk_type)),
+        None => map(preceded(tuple((char('@'), ignored)), identifier), |ident| {
+            Some(ChunkType::Entry(ident))
+        })(input),
+    }
+}
+
+/// Parse the opening bracket and return the corresponding closing bracket.
+pub fn initial(input: &str) -> IResult<&str, char> {
+    preceded(
+        ignored,
+        map(one_of("{("), |c| if c == '{' { '}' } else { ')' }),
+    )(input)
+}
+
+/// Consume the characters at the end of the entry.
+///
+/// # Example
+/// In the below entry with the cursor at `>`
+/// ```bib
+/// @article{key,
+///   title = {text} # abbrev,>
+/// }
+/// ```
+/// consumes `\n}`.
+pub fn terminal<'r>(closing_bracket: char) -> impl FnMut(&'r str) -> IResult<&'r str, ()>
+where
+{
+    nom_value((), tuple((ignored, char(closing_bracket))))
+}
+
+/// Characters allowed in [`citation_key`] or [`identifier`].
+pub fn key_chars(input: &str) -> IResult<&str, &str> {
+    is_not("{}(),= \t\n\\#%'\"")(input)
+}
+
+/// Parse a citation key including the preceding bracket.
+///
+/// # Example
+/// In the below entry with the cursor at `<>`
+/// ```bib
+/// @article<>{key,
+///   title = {text} # abbrev
+/// }
+/// ```
+/// consumes `{key` and returns `key`.
+pub fn citation_key(input: &str) -> IResult<&str, &str> {
+    preceded(ignored, key_chars)(input)
+}
+
+/// Parse an identifier.
+///
+/// An identifier is any sequence of characters not in ` \t\\#%'\",=(){}` which
+/// has length at least 1 and does not start with a digit.
+///
+/// # Example
+/// In the below entry
+/// ```bib
+/// @article{key,
+///   title = {text} # abbrev
+/// }
+/// ```
+/// the identifiers are `article` and `title`.
+pub fn identifier(input: &str) -> IResult<&str, Identifier> {
+    let (input, ()) = not(digit1)(input)?;
+    map(key_chars, Identifier::from_str_unchecked)(input)
+}
+
+/// Parse a field key, e.g. `title` in `@article{key, title = {Title}}`.
+///
+/// # Example
+/// In the below entry with the cursor at `<>`
+/// ```bib
+/// @article{key<>,
+///   title = {text} # abbrev
+/// }
+/// ```
+/// consumes `,\n  title` and returns `title`.
+pub fn field_key(input: &str) -> IResult<&str, Option<Identifier>> {
+    opt(preceded(ignored, identifier))(input)
+}
+
+// Match a comma and field key together. Unlike `preceded(comma, field_key)`, we make the entire
+// match optional.
+pub fn comma_and_field_key(input: &str) -> IResult<&str, Option<Identifier>> {
+    opt(preceded(tuple((comma, ignored)), identifier))(input)
+}
+
+/// Parse a field separator.
+///
+/// # Example
+/// In the below entry with the cursor at `<>`
+/// ```bib
+/// @article{key,
+///   title<> = {text} # abbrev
+/// }
+/// ```
+/// consumes ` =`.
+pub fn field_sep(input: &str) -> IResult<&str, ()> {
+    nom_value((), tuple((ignored, char('='))))(input)
+}
+
+/// Parse a token separator.
+///
+/// # Example
+/// In the below entry with the cursor at `<>`
+/// ```bib
+/// @article{key,
+///   title = {text}<> # abbrev
+/// }
+/// ```
+/// consumes ` #`.
+pub fn token_sep(input: &str) -> IResult<&str, ()> {
+    nom_value((), tuple((ignored, char('#'))))(input)
+}
+
+/// Parse a field value delimited by curly braces.
+///
+/// # Example
+/// In the below entry with the cursor at `<>`
+/// ```bib
+/// @article{key,
+///   title = <>{text} # abbrev
+/// }
+/// ```
+/// consumes `{text}` and returns `text`. The brackets must be balanced.
+/// - Permitted: `{nested {brackets}}`
+/// - Not permitted: `{{unmatched }`
+pub fn curly(input: &str) -> IResult<&str, &str> {
+    delimited(char('{'), take_until_unbalanced(b'{', b'}'), char('}'))(input)
+}
+
+pub fn quoted(input: &str) -> IResult<&str, &str> {
+    delimited(
+        char('"'),
+        take_until_protected(b'{', b'}', b'\"'),
+        char('"'),
+    )(input)
+}
+
+// TODO: docs
+/// Parse a field value token.
+pub fn token(input: &str) -> IResult<&str, Token> {
+    preceded(
+        ignored,
+        alt((
+            map(curly, Token::text_from),
+            map(quoted, Token::text_from),
+            map(digit1, Token::text_from),
+            map(identifier, Token::Abbrev),
+        )),
+    )(input)
+}
+
+pub fn subsequent_token(input: &str) -> IResult<&str, Option<Token>> {
+    let (input, opt) = opt(tuple((token_sep, token)))(input)?;
+    match opt {
+        Some((_, token)) => Ok((input, Some(token))),
+        None => Ok((input, None)),
+    }
+}
+
+pub fn bracketed_text(input: &str) -> IResult<&str, &str> {
+    let curly = delimited(char('{'), take_until_unbalanced(b'{', b'}'), char('}'));
+    let round = delimited(
+        char('('),
+        verify(take_until(")"), is_balanced(b'{', b'}')),
+        char(')'),
+    );
+
+    let (input, comment) = preceded(ignored, alt((curly, round)))(input)?;
+    Ok((input, comment))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_ignored() {
+        assert_eq!(ignored("  "), Ok(("", ())));
+        assert_eq!(ignored("% ignored\n rest"), Ok(("rest", ())));
+        assert_eq!(ignored("'i'g'n'o'r'e'd rest"), Ok(("rest", ())));
+        assert_eq!(ignored("'🍄 rest"), Ok(("rest", ()))); // note: errors in biber because of
+                                                           // unicode handling
+        assert_eq!(ignored("'i%ig\nrest"), Ok(("rest", ())));
+        assert_eq!(ignored("'%rest"), Ok(("rest", ())));
+        assert_eq!(ignored("%"), Ok(("", ())));
+        assert_eq!(ignored("%%'\nrest"), Ok(("rest", ())));
+        assert_eq!(ignored("% i\r\n 'rrest"), Ok(("rest", ())));
+    }
+
+    #[test]
+    fn test_chunk_type() {
+        assert_eq!(
+            chunk_type("   @ \n article {"),
+            Ok((
+                " {",
+                Some(ChunkType::Entry(Identifier::from_str_unchecked("article")))
+            ))
+        );
+
+        assert_eq!(
+            chunk_type("@art🍄cle"),
+            Ok((
+                "",
+                Some(ChunkType::Entry(Identifier::from_str_unchecked("art🍄cle")))
+            ))
+        );
+
+        assert_eq!(
+            chunk_type("@ preamble  ("),
+            Ok(("  (", Some(ChunkType::Preamble)))
+        );
+
+        assert_eq!(
+            chunk_type("@ preAMble  ("),
+            Ok(("  (", Some(ChunkType::Preamble)))
+        );
+
+        assert_eq!(chunk_type("@ COMMent"), Ok(("", Some(ChunkType::Comment))));
+
+        assert_eq!(
+            chunk_type("@'a string"),
+            Ok(("", Some(ChunkType::Abbreviation)))
+        );
+
+        assert_eq!(chunk_type("  "), Ok(("", None)));
+        assert_eq!(chunk_type("ignored junk %@}"), Ok(("", None)));
+
+        assert!(chunk_type("@{").is_err());
+    }
+
+    #[test]
+    fn test_identifier() {
+        assert_eq!(
+            identifier("a0 "),
+            Ok((" ", Identifier::from_str_unchecked("a0")))
+        );
+        assert_eq!(
+            identifier("@🍄 "),
+            Ok((" ", Identifier::from_str_unchecked("@🍄")))
+        );
+        assert!(identifier("3key").is_err());
+        assert!(identifier("(key").is_err());
+        assert!(identifier(" key").is_err());
+    }
+
+    #[test]
+    fn test_quoted() {
+        // normal quotes
+        assert_eq!(
+            token("\"quoted\"} "),
+            Ok(("} ", Token::text_from("quoted")))
+        );
+
+        // balanced brackets inside
+        assert_eq!(
+            token("\"out{mid}\""),
+            Ok(("", Token::text_from("out{mid}")))
+        );
+        assert!(token("\"{open\"").is_err());
+        assert!(token("\"{closed}}\"").is_err());
+
+        // internal quotes are allowed
+        assert_eq!(
+            token("\"a{b \"}c\""),
+            Ok(("", Token::text_from("a{b \"}c")))
+        );
+    }
+
+    #[test]
+    fn test_token() {
+        // bracketed tokens
+        assert_eq!(
+            token("{bracketed}, "),
+            Ok((", ", Token::text_from("bracketed")))
+        );
+        assert!(token("{bracketed{error}").is_err());
+        assert!(token("{{bad}").is_err());
+
+        // ascii number tokens
+        assert_eq!(token("0123 #"), Ok((" #", Token::text_from("0123"))));
+        assert_eq!(token("0c"), Ok(("c", Token::text_from("0"))));
+
+        // abbreviation tokens
+        assert_eq!(
+            token("key0 #"),
+            Ok((" #", Token::Abbrev(Identifier::from_str_unchecked("key0"))))
+        );
+        assert_eq!(
+            token("{out{mid{inside}mid}}, "),
+            Ok((", ", Token::text_from("out{mid{inside}mid}")))
+        );
+    }
+}

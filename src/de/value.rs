@@ -2,107 +2,237 @@ use std::borrow::Cow;
 
 use serde::de::{
     self, value::BorrowedStrDeserializer, DeserializeSeed, EnumAccess, IntoDeserializer, MapAccess,
-    SeqAccess, VariantAccess, Visitor,
+    SeqAccess, Unexpected, VariantAccess, Visitor,
 };
 use serde::forward_to_deserialize_any;
 
-use crate::bib::{Identifier, Token};
 use crate::error::Error;
+use crate::naming::{
+    ABBREV_TOKEN_VARIANT_NAME, FIELD_KEY_NAME, FIELD_VALUE_NAME, TEXT_TOKEN_VARIANT_NAME,
+};
+use crate::value::{Identifier, Token};
 
-use super::EntryDeserializer;
+use super::BibtexDeserializer;
+use crate::parse::BibtexReader;
 
-pub struct KeyValueDeserializer<'a, 's, 'r> {
-    id: Identifier<'r>,
-    de: &'a mut EntryDeserializer<'s, 'r>,
-    count: u8,
+enum KeyValuePosition {
+    Start,
+    FieldKey,
+    FieldValue,
 }
 
-impl<'a, 's, 'r> KeyValueDeserializer<'a, 's, 'r> {
-    pub fn new(id: Identifier<'r>, de: &'a mut EntryDeserializer<'s, 'r>) -> Self {
-        Self { id, de, count: 0 }
+pub struct KeyValueDeserializer<'a, 'r, R>
+where
+    R: BibtexReader<'r>,
+{
+    de: &'a mut BibtexDeserializer<'r, R>,
+    id: Identifier<'r>,
+    pos: KeyValuePosition,
+}
+
+impl<'a, 'r, R> KeyValueDeserializer<'a, 'r, R>
+where
+    R: BibtexReader<'r>,
+{
+    pub fn new(de: &'a mut BibtexDeserializer<'r, R>, id: Identifier<'r>) -> Self {
+        Self {
+            id,
+            de,
+            pos: KeyValuePosition::Start,
+        }
+    }
+
+    fn step_position(&mut self) {
+        self.pos = match self.pos {
+            KeyValuePosition::Start => KeyValuePosition::FieldKey,
+            KeyValuePosition::FieldKey => KeyValuePosition::FieldValue,
+            KeyValuePosition::FieldValue => KeyValuePosition::Start,
+        };
     }
 }
 
-impl<'a, 's, 'de: 'a> de::Deserializer<'de> for KeyValueDeserializer<'a, 's, 'de> {
+impl<'a, 'de: 'a, R> de::Deserializer<'de> for KeyValueDeserializer<'a, 'de, R>
+where
+    R: BibtexReader<'de>,
+{
     type Error = Error;
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
-        visitor.visit_seq(self)
+        visitor.visit_map(self)
+    }
+
+    fn deserialize_tuple<V>(self, len: usize, visitor: V) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        if len == 2 {
+            visitor.visit_seq(self)
+        } else {
+            Err(Error::Message(
+                "Error: cannot deserialize key-value pair as tuple of length other than 2"
+                    .to_string(),
+            ))
+        }
+    }
+
+    #[inline]
+    fn deserialize_tuple_struct<V>(
+        self,
+        _name: &'static str,
+        len: usize,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        self.deserialize_tuple(len, visitor)
     }
 
     forward_to_deserialize_any! {
         bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
-            bytes byte_buf option unit unit_struct newtype_struct seq tuple
-            tuple_struct map struct enum identifier ignored_any
+            bytes byte_buf option unit unit_struct newtype_struct seq
+            map struct enum identifier ignored_any
     }
 }
 
-impl<'a, 's, 'de: 'a> SeqAccess<'de> for KeyValueDeserializer<'a, 's, 'de> {
+impl<'a, 'de: 'a, R> SeqAccess<'de> for KeyValueDeserializer<'a, 'de, R>
+where
+    R: BibtexReader<'de>,
+{
     type Error = Error;
 
     fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
     where
         T: DeserializeSeed<'de>,
     {
-        match self.count {
-            0 => {
-                self.count = 1;
-                seed.deserialize(IdentifierDeserializer::new(self.id))
-                    .map(Some)
-            }
-            1 => {
-                self.count = 2;
-                seed.deserialize(ValueDeserializer::new(&mut *self.de))
-                    .map(Some)
-            }
-            _ => Ok(None),
+        self.step_position();
+        match self.pos {
+            KeyValuePosition::FieldKey => seed
+                .deserialize(IdentifierDeserializer::new(self.id))
+                .map(Some),
+            KeyValuePosition::FieldValue => seed
+                .deserialize(ValueDeserializer::new(&mut *self.de))
+                .map(Some),
+            // SAFETY: seq is only deserialized if length exactly 2
+            _ => unreachable!(),
         }
     }
 }
 
-/// Deserialize a [`Flag::FieldValue`].
-pub struct ValueDeserializer<'a, 's, 'r> {
-    de: &'a mut EntryDeserializer<'s, 'r>,
+impl<'a, 'de: 'a, R> MapAccess<'de> for KeyValueDeserializer<'a, 'de, R>
+where
+    R: BibtexReader<'de>,
+{
+    type Error = Error;
+
+    fn next_key_seed<K>(&mut self, seed: K) -> Result<Option<K::Value>, Self::Error>
+    where
+        K: DeserializeSeed<'de>,
+    {
+        self.step_position();
+        match self.pos {
+            KeyValuePosition::FieldKey => seed
+                .deserialize(BorrowedStrDeserializer::new(FIELD_KEY_NAME))
+                .map(Some),
+            KeyValuePosition::FieldValue => seed
+                .deserialize(BorrowedStrDeserializer::new(FIELD_VALUE_NAME))
+                .map(Some),
+            _ => Ok(None),
+        }
+    }
+
+    fn next_value_seed<V>(&mut self, seed: V) -> Result<V::Value, Self::Error>
+    where
+        V: DeserializeSeed<'de>,
+    {
+        match self.pos {
+            KeyValuePosition::FieldKey => seed.deserialize(IdentifierDeserializer::new(self.id)),
+            KeyValuePosition::FieldValue => seed.deserialize(ValueDeserializer::new(&mut *self.de)),
+            // SAFETY: `self.pos == KeyValuePosition::Entry` causes next_key_seed to terminate
+            _ => unreachable!(),
+        }
+    }
 }
 
-impl<'a, 's, 'r> ValueDeserializer<'a, 's, 'r> {
-    pub fn new(de: &'a mut EntryDeserializer<'s, 'r>) -> Self {
-        Self { de }
+pub struct ValueDeserializer<'a, 'r, R>
+where
+    R: BibtexReader<'r>,
+{
+    de: &'a mut BibtexDeserializer<'r, R>,
+    is_first_token: bool,
+}
+
+impl<'a, 'r, R> ValueDeserializer<'a, 'r, R>
+where
+    R: BibtexReader<'r>,
+{
+    pub fn new(de: &'a mut BibtexDeserializer<'r, R>) -> Self {
+        Self {
+            de,
+            is_first_token: true,
+        }
+    }
+
+    fn take_value_as_cow<'t>(&mut self) -> Result<Cow<'r, str>, Error> {
+        self.de.reader.take_value_as_cow(
+            &self.de.abbrev,
+            &mut self.is_first_token,
+            &mut self.de.scratch,
+        )
+    }
+
+    fn take_value_as_char(&mut self) -> Result<char, Error> {
+        self.de.reader.take_value_as_char(
+            &self.de.abbrev,
+            &mut self.is_first_token,
+            &mut self.de.scratch,
+        )
+    }
+
+    fn take_token(&mut self) -> Result<Option<Token<'r>>, Error> {
+        self.de.reader.take_token_resolved(
+            &self.de.abbrev,
+            &mut self.is_first_token,
+            &mut self.de.scratch,
+        )
     }
 }
 
 macro_rules! deserialize_parse {
     ($method:ident, $visit:ident) => {
-        fn $method<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+        fn $method<V>(mut self, visitor: V) -> Result<V::Value, Self::Error>
         where
             V: Visitor<'de>,
         {
-            visitor.$visit(self.de.reader.take_value_as_cow()?.parse()?)
+            visitor.$visit(self.take_value_as_cow()?.parse()?)
         }
     };
 }
 
-impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
+impl<'a, 'de: 'a, R> de::Deserializer<'de> for ValueDeserializer<'a, 'de, R>
+where
+    R: BibtexReader<'de>,
+{
     type Error = Error;
 
-    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(mut self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        match self.de.reader.take_value_as_cow()? {
+        match self.take_value_as_cow()? {
             Cow::Borrowed(s) => visitor.visit_borrowed_str(s),
             Cow::Owned(s) => visitor.visit_str(&s),
         }
     }
 
-    fn deserialize_char<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_char<V>(mut self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_char(self.de.reader.take_value_as_char()?)
+        visitor.visit_char(self.take_value_as_char()?)
     }
 
     fn deserialize_bytes<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
@@ -119,27 +249,6 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
         unimplemented!()
     }
 
-    fn deserialize_unit<V>(self, visitor: V) -> Result<V::Value, Self::Error>
-    where
-        V: Visitor<'de>,
-    {
-        self.de.reader.ignore_value()?;
-        visitor.visit_unit()
-    }
-
-    #[inline]
-    fn deserialize_unit_struct<V>(
-        self,
-        _name: &'static str,
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
-    where
-        V: Visitor<'de>,
-    {
-        self.deserialize_unit(visitor)
-    }
-
-    #[inline]
     fn deserialize_newtype_struct<V>(
         self,
         _name: &'static str,
@@ -155,7 +264,6 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     where
         V: Visitor<'de>,
     {
-        self.de.reader.ignore_field_sep()?;
         visitor.visit_seq(self)
     }
 
@@ -201,6 +309,26 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
         visitor.visit_unit()
     }
 
+    #[inline]
+    fn deserialize_unit<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        self.deserialize_ignored_any(visitor)
+    }
+
+    #[inline]
+    fn deserialize_unit_struct<V>(
+        self,
+        _name: &'static str,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        self.deserialize_ignored_any(visitor)
+    }
+
     deserialize_parse!(deserialize_bool, visit_bool);
     deserialize_parse!(deserialize_i8, visit_i8);
     deserialize_parse!(deserialize_i16, visit_i16);
@@ -216,14 +344,17 @@ impl<'a, 's, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 's, 'de> {
     forward_to_deserialize_any!(map struct str string identifier option);
 }
 
-impl<'a, 's, 'de: 'a> SeqAccess<'de> for ValueDeserializer<'a, 's, 'de> {
+impl<'a, 'de: 'a, R> SeqAccess<'de> for ValueDeserializer<'a, 'de, R>
+where
+    R: BibtexReader<'de>,
+{
     type Error = Error;
 
     fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
     where
         T: DeserializeSeed<'de>,
     {
-        match self.de.reader.take_token()? {
+        match self.take_token()? {
             Some(token) => seed.deserialize(TokenDeserializer::new(token)).map(Some),
             None => Ok(None),
         }
@@ -243,14 +374,20 @@ impl<'de> VariantAccess<'de> for UnitEnumDeserializer {
     where
         T: DeserializeSeed<'de>,
     {
-        Err(Error::Message("Unit variant only!".into()))
+        Err(de::Error::invalid_type(
+            Unexpected::NewtypeVariant,
+            &"value as newtype variant",
+        ))
     }
 
     fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        Err(Error::Message("Unit variant only!".into()))
+        Err(de::Error::invalid_type(
+            Unexpected::TupleVariant,
+            &"value as tuple variant",
+        ))
     }
 
     fn struct_variant<V>(
@@ -261,11 +398,17 @@ impl<'de> VariantAccess<'de> for UnitEnumDeserializer {
     where
         V: Visitor<'de>,
     {
-        Err(Error::Message("Unit variant only!".into()))
+        Err(de::Error::invalid_type(
+            Unexpected::StructVariant,
+            &"value as struct variant",
+        ))
     }
 }
 
-impl<'a, 's, 'de: 'a> EnumAccess<'de> for ValueDeserializer<'a, 's, 'de> {
+impl<'a, 'de: 'a, R> EnumAccess<'de> for ValueDeserializer<'a, 'de, R>
+where
+    R: BibtexReader<'de>,
+{
     type Error = Error;
     type Variant = UnitEnumDeserializer;
 
@@ -289,6 +432,12 @@ pub struct IdentifierDeserializer<'r> {
 impl<'r> IdentifierDeserializer<'r> {
     pub fn new(value: Identifier<'r>) -> Self {
         IdentifierDeserializer { value }
+    }
+
+    pub fn new_from_str(s: &'r str) -> Self {
+        IdentifierDeserializer {
+            value: Identifier::from_str_unchecked(s),
+        }
     }
 }
 
@@ -410,8 +559,8 @@ impl<'de> de::EnumAccess<'de> for TokenDeserializer<'de> {
         T: de::DeserializeSeed<'de>,
     {
         let de: BorrowedStrDeserializer<Self::Error> = match self.value {
-            Token::Abbrev(_) => BorrowedStrDeserializer::new("Abbrev"),
-            Token::Text(_) => BorrowedStrDeserializer::new("Text"),
+            Token::Abbrev(_) => BorrowedStrDeserializer::new(ABBREV_TOKEN_VARIANT_NAME),
+            Token::Text(_) => BorrowedStrDeserializer::new(TEXT_TOKEN_VARIANT_NAME),
         };
         Ok((seed.deserialize(de)?, self))
     }
@@ -421,7 +570,9 @@ impl<'de> de::EnumAccess<'de> for TokenDeserializer<'de> {
 mod tests {
     use super::*;
     use crate::abbrev::Abbreviations;
-    use crate::de::EntryDeserializer;
+    use crate::de::BibtexDeserializer;
+    use crate::reader::ResolvingReader;
+    use crate::value::Value;
     use serde::Deserialize;
 
     #[derive(Debug, Deserialize, PartialEq)]
@@ -432,54 +583,53 @@ mod tests {
         T(&'a str),
     }
 
+    macro_rules! assert_de {
+        ($input:expr, $expected:expr, $target:tt) => {
+            let reader = ResolvingReader::new($input);
+            let mut bib_de = BibtexDeserializer::new(reader);
+            let deserializer = ValueDeserializer::new(&mut bib_de);
+            assert_eq!(Ok($expected), $target::deserialize(deserializer));
+        };
+    }
+
+    macro_rules! assert_de_err {
+        ($input:expr, $target:tt) => {
+            let reader = ResolvingReader::new($input);
+            let mut bib_de = BibtexDeserializer::new(reader);
+            let deserializer = ValueDeserializer::new(&mut bib_de);
+            assert!($target::deserialize(deserializer).is_err());
+        };
+    }
+
     #[test]
     fn test_value_string() {
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {a} # { b}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-        assert_eq!(Ok("a b".to_string()), String::deserialize(deserializer),);
+        assert_de!("  {a} # { b}", "a b".to_string(), String);
+        assert_de!(" {a}", "a".to_string(), String);
+    }
 
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {a}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-        assert_eq!(Ok("a".to_string()), String::deserialize(deserializer),);
+    #[test]
+    fn test_key_value() {
+        // let reader = ResolvingReader::new(" = {a} # { b}");
+        // let mut bib_de = BibtexDeserializer::new(reader);
+        // let deserializer = ValueDeserializer::new(&mut bib_de);
     }
 
     #[test]
     fn test_value_seq() {
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {1} # a # {3}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-
-        let data: Vec<Tok> = Vec::deserialize(deserializer).unwrap();
-        let expected_data = vec![Tok::T("1"), Tok::A("a"), Tok::T("3")];
-        assert_eq!(data, expected_data);
-
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {1} # a", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
+        assert_de!(
+            " {1} # a # {3}",
+            vec![Tok::T("1"), Tok::A("a"), Tok::T("3")],
+            Vec
+        );
 
         type DoubleToken<'a> = (Tok<'a>, Tok<'a>);
-
-        let data = DoubleToken::deserialize(deserializer).unwrap();
-        let expected_data = (Tok::T("1"), Tok::A("a"));
-        assert_eq!(data, expected_data);
+        assert_de!(" {1} # a", (Tok::T("1"), Tok::A("a")), DoubleToken);
     }
 
     #[test]
     fn test_value_cow() {
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {a} # { b}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-        assert_eq!(
-            Ok(Cow::Borrowed("a b").to_owned()),
-            Cow::deserialize(deserializer),
-        );
-
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {a}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-        assert_eq!(Ok(Cow::Borrowed("a")), Cow::deserialize(deserializer),);
+        assert_de!("{a} # { b}", Cow::Borrowed("a b").to_owned(), Cow);
+        assert_de!("{a}", Cow::Borrowed("a"), Cow);
     }
 
     #[test]
@@ -487,32 +637,17 @@ mod tests {
         #[derive(Deserialize, PartialEq, Eq, Debug)]
         struct Value<'a>(&'a str);
 
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {a}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-
-        assert_eq!(Ok(Value("a")), Value::deserialize(deserializer));
-
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {a} # {b}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-
-        assert!(Value::deserialize(deserializer).is_err());
+        assert_de!(" {a}", Value("a"), Value);
+        assert_de_err!(" {a} # {b}", Value);
     }
 
     #[test]
     fn test_value_parsed() {
         // bool
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" ={tr}\n #{ue}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-        assert_eq!(Ok(true), bool::deserialize(deserializer));
+        assert_de!("{tr}\n #{ue}", true, bool);
 
         // i64
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new("= {0} # \"1\" # 234", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-        assert_eq!(Ok(1234), i16::deserialize(deserializer));
+        assert_de!("{0} # \"1\" # 234", 1234, i16);
     }
 
     #[test]
@@ -526,10 +661,7 @@ mod tests {
             // ...
         }
 
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" = {jan}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-        assert_eq!(Ok(Month::Jan), Month::deserialize(deserializer));
+        assert_de!(" {jan}", Month::Jan, Month);
     }
 
     #[test]
@@ -537,31 +669,27 @@ mod tests {
         #[derive(Deserialize, Debug, PartialEq)]
         struct Unit;
 
-        let abbrevs = Abbreviations::default();
-        let mut entry_de = EntryDeserializer::new(" ={} #{}", &abbrevs);
-        let deserializer = ValueDeserializer::new(&mut entry_de);
-
-        assert_eq!(Ok(Unit), Unit::deserialize(deserializer));
+        assert_de!("{} #{}", Unit, Unit);
     }
 
     #[test]
-    fn test_de_identifier() {
+    fn test_identifier() {
         // As string
-        let de = IdentifierDeserializer::new(Identifier::from("key"));
+        let de = IdentifierDeserializer::new(Identifier::from_str_unchecked("key"));
         assert_eq!(Ok("key".to_string()), String::deserialize(de));
 
         // As newtype struct
         #[derive(Debug, Deserialize, PartialEq)]
         struct Id(String);
 
-        let de = IdentifierDeserializer::new(Identifier::from("key"));
+        let de = IdentifierDeserializer::new(Identifier::from_str_unchecked("key"));
         assert_eq!(Id::deserialize(de), Ok(Id("key".to_string())));
 
         // As newtype with &str
         #[derive(Debug, Deserialize, PartialEq)]
         struct IdRef<'r>(&'r str);
 
-        let de = IdentifierDeserializer::new(Identifier::from("key"));
+        let de = IdentifierDeserializer::new(Identifier::from_str_unchecked("key"));
         assert_eq!(IdRef::deserialize(de), Ok(IdRef("key")));
 
         // As enum
@@ -572,12 +700,12 @@ mod tests {
             Other,
         }
 
-        let de = IdentifierDeserializer::new(Identifier::from("key"));
+        let de = IdentifierDeserializer::new(Identifier::from_str_unchecked("key"));
         assert_eq!(AllowedKeys::deserialize(de), Ok(AllowedKeys::Key));
     }
 
     #[test]
-    fn test_de_token() {
+    fn test_token() {
         // Deserialize as a short version of Token
         #[derive(Debug, Deserialize, PartialEq)]
         enum ShortToken {
@@ -619,19 +747,29 @@ mod tests {
         // Test expansion of Abbreviations
 
         let mut abbrevs = Abbreviations::default();
-        abbrevs.insert(Identifier::from("a"), vec![Token::text_from("1")]);
         abbrevs.insert(
-            Identifier::from("b"),
-            vec![Token::text_from("2"), Token::text_from("3")],
+            Identifier::from_str_unchecked("a"),
+            Value::from_iter([Token::text_from("1")]),
         );
-        abbrevs.insert(Identifier::from("c"), Vec::new());
-        abbrevs.insert(Identifier::from("d"), vec![Token::text_from("")]);
-        abbrevs.insert(Identifier::from("e"), vec![Token::abbrev_from("b")]);
+        abbrevs.insert(
+            Identifier::from_str_unchecked("b"),
+            Value::from_iter([Token::text_from("2"), Token::text_from("3")]),
+        );
+        abbrevs.insert(Identifier::from_str_unchecked("c"), Value::default());
+        abbrevs.insert(
+            Identifier::from_str_unchecked("d"),
+            Value::from_iter([Token::text_from("")]),
+        );
+        abbrevs.insert(
+            Identifier::from_str_unchecked("e"),
+            Value::from_iter([Token::abbrev_from("b")]),
+        );
 
         macro_rules! assert_value_string {
             ($input:expr, $expected:expr) => {
-                let mut entry_de = EntryDeserializer::new($input, &abbrevs);
-                let deserializer = ValueDeserializer::new(&mut entry_de);
+                let reader = ResolvingReader::new($input);
+                let mut bib_de = BibtexDeserializer::new_from_abbrev(reader, abbrevs.clone());
+                let deserializer = ValueDeserializer::new(&mut bib_de);
                 let data = String::deserialize(deserializer);
                 let expected = $expected.to_string();
                 assert_eq!(data, Ok(expected));
@@ -640,8 +778,9 @@ mod tests {
 
         macro_rules! assert_value_fail {
             ($input:expr) => {
-                let mut entry_de = EntryDeserializer::new($input, &abbrevs);
-                let deserializer = ValueDeserializer::new(&mut entry_de);
+                let reader = ResolvingReader::new($input);
+                let mut bib_de = BibtexDeserializer::new_from_abbrev(reader, abbrevs.clone());
+                let deserializer = ValueDeserializer::new(&mut bib_de);
                 let data = String::deserialize(deserializer);
                 assert!(data.is_err());
             };
@@ -649,8 +788,9 @@ mod tests {
 
         macro_rules! assert_value_seq {
             ($input:expr, $expected:expr) => {
-                let mut entry_de = EntryDeserializer::new($input, &abbrevs);
-                let deserializer = ValueDeserializer::new(&mut entry_de);
+                let reader = ResolvingReader::new($input);
+                let mut bib_de = BibtexDeserializer::new_from_abbrev(reader, abbrevs.clone());
+                let deserializer = ValueDeserializer::new(&mut bib_de);
 
                 let data: Result<Vec<Tok>, _> = Vec::deserialize(deserializer);
                 assert_eq!(data, Ok($expected));
@@ -658,12 +798,12 @@ mod tests {
         }
 
         // basic expansion
-        let input = " = a";
+        let input = " a";
         assert_value_string!(input, "1");
         assert_value_seq!(input, vec![Tok::T("1")]);
 
         // characters are inserted in order if they are multiple characters long
-        let input = " = {0} # a # b";
+        let input = "{0} # a # b";
         assert_value_string!(input, "0123");
         assert_value_seq!(
             input,
@@ -672,24 +812,24 @@ mod tests {
 
         // abbreviations referencing other abbreviations are resolved, if
         // the previous abbreviation appeared
-        let input = " = e";
+        let input = "e";
         assert_value_string!(input, "23");
         assert_value_seq!(input, vec![Tok::T("2"), Tok::T("3")]);
 
         // lenth 0 abbreviations are skipped...
-        let input = " = c # a # c";
+        let input = "c # a # c";
         assert_value_string!(input, "1");
         // ...and they do not appear in the Token stream
         assert_value_seq!(input, vec![Tok::T("1")]);
 
         // abbreviations which expand to {} are skiped...
-        let input = " = {0} # d # {0}";
+        let input = "{0} # d # {0}";
         assert_value_string!(input, "00");
         // ...but they do appear in the Token stream
         assert_value_seq!(input, vec![Tok::T("0"), Tok::T(""), Tok::T("0")]);
 
         // use same abbreviation repeatedly
-        let input = " = b # b # c # {1} # b";
+        let input = "b # b # c # {1} # b";
         assert_value_string!(input, "2323123");
         assert_value_seq!(
             input,
@@ -705,7 +845,7 @@ mod tests {
         );
 
         // unresolved abbreviations fail, but still appear as raw tokens
-        let input = " = {} # f # b";
+        let input = " {} # f # b";
         assert_value_fail!(input);
         assert_value_seq!(
             input,
@@ -722,14 +862,21 @@ mod tests {
 
         let mut abbrevs = Abbreviations::default();
 
-        abbrevs.insert(Identifier::from("a"), vec![Token::text_from("")]);
-        abbrevs.insert(Identifier::from("b"), Vec::new());
-        abbrevs.insert(Identifier::from("c"), vec![Token::text_from("1")]);
+        abbrevs.insert(
+            Identifier::from_str_unchecked("a"),
+            Value::from_iter([Token::text_from("")]),
+        );
+        abbrevs.insert(Identifier::from_str_unchecked("b"), Value::default());
+        abbrevs.insert(
+            Identifier::from_str_unchecked("c"),
+            Value::from_iter([Token::text_from("1")]),
+        );
 
         macro_rules! assert_value_matching {
             ($input:expr, $expected:expr, $cow:pat) => {
-                let mut entry_de = EntryDeserializer::new($input, &abbrevs);
-                let deserializer = ValueDeserializer::new(&mut entry_de);
+                let reader = ResolvingReader::new($input);
+                let mut bib_de = BibtexDeserializer::new_from_abbrev(reader, abbrevs.clone());
+                let deserializer = ValueDeserializer::new(&mut bib_de);
                 let data = Val::deserialize(deserializer);
                 let expected = Val($expected.into());
                 assert_eq!(data, Ok(expected));
@@ -738,23 +885,23 @@ mod tests {
         }
 
         // separated Token::Text are merged
-        assert_value_matching!(" = {a} # {b} # {c}", "abc", Cow::Owned(_));
-        assert_value_matching!(" = {a} # {} # {b}", "ab", Cow::Owned(_));
+        assert_value_matching!(" {a} # {b} # {c}", "abc", Cow::Owned(_));
+        assert_value_matching!(" {a} # {} # {b}", "ab", Cow::Owned(_));
 
         // a single Token::Text can be borrowed
-        assert_value_matching!(" = {a}", "a", Cow::Borrowed(_));
+        assert_value_matching!(" {a}", "a", Cow::Borrowed(_));
 
         // empty values also allow owning
-        assert_value_matching!(" = {} # {abc}", "abc", Cow::Borrowed(_));
-        assert_value_matching!(" = {} # {abc} # {} # {}", "abc", Cow::Borrowed(_));
-        assert_value_matching!(" = {abc} # {}", "abc", Cow::Borrowed(_));
+        assert_value_matching!(" {} # {abc}", "abc", Cow::Borrowed(_));
+        assert_value_matching!(" {} # {abc} # {} # {}", "abc", Cow::Borrowed(_));
+        assert_value_matching!(" {abc} # {}", "abc", Cow::Borrowed(_));
 
         // empty abbreviations can be spliced in without owning
-        assert_value_matching!(" = a # b # {abc} # a", "abc", Cow::Borrowed(_));
+        assert_value_matching!(" a # b # {abc} # a", "abc", Cow::Borrowed(_));
 
         // can borrow from abbreviations, if possible
-        assert_value_matching!(" = c", "1", Cow::Borrowed(_));
-        assert_value_matching!(" = c # c", "11", Cow::Owned(_));
-        assert_value_matching!(" = {} # c # {} # a # b", "1", Cow::Borrowed(_));
+        assert_value_matching!(" c", "1", Cow::Borrowed(_));
+        assert_value_matching!(" c # c", "11", Cow::Owned(_));
+        assert_value_matching!(" {} # c # {} # a # b", "1", Cow::Borrowed(_));
     }
 }

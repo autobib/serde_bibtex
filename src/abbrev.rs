@@ -1,70 +1,96 @@
-use std::borrow::Cow;
 use std::collections::HashMap;
 
-use crate::bib::{Identifier, Token};
+use crate::value::{Identifier, Token, Value};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct Abbreviations<'r> {
-    abbrevs: HashMap<Identifier<'r>, Vec<Token<'r>>>,
+    abbrevs: HashMap<Identifier<'r>, Value<'r>>,
     buffer: Vec<Token<'r>>,
 }
 
-// pub fn
-
-/// A helper function to merge a Token into a cow, owning if required.
-fn try_merge_closure<'r>(cow: Cow<'r, str>, token: &Token<'r>) -> Option<Cow<'r, str>> {
-    match token {
-        Token::Text(new) => {
-            if new.len() > 0 {
-                let mut s = cow.into_owned();
-                s.push_str(new);
-                Some(Cow::Owned(s))
-            } else {
-                Some(cow)
-            }
-        }
-        _ => None,
-    }
-}
-
-fn try_merge<'r>(tokens: &Vec<Token<'r>>) -> Option<Cow<'r, str>> {
-    if tokens.len() == 0 {
-        Some(Cow::Borrowed(""))
-    } else {
-        let acc = match &tokens[0] {
-            Token::Text(cow) => cow.clone(),
-            _ => return None,
-        };
-        tokens[1..].iter().try_fold(acc, try_merge_closure)
-    }
-}
-
 impl<'r> Abbreviations<'r> {
-    pub fn insert(&mut self, identifier: Identifier<'r>, mut value: Vec<Token<'r>>) {
+    pub fn insert(&mut self, identifier: Identifier<'r>, mut value: Value<'r>) {
         self.resolve(&mut value);
         self.abbrevs.insert(identifier, value);
     }
 
     pub fn get(&self, identifier: &Identifier<'r>) -> Option<&[Token<'r>]> {
-        self.abbrevs.get(identifier).map(Vec::as_slice)
+        self.abbrevs.get(identifier).map(|v| v.0.as_slice())
     }
 
-    pub fn get_merged(&self, identifier: &Identifier<'r>) -> Option<Cow<'r, str>> {
-        try_merge(self.abbrevs.get(identifier)?)
-    }
-
-    pub fn resolve(&mut self, tokens: &mut Vec<Token<'r>>) {
+    pub fn resolve(&mut self, value: &mut Value<'r>) {
         self.buffer.clear();
-        for token in tokens.drain(..) {
+        for token in value.0.drain(..) {
             if let Token::Abbrev(ref identifier) = token {
                 match self.abbrevs.get(identifier) {
-                    Some(sub) => self.buffer.extend(sub.iter().cloned()),
+                    Some(sub) => self.buffer.extend(sub.0.iter().cloned()),
                     None => self.buffer.push(token),
                 };
             } else {
                 self.buffer.push(token);
             }
         }
-        tokens.append(&mut self.buffer);
+        value.0.append(&mut self.buffer);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::value::{Identifier, Token, Value};
+
+    #[test]
+    fn test_abbreviations() {
+        let mut abbrevs = Abbreviations::default();
+        abbrevs.insert(
+            Identifier::from_str_unchecked("a"),
+            Value(vec![Token::text_from("1"), Token::abbrev_from("b")]),
+        );
+        abbrevs.insert(
+            Identifier::from_str_unchecked("b"),
+            Value(vec![Token::text_from("2")]),
+        );
+        assert_eq!(
+            abbrevs.get(&Identifier::from_str_unchecked("a")),
+            Some(&[Token::text_from("1"), Token::abbrev_from("b")][..])
+        );
+
+        abbrevs.insert(
+            Identifier::from_str_unchecked("c"),
+            Value(vec![Token::abbrev_from("a"), Token::abbrev_from("b")]),
+        );
+        assert_eq!(
+            abbrevs.get(&Identifier::from_str_unchecked("c")),
+            Some(
+                &[
+                    Token::text_from("1"),
+                    Token::abbrev_from("b"),
+                    Token::text_from("2")
+                ][..]
+            )
+        );
+
+        let mut value = Value(vec![
+            Token::abbrev_from("c"),
+            Token::text_from("1"),
+            Token::text_from("2"),
+            Token::abbrev_from("d"),
+            Token::text_from("3"),
+            Token::abbrev_from("b"),
+        ]);
+        abbrevs.resolve(&mut value);
+        assert_eq!(
+            value,
+            Value(vec![
+                Token::text_from("1"),
+                Token::abbrev_from("b"),
+                Token::text_from("2"),
+                Token::text_from("1"),
+                Token::text_from("2"),
+                Token::abbrev_from("d"),
+                Token::text_from("3"),
+                Token::text_from("2"),
+            ]),
+        );
     }
 }

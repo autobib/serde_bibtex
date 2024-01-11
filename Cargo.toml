@@ -9,6 +9,8 @@ edition = "2021"
 nom = "7"
 itertools = "0.12"
 serde = { version = "1.0", features = ["derive"] }
+unicase = "2.7"
+memchr = "2.7"
 
 [dev-dependencies]
 trace = "0.1"

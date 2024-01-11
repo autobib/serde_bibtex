@@ -99,6 +99,7 @@ impl From<std::num::ParseFloatError> for Error {
 
 impl From<ParseError<'_>> for Error {
     fn from(err: ParseError<'_>) -> Self {
+        println!("{}", err);
         Self::ParseError
     }
 }
