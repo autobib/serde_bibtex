@@ -16,6 +16,23 @@ pub(crate) struct ResolvingReader<'r> {
     pub(crate) input: &'r str,
 }
 
+impl<'r> ResolvingReader<'r> {
+    /// Construct a new Reader
+    pub fn new(input: &'r str) -> Self {
+        Self { input }
+    }
+
+    /// Apply `parser` to `self.input`, updating `input` and returning `T`.
+    fn step<O>(
+        &mut self,
+        mut parser: impl FnMut(&'r str) -> IResult<&'r str, O>,
+    ) -> Result<O, Error> {
+        let (input, ret) = parser(self.input)?;
+        self.input = input;
+        Ok(ret)
+    }
+}
+
 impl<'r> BibtexReader<'r> for ResolvingReader<'r> {
     fn take_chunk_type(&mut self) -> Result<Option<ChunkType<'r>>, Error> {
         self.step(p::chunk_type)
@@ -70,25 +87,5 @@ impl<'r> BibtexReader<'r> for ResolvingReader<'r> {
                 }
             }
         }
-    }
-}
-
-// use trace::trace;
-// trace::init_depth_var!();
-// #[trace]
-impl<'r> ResolvingReader<'r> {
-    /// Construct a new Reader
-    pub fn new(input: &'r str) -> Self {
-        Self { input }
-    }
-
-    /// Apply `parser` to `self.input`, updating `input` and returning `T`.
-    fn step<O>(
-        &mut self,
-        mut parser: impl FnMut(&'r str) -> IResult<&'r str, O>,
-    ) -> Result<O, Error> {
-        let (input, ret) = parser(self.input)?;
-        self.input = input;
-        Ok(ret)
     }
 }

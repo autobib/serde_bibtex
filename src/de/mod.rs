@@ -1,8 +1,6 @@
 pub mod entry;
 pub mod value;
 
-use std::marker::PhantomData;
-
 use serde::de::{self, DeserializeSeed, EnumAccess, SeqAccess, Unexpected, VariantAccess};
 use serde::forward_to_deserialize_any;
 
@@ -22,7 +20,6 @@ where
     reader: R,
     abbrev: Abbreviations<'r>,
     scratch: Vec<Token<'r>>,
-    _marker: PhantomData<&'r ()>,
 }
 
 /// The top level deserializer for a bibtex file.
@@ -41,7 +38,6 @@ where
             reader,
             abbrev: Abbreviations::default(),
             scratch: Vec::new(),
-            _marker: PhantomData,
         }
     }
 
@@ -50,7 +46,6 @@ where
             reader,
             abbrev,
             scratch: Vec::new(),
-            _marker: PhantomData,
         }
     }
 
@@ -165,7 +160,10 @@ where
     type Error = Error;
 
     fn unit_variant(self) -> Result<(), Self::Error> {
-        self.de.reader.ignore_chunk(self.chunk)
+        // TODO: capture the abbreviations here even though ignored
+        self.de
+            .reader
+            .ignore_chunk_captured(self.chunk, &mut self.de.abbrev)
     }
 
     fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value, Self::Error>
@@ -280,17 +278,25 @@ where
         let val = match key {
             Some(identifier) => {
                 self.de.reader.ignore_field_sep()?;
-                visitor.visit_some(KeyValueDeserializer::new(&mut *self.de, identifier))
+                visitor.visit_some(KeyValueDeserializer::new_captured(
+                    &mut *self.de,
+                    identifier,
+                ))
             }
             None => visitor.visit_none(),
         };
+
         match key {
-            Some(_) => self.de.reader.opt_comma()?,
+            Some(_) => {
+                self.de.reader.opt_comma()?;
+            }
             _ => {}
         };
         self.de.reader.take_terminal(closing_bracket)?;
         val
     }
+
+    // TODO: implement ignored_any
 
     forward_to_deserialize_any! {
         bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
@@ -339,6 +345,7 @@ where
 mod tests {
     use super::*;
     use crate::reader::ResolvingReader;
+    use crate::value::Identifier;
     use serde::Deserialize;
 
     use std::collections::HashMap;
@@ -372,6 +379,18 @@ mod tests {
         Preamble(&'a str),
     }
 
+    type TestBib<'a> = Vec<TestChunk<'a>>;
+
+    #[derive(Deserialize, Debug, PartialEq)]
+    enum BareChunk {
+        Entry,
+        Abbreviation,
+        Comment,
+        Preamble,
+    }
+
+    type TypeOnlyBib = Vec<BareChunk>;
+
     #[test]
     fn test_abbreviation() {
         // test AbbreviationDeserializer
@@ -379,16 +398,6 @@ mod tests {
 
     #[test]
     fn test_ignore() {
-        #[derive(Deserialize, Debug, PartialEq)]
-        enum BareChunk {
-            Entry,
-            Abbreviation,
-            Comment,
-            Preamble,
-        }
-
-        type TypeOnlyBib = Vec<BareChunk>;
-
         let reader = ResolvingReader::new(
             r#"
             @string{}
@@ -413,7 +422,49 @@ mod tests {
         assert_eq!(data, Ok(expected));
     }
 
-    type TestBib<'a> = Vec<TestChunk<'a>>;
+    #[test]
+    fn test_string_capturing() {
+        let reader = ResolvingReader::new("@string{a = {1}}@string{a = a # a}@string{a = a # a}");
+        let mut bib_de = BibtexDeserializer::new(reader);
+
+        let _ = TestBib::deserialize(&mut bib_de).unwrap();
+        assert!(
+            bib_de
+                .abbrev
+                .get(&Identifier::from_str_unchecked("a"))
+                .unwrap()
+                .len()
+                == 4
+        );
+    }
+
+    #[test]
+    fn test_string_capturing_ignore() {
+        #[derive(Deserialize, Debug, PartialEq)]
+        enum BareChunk {
+            Entry,
+            Abbreviation,
+            Comment,
+            Preamble,
+        }
+
+        type TypeOnlyBib = Vec<BareChunk>;
+
+        let reader = ResolvingReader::new("@string{a = {1}}@string{a = a # a}@string{a = a # a}");
+        let mut bib_de = BibtexDeserializer::new(reader);
+
+        let _ = TypeOnlyBib::deserialize(&mut bib_de).unwrap();
+        assert!(
+            bib_de
+                .abbrev
+                .get(&Identifier::from_str_unchecked("a"))
+                .unwrap()
+                .len()
+                == 4
+        );
+        println!("{:?}", bib_de.abbrev);
+        assert!(false);
+    }
 
     #[test]
     fn test_entry_chunk() {
@@ -458,7 +509,6 @@ mod tests {
     fn test_string_syntax() {
         assert_syntax!(r"@string{k=v}", is_ok);
         assert_syntax!(r"@sTring{k=v,}", is_ok);
-        assert_syntax!(r"@sTring{'a k=v,}", is_ok);
 
         assert_syntax!(r"@string()", is_ok);
         assert_syntax!(r"@string(,)", is_err);
@@ -471,7 +521,7 @@ mod tests {
         assert_syntax!(r"@preamble({})", is_ok);
         assert_syntax!(r"@preamble()", is_ok);
         assert_syntax!(r"@preamble{}", is_ok);
-        assert_syntax!(r"@'5 '% pREamble {@any#}", is_ok);
+        assert_syntax!(r"@ pREamble {@any#}", is_ok);
 
         assert_syntax!(r"@preamble(", is_err);
         assert_syntax!(r"@preamble)", is_err);
@@ -485,7 +535,7 @@ mod tests {
         assert_syntax!(r"@comment(@anything#)", is_ok);
         assert_syntax!(r"@comment { @anything#}", is_ok);
         assert_syntax!(r"@coMment {}", is_ok);
-        assert_syntax!("@\n'e CommEnt  { }", is_ok);
+        assert_syntax!("@\n CommEnt  { }", is_ok);
 
         assert_syntax!(r"@comment({)", is_err);
     }

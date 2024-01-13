@@ -14,3 +14,4 @@ memchr = "2.7"
 
 [dev-dependencies]
 trace = "0.1"
+proptest = "1.0.0"

@@ -1,4 +1,3 @@
-use crate::parse::token::TokenParseError;
 use memchr::{memchr2_iter, memchr3_iter};
 use std::str::from_utf8;
 
@@ -9,7 +8,7 @@ use nom::{Err, IResult};
 pub fn take_until_unbalanced_bytes(
     opening_bracket: u8,
     closing_bracket: u8,
-) -> impl Fn(&[u8]) -> IResult<&[u8], &[u8], TokenParseError> {
+) -> impl Fn(&[u8]) -> IResult<&[u8], &[u8]> {
     debug_assert!(opening_bracket != closing_bracket);
 
     move |i: &[u8]| {
@@ -28,7 +27,10 @@ pub fn take_until_unbalanced_bytes(
         }
 
         // we did not find find the closing bracket
-        Err(Err::Error(TokenParseError::UnexpectedEof))
+        Err(Err::Error(nom::error::Error::new(
+            b"error parsing balanced",
+            nom::error::ErrorKind::TakeUntil,
+        )))
     }
 }
 
@@ -64,7 +66,7 @@ pub fn take_until_protected_bytes(
     opening_bracket: u8,
     closing_bracket: u8,
     until: u8,
-) -> impl Fn(&[u8]) -> IResult<&[u8], &[u8], TokenParseError> {
+) -> impl Fn(&[u8]) -> IResult<&[u8], &[u8]> {
     debug_assert!(opening_bracket != closing_bracket);
 
     move |i: &[u8]| {
@@ -80,14 +82,20 @@ pub fn take_until_protected_bytes(
             } else {
                 // too many closing brackets
                 if bracket_depth < 0 {
-                    return Err(Err::Error(TokenParseError::UnmatchedClosingBracket));
+                    return Err(Err::Error(nom::error::Error::new(
+                        b"unexpected EOF",
+                        nom::error::ErrorKind::TakeUntil,
+                    )));
                 }
                 bracket_depth -= 1;
             }
         }
 
         // we did not find an unprotected closing byte
-        return Err(Err::Error(TokenParseError::UnexpectedEof));
+        return Err(Err::Error(nom::error::Error::new(
+            b"unexpected EOF",
+            nom::error::ErrorKind::TakeUntil,
+        )));
     }
 }
 
@@ -96,14 +104,17 @@ pub fn take_until_protected_bytes(
 pub fn take_until_unbalanced(
     opening_bracket: u8,
     closing_bracket: u8,
-) -> impl Fn(&str) -> IResult<&str, &str, TokenParseError> {
+) -> impl Fn(&str) -> IResult<&str, &str> {
     debug_assert!(opening_bracket.is_ascii());
     debug_assert!(closing_bracket.is_ascii());
 
     move |s: &str| match take_until_unbalanced_bytes(opening_bracket, closing_bracket)(s.as_bytes())
     {
         Ok((s, captured)) => Ok((from_utf8(s).unwrap(), from_utf8(captured).unwrap())),
-        Err(err) => Err(err),
+        Err(_) => Err(Err::Error(nom::error::Error::new(
+            "error parsing balanced",
+            nom::error::ErrorKind::TakeUntil,
+        ))),
     }
 }
 
@@ -113,7 +124,7 @@ pub fn take_until_protected(
     opening_bracket: u8,
     closing_bracket: u8,
     until: u8,
-) -> impl Fn(&str) -> IResult<&str, &str, TokenParseError> {
+) -> impl Fn(&str) -> IResult<&str, &str> {
     debug_assert!(opening_bracket.is_ascii());
     debug_assert!(closing_bracket.is_ascii());
     debug_assert!(until.is_ascii());
@@ -122,7 +133,10 @@ pub fn take_until_protected(
         s.as_bytes(),
     ) {
         Ok((s, captured)) => Ok((from_utf8(s).unwrap(), from_utf8(captured).unwrap())),
-        Err(err) => Err(err),
+        Err(_) => Err(Err::Error(nom::error::Error::new(
+            "error parsing protected",
+            nom::error::ErrorKind::TakeUntil,
+        ))),
     }
 }
 
@@ -153,14 +167,8 @@ mod tests {
             Ok((&b")abc"[..], &b"u(())r()l"[..]))
         );
 
-        assert_eq!(
-            take_until_unbalanced_bytes(b'{', b'}')(b"none"),
-            Err(Err::Error(TokenParseError::UnexpectedEof))
-        );
-        assert_eq!(
-            take_until_unbalanced_bytes(b'{', b'}')(b"{no}e"),
-            Err(Err::Error(TokenParseError::UnmatchedClosingBracket))
-        );
+        assert!(take_until_unbalanced_bytes(b'{', b'}')(b"none").is_err());
+        assert!(take_until_unbalanced_bytes(b'{', b'}')(b"{no}e").is_err());
     }
 
     #[test]
@@ -178,15 +186,9 @@ mod tests {
             Ok((&b"$rest"[..], &b"a(($) $)"[..]))
         );
         // did not find unprotected
-        assert_eq!(
-            take_until_protected_bytes(b'(', b')', b'$')(b"($"),
-            Err(Err::Error(TokenParseError::UnexpectedEof))
-        );
+        assert!(take_until_protected_bytes(b'(', b')', b'$')(b"($").is_err());
         // unexpected closing
-        assert_eq!(
-            take_until_protected_bytes(b'(', b')', b'$')(b")$"),
-            Err(Err::Error(TokenParseError::UnmatchedClosingBracket))
-        );
+        assert!(take_until_protected_bytes(b'(', b')', b'$')(b")$").is_err());
     }
 
     #[test]
@@ -207,10 +209,7 @@ mod tests {
             take_until_unbalanced(b'(', b')')("u(())r()l)abc"),
             Ok((")abc", "u(())r()l"))
         );
-        assert_eq!(
-            take_until_unbalanced(b'(', b')')("u(())r(labc"),
-            Err(Err::Error(TokenParseError::UnexpectedEof))
-        );
+        assert!(take_until_unbalanced(b'(', b')')("u(())r(labc").is_err());
     }
 
     #[test]

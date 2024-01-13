@@ -14,23 +14,45 @@ impl<'r> Abbreviations<'r> {
         self.abbrevs.insert(identifier, value);
     }
 
+    pub(crate) fn insert_raw_tokens(&mut self, identifier: Identifier<'r>, tokens: Vec<Token<'r>>) {
+        self.abbrevs.insert(identifier, Value(tokens));
+    }
+
+    pub fn replace(&mut self, identifier: Identifier<'r>, new: &mut Vec<Token<'r>>) {
+        // get a mutable reference to the existing value, creating it if it does not exist
+        let existing = self
+            .abbrevs
+            .entry(identifier)
+            .and_modify(|v| v.0.clear())
+            .or_insert(Value::default());
+
+        // insert the new value
+        std::mem::swap(&mut existing.0, new);
+    }
+
     pub fn get(&self, identifier: &Identifier<'r>) -> Option<&[Token<'r>]> {
         self.abbrevs.get(identifier).map(|v| v.0.as_slice())
     }
 
-    pub fn resolve(&mut self, value: &mut Value<'r>) {
+    pub fn resolve_tokens(&mut self, tokens: &mut Vec<Token<'r>>) {
         self.buffer.clear();
-        for token in value.0.drain(..) {
+        for token in tokens.drain(..) {
             if let Token::Abbrev(ref identifier) = token {
                 match self.abbrevs.get(identifier) {
-                    Some(sub) => self.buffer.extend(sub.0.iter().cloned()),
+                    Some(sub) => {
+                        self.buffer.extend(sub.0.iter().cloned());
+                    }
                     None => self.buffer.push(token),
                 };
             } else {
                 self.buffer.push(token);
             }
         }
-        value.0.append(&mut self.buffer);
+        tokens.append(&mut self.buffer);
+    }
+
+    pub fn resolve(&mut self, value: &mut Value<'r>) {
+        self.resolve_tokens(&mut value.0);
     }
 }
 

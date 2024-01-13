@@ -4,47 +4,39 @@
 //! that the input can have preceding ignored characters, and do not attempt to consume ignored
 //! characters following the successful parse.
 
-mod balanced;
+// mod balanced;
+mod balanced_nom;
 mod ignored;
 
 use nom::{
     branch::alt,
     bytes::complete::{is_not, tag_no_case, take_until},
-    character::complete::{anychar, char, digit1, multispace0, not_line_ending, one_of},
+    character::complete::{char, digit1, one_of},
     combinator::{eof, map, not, opt, value as nom_value, verify},
+    error::ParseError,
     sequence::{delimited, preceded, tuple},
-    IResult,
+    IResult, Parser,
 };
 
 use crate::value::{Identifier, Token};
-use balanced::{is_balanced, take_until_protected, take_until_unbalanced};
-use ignored::ignore_junk;
+use balanced_nom::{is_balanced, take_until_protected, take_until_unbalanced};
+use ignored::{ignore_comment, ignore_junk};
 
-/// Consume ignored characters.
-pub fn ignored(input: &str) -> IResult<&str, ()> {
-    let mut buffer = input;
-    loop {
-        let (stepped, _) = multispace0(buffer)?;
-        match stepped.as_bytes().get(0) {
-            // consume until line ending and loop
-            Some(b'%') => {
-                let (stepped, _) = tuple((anychar, not_line_ending))(stepped)?;
-                buffer = stepped;
-            }
-            // ignore the next char and loop
-            Some(b'\'') => {
-                let (stepped, _) = tuple((anychar, anychar))(stepped)?;
-                buffer = stepped
-            }
-            // break
-            _ => break Ok((stepped, ())),
-        }
+pub fn preceded_comment<'r, O, E: ParseError<&'r str>, F>(
+    mut parser: F,
+) -> impl FnMut(&'r str) -> IResult<&'r str, O, E>
+where
+    F: Parser<&'r str, O, E>,
+{
+    move |input: &str| {
+        let input = ignore_comment(input);
+        parser.parse(input)
     }
 }
 
 /// Consume a comma.
 pub fn comma(input: &str) -> IResult<&str, ()> {
-    nom_value((), tuple((ignored, char(','))))(input)
+    nom_value((), preceded_comment(char(',')))(input)
 }
 
 /// Consume a comma optionally.
@@ -61,7 +53,7 @@ pub enum ChunkType<'r> {
 }
 
 fn special_chunk_type<'r>(label: &'static str) -> impl FnMut(&'r str) -> IResult<&'r str, ()> {
-    nom_value((), tuple((char('@'), ignored, tag_no_case(label))))
+    nom_value((), tuple((char('@'), preceded_comment(tag_no_case(label)))))
 }
 
 /// Parse the chunk type including preceding characters. Returns None of we hit EOF.
@@ -90,7 +82,7 @@ pub fn chunk_type(input: &str) -> IResult<&str, Option<ChunkType>> {
 
     match not_entry {
         Some(chunk_type) => Ok((input, chunk_type)),
-        None => map(preceded(tuple((char('@'), ignored)), identifier), |ident| {
+        None => map(preceded(char('@'), preceded_comment(identifier)), |ident| {
             Some(ChunkType::Entry(ident))
         })(input),
     }
@@ -98,10 +90,7 @@ pub fn chunk_type(input: &str) -> IResult<&str, Option<ChunkType>> {
 
 /// Parse the opening bracket and return the corresponding closing bracket.
 pub fn initial(input: &str) -> IResult<&str, char> {
-    preceded(
-        ignored,
-        map(one_of("{("), |c| if c == '{' { '}' } else { ')' }),
-    )(input)
+    preceded_comment(map(one_of("{("), |c| if c == '{' { '}' } else { ')' }))(input)
 }
 
 /// Consume the characters at the end of the entry.
@@ -117,7 +106,7 @@ pub fn initial(input: &str) -> IResult<&str, char> {
 pub fn terminal<'r>(closing_bracket: char) -> impl FnMut(&'r str) -> IResult<&'r str, ()>
 where
 {
-    nom_value((), tuple((ignored, char(closing_bracket))))
+    nom_value((), preceded_comment(char(closing_bracket)))
 }
 
 /// Characters allowed in [`citation_key`] or [`identifier`].
@@ -136,7 +125,7 @@ pub fn key_chars(input: &str) -> IResult<&str, &str> {
 /// ```
 /// consumes `{key` and returns `key`.
 pub fn citation_key(input: &str) -> IResult<&str, &str> {
-    preceded(ignored, key_chars)(input)
+    preceded_comment(key_chars)(input)
 }
 
 /// Parse an identifier.
@@ -168,13 +157,13 @@ pub fn identifier(input: &str) -> IResult<&str, Identifier> {
 /// ```
 /// consumes `,\n  title` and returns `title`.
 pub fn field_key(input: &str) -> IResult<&str, Option<Identifier>> {
-    opt(preceded(ignored, identifier))(input)
+    opt(preceded_comment(identifier))(input)
 }
 
 // Match a comma and field key together. Unlike `preceded(comma, field_key)`, we make the entire
 // match optional.
 pub fn comma_and_field_key(input: &str) -> IResult<&str, Option<Identifier>> {
-    opt(preceded(tuple((comma, ignored)), identifier))(input)
+    opt(preceded(comma, preceded_comment(identifier)))(input)
 }
 
 /// Parse a field separator.
@@ -188,7 +177,7 @@ pub fn comma_and_field_key(input: &str) -> IResult<&str, Option<Identifier>> {
 /// ```
 /// consumes ` =`.
 pub fn field_sep(input: &str) -> IResult<&str, ()> {
-    nom_value((), tuple((ignored, char('='))))(input)
+    nom_value((), preceded_comment(char('=')))(input)
 }
 
 /// Parse a token separator.
@@ -202,7 +191,7 @@ pub fn field_sep(input: &str) -> IResult<&str, ()> {
 /// ```
 /// consumes ` #`.
 pub fn token_sep(input: &str) -> IResult<&str, ()> {
-    nom_value((), tuple((ignored, char('#'))))(input)
+    nom_value((), preceded_comment(char('#')))(input)
 }
 
 /// Parse a field value delimited by curly braces.
@@ -232,15 +221,12 @@ pub fn quoted(input: &str) -> IResult<&str, &str> {
 // TODO: docs
 /// Parse a field value token.
 pub fn token(input: &str) -> IResult<&str, Token> {
-    preceded(
-        ignored,
-        alt((
-            map(curly, Token::text_from),
-            map(quoted, Token::text_from),
-            map(digit1, Token::text_from),
-            map(identifier, Token::Abbrev),
-        )),
-    )(input)
+    preceded_comment(alt((
+        map(curly, Token::text_from),
+        map(quoted, Token::text_from),
+        map(digit1, Token::text_from),
+        map(identifier, Token::Abbrev),
+    )))(input)
 }
 
 pub fn subsequent_token(input: &str) -> IResult<&str, Option<Token>> {
@@ -259,27 +245,13 @@ pub fn bracketed_text(input: &str) -> IResult<&str, &str> {
         char(')'),
     );
 
-    let (input, comment) = preceded(ignored, alt((curly, round)))(input)?;
+    let (input, comment) = preceded_comment(alt((curly, round)))(input)?;
     Ok((input, comment))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_ignored() {
-        assert_eq!(ignored("  "), Ok(("", ())));
-        assert_eq!(ignored("% ignored\n rest"), Ok(("rest", ())));
-        assert_eq!(ignored("'i'g'n'o'r'e'd rest"), Ok(("rest", ())));
-        assert_eq!(ignored("'🍄 rest"), Ok(("rest", ()))); // note: errors in biber because of
-                                                           // unicode handling
-        assert_eq!(ignored("'i%ig\nrest"), Ok(("rest", ())));
-        assert_eq!(ignored("'%rest"), Ok(("rest", ())));
-        assert_eq!(ignored("%"), Ok(("", ())));
-        assert_eq!(ignored("%%'\nrest"), Ok(("rest", ())));
-        assert_eq!(ignored("% i\r\n 'rrest"), Ok(("rest", ())));
-    }
 
     #[test]
     fn test_chunk_type() {
@@ -312,7 +284,7 @@ mod tests {
         assert_eq!(chunk_type("@ COMMent"), Ok(("", Some(ChunkType::Comment))));
 
         assert_eq!(
-            chunk_type("@'a string"),
+            chunk_type("@%  \nstring"),
             Ok(("", Some(ChunkType::Abbreviation)))
         );
 

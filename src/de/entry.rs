@@ -367,7 +367,7 @@ where
         V: DeserializeSeed<'de>,
     {
         self.de.reader.ignore_field_sep()?;
-        seed.deserialize(ValueDeserializer::new(&mut *self.de))
+        seed.deserialize(ValueDeserializer::try_from_de_resolved(&mut *self.de)?)
     }
 }
 
@@ -741,6 +741,29 @@ mod tests {
                 year: 2012
             }),
             MyFields::deserialize(deserializer)
+        );
+    }
+
+    #[test]
+    fn test_optional_struct_field() {
+        // test optional fields
+        #[derive(Deserialize, Debug, PartialEq)]
+        struct OptionFields<'a> {
+            author: &'a str,
+            title: &'a str,
+            year: Option<u32>,
+        }
+        let reader = ResolvingReader::new(", author = {Alex Rutar}, title = {A nice title}}");
+        let mut bib_de = BibtexDeserializer::new(reader);
+        let deserializer = FieldDeserializer::new(&mut bib_de);
+
+        assert_eq!(
+            Ok(OptionFields {
+                author: "Alex Rutar",
+                title: "A nice title",
+                year: None
+            }),
+            OptionFields::deserialize(deserializer)
         );
     }
 }
