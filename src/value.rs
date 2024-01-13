@@ -30,7 +30,7 @@ impl<'r> Identifier<'r> {
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub enum Token<'r> {
     #[serde(borrow)]
-    Abbrev(Identifier<'r>),
+    Macro(Identifier<'r>),
     #[serde(borrow)]
     Text(Cow<'r, str>),
 }
@@ -39,15 +39,15 @@ impl<'r> TryFrom<Token<'r>> for Cow<'r, str> {
     type Error = Error;
     fn try_from(token: Token<'r>) -> Result<Self, Self::Error> {
         match token {
-            Token::Abbrev(Identifier(s)) => Err(Error::UnresolvedAbbreviation(s.to_string())),
+            Token::Macro(Identifier(s)) => Err(Error::UnresolvedMacro(s.to_string())),
             Token::Text(cow) => Ok(cow),
         }
     }
 }
 
 impl<'r> Token<'r> {
-    pub fn abbrev_from(s: &'r str) -> Self {
-        Token::Abbrev(Identifier::from_str_unchecked(s))
+    pub fn macro_from(s: &'r str) -> Self {
+        Token::Macro(Identifier::from_str_unchecked(s))
     }
 
     pub fn text_from(s: &'r str) -> Self {
@@ -57,7 +57,7 @@ impl<'r> Token<'r> {
 
 impl<'r> From<Identifier<'r>> for Token<'r> {
     fn from(identifier: Identifier<'r>) -> Self {
-        Self::Abbrev(identifier)
+        Self::Macro(identifier)
     }
 }
 
@@ -87,11 +87,11 @@ impl fmt::Display for Value<'_> {
                     write!(f, "{}", s)?;
                     preceded_by_text = true;
                 }
-                (Token::Abbrev(s), true) => {
+                (Token::Macro(s), true) => {
                     write!(f, "}} # {}", s)?;
                     preceded_by_text = false;
                 }
-                (Token::Abbrev(s), false) => {
+                (Token::Macro(s), false) => {
                     if !is_first {
                         write!(f, " # ")?;
                     }
@@ -159,9 +159,9 @@ impl fmt::Display for Entry<'_> {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Abbreviation<'r>(pub Field<'r>);
+pub struct Macro<'r>(pub Field<'r>);
 
-impl fmt::Display for Abbreviation<'_> {
+impl fmt::Display for Macro<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(f, "@string{{{}}}", self.0)
     }
@@ -188,7 +188,7 @@ impl fmt::Display for Preamble<'_> {
 #[derive(Debug, PartialEq)]
 pub enum Event<'r> {
     Entry(Entry<'r>),
-    String(Abbreviation<'r>),
+    String(Macro<'r>),
     Comment(Comment<'r>),
     Preamble(Preamble<'r>),
     Eof,
@@ -200,9 +200,9 @@ impl<'r> From<Entry<'r>> for Event<'r> {
     }
 }
 
-impl<'r> From<Abbreviation<'r>> for Event<'r> {
-    fn from(abbrev: Abbreviation<'r>) -> Self {
-        Event::String(abbrev)
+impl<'r> From<Macro<'r>> for Event<'r> {
+    fn from(m: Macro<'r>) -> Self {
+        Event::String(m)
     }
 }
 
@@ -225,17 +225,17 @@ mod tests {
     #[test]
     fn test_value_display() {
         assert_eq!(
-            Value::from_iter([Token::abbrev_from("auth")]).to_string(),
+            Value::from_iter([Token::macro_from("auth")]).to_string(),
             "auth"
         );
         assert_eq!(
-            Value::from_iter([Token::abbrev_from("auth")]).to_string(),
+            Value::from_iter([Token::macro_from("auth")]).to_string(),
             "auth"
         );
 
         assert_eq!(
             Value::from_iter([
-                Token::abbrev_from("A"),
+                Token::macro_from("A"),
                 Token::text_from("b"),
                 Token::text_from("c"),
             ])
@@ -246,7 +246,7 @@ mod tests {
         assert_eq!(
             Value::from_iter([
                 Token::text_from("a"),
-                Token::abbrev_from("B"),
+                Token::macro_from("B"),
                 Token::text_from("c"),
             ])
             .to_string(),
@@ -256,12 +256,12 @@ mod tests {
         assert_eq!(Value::from_iter([Token::text_from("a")]).to_string(), "{a}");
 
         assert_eq!(
-            Value::from_iter([Token::text_from("a"), Token::abbrev_from("B"),]).to_string(),
+            Value::from_iter([Token::text_from("a"), Token::macro_from("B"),]).to_string(),
             "{a} # B"
         );
 
         assert_eq!(
-            Value::from_iter([Token::abbrev_from("A"), Token::abbrev_from("B"),]).to_string(),
+            Value::from_iter([Token::macro_from("A"), Token::macro_from("B"),]).to_string(),
             "A # B"
         );
 

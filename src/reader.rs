@@ -4,7 +4,7 @@ use crate::parse::BibtexReader;
 
 use crate::error::Error;
 use crate::parse::core as p;
-use crate::parse::core::ChunkType;
+use crate::parse::core::EntryType;
 use crate::value::{Identifier, Token};
 
 // TODO: parsing variants
@@ -12,11 +12,11 @@ use crate::value::{Identifier, Token};
 // enforcing valid (to check parsing grammar)
 // comment style (bibtex vs biber)
 #[derive(Debug)]
-pub(crate) struct ResolvingReader<'r> {
+pub(crate) struct StrReader<'r> {
     pub(crate) input: &'r str,
 }
 
-impl<'r> ResolvingReader<'r> {
+impl<'r> StrReader<'r> {
     /// Construct a new Reader
     pub fn new(input: &'r str) -> Self {
         Self { input }
@@ -33,9 +33,9 @@ impl<'r> ResolvingReader<'r> {
     }
 }
 
-impl<'r> BibtexReader<'r> for ResolvingReader<'r> {
-    fn take_chunk_type(&mut self) -> Result<Option<ChunkType<'r>>, Error> {
-        self.step(p::chunk_type)
+impl<'r> BibtexReader<'r> for StrReader<'r> {
+    fn take_entry_type(&mut self) -> Result<Option<EntryType<'r>>, Error> {
+        self.step(p::entry_type)
     }
 
     fn take_initial(&mut self) -> Result<char, Error> {

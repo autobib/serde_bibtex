@@ -45,45 +45,45 @@ pub fn opt_comma(input: &str) -> IResult<&str, ()> {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub enum ChunkType<'r> {
+pub enum EntryType<'r> {
     Preamble,
     Comment,
-    Abbreviation,
-    Entry(Identifier<'r>),
+    Macro,
+    Regular(Identifier<'r>),
 }
 
-fn special_chunk_type<'r>(label: &'static str) -> impl FnMut(&'r str) -> IResult<&'r str, ()> {
+fn special_entry<'r>(label: &'static str) -> impl FnMut(&'r str) -> IResult<&'r str, ()> {
     nom_value((), tuple((char('@'), preceded_comment(tag_no_case(label)))))
 }
 
-/// Parse the chunk type including preceding characters. Returns None of we hit EOF.
+/// Parse the entry type including preceding characters. Returns None of we hit EOF.
 ///
 /// # Example
 /// In the below entry with the cursor at `<>`
 /// ```bib
 /// <>@article{key,
-///   title = {text} # abbrev
+///   title = {text} # macro
 /// }
 /// ```
-/// consumes `@article` and returns `article` wrapped in [`ChunkType::Entry`].
+/// consumes `@article` and returns `article` wrapped in [`EntryType::Entry`].
 ///
-/// Most chunks are matched as [`ChunkType::Entry`], but there are three
+/// Most entries are matched as [`EntryType::Entry`], but there are three
 /// special chunk types: `@preamble`, `@comment`, and `@string`.
-/// These are matched case-insensitively into [`ChunkType::Preamble`], [`ChunkType::Comment`], and
-/// [`ChunkType::Abbreviation`] respectively.
-pub fn chunk_type(input: &str) -> IResult<&str, Option<ChunkType>> {
+/// These are matched case-insensitively into [`EntryType::Preamble`], [`EntryType::Comment`], and
+/// [`EntryType::Macro`] respectively.
+pub fn entry_type(input: &str) -> IResult<&str, Option<EntryType>> {
     let input = ignore_junk(input);
     let (input, not_entry) = opt(alt((
-        nom_value(Some(ChunkType::Preamble), special_chunk_type("preamble")),
-        nom_value(Some(ChunkType::Comment), special_chunk_type("comment")),
-        nom_value(Some(ChunkType::Abbreviation), special_chunk_type("string")),
+        nom_value(Some(EntryType::Preamble), special_entry("preamble")),
+        nom_value(Some(EntryType::Comment), special_entry("comment")),
+        nom_value(Some(EntryType::Macro), special_entry("string")),
         nom_value(None, eof),
     )))(input)?;
 
     match not_entry {
-        Some(chunk_type) => Ok((input, chunk_type)),
+        Some(entry) => Ok((input, entry)),
         None => map(preceded(char('@'), preceded_comment(identifier)), |ident| {
-            Some(ChunkType::Entry(ident))
+            Some(EntryType::Regular(ident))
         })(input),
     }
 }
@@ -99,7 +99,7 @@ pub fn initial(input: &str) -> IResult<&str, char> {
 /// In the below entry with the cursor at `>`
 /// ```bib
 /// @article{key,
-///   title = {text} # abbrev,>
+///   title = {text} # macro,>
 /// }
 /// ```
 /// consumes `\n}`.
@@ -120,7 +120,7 @@ pub fn key_chars(input: &str) -> IResult<&str, &str> {
 /// In the below entry with the cursor at `<>`
 /// ```bib
 /// @article<>{key,
-///   title = {text} # abbrev
+///   title = {text} # macro
 /// }
 /// ```
 /// consumes `{key` and returns `key`.
@@ -137,7 +137,7 @@ pub fn citation_key(input: &str) -> IResult<&str, &str> {
 /// In the below entry
 /// ```bib
 /// @article{key,
-///   title = {text} # abbrev
+///   title = {text} # macro
 /// }
 /// ```
 /// the identifiers are `article` and `title`.
@@ -152,7 +152,7 @@ pub fn identifier(input: &str) -> IResult<&str, Identifier> {
 /// In the below entry with the cursor at `<>`
 /// ```bib
 /// @article{key<>,
-///   title = {text} # abbrev
+///   title = {text} # macro
 /// }
 /// ```
 /// consumes `,\n  title` and returns `title`.
@@ -172,7 +172,7 @@ pub fn comma_and_field_key(input: &str) -> IResult<&str, Option<Identifier>> {
 /// In the below entry with the cursor at `<>`
 /// ```bib
 /// @article{key,
-///   title<> = {text} # abbrev
+///   title<> = {text} # macro
 /// }
 /// ```
 /// consumes ` =`.
@@ -186,7 +186,7 @@ pub fn field_sep(input: &str) -> IResult<&str, ()> {
 /// In the below entry with the cursor at `<>`
 /// ```bib
 /// @article{key,
-///   title = {text}<> # abbrev
+///   title = {text}<> # macro
 /// }
 /// ```
 /// consumes ` #`.
@@ -200,7 +200,7 @@ pub fn token_sep(input: &str) -> IResult<&str, ()> {
 /// In the below entry with the cursor at `<>`
 /// ```bib
 /// @article{key,
-///   title = <>{text} # abbrev
+///   title = <>{text} # macro
 /// }
 /// ```
 /// consumes `{text}` and returns `text`. The brackets must be balanced.
@@ -225,7 +225,7 @@ pub fn token(input: &str) -> IResult<&str, Token> {
         map(curly, Token::text_from),
         map(quoted, Token::text_from),
         map(digit1, Token::text_from),
-        map(identifier, Token::Abbrev),
+        map(identifier, Token::Macro),
     )))(input)
 }
 
@@ -254,44 +254,45 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_chunk_type() {
+    fn test_entry_type() {
         assert_eq!(
-            chunk_type("   @ \n article {"),
+            entry_type("   @ \n article {"),
             Ok((
                 " {",
-                Some(ChunkType::Entry(Identifier::from_str_unchecked("article")))
+                Some(EntryType::Regular(Identifier::from_str_unchecked(
+                    "article"
+                )))
             ))
         );
 
         assert_eq!(
-            chunk_type("@art🍄cle"),
+            entry_type("@art🍄cle"),
             Ok((
                 "",
-                Some(ChunkType::Entry(Identifier::from_str_unchecked("art🍄cle")))
+                Some(EntryType::Regular(Identifier::from_str_unchecked(
+                    "art🍄cle"
+                )))
             ))
         );
 
         assert_eq!(
-            chunk_type("@ preamble  ("),
-            Ok(("  (", Some(ChunkType::Preamble)))
+            entry_type("@ preamble  ("),
+            Ok(("  (", Some(EntryType::Preamble)))
         );
 
         assert_eq!(
-            chunk_type("@ preAMble  ("),
-            Ok(("  (", Some(ChunkType::Preamble)))
+            entry_type("@ preAMble  ("),
+            Ok(("  (", Some(EntryType::Preamble)))
         );
 
-        assert_eq!(chunk_type("@ COMMent"), Ok(("", Some(ChunkType::Comment))));
+        assert_eq!(entry_type("@ COMMent"), Ok(("", Some(EntryType::Comment))));
 
-        assert_eq!(
-            chunk_type("@%  \nstring"),
-            Ok(("", Some(ChunkType::Abbreviation)))
-        );
+        assert_eq!(entry_type("@%  \nstring"), Ok(("", Some(EntryType::Macro))));
 
-        assert_eq!(chunk_type("  "), Ok(("", None)));
-        assert_eq!(chunk_type("ignored junk %@}"), Ok(("", None)));
+        assert_eq!(entry_type("  "), Ok(("", None)));
+        assert_eq!(entry_type("ignored junk %@}"), Ok(("", None)));
 
-        assert!(chunk_type("@{").is_err());
+        assert!(entry_type("@{").is_err());
     }
 
     #[test]
@@ -346,10 +347,10 @@ mod tests {
         assert_eq!(token("0123 #"), Ok((" #", Token::text_from("0123"))));
         assert_eq!(token("0c"), Ok(("c", Token::text_from("0"))));
 
-        // abbreviation tokens
+        // macro tokens
         assert_eq!(
             token("key0 #"),
-            Ok((" #", Token::Abbrev(Identifier::from_str_unchecked("key0"))))
+            Ok((" #", Token::Macro(Identifier::from_str_unchecked("key0"))))
         );
         assert_eq!(
             token("{out{mid{inside}mid}}, "),

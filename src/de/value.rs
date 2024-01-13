@@ -8,7 +8,7 @@ use serde::forward_to_deserialize_any;
 
 use crate::error::Error;
 use crate::naming::{
-    ABBREV_TOKEN_VARIANT_NAME, FIELD_KEY_NAME, FIELD_VALUE_NAME, TEXT_TOKEN_VARIANT_NAME,
+    FIELD_KEY_NAME, FIELD_VALUE_NAME, MACRO_TOKEN_VARIANT_NAME, TEXT_TOKEN_VARIANT_NAME,
 };
 use crate::value::{Identifier, Token};
 
@@ -342,7 +342,7 @@ impl<'de> VariantAccess<'de> for TokenDeserializer<'de> {
         T: DeserializeSeed<'de>,
     {
         match self.value {
-            Token::Abbrev(identifier) => seed.deserialize(IdentifierDeserializer::new(identifier)),
+            Token::Macro(identifier) => seed.deserialize(IdentifierDeserializer::new(identifier)),
             Token::Text(Cow::Owned(s)) => seed.deserialize(s.into_deserializer()),
             Token::Text(Cow::Borrowed(s)) => seed.deserialize(BorrowedStrDeserializer::new(s)),
         }
@@ -376,7 +376,7 @@ impl<'de> de::EnumAccess<'de> for TokenDeserializer<'de> {
         T: de::DeserializeSeed<'de>,
     {
         let de: BorrowedStrDeserializer<Self::Error> = match self.value {
-            Token::Abbrev(_) => BorrowedStrDeserializer::new(ABBREV_TOKEN_VARIANT_NAME),
+            Token::Macro(_) => BorrowedStrDeserializer::new(MACRO_TOKEN_VARIANT_NAME),
             Token::Text(_) => BorrowedStrDeserializer::new(TEXT_TOKEN_VARIANT_NAME),
         };
         Ok((seed.deserialize(de)?, self))
@@ -415,7 +415,7 @@ impl<'a, 'r> ValueDeserializer<'a, 'r> {
     {
         de.scratch.clear();
         de.reader.take_value_into(&mut de.scratch)?;
-        de.abbrev.resolve_tokens(&mut de.scratch);
+        de.macros.resolve_tokens(&mut de.scratch);
         Ok(Self {
             iter: de.scratch.drain(..),
         })
@@ -432,8 +432,8 @@ impl<'a, 'r> ValueDeserializer<'a, 'r> {
     {
         de.scratch.clear();
         de.reader.take_value_into(&mut de.scratch)?;
-        de.abbrev.resolve_tokens(&mut de.scratch);
-        de.abbrev.insert_raw_tokens(id, de.scratch.clone());
+        de.macros.resolve_tokens(&mut de.scratch);
+        de.macros.insert_raw_tokens(id, de.scratch.clone());
         Ok(Self {
             iter: de.scratch.drain(..),
         })
@@ -539,9 +539,6 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     where
         V: Visitor<'de>,
     {
-        // TODO: figure this out, need to fix errors
-        // use serde::de::value::SeqDeserializer;
-        // visitor.visit_seq(SeqDeserializer::new(self.iter.map(TokenDeserializer::new)))
         visitor.visit_seq(self)
     }
 
@@ -650,9 +647,9 @@ impl<'a, 'de: 'a> EnumAccess<'de> for ValueDeserializer<'a, 'de> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::abbrev::Abbreviations;
     use crate::de::BibtexDeserializer;
-    use crate::reader::ResolvingReader;
+    use crate::macros::MacroDictionary;
+    use crate::reader::StrReader;
     use crate::value::Value;
     use serde::Deserialize;
 
@@ -666,7 +663,7 @@ mod tests {
 
     macro_rules! assert_de {
         ($input:expr, $expected:expr, $target:tt) => {
-            let reader = ResolvingReader::new($input);
+            let reader = StrReader::new($input);
             let mut bib_de = BibtexDeserializer::new(reader);
             let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
             assert_eq!(Ok($expected), $target::deserialize(deserializer));
@@ -675,7 +672,7 @@ mod tests {
 
     macro_rules! assert_de_err {
         ($input:expr, $target:tt) => {
-            let reader = ResolvingReader::new($input);
+            let reader = StrReader::new($input);
             let mut bib_de = BibtexDeserializer::new(reader);
             let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
             assert!($target::deserialize(deserializer).is_err());
@@ -789,7 +786,7 @@ mod tests {
             T(String),
         }
 
-        let de = TokenDeserializer::new(Token::abbrev_from("key"));
+        let de = TokenDeserializer::new(Token::macro_from("key"));
         assert_eq!(ShortToken::deserialize(de), Ok(ShortToken::A("key".into())));
         let de = TokenDeserializer::new(Token::text_from("val"));
         assert_eq!(ShortToken::deserialize(de), Ok(ShortToken::T("val".into())));
@@ -807,7 +804,7 @@ mod tests {
             T(Cow<'r, str>),
         }
 
-        let de = TokenDeserializer::new(Token::abbrev_from("key"));
+        let de = TokenDeserializer::new(Token::macro_from("key"));
         assert_eq!(ReToken::deserialize(de), Ok(ReToken::A(I("key"))));
 
         let de = TokenDeserializer::new(Token::text_from("key"));
@@ -820,7 +817,7 @@ mod tests {
     fn test_value_abbrev_expansion() {
         // Test expansion of Abbreviations
 
-        let mut abbrevs = Abbreviations::default();
+        let mut abbrevs = MacroDictionary::default();
         abbrevs.insert(
             Identifier::from_str_unchecked("a"),
             Value::from_iter([Token::text_from("1")]),
@@ -836,13 +833,13 @@ mod tests {
         );
         abbrevs.insert(
             Identifier::from_str_unchecked("e"),
-            Value::from_iter([Token::abbrev_from("b")]),
+            Value::from_iter([Token::macro_from("b")]),
         );
 
         macro_rules! assert_value_string {
             ($input:expr, $expected:expr) => {
-                let reader = ResolvingReader::new($input);
-                let mut bib_de = BibtexDeserializer::new_from_abbrev(reader, abbrevs.clone());
+                let reader = StrReader::new($input);
+                let mut bib_de = BibtexDeserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
                 let data = String::deserialize(deserializer);
                 let expected = $expected.to_string();
@@ -852,8 +849,8 @@ mod tests {
 
         macro_rules! assert_value_fail {
             ($input:expr) => {
-                let reader = ResolvingReader::new($input);
-                let mut bib_de = BibtexDeserializer::new_from_abbrev(reader, abbrevs.clone());
+                let reader = StrReader::new($input);
+                let mut bib_de = BibtexDeserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
                 let data = String::deserialize(deserializer);
                 assert!(data.is_err());
@@ -862,8 +859,8 @@ mod tests {
 
         macro_rules! assert_value_seq {
             ($input:expr, $expected:expr) => {
-                let reader = ResolvingReader::new($input);
-                let mut bib_de = BibtexDeserializer::new_from_abbrev(reader, abbrevs.clone());
+                let reader = StrReader::new($input);
+                let mut bib_de = BibtexDeserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
 
                 let data: Result<Vec<Tok>, _> = Vec::deserialize(deserializer);
@@ -934,7 +931,7 @@ mod tests {
         #[derive(Deserialize, Debug, PartialEq, Eq)]
         struct Val<'r>(#[serde(borrow)] Cow<'r, str>);
 
-        let mut abbrevs = Abbreviations::default();
+        let mut abbrevs = MacroDictionary::default();
 
         abbrevs.insert(
             Identifier::from_str_unchecked("a"),
@@ -948,8 +945,8 @@ mod tests {
 
         macro_rules! assert_value_matching {
             ($input:expr, $expected:expr, $cow:pat) => {
-                let reader = ResolvingReader::new($input);
-                let mut bib_de = BibtexDeserializer::new_from_abbrev(reader, abbrevs.clone());
+                let reader = StrReader::new($input);
+                let mut bib_de = BibtexDeserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
                 let data = Val::deserialize(deserializer);
                 let expected = Val($expected.into());

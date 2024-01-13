@@ -4,13 +4,17 @@ pub mod value;
 use serde::de::{self, DeserializeSeed, EnumAccess, SeqAccess, Unexpected, VariantAccess};
 use serde::forward_to_deserialize_any;
 
-use crate::abbrev::Abbreviations;
 use crate::error::Error;
-use crate::parse::core::ChunkType;
+use crate::macros::MacroDictionary;
+use crate::naming::{
+    COMMENT_ENTRY_VARIANT_NAME, MACRO_ENTRY_VARIANT_NAME, PREAMBLE_ENTRY_VARIANT_NAME,
+    REGULAR_ENTRY_VARIANT_NAME,
+};
+use crate::parse::core::EntryType;
 use crate::parse::BibtexReader;
 use crate::value::Token;
 
-use entry::EntryDeserializer;
+use entry::RegularEntryDeserializer;
 use value::{IdentifierDeserializer, KeyValueDeserializer};
 
 pub struct BibtexDeserializer<'r, R>
@@ -18,13 +22,13 @@ where
     R: BibtexReader<'r>,
 {
     reader: R,
-    abbrev: Abbreviations<'r>,
+    macros: MacroDictionary<'r>,
     scratch: Vec<Token<'r>>,
 }
 
 /// The top level deserializer for a bibtex file.
 ///
-/// The input is held by the stateful [`ResolvingReader`], which contains all of the methods for
+/// The input is held by the stateful [`StrReader`], which contains all of the methods for
 /// incrementing.
 ///
 /// Lifetimes:
@@ -36,23 +40,23 @@ where
     pub fn new(reader: R) -> Self {
         Self {
             reader,
-            abbrev: Abbreviations::default(),
+            macros: MacroDictionary::default(),
             scratch: Vec::new(),
         }
     }
 
-    pub fn new_from_abbrev(reader: R, abbrev: Abbreviations<'r>) -> Self {
+    pub fn new_with_macros(reader: R, macros: MacroDictionary<'r>) -> Self {
         Self {
             reader,
-            abbrev,
+            macros,
             scratch: Vec::new(),
         }
     }
 
     /// destroy the deserializer, returning the underlying abbreviations
-    pub fn finish(self) -> Abbreviations<'r> {
-        let Self { abbrev, .. } = self;
-        abbrev
+    pub fn finish(self) -> MacroDictionary<'r> {
+        let Self { macros, .. } = self;
+        macros
     }
 }
 
@@ -74,7 +78,6 @@ where
     where
         V: de::Visitor<'de>,
     {
-        // TODO: test
         self.deserialize_ignored_any(visitor)
     }
 
@@ -87,7 +90,6 @@ where
     where
         V: de::Visitor<'de>,
     {
-        // TODO: test
         self.deserialize_ignored_any(visitor)
     }
 
@@ -116,24 +118,24 @@ where
     where
         T: DeserializeSeed<'de>,
     {
-        match self.reader.take_chunk_type()? {
-            Some(chunk) => seed
-                .deserialize(ChunkDeserializer::new(&mut *self, chunk))
+        match self.reader.take_entry_type()? {
+            Some(entry) => seed
+                .deserialize(EntryDeserializer::new(&mut *self, entry))
                 .map(Some),
             None => Ok(None),
         }
     }
 }
 
-pub struct ChunkDeserializer<'a, 'r, R>
+pub struct EntryDeserializer<'a, 'r, R>
 where
     R: BibtexReader<'r>,
 {
     de: &'a mut BibtexDeserializer<'r, R>,
-    chunk: ChunkType<'r>,
+    entry_type: EntryType<'r>,
 }
 
-impl<'a, 'de: 'a, R> de::Deserializer<'de> for ChunkDeserializer<'a, 'de, R>
+impl<'a, 'de: 'a, R> de::Deserializer<'de> for EntryDeserializer<'a, 'de, R>
 where
     R: BibtexReader<'de>,
 {
@@ -153,32 +155,29 @@ where
     }
 }
 
-impl<'a, 'de: 'a, R> VariantAccess<'de> for ChunkDeserializer<'a, 'de, R>
+impl<'a, 'de: 'a, R> VariantAccess<'de> for EntryDeserializer<'a, 'de, R>
 where
     R: BibtexReader<'de>,
 {
     type Error = Error;
 
     fn unit_variant(self) -> Result<(), Self::Error> {
-        // TODO: capture the abbreviations here even though ignored
         self.de
             .reader
-            .ignore_chunk_captured(self.chunk, &mut self.de.abbrev)
+            .ignore_entry_captured(self.entry_type, &mut self.de.macros)
     }
 
     fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value, Self::Error>
     where
         T: DeserializeSeed<'de>,
     {
-        match self.chunk {
-            ChunkType::Entry(entry_type) => {
-                seed.deserialize(EntryDeserializer::new(&mut *self.de, entry_type))
+        match self.entry_type {
+            EntryType::Regular(entry_type) => {
+                seed.deserialize(RegularEntryDeserializer::new(&mut *self.de, entry_type))
             }
-            ChunkType::Abbreviation => {
-                seed.deserialize(AbbreviationDeserializer::new(&mut *self.de))
-            }
-            ChunkType::Comment => seed.deserialize(BracketedTextDeserializer::new(&mut *self.de)),
-            ChunkType::Preamble => seed.deserialize(BracketedTextDeserializer::new(&mut *self.de)),
+            EntryType::Macro => seed.deserialize(MacroRuleDeserializer::new(&mut *self.de)),
+            EntryType::Comment => seed.deserialize(BracketedTextDeserializer::new(&mut *self.de)),
+            EntryType::Preamble => seed.deserialize(BracketedTextDeserializer::new(&mut *self.de)),
         }
     }
 
@@ -188,7 +187,7 @@ where
     {
         Err(de::Error::invalid_type(
             Unexpected::TupleVariant,
-            &"chunk as tuple variant",
+            &"entry as tuple variant",
         ))
     }
 
@@ -202,12 +201,12 @@ where
     {
         Err(de::Error::invalid_type(
             Unexpected::StructVariant,
-            &"chunk as struct variant",
+            &"entry as struct variant",
         ))
     }
 }
 
-impl<'a, 'de: 'a, R> EnumAccess<'de> for ChunkDeserializer<'a, 'de, R>
+impl<'a, 'de: 'a, R> EnumAccess<'de> for EntryDeserializer<'a, 'de, R>
 where
     R: BibtexReader<'de>,
 {
@@ -219,33 +218,37 @@ where
     where
         V: DeserializeSeed<'de>,
     {
-        let de = match self.chunk {
-            ChunkType::Preamble => IdentifierDeserializer::new_from_str("Preamble"),
-            ChunkType::Comment => IdentifierDeserializer::new_from_str("Comment"),
-            ChunkType::Abbreviation => IdentifierDeserializer::new_from_str("Abbreviation"),
-            ChunkType::Entry(_) => IdentifierDeserializer::new_from_str("Entry"),
+        let de = match self.entry_type {
+            EntryType::Preamble => {
+                IdentifierDeserializer::new_from_str(PREAMBLE_ENTRY_VARIANT_NAME)
+            }
+            EntryType::Comment => IdentifierDeserializer::new_from_str(COMMENT_ENTRY_VARIANT_NAME),
+            EntryType::Macro => IdentifierDeserializer::new_from_str(MACRO_ENTRY_VARIANT_NAME),
+            EntryType::Regular(_) => {
+                IdentifierDeserializer::new_from_str(REGULAR_ENTRY_VARIANT_NAME)
+            }
         };
         Ok((seed.deserialize(de)?, self))
     }
 }
 
-impl<'a, 'r, R> ChunkDeserializer<'a, 'r, R>
+impl<'a, 'r, R> EntryDeserializer<'a, 'r, R>
 where
     R: BibtexReader<'r>,
 {
-    pub fn new(de: &'a mut BibtexDeserializer<'r, R>, chunk: ChunkType<'r>) -> Self {
-        Self { de, chunk }
+    pub fn new(de: &'a mut BibtexDeserializer<'r, R>, entry_type: EntryType<'r>) -> Self {
+        Self { de, entry_type }
     }
 }
 
-pub struct AbbreviationDeserializer<'a, 'r, R>
+pub struct MacroRuleDeserializer<'a, 'r, R>
 where
     R: BibtexReader<'r>,
 {
     de: &'a mut BibtexDeserializer<'r, R>,
 }
 
-impl<'a, 'r, R> AbbreviationDeserializer<'a, 'r, R>
+impl<'a, 'r, R> MacroRuleDeserializer<'a, 'r, R>
 where
     R: BibtexReader<'r>,
 {
@@ -256,14 +259,14 @@ where
 
 /// Deserialization an abbreviation `@string{key = value}`.
 ///
-/// Note that `@string` has already been matched by [`ChunkDeserializer`] and this method
+/// Note that `@string` has already been matched by [`EntryDeserializer`] and this method
 /// deserializes the part `{key = value}`. Note two potentially surprising possibilities:
 ///
 /// 1. The contents can be empty: `{}`.
 /// 2. If the contents are non-empty, there can be a trailing comma `{key = value,}`.
 ///
 /// As a result of 1, we deserialize as an `Option`.
-impl<'a, 'de: 'a, R> de::Deserializer<'de> for AbbreviationDeserializer<'a, 'de, R>
+impl<'a, 'de: 'a, R> de::Deserializer<'de> for MacroRuleDeserializer<'a, 'de, R>
 where
     R: BibtexReader<'de>,
 {
@@ -295,8 +298,6 @@ where
         self.de.reader.take_terminal(closing_bracket)?;
         val
     }
-
-    // TODO: implement ignored_any
 
     forward_to_deserialize_any! {
         bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
@@ -344,7 +345,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::reader::ResolvingReader;
+    use crate::reader::StrReader;
     use crate::value::Identifier;
     use serde::Deserialize;
 
@@ -368,7 +369,7 @@ mod tests {
     }
 
     #[derive(Deserialize, Debug, PartialEq)]
-    enum TestChunk<'a> {
+    enum TestEntry<'a> {
         #[serde(borrow)]
         Entry(TestEntryMap<'a>),
         #[serde(borrow)]
@@ -379,17 +380,17 @@ mod tests {
         Preamble(&'a str),
     }
 
-    type TestBib<'a> = Vec<TestChunk<'a>>;
+    type TestBib<'a> = Vec<TestEntry<'a>>;
 
     #[derive(Deserialize, Debug, PartialEq)]
-    enum BareChunk {
+    enum BareEntry {
         Entry,
         Abbreviation,
         Comment,
         Preamble,
     }
 
-    type TypeOnlyBib = Vec<BareChunk>;
+    type TypeOnlyBib = Vec<BareEntry>;
 
     #[test]
     fn test_abbreviation() {
@@ -398,7 +399,7 @@ mod tests {
 
     #[test]
     fn test_ignore() {
-        let reader = ResolvingReader::new(
+        let reader = StrReader::new(
             r#"
             @string{}
             @string{u={v}}
@@ -412,25 +413,25 @@ mod tests {
 
         let data: Result<TypeOnlyBib, Error> = TypeOnlyBib::deserialize(&mut bib_de);
         let expected = vec![
-            BareChunk::Abbreviation,
-            BareChunk::Abbreviation,
-            BareChunk::Entry,
-            BareChunk::Preamble,
-            BareChunk::Entry,
-            BareChunk::Comment,
+            BareEntry::Abbreviation,
+            BareEntry::Abbreviation,
+            BareEntry::Entry,
+            BareEntry::Preamble,
+            BareEntry::Entry,
+            BareEntry::Comment,
         ];
         assert_eq!(data, Ok(expected));
     }
 
     #[test]
     fn test_string_capturing() {
-        let reader = ResolvingReader::new("@string{a = {1}}@string{a = a # a}@string{a = a # a}");
+        let reader = StrReader::new("@string{a = {1}}@string{a = a # a}@string{a = a # a}");
         let mut bib_de = BibtexDeserializer::new(reader);
 
         let _ = TestBib::deserialize(&mut bib_de).unwrap();
         assert!(
             bib_de
-                .abbrev
+                .macros
                 .get(&Identifier::from_str_unchecked("a"))
                 .unwrap()
                 .len()
@@ -440,35 +441,27 @@ mod tests {
 
     #[test]
     fn test_string_capturing_ignore() {
-        #[derive(Deserialize, Debug, PartialEq)]
-        enum BareChunk {
-            Entry,
-            Abbreviation,
-            Comment,
-            Preamble,
-        }
+        type TypeOnlyBib = Vec<BareEntry>;
 
-        type TypeOnlyBib = Vec<BareChunk>;
-
-        let reader = ResolvingReader::new("@string{a = {1}}@string{a = a # a}@string{a = a # a}");
+        let reader = StrReader::new("@string{a = {1}}@string{a = a # a}@string{a = a # a}");
         let mut bib_de = BibtexDeserializer::new(reader);
 
         let _ = TypeOnlyBib::deserialize(&mut bib_de).unwrap();
         assert!(
             bib_de
-                .abbrev
+                .macros
                 .get(&Identifier::from_str_unchecked("a"))
                 .unwrap()
                 .len()
                 == 4
         );
-        println!("{:?}", bib_de.abbrev);
+        println!("{:?}", bib_de.macros);
         assert!(false);
     }
 
     #[test]
-    fn test_entry_chunk() {
-        let reader = ResolvingReader::new("@string{}@string{u={v}}@a{k,a=b}");
+    fn test_entry() {
+        let reader = StrReader::new("@string{}@string{u={v}}@a{k,a=b}");
         let mut bib_de = BibtexDeserializer::new(reader);
 
         let data: Result<TestBib, Error> = TestBib::deserialize(&mut bib_de);
@@ -476,29 +469,27 @@ mod tests {
         fields.insert("a", vec![Tok::A("b")]);
 
         let expected = vec![
-            TestChunk::Abbreviation(None),
-            TestChunk::Abbreviation(Some(("u", vec![Tok::T("v")]))),
-            TestChunk::Entry(TestEntryMap {
+            TestEntry::Abbreviation(None),
+            TestEntry::Abbreviation(Some(("u", vec![Tok::T("v")]))),
+            TestEntry::Entry(TestEntryMap {
                 entry_type: "a",
                 citation_key: "k",
                 fields,
             }),
         ];
         assert_eq!(data, Ok(expected));
-
-        // TODO more tests
     }
 
     use serde::de::IgnoredAny;
 
     macro_rules! assert_syntax {
         ($input:expr, $expect:ident) => {
-            let reader = ResolvingReader::new($input);
+            let reader = StrReader::new($input);
             let mut bib_de = BibtexDeserializer::new(reader);
             let data: Result<IgnoredAny, Error> = IgnoredAny::deserialize(&mut bib_de);
             assert!(data.$expect(), "{:?} : {:?}", data, bib_de.reader);
 
-            let reader = ResolvingReader::new($input);
+            let reader = StrReader::new($input);
             let mut bib_de = BibtexDeserializer::new(reader);
             let data: Result<TestBib, Error> = TestBib::deserialize(&mut bib_de);
             assert!(data.$expect(), "{:?} : {:?}", data, bib_de.reader);
@@ -541,7 +532,7 @@ mod tests {
     }
 
     #[test]
-    fn test_entry_syntax() {
+    fn test_regular_entry_syntax() {
         // basic example
         assert_syntax!(
             r#"@a{key:0,

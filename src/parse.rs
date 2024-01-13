@@ -2,15 +2,15 @@ pub mod core;
 pub mod token;
 
 use crate::error::Error;
-use crate::parse::core::ChunkType;
+use crate::parse::core::EntryType;
 use crate::value::{Identifier, Token, Value};
 
-use crate::abbrev::Abbreviations;
+use crate::macros::MacroDictionary;
 
 /// The core stateful reader trait.
 pub trait BibtexReader<'r> {
     /// Read the chunk type, returning None if EOF was reached.
-    fn take_chunk_type(&mut self) -> Result<Option<ChunkType<'r>>, Error>;
+    fn take_entry_type(&mut self) -> Result<Option<EntryType<'r>>, Error>;
 
     /// Consume an opening bracket `(` or `{`, and return the corresponding closing bracket.
     fn take_initial(&mut self) -> Result<char, Error>;
@@ -51,31 +51,31 @@ pub trait BibtexReader<'r> {
     }
 
     fn ignore_bibliography(&mut self) -> Result<(), Error> {
-        while let Some(chunk) = self.take_chunk_type()? {
+        while let Some(chunk) = self.take_entry_type()? {
             self.ignore_chunk(chunk)?;
         }
         Ok(())
     }
 
-    fn ignore_chunk(&mut self, chunk: ChunkType<'r>) -> Result<(), Error> {
+    fn ignore_chunk(&mut self, chunk: EntryType<'r>) -> Result<(), Error> {
         return match chunk {
-            ChunkType::Preamble => self.ignore_bracketed(),
-            ChunkType::Comment => self.ignore_bracketed(),
-            ChunkType::Abbreviation => self.ignore_abbreviation(),
-            ChunkType::Entry(_) => self.ignore_entry(),
+            EntryType::Preamble => self.ignore_bracketed(),
+            EntryType::Comment => self.ignore_bracketed(),
+            EntryType::Macro => self.ignore_abbreviation(),
+            EntryType::Regular(_) => self.ignore_entry(),
         };
     }
 
-    fn ignore_chunk_captured(
+    fn ignore_entry_captured(
         &mut self,
-        chunk: ChunkType<'r>,
-        abbrevs: &mut Abbreviations<'r>,
+        chunk: EntryType<'r>,
+        abbrevs: &mut MacroDictionary<'r>,
     ) -> Result<(), Error> {
         return match chunk {
-            ChunkType::Preamble => self.ignore_bracketed(),
-            ChunkType::Comment => self.ignore_bracketed(),
-            ChunkType::Abbreviation => self.ignore_abbreviation_captured(abbrevs),
-            ChunkType::Entry(_) => self.ignore_entry(),
+            EntryType::Preamble => self.ignore_bracketed(),
+            EntryType::Comment => self.ignore_bracketed(),
+            EntryType::Macro => self.ignore_abbreviation_captured(abbrevs),
+            EntryType::Regular(_) => self.ignore_entry(),
         };
     }
 
@@ -86,7 +86,7 @@ pub trait BibtexReader<'r> {
 
     fn ignore_abbreviation_captured(
         &mut self,
-        abbrevs: &mut Abbreviations<'r>,
+        abbrevs: &mut MacroDictionary<'r>,
     ) -> Result<(), Error> {
         let closing_bracket = self.take_initial()?;
         if let Some(identifier) = self.take_field_key()? {

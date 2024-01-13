@@ -10,7 +10,7 @@ pub mod value;
 pub mod error;
 
 /// Reader for lower-level document parsing.
-pub mod abbrev;
+pub mod macros;
 
 /// Fundamental parsers.
 pub mod parse;
@@ -22,7 +22,7 @@ pub use value::{Entry, Event};
 mod tests {
     use crate::de::BibtexDeserializer;
     use crate::error::Error;
-    use crate::reader::ResolvingReader;
+    use crate::reader::StrReader;
     use serde::Deserialize;
     use std::borrow::Cow;
 
@@ -75,7 +75,7 @@ mod tests {
         }
         "#;
 
-        let reader = ResolvingReader::new(input);
+        let reader = StrReader::new(input);
         let mut bib_de = BibtexDeserializer::new(reader);
 
         let data: Result<TestBibliography, Error> = TestBibliography::deserialize(&mut bib_de);

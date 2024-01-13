@@ -9,7 +9,7 @@ use super::value::{IdentifierDeserializer, KeyValueDeserializer, ValueDeserializ
 use super::BibtexDeserializer;
 use crate::parse::BibtexReader;
 
-pub struct EntryDeserializer<'a, 'r, R>
+pub struct RegularEntryDeserializer<'a, 'r, R>
 where
     R: BibtexReader<'r>,
 {
@@ -17,7 +17,7 @@ where
     entry_type: Identifier<'r>,
 }
 
-impl<'a, 'r, R> EntryDeserializer<'a, 'r, R>
+impl<'a, 'r, R> RegularEntryDeserializer<'a, 'r, R>
 where
     R: BibtexReader<'r>,
 {
@@ -26,7 +26,7 @@ where
     }
 }
 
-impl<'a, 'de: 'a, R> de::Deserializer<'de> for EntryDeserializer<'a, 'de, R>
+impl<'a, 'de: 'a, R> de::Deserializer<'de> for RegularEntryDeserializer<'a, 'de, R>
 where
     R: BibtexReader<'de>,
 {
@@ -87,7 +87,6 @@ where
     where
         V: de::Visitor<'de>,
     {
-        // TODO: test
         self.deserialize_ignored_any(visitor)
     }
 
@@ -126,7 +125,7 @@ enum EntryPosition {
 /// }<
 /// ```
 /// We assume that `article` is passed as the `entry_type` argument. The reason for this is that
-/// when we determine which Chunk variant to deserialize, we need to parse the `entry_type` and add
+/// when we determine which Entry variant to deserialize, we need to parse the `entry_type` and add
 /// special cases to handle `@string`, `@preamble`, and `@comment`.
 struct EntryAccess<'a, 'r, R>
 where
@@ -314,7 +313,6 @@ where
     where
         V: de::Visitor<'de>,
     {
-        // TODO: test
         self.de.reader.ignore_fields()?;
         visitor.visit_unit()
     }
@@ -394,7 +392,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::reader::ResolvingReader;
+    use crate::reader::StrReader;
     use serde::Deserialize;
     use std::collections::HashMap;
 
@@ -443,7 +441,7 @@ mod tests {
 
     #[test]
     fn test_entry_as_struct() {
-        let reader = ResolvingReader::new(
+        let reader = StrReader::new(
             r#"
             {key:0,
               author = {Auth} # {or},
@@ -453,7 +451,7 @@ mod tests {
         );
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer =
-            EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("article"));
+            RegularEntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("article"));
 
         let data: TestEntryStruct = TestEntryStruct::deserialize(deserializer).unwrap();
         let expected_data = TestEntryStruct {
@@ -473,10 +471,12 @@ mod tests {
 
     macro_rules! assert_de_entry {
         ($input:expr, $identifier: expr, $expected:expr, $target:tt) => {
-            let reader = ResolvingReader::new($input);
+            let reader = StrReader::new($input);
             let mut bib_de = BibtexDeserializer::new(reader);
-            let deserializer =
-                EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked($identifier));
+            let deserializer = RegularEntryDeserializer::new(
+                &mut bib_de,
+                Identifier::from_str_unchecked($identifier),
+            );
             assert_eq!(Ok($expected), $target::deserialize(deserializer));
         };
     }
@@ -530,7 +530,7 @@ mod tests {
 
         type EntryT<'a> = (&'a str, &'a str, TestFields<'a>);
 
-        let reader = ResolvingReader::new(
+        let reader = StrReader::new(
             r#"
             {key:0,
               year = 2012,
@@ -540,7 +540,7 @@ mod tests {
         );
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer =
-            EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("article"));
+            RegularEntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("article"));
 
         let data: EntryT = EntryT::deserialize(deserializer).unwrap();
         let expected_field_data = TestFields {
@@ -553,21 +553,24 @@ mod tests {
         assert_eq!(bib_de.reader.input, "");
 
         type Short<'a> = (&'a str, &'a str);
-        let reader = ResolvingReader::new("{k,a=b}");
+        let reader = StrReader::new("{k,a=b}");
         let mut bib_de = BibtexDeserializer::new(reader);
-        let deserializer = EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("a"));
+        let deserializer =
+            RegularEntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("a"));
         assert!(Short::deserialize(deserializer).is_err());
 
         type Long<'a> = (&'a str, &'a str, &'a str, &'a str);
-        let reader = ResolvingReader::new("{k,a=b}");
+        let reader = StrReader::new("{k,a=b}");
         let mut bib_de = BibtexDeserializer::new(reader);
-        let deserializer = EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("a"));
+        let deserializer =
+            RegularEntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("a"));
         assert!(Long::deserialize(deserializer).is_err());
 
         type Inf<'a> = Vec<&'a str>;
-        let reader = ResolvingReader::new("{k,a=b}");
+        let reader = StrReader::new("{k,a=b}");
         let mut bib_de = BibtexDeserializer::new(reader);
-        let deserializer = EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("a"));
+        let deserializer =
+            RegularEntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("a"));
         assert!(Inf::deserialize(deserializer).is_err());
     }
 
@@ -575,9 +578,10 @@ mod tests {
     fn test_entry_ignore() {
         use serde::de::IgnoredAny;
 
-        let reader = ResolvingReader::new(r#"(k,b="c",d=e # f,)"#);
+        let reader = StrReader::new(r#"(k,b="c",d=e # f,)"#);
         let mut bib_de = BibtexDeserializer::new(reader);
-        let deserializer = EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("a"));
+        let deserializer =
+            RegularEntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("a"));
         let res = IgnoredAny::deserialize(deserializer);
         assert!(res.is_ok())
     }
@@ -586,10 +590,10 @@ mod tests {
     fn test_ignore_unit() {
         #[derive(Deserialize, Debug, PartialEq)]
         struct Unit;
-        let reader = ResolvingReader::new("{k,a=b}");
+        let reader = StrReader::new("{k,a=b}");
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer =
-            EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("article"));
+            RegularEntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("article"));
         let data = Unit::deserialize(deserializer);
         assert!(data.is_ok(), "{:?}", data)
     }
@@ -610,7 +614,7 @@ mod tests {
             year: u64,
         }
 
-        let reader = ResolvingReader::new(
+        let reader = StrReader::new(
             r#"
             {key:0,
               author = {Author},
@@ -620,7 +624,7 @@ mod tests {
         );
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer =
-            EntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("article"));
+            RegularEntryDeserializer::new(&mut bib_de, Identifier::from_str_unchecked("article"));
 
         let data: TestSkipEntry = TestSkipEntry::deserialize(deserializer).unwrap();
         let expected_data = TestSkipEntry {
@@ -636,7 +640,7 @@ mod tests {
 
     #[test]
     fn test_fields_as_map() {
-        let reader = ResolvingReader::new(", author = {Alex Rutar}, title = {A nice title},}");
+        let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title},}");
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
@@ -650,7 +654,7 @@ mod tests {
 
     #[test]
     fn test_fields_as_seq() {
-        let reader = ResolvingReader::new(", author = {Alex Rutar}, title = {A nice title},}");
+        let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title},}");
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
@@ -666,7 +670,7 @@ mod tests {
             ]
         );
 
-        let reader = ResolvingReader::new(", author = {Alex Rutar}, title = {A nice title},}");
+        let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title},}");
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
@@ -698,7 +702,7 @@ mod tests {
 
     #[test]
     fn test_fields_as_map_enum() {
-        let reader = ResolvingReader::new(", year = 2012, month = 11, day = 5,}");
+        let reader = StrReader::new(", year = 2012, month = 11, day = 5,}");
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
@@ -728,9 +732,8 @@ mod tests {
             year: u32,
         }
 
-        let reader = ResolvingReader::new(
-            ", year = 20 # 12, author = {Alex Rutar}, title = {A nice title}}",
-        );
+        let reader =
+            StrReader::new(", year = 20 # 12, author = {Alex Rutar}, title = {A nice title}}");
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
@@ -753,7 +756,7 @@ mod tests {
             title: &'a str,
             year: Option<u32>,
         }
-        let reader = ResolvingReader::new(", author = {Alex Rutar}, title = {A nice title}}");
+        let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title}}");
         let mut bib_de = BibtexDeserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 

@@ -23,7 +23,7 @@ pub enum Error {
     // Deserializer without going through `ser::Error` and `de::Error`. These
     // are specific to the format, in this case JSON.
     Eof,
-    UnresolvedAbbreviation(String),
+    UnresolvedMacro(String),
     ExpectedBoolean(std::str::ParseBoolError),
     ExpectedInteger(std::num::ParseIntError),
     ExpectedFloat(std::num::ParseFloatError),
@@ -64,7 +64,7 @@ impl Display for Error {
         match self {
             Error::Message(msg) => f.write_str(msg),
             Error::Eof => f.write_str("unexpected end of input"),
-            Error::UnresolvedAbbreviation(s) => write!(f, "unresolved abbreviation: '{}'", s),
+            Error::UnresolvedMacro(s) => write!(f, "unresolved abbreviation: '{}'", s),
             Error::ExpectedBoolean(err) => err.fmt(f),
             Error::ExpectedInteger(err) => err.fmt(f),
             Error::ExpectedFloat(err) => err.fmt(f),
