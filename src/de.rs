@@ -1,27 +1,29 @@
 pub mod entry;
 pub mod value;
 
-use serde::de::{self, DeserializeSeed, EnumAccess, SeqAccess, Unexpected, VariantAccess};
+use serde::de::{
+    self, value::BorrowedStrDeserializer, DeserializeSeed, EnumAccess, SeqAccess, Unexpected,
+    VariantAccess,
+};
 use serde::forward_to_deserialize_any;
 
+use crate::bib::macros::MacroDictionary;
+use crate::bib::token::{EntryType, Token};
+use crate::bib::BibtexParser;
 use crate::error::Error;
-use crate::macros::MacroDictionary;
 use crate::naming::{
     COMMENT_ENTRY_VARIANT_NAME, MACRO_ENTRY_VARIANT_NAME, PREAMBLE_ENTRY_VARIANT_NAME,
     REGULAR_ENTRY_VARIANT_NAME,
 };
-use crate::parse::core::EntryType;
-use crate::parse::BibtexReader;
-use crate::value::Token;
 
 use entry::RegularEntryDeserializer;
-use value::{IdentifierDeserializer, KeyValueDeserializer};
+use value::{KeyValueDeserializer, TextDeserializer, ValueDeserializer};
 
 pub struct BibtexDeserializer<'r, R>
 where
-    R: BibtexReader<'r>,
+    R: BibtexParser<'r>,
 {
-    reader: R,
+    parser: R,
     macros: MacroDictionary<'r>,
     scratch: Vec<Token<'r>>,
 }
@@ -35,19 +37,19 @@ where
 /// - `'r`: underlying record
 impl<'r, R> BibtexDeserializer<'r, R>
 where
-    R: BibtexReader<'r>,
+    R: BibtexParser<'r>,
 {
-    pub fn new(reader: R) -> Self {
+    pub fn new(parser: R) -> Self {
         Self {
-            reader,
+            parser,
             macros: MacroDictionary::default(),
             scratch: Vec::new(),
         }
     }
 
-    pub fn new_with_macros(reader: R, macros: MacroDictionary<'r>) -> Self {
+    pub fn new_with_macros(parser: R, macros: MacroDictionary<'r>) -> Self {
         Self {
-            reader,
+            parser,
             macros,
             scratch: Vec::new(),
         }
@@ -62,7 +64,7 @@ where
 
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for &'a mut BibtexDeserializer<'de, R>
 where
-    R: BibtexReader<'de>,
+    R: BibtexParser<'de>,
 {
     type Error = Error;
 
@@ -97,7 +99,7 @@ where
     where
         V: de::Visitor<'de>,
     {
-        self.reader.ignore_bibliography()?;
+        self.parser.ignore_bibliography()?;
         visitor.visit_unit()
     }
 
@@ -110,7 +112,7 @@ where
 
 impl<'a, 'de: 'a, R> SeqAccess<'de> for &'a mut BibtexDeserializer<'de, R>
 where
-    R: BibtexReader<'de>,
+    R: BibtexParser<'de>,
 {
     type Error = Error;
 
@@ -118,9 +120,9 @@ where
     where
         T: DeserializeSeed<'de>,
     {
-        match self.reader.take_entry_type()? {
+        match self.parser.entry_type()? {
             Some(entry) => seed
-                .deserialize(EntryDeserializer::new(&mut *self, entry))
+                .deserialize(EntryDeserializer::new(*self, entry))
                 .map(Some),
             None => Ok(None),
         }
@@ -129,7 +131,7 @@ where
 
 pub struct EntryDeserializer<'a, 'r, R>
 where
-    R: BibtexReader<'r>,
+    R: BibtexParser<'r>,
 {
     de: &'a mut BibtexDeserializer<'r, R>,
     entry_type: EntryType<'r>,
@@ -137,7 +139,7 @@ where
 
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for EntryDeserializer<'a, 'de, R>
 where
-    R: BibtexReader<'de>,
+    R: BibtexParser<'de>,
 {
     type Error = Error;
 
@@ -157,13 +159,13 @@ where
 
 impl<'a, 'de: 'a, R> VariantAccess<'de> for EntryDeserializer<'a, 'de, R>
 where
-    R: BibtexReader<'de>,
+    R: BibtexParser<'de>,
 {
     type Error = Error;
 
     fn unit_variant(self) -> Result<(), Self::Error> {
         self.de
-            .reader
+            .parser
             .ignore_entry_captured(self.entry_type, &mut self.de.macros)
     }
 
@@ -172,12 +174,20 @@ where
         T: DeserializeSeed<'de>,
     {
         match self.entry_type {
-            EntryType::Regular(entry_type) => {
-                seed.deserialize(RegularEntryDeserializer::new(&mut *self.de, entry_type))
-            }
+            EntryType::Regular(entry_type) => seed.deserialize(RegularEntryDeserializer::new(
+                &mut *self.de,
+                entry_type.into_inner(),
+            )),
             EntryType::Macro => seed.deserialize(MacroRuleDeserializer::new(&mut *self.de)),
-            EntryType::Comment => seed.deserialize(BracketedTextDeserializer::new(&mut *self.de)),
-            EntryType::Preamble => seed.deserialize(BracketedTextDeserializer::new(&mut *self.de)),
+            EntryType::Comment => {
+                seed.deserialize(TextDeserializer::new(self.de.parser.comment_contents()?))
+            }
+            EntryType::Preamble => {
+                let closing_bracket = self.de.parser.initial()?;
+                let val = seed.deserialize(ValueDeserializer::try_from_de_resolved(&mut *self.de)?);
+                self.de.parser.terminal(closing_bracket)?;
+                val
+            }
         }
     }
 
@@ -208,7 +218,7 @@ where
 
 impl<'a, 'de: 'a, R> EnumAccess<'de> for EntryDeserializer<'a, 'de, R>
 where
-    R: BibtexReader<'de>,
+    R: BibtexParser<'de>,
 {
     type Error = Error;
 
@@ -220,13 +230,11 @@ where
     {
         let de = match self.entry_type {
             EntryType::Preamble => {
-                IdentifierDeserializer::new_from_str(PREAMBLE_ENTRY_VARIANT_NAME)
+                BorrowedStrDeserializer::<Self::Error>::new(PREAMBLE_ENTRY_VARIANT_NAME)
             }
-            EntryType::Comment => IdentifierDeserializer::new_from_str(COMMENT_ENTRY_VARIANT_NAME),
-            EntryType::Macro => IdentifierDeserializer::new_from_str(MACRO_ENTRY_VARIANT_NAME),
-            EntryType::Regular(_) => {
-                IdentifierDeserializer::new_from_str(REGULAR_ENTRY_VARIANT_NAME)
-            }
+            EntryType::Comment => BorrowedStrDeserializer::new(COMMENT_ENTRY_VARIANT_NAME),
+            EntryType::Macro => BorrowedStrDeserializer::new(MACRO_ENTRY_VARIANT_NAME),
+            EntryType::Regular(_) => BorrowedStrDeserializer::new(REGULAR_ENTRY_VARIANT_NAME),
         };
         Ok((seed.deserialize(de)?, self))
     }
@@ -234,7 +242,7 @@ where
 
 impl<'a, 'r, R> EntryDeserializer<'a, 'r, R>
 where
-    R: BibtexReader<'r>,
+    R: BibtexParser<'r>,
 {
     pub fn new(de: &'a mut BibtexDeserializer<'r, R>, entry_type: EntryType<'r>) -> Self {
         Self { de, entry_type }
@@ -243,14 +251,14 @@ where
 
 pub struct MacroRuleDeserializer<'a, 'r, R>
 where
-    R: BibtexReader<'r>,
+    R: BibtexParser<'r>,
 {
     de: &'a mut BibtexDeserializer<'r, R>,
 }
 
 impl<'a, 'r, R> MacroRuleDeserializer<'a, 'r, R>
 where
-    R: BibtexReader<'r>,
+    R: BibtexParser<'r>,
 {
     pub fn new(de: &'a mut BibtexDeserializer<'r, R>) -> Self {
         Self { de }
@@ -268,7 +276,7 @@ where
 /// As a result of 1, we deserialize as an `Option`.
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for MacroRuleDeserializer<'a, 'de, R>
 where
-    R: BibtexReader<'de>,
+    R: BibtexParser<'de>,
 {
     type Error = Error;
 
@@ -276,63 +284,29 @@ where
     where
         V: de::Visitor<'de>,
     {
-        let closing_bracket = self.de.reader.take_initial()?;
-        let key = self.de.reader.take_field_key()?;
+        let closing_bracket = self.de.parser.initial()?;
+        let key = self.de.parser.macro_variable_opt()?;
         let val = match key {
-            Some(identifier) => {
-                self.de.reader.ignore_field_sep()?;
-                visitor.visit_some(KeyValueDeserializer::new_captured(
-                    &mut *self.de,
-                    identifier,
-                ))
+            Some(var) => {
+                self.de.parser.field_sep()?;
+                self.de.scratch.clear();
+                self.de.parser.value_into(&mut self.de.scratch)?;
+                self.de.macros.resolve(&mut self.de.scratch);
+                self.de
+                    .macros
+                    .insert_raw_tokens(var.clone(), self.de.scratch.clone());
+                let val = visitor.visit_some(KeyValueDeserializer::new(
+                    var.0.into_inner(),
+                    &mut self.de.scratch,
+                ));
+                self.de.parser.comma_opt();
+                val
             }
             None => visitor.visit_none(),
         };
 
-        match key {
-            Some(_) => {
-                self.de.reader.opt_comma()?;
-            }
-            _ => {}
-        };
-        self.de.reader.take_terminal(closing_bracket)?;
+        self.de.parser.terminal(closing_bracket)?;
         val
-    }
-
-    forward_to_deserialize_any! {
-        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
-        bytes byte_buf option unit unit_struct newtype_struct seq tuple
-        tuple_struct map struct enum identifier ignored_any
-    }
-}
-
-pub struct BracketedTextDeserializer<'a, 'r, R>
-where
-    R: BibtexReader<'r>,
-{
-    de: &'a mut BibtexDeserializer<'r, R>,
-}
-
-impl<'a, 'r, R> BracketedTextDeserializer<'a, 'r, R>
-where
-    R: BibtexReader<'r>,
-{
-    pub fn new(de: &'a mut BibtexDeserializer<'r, R>) -> Self {
-        Self { de }
-    }
-}
-
-impl<'a, 'de: 'a, R> de::Deserializer<'de> for BracketedTextDeserializer<'a, 'de, R>
-where
-    R: BibtexReader<'de>,
-{
-    type Error = Error;
-
-    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
-    where
-        V: de::Visitor<'de>,
-    {
-        visitor.visit_borrowed_str(self.de.reader.take_bracketed_text()?)
     }
 
     forward_to_deserialize_any! {
@@ -345,8 +319,10 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::reader::StrReader;
-    use crate::value::Identifier;
+    use crate::bib::token::Variable;
+    use crate::read::StrReader;
+
+    use serde::de::IgnoredAny;
     use serde::Deserialize;
 
     use std::collections::HashMap;
@@ -377,7 +353,7 @@ mod tests {
         #[serde(borrow)]
         Comment(&'a str),
         #[serde(borrow)]
-        Preamble(&'a str),
+        Preamble(Vec<Tok<'a>>),
     }
 
     type TestBib<'a> = Vec<TestEntry<'a>>;
@@ -393,18 +369,13 @@ mod tests {
     type TypeOnlyBib = Vec<BareEntry>;
 
     #[test]
-    fn test_abbreviation() {
-        // test AbbreviationDeserializer
-    }
-
-    #[test]
     fn test_ignore() {
         let reader = StrReader::new(
             r#"
             @string{}
             @string{u={v}}
             @a{k,a=b}
-            @preamble{@r#}
+            @preamble{{a} # b # 1234}
             @b(k)
             @comment(com)
             "#,
@@ -424,6 +395,31 @@ mod tests {
     }
 
     #[test]
+    fn test_comment_raw() {
+        #[derive(Deserialize, Debug, PartialEq)]
+        enum OnlyComment<'a> {
+            Entry,
+            Abbreviation,
+            #[serde(borrow)]
+            Comment(&'a [u8]),
+            Preamble,
+        }
+
+        type CommentOnlyBib<'a> = Vec<OnlyComment<'a>>;
+
+        let reader = StrReader::new(
+            r#"
+            @comment(com)
+            "#,
+        );
+        let mut bib_de = BibtexDeserializer::new(reader);
+
+        let data: Result<CommentOnlyBib, Error> = CommentOnlyBib::deserialize(&mut bib_de);
+        let expected = vec![OnlyComment::Comment(b"com")];
+        assert_eq!(data, Ok(expected));
+    }
+
+    #[test]
     fn test_string_capturing() {
         let reader = StrReader::new("@string{a = {1}}@string{a = a # a}@string{a = a # a}");
         let mut bib_de = BibtexDeserializer::new(reader);
@@ -432,7 +428,7 @@ mod tests {
         assert!(
             bib_de
                 .macros
-                .get(&Identifier::from_str_unchecked("a"))
+                .get(&Variable::from_str_unchecked("a"))
                 .unwrap()
                 .len()
                 == 4
@@ -450,13 +446,11 @@ mod tests {
         assert!(
             bib_de
                 .macros
-                .get(&Identifier::from_str_unchecked("a"))
+                .get(&Variable::from_str_unchecked("a"))
                 .unwrap()
                 .len()
                 == 4
         );
-        println!("{:?}", bib_de.macros);
-        assert!(false);
     }
 
     #[test]
@@ -480,19 +474,17 @@ mod tests {
         assert_eq!(data, Ok(expected));
     }
 
-    use serde::de::IgnoredAny;
-
     macro_rules! assert_syntax {
         ($input:expr, $expect:ident) => {
             let reader = StrReader::new($input);
             let mut bib_de = BibtexDeserializer::new(reader);
             let data: Result<IgnoredAny, Error> = IgnoredAny::deserialize(&mut bib_de);
-            assert!(data.$expect(), "{:?} : {:?}", data, bib_de.reader);
+            assert!(data.$expect(), "{:?} : {:?}", data, bib_de.parser);
 
             let reader = StrReader::new($input);
             let mut bib_de = BibtexDeserializer::new(reader);
             let data: Result<TestBib, Error> = TestBib::deserialize(&mut bib_de);
-            assert!(data.$expect(), "{:?} : {:?}", data, bib_de.reader);
+            assert!(data.$expect(), "{:?} : {:?}", data, bib_de.parser);
         };
     }
 
@@ -509,21 +501,29 @@ mod tests {
 
     #[test]
     fn test_preamble_syntax() {
+        assert_syntax!(r"@preamble()", is_err);
+        assert_syntax!(r"@preamble{}", is_err);
+        assert_syntax!(r"@ pREamble {{any} # a #{allowed}}", is_ok);
         assert_syntax!(r"@preamble({})", is_ok);
-        assert_syntax!(r"@preamble()", is_ok);
-        assert_syntax!(r"@preamble{}", is_ok);
-        assert_syntax!(r"@ pREamble {@any#}", is_ok);
+        assert_syntax!(r"@preamble( {} # {} # {} )", is_ok);
 
         assert_syntax!(r"@preamble(", is_err);
         assert_syntax!(r"@preamble)", is_err);
         assert_syntax!(r"@preamble({{})", is_err);
         assert_syntax!(r"@preamble(})", is_err);
     }
+
+    #[test]
+    fn test_comment_round_syntax() {
+        assert_syntax!(r"@comment(@anything#)", is_ok);
+        assert_syntax!(r"@comment({(}))", is_ok);
+        assert_syntax!(r"@comment({(})", is_ok);
+        assert_syntax!(r"@comment(})", is_err);
+    }
+
     #[test]
     fn test_comment_syntax() {
         assert_syntax!(r"@comment{{}}", is_ok);
-        assert_syntax!(r"@comment({})", is_ok);
-        assert_syntax!(r"@comment(@anything#)", is_ok);
         assert_syntax!(r"@comment { @anything#}", is_ok);
         assert_syntax!(r"@coMment {}", is_ok);
         assert_syntax!("@\n CommEnt  { }", is_ok);
@@ -545,11 +545,12 @@ mod tests {
         // whitespace and unicode allowed in potentially surprising places
         assert_syntax!(
             r#"@   a🍄ticle {k🍄:0  ,
-              au🍄hor ={A🍄th}
+              author ={A🍄th}
                 #  
                 {or}
                 ,title =
-              "Tit🍄e" # 🍄}"#,
+              "Tit🍄e" # 🍄
+              }"#,
             is_ok
         );
 
@@ -566,6 +567,8 @@ mod tests {
         // no @, so it is junk
         assert_syntax!(r#"a{k,t=v}"#, is_ok);
 
+        // err: unicode in field keys
+        assert_syntax!(r"@article{k,auth🍄={v}}", is_err);
         // err: multiple trailing comma
         assert_syntax!(r#"@a{k,,}"#, is_err);
         // err: missing field value
@@ -576,7 +579,7 @@ mod tests {
         assert_syntax!(r#"@a{t=b}"#, is_err);
         assert_syntax!(r#"@a{t#b}"#, is_err);
         assert_syntax!(r#"@a{t\b}"#, is_err);
-        // err: junk
+        // err: extra @ chars
         assert_syntax!(r#"@ @ @{k,t=v}"#, is_err);
 
         // opening and closing brackets must match

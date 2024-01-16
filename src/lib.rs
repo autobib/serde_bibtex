@@ -1,28 +1,15 @@
 pub mod de;
-pub mod reader;
 
-pub(crate) mod naming;
-
-/// Representations of BibTex components.
-pub mod value;
-
-/// Error types for parsing and conversion.
+pub mod bib;
 pub mod error;
-
-/// Reader for lower-level document parsing.
-pub mod macros;
-
-/// Fundamental parsers.
-pub mod parse;
-
-// re-exports
-pub use value::{Entry, Event};
+pub(crate) mod naming;
+mod read;
 
 #[cfg(test)]
 mod tests {
     use crate::de::BibtexDeserializer;
     use crate::error::Error;
-    use crate::reader::StrReader;
+    use crate::read::StrReader;
     use serde::Deserialize;
     use std::borrow::Cow;
 
@@ -65,7 +52,7 @@ mod tests {
 
         @string(k={v})
 
-        @preamble{basically anything}
+        @preamble{"a value"}
 
         @comment{ignored}
 
@@ -79,6 +66,6 @@ mod tests {
         let mut bib_de = BibtexDeserializer::new(reader);
 
         let data: Result<TestBibliography, Error> = TestBibliography::deserialize(&mut bib_de);
-        println!("{:?}", data.unwrap());
+        assert!(data.is_ok());
     }
 }

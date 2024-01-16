@@ -1,105 +1,102 @@
-pub type ParseError<'r> = nom::Err<nom::error::Error<&'r str>>;
-use std;
-use std::fmt::{self, Display};
+use std::str::Utf8Error;
 
-use serde::{de, ser};
+#[derive(Debug, PartialEq)]
+pub enum TokenConversionError {
+    UnresolvedMacro(String),
+    InvalidUtf8(Utf8Error),
+}
 
-pub type Result<T> = std::result::Result<T, Error>;
+impl std::fmt::Display for TokenConversionError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str("could not convert token: ")?;
+        match self {
+            TokenConversionError::UnresolvedMacro(s) => write!(f, "unresolved macro: {s}"),
+            TokenConversionError::InvalidUtf8(err) => err.fmt(f),
+        }
+    }
+}
 
-// This is a bare-bones implementation. A real library would provide additional
-// information in its error type, for example the line and column at which the
-// error occurred, the byte offset into the input, or the current key being
-// processed.
+#[derive(Debug, PartialEq)]
+pub enum ReadError {
+    Eof,
+    ExpectedIdentifier,
+    Unbalanced,
+    InvalidUtf8(Utf8Error),
+}
+
+impl std::fmt::Display for ReadError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str("error while reading file: ")?;
+        match self {
+            ReadError::Eof => f.write_str("unexpected end of file"),
+            ReadError::ExpectedIdentifier => f.write_str("expected identifier"),
+            ReadError::Unbalanced => f.write_str("unbalanced curly brackets {}"),
+            ReadError::InvalidUtf8(err) => err.fmt(f),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub enum Error {
-    // One or more variants that can be created by data structures through the
-    // `ser::Error` and `de::Error` traits. For example the Serialize impl for
-    // Mutex<T> might return an error because the mutex is poisoned, or the
-    // Deserialize impl for a struct may return an error because a required
-    // field is missing.
     Message(String),
-
-    // Zero or more variants that can be created directly by the Serializer and
-    // Deserializer without going through `ser::Error` and `de::Error`. These
-    // are specific to the format, in this case JSON.
-    Eof,
     UnresolvedMacro(String),
-    ExpectedBoolean(std::str::ParseBoolError),
-    ExpectedInteger(std::num::ParseIntError),
-    ExpectedFloat(std::num::ParseFloatError),
-    ExpectedChar,
-    ExpectedNullValue,
-    NullValue,
-    ParseError,
-    FlagError,
-    // Syntax,
-    // ExpectedBoolean,
-    // ExpectedString,
-    // ExpectedNull,
-    // ExpectedArray,
-    // ExpectedArrayComma,
-    // ExpectedArrayEnd,
-    // ExpectedMap,
-    // ExpectedMapColon,
-    // ExpectedMapComma,
-    // ExpectedMapEnd,
-    // ExpectedEnum,
-    // TrailingCharacters,
+    ReadError(ReadError),
+    InvalidStartOfEntry,
+    ExpectedFieldSep,
+    UnexpectedEof,
+    TokenConversion(TokenConversionError),
+    InvalidUtf8(Utf8Error),
+    ExpectedNextTokenOrEndOfField,
+    UnclosedBracket,
+    UnclosedQuote,
+    TooManyChars,
+    ExpectedEndOfEntry,
+    NoChars,
 }
 
-impl ser::Error for Error {
-    fn custom<T: Display>(msg: T) -> Self {
-        Error::Message(msg.to_string())
-    }
-}
-
-impl de::Error for Error {
-    fn custom<T: Display>(msg: T) -> Self {
-        Error::Message(msg.to_string())
-    }
-}
-
-impl Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Error::Message(msg) => f.write_str(msg),
-            Error::Eof => f.write_str("unexpected end of input"),
-            Error::UnresolvedMacro(s) => write!(f, "unresolved abbreviation: '{}'", s),
-            Error::ExpectedBoolean(err) => err.fmt(f),
-            Error::ExpectedInteger(err) => err.fmt(f),
-            Error::ExpectedFloat(err) => err.fmt(f),
-            Error::ExpectedChar => f.write_str("expected char"),
-            Error::ExpectedNullValue => f.write_str("null value has contents"),
-            Error::NullValue => f.write_str("value has no contents"),
-            Error::ParseError => f.write_str("TODO!!!"),
-            Error::FlagError => f.write_str("TODO!!!"),
+            Error::InvalidUtf8(err) => err.fmt(f),
+            Error::ReadError(_err) => f.write_str("Read error"),
+            Error::InvalidStartOfEntry => f.write_str("TODO"),
+            Error::UnexpectedEof => f.write_str("TODO"),
+            Error::UnresolvedMacro(_) => f.write_str("TODO"),
+            Error::ExpectedNextTokenOrEndOfField => f.write_str("TODO"),
+            Error::TokenConversion(err) => err.fmt(f),
+            Error::TooManyChars => f.write_str("too many chars"),
+            Error::NoChars => f.write_str("expected char, got nothing"),
+            Error::ExpectedFieldSep => f.write_str("expected field separator '='"),
+            Error::UnclosedBracket => f.write_str("unclosed '{' in token"),
+            Error::UnclosedQuote => f.write_str("unclosed '\"' in token"),
+            Error::ExpectedEndOfEntry => f.write_str("expected end of entry"),
         }
     }
 }
 
 impl std::error::Error for Error {}
 
-impl From<std::str::ParseBoolError> for Error {
-    fn from(err: std::str::ParseBoolError) -> Self {
-        Self::ExpectedBoolean(err)
+impl serde::de::Error for Error {
+    fn custom<T: std::fmt::Display>(msg: T) -> Self {
+        Self::Message(msg.to_string())
     }
 }
 
-impl From<std::num::ParseIntError> for Error {
-    fn from(err: std::num::ParseIntError) -> Self {
-        Self::ExpectedInteger(err)
+impl From<ReadError> for Error {
+    fn from(err: ReadError) -> Self {
+        Self::ReadError(err)
     }
 }
 
-impl From<std::num::ParseFloatError> for Error {
-    fn from(err: std::num::ParseFloatError) -> Self {
-        Self::ExpectedFloat(err)
+impl From<Utf8Error> for Error {
+    fn from(err: Utf8Error) -> Self {
+        Self::InvalidUtf8(err)
     }
 }
 
-impl From<ParseError<'_>> for Error {
-    fn from(err: ParseError<'_>) -> Self {
-        println!("{}", err);
-        Self::ParseError
+impl From<TokenConversionError> for Error {
+    fn from(err: TokenConversionError) -> Self {
+        Self::TokenConversion(err)
     }
 }
