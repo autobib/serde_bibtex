@@ -1,13 +1,14 @@
-pub mod macros;
-pub mod token;
+mod macros;
+mod read;
+mod token;
 
 use crate::error::Error;
-use token::{EntryKey, EntryType, FieldKey, Token, Variable};
 
-use crate::read::{InputRead, Text};
-use macros::MacroDictionary;
+pub use macros::MacroDictionary;
+pub use read::{AsciiIdentifier, Read, SliceReader, StrReader, Text, UnicodeIdentifier};
+pub use token::{EntryKey, EntryType, FieldKey, Token, Variable};
 
-pub trait BibtexParser<'r>: InputRead<'r> {
+pub trait BibtexParse<'r>: Read<'r> {
     /// Read the entry type, returning None if EOF was reached.
     fn entry_type(&mut self) -> Result<Option<EntryType<'r>>, Error> {
         if self.next_entry_or_eof() {

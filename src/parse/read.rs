@@ -1,6 +1,7 @@
 mod create_input_impl;
 mod slice_impl;
 mod str_impl;
+
 pub use slice_impl::SliceReader;
 pub use str_impl::StrReader;
 
@@ -45,7 +46,7 @@ impl<'r> Text<'r> {
     }
 }
 
-pub trait InputRead<'r> {
+pub trait Read<'r> {
     /// Peek a single byte.
     fn peek(&self) -> Option<u8>;
 

@@ -3,11 +3,11 @@
 //! are valid str if they began as valid str.
 use super::slice_impl;
 use super::{AsciiIdentifier, Text, UnicodeIdentifier};
-use super::{InputRead, ReadError};
+use super::{Read, ReadError};
 use std::borrow::Cow;
 use std::str::from_utf8;
 
-use crate::bib::BibtexParser;
+use crate::parse::BibtexParse;
 
 #[inline]
 pub fn next_entry_or_eof(input: &str) -> (&str, bool) {

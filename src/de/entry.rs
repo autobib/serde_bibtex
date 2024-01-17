@@ -1,34 +1,232 @@
-use serde::de::{self, value::BorrowedStrDeserializer, DeserializeSeed, MapAccess, SeqAccess};
-use serde::forward_to_deserialize_any;
 use std::borrow::Cow;
 
-use crate::error::Error;
-use crate::naming::{CITATION_KEY_NAME, ENTRY_TYPE_NAME, FIELDS_NAME};
+use serde::de::{
+    self, value::BorrowedStrDeserializer, DeserializeSeed, EnumAccess, MapAccess, SeqAccess,
+    Unexpected, VariantAccess,
+};
+use serde::forward_to_deserialize_any;
 
-use super::value::{BorrowCowDeserializer, KeyValueDeserializer, ValueDeserializer};
-use super::BibtexDeserializer;
-use crate::bib::BibtexParser;
+use crate::{
+    error::Error,
+    naming::{
+        CITATION_KEY_NAME, COMMENT_ENTRY_VARIANT_NAME, ENTRY_TYPE_NAME, FIELDS_NAME,
+        MACRO_ENTRY_VARIANT_NAME, PREAMBLE_ENTRY_VARIANT_NAME, REGULAR_ENTRY_VARIANT_NAME,
+    },
+    parse::{BibtexParse, EntryType},
+};
+
+use super::{
+    value::{BorrowCowDeserializer, KeyValueDeserializer, TextDeserializer, ValueDeserializer},
+    Deserializer,
+};
+
+pub struct EntryDeserializer<'a, 'r, R>
+where
+    R: BibtexParse<'r>,
+{
+    de: &'a mut Deserializer<'r, R>,
+    entry_type: EntryType<'r>,
+}
+
+impl<'a, 'de: 'a, R> de::Deserializer<'de> for EntryDeserializer<'a, 'de, R>
+where
+    R: BibtexParse<'de>,
+{
+    type Error = Error;
+
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    where
+        V: de::Visitor<'de>,
+    {
+        visitor.visit_enum(self)
+    }
+
+    forward_to_deserialize_any! {
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
+        bytes byte_buf option unit unit_struct newtype_struct seq tuple
+        tuple_struct map struct enum identifier ignored_any
+    }
+}
+
+impl<'a, 'de: 'a, R> VariantAccess<'de> for EntryDeserializer<'a, 'de, R>
+where
+    R: BibtexParse<'de>,
+{
+    type Error = Error;
+
+    fn unit_variant(self) -> Result<(), Self::Error> {
+        self.de
+            .parser
+            .ignore_entry_captured(self.entry_type, &mut self.de.macros)
+    }
+
+    fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value, Self::Error>
+    where
+        T: DeserializeSeed<'de>,
+    {
+        match self.entry_type {
+            EntryType::Regular(entry_type) => seed.deserialize(RegularEntryDeserializer::new(
+                &mut *self.de,
+                entry_type.into_inner(),
+            )),
+            EntryType::Macro => seed.deserialize(MacroRuleDeserializer::new(&mut *self.de)),
+            EntryType::Comment => {
+                seed.deserialize(TextDeserializer::new(self.de.parser.comment_contents()?))
+            }
+            EntryType::Preamble => {
+                let closing_bracket = self.de.parser.initial()?;
+                let val = seed.deserialize(ValueDeserializer::try_from_de_resolved(&mut *self.de)?);
+                self.de.parser.terminal(closing_bracket)?;
+                val
+            }
+        }
+    }
+
+    fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value, Self::Error>
+    where
+        V: de::Visitor<'de>,
+    {
+        Err(de::Error::invalid_type(
+            Unexpected::TupleVariant,
+            &"entry as tuple variant",
+        ))
+    }
+
+    fn struct_variant<V>(
+        self,
+        _fields: &'static [&'static str],
+        _visitor: V,
+    ) -> Result<V::Value, Self::Error>
+    where
+        V: de::Visitor<'de>,
+    {
+        Err(de::Error::invalid_type(
+            Unexpected::StructVariant,
+            &"entry as struct variant",
+        ))
+    }
+}
+
+impl<'a, 'de: 'a, R> EnumAccess<'de> for EntryDeserializer<'a, 'de, R>
+where
+    R: BibtexParse<'de>,
+{
+    type Error = Error;
+
+    type Variant = Self;
+
+    fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant), Self::Error>
+    where
+        V: DeserializeSeed<'de>,
+    {
+        let de = match self.entry_type {
+            EntryType::Preamble => {
+                BorrowedStrDeserializer::<Self::Error>::new(PREAMBLE_ENTRY_VARIANT_NAME)
+            }
+            EntryType::Comment => BorrowedStrDeserializer::new(COMMENT_ENTRY_VARIANT_NAME),
+            EntryType::Macro => BorrowedStrDeserializer::new(MACRO_ENTRY_VARIANT_NAME),
+            EntryType::Regular(_) => BorrowedStrDeserializer::new(REGULAR_ENTRY_VARIANT_NAME),
+        };
+        Ok((seed.deserialize(de)?, self))
+    }
+}
+
+impl<'a, 'r, R> EntryDeserializer<'a, 'r, R>
+where
+    R: BibtexParse<'r>,
+{
+    pub fn new(de: &'a mut Deserializer<'r, R>, entry_type: EntryType<'r>) -> Self {
+        Self { de, entry_type }
+    }
+}
+
+pub struct MacroRuleDeserializer<'a, 'r, R>
+where
+    R: BibtexParse<'r>,
+{
+    de: &'a mut Deserializer<'r, R>,
+}
+
+impl<'a, 'r, R> MacroRuleDeserializer<'a, 'r, R>
+where
+    R: BibtexParse<'r>,
+{
+    pub fn new(de: &'a mut Deserializer<'r, R>) -> Self {
+        Self { de }
+    }
+}
+
+/// Deserialization an abbreviation `@string{key = value}`.
+///
+/// Note that `@string` has already been matched by [`EntryDeserializer`] and this method
+/// deserializes the part `{key = value}`. Note two potentially surprising possibilities:
+///
+/// 1. The contents can be empty: `{}`.
+/// 2. If the contents are non-empty, there can be a trailing comma `{key = value,}`.
+///
+/// As a result of 1, we deserialize as an `Option`.
+impl<'a, 'de: 'a, R> de::Deserializer<'de> for MacroRuleDeserializer<'a, 'de, R>
+where
+    R: BibtexParse<'de>,
+{
+    type Error = Error;
+
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    where
+        V: de::Visitor<'de>,
+    {
+        let closing_bracket = self.de.parser.initial()?;
+        let key = self.de.parser.macro_variable_opt()?;
+        let val = match key {
+            Some(var) => {
+                self.de.parser.field_sep()?;
+                self.de.scratch.clear();
+                self.de.parser.value_into(&mut self.de.scratch)?;
+                self.de.macros.resolve(&mut self.de.scratch);
+                self.de
+                    .macros
+                    .insert_raw_tokens(var.clone(), self.de.scratch.clone());
+                let val = visitor.visit_some(KeyValueDeserializer::new(
+                    var.0.into_inner(),
+                    &mut self.de.scratch,
+                ));
+                self.de.parser.comma_opt();
+                val
+            }
+            None => visitor.visit_none(),
+        };
+
+        self.de.parser.terminal(closing_bracket)?;
+        val
+    }
+
+    forward_to_deserialize_any! {
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
+        bytes byte_buf option unit unit_struct newtype_struct seq tuple
+        tuple_struct map struct enum identifier ignored_any
+    }
+}
 
 pub struct RegularEntryDeserializer<'a, 'r, R>
 where
-    R: BibtexParser<'r>,
+    R: BibtexParse<'r>,
 {
-    de: &'a mut BibtexDeserializer<'r, R>,
+    de: &'a mut Deserializer<'r, R>,
     name: Cow<'r, str>,
 }
 
 impl<'a, 'r, R> RegularEntryDeserializer<'a, 'r, R>
 where
-    R: BibtexParser<'r>,
+    R: BibtexParse<'r>,
 {
-    pub fn new(de: &'a mut BibtexDeserializer<'r, R>, name: Cow<'r, str>) -> Self {
+    pub fn new(de: &'a mut Deserializer<'r, R>, name: Cow<'r, str>) -> Self {
         Self { de, name }
     }
 }
 
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for RegularEntryDeserializer<'a, 'de, R>
 where
-    R: BibtexParser<'de>,
+    R: BibtexParse<'de>,
 {
     type Error = Error;
 
@@ -129,10 +327,10 @@ enum EntryPosition {
 /// special cases to handle `@string`, `@preamble`, and `@comment`.
 struct EntryAccess<'a, 'r, R>
 where
-    R: BibtexParser<'r>,
+    R: BibtexParse<'r>,
 {
     /// The top-level deserializer holding a reader.
-    de: &'a mut BibtexDeserializer<'r, R>,
+    de: &'a mut Deserializer<'r, R>,
     /// The previously parsed entry type
     name: Cow<'r, str>,
     /// The current position inside the Entry
@@ -143,9 +341,9 @@ where
 
 impl<'a, 'r, R> EntryAccess<'a, 'r, R>
 where
-    R: BibtexParser<'r>,
+    R: BibtexParse<'r>,
 {
-    fn new(de: &'a mut BibtexDeserializer<'r, R>, name: Cow<'r, str>) -> Self {
+    fn new(de: &'a mut Deserializer<'r, R>, name: Cow<'r, str>) -> Self {
         Self {
             de,
             name,
@@ -166,7 +364,7 @@ where
 
 impl<'a, 'de: 'a, R> MapAccess<'de> for EntryAccess<'a, 'de, R>
 where
-    R: BibtexParser<'de>,
+    R: BibtexParse<'de>,
 {
     type Error = Error;
 
@@ -217,7 +415,7 @@ where
 
 impl<'a, 'de: 'a, R> SeqAccess<'de> for EntryAccess<'a, 'de, R>
 where
-    R: BibtexParser<'de>,
+    R: BibtexParse<'de>,
 {
     type Error = Error;
 
@@ -252,23 +450,23 @@ where
 /// Used to deserialize the fields key = value, ..
 struct FieldDeserializer<'a, 'r, R>
 where
-    R: BibtexParser<'r>,
+    R: BibtexParse<'r>,
 {
-    de: &'a mut BibtexDeserializer<'r, R>,
+    de: &'a mut Deserializer<'r, R>,
 }
 
 impl<'a, 'r, R> FieldDeserializer<'a, 'r, R>
 where
-    R: BibtexParser<'r>,
+    R: BibtexParse<'r>,
 {
-    pub fn new(de: &'a mut BibtexDeserializer<'r, R>) -> Self {
+    pub fn new(de: &'a mut Deserializer<'r, R>) -> Self {
         Self { de }
     }
 }
 
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for FieldDeserializer<'a, 'de, R>
 where
-    R: BibtexParser<'de>,
+    R: BibtexParse<'de>,
 {
     type Error = Error;
 
@@ -342,7 +540,7 @@ where
 
 impl<'a, 'de: 'a, R> MapAccess<'de> for FieldDeserializer<'a, 'de, R>
 where
-    R: BibtexParser<'de>,
+    R: BibtexParse<'de>,
 {
     type Error = Error;
 
@@ -369,7 +567,7 @@ where
 
 impl<'a, 'de: 'a, R> SeqAccess<'de> for FieldDeserializer<'a, 'de, R>
 where
-    R: BibtexParser<'de>,
+    R: BibtexParse<'de>,
 {
     type Error = Error;
 
@@ -394,7 +592,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::read::StrReader;
+    use crate::parse::StrReader;
     use serde::Deserialize;
     use std::collections::HashMap;
 
@@ -451,7 +649,7 @@ mod tests {
               year = 2012,
             }"#,
         );
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed("article"));
 
         let data: TestEntryStruct = TestEntryStruct::deserialize(deserializer).unwrap();
@@ -473,7 +671,7 @@ mod tests {
     macro_rules! assert_de_entry {
         ($input:expr, $identifier: expr, $expected:expr, $target:tt) => {
             let reader = StrReader::new($input);
-            let mut bib_de = BibtexDeserializer::new(reader);
+            let mut bib_de = Deserializer::new(reader);
             let deserializer =
                 RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed($identifier));
             assert_eq!(Ok($expected), $target::deserialize(deserializer));
@@ -537,7 +735,7 @@ mod tests {
               title = "Title",
             }"#,
         );
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed("article"));
 
         let data: EntryT = EntryT::deserialize(deserializer).unwrap();
@@ -552,19 +750,19 @@ mod tests {
 
         type Short<'a> = (&'a str, &'a str);
         let reader = StrReader::new("{k,a=b}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed("a"));
         assert!(Short::deserialize(deserializer).is_err());
 
         type Long<'a> = (&'a str, &'a str, &'a str, &'a str);
         let reader = StrReader::new("{k,a=b}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed("a"));
         assert!(Long::deserialize(deserializer).is_err());
 
         type Inf<'a> = Vec<&'a str>;
         let reader = StrReader::new("{k,a=b}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed("a"));
         assert!(Inf::deserialize(deserializer).is_err());
     }
@@ -574,7 +772,7 @@ mod tests {
         use serde::de::IgnoredAny;
 
         let reader = StrReader::new(r#"(k,b="c",d=e # f,)"#);
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed("a"));
         let res = IgnoredAny::deserialize(deserializer);
         assert!(res.is_ok())
@@ -585,7 +783,7 @@ mod tests {
         #[derive(Deserialize, Debug, PartialEq)]
         struct Unit;
         let reader = StrReader::new("{k,a=b}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed("article"));
         let data = Unit::deserialize(deserializer);
         assert!(data.is_ok(), "{:?}", data)
@@ -615,7 +813,7 @@ mod tests {
               year = 2012,
             }"#,
         );
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, Cow::Borrowed("article"));
 
         let data: TestSkipEntry = TestSkipEntry::deserialize(deserializer).unwrap();
@@ -633,7 +831,7 @@ mod tests {
     #[test]
     fn test_fields_as_map() {
         let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title},}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         let data: HashMap<&str, &str> = HashMap::deserialize(deserializer).unwrap();
@@ -647,7 +845,7 @@ mod tests {
     #[test]
     fn test_fields_as_seq() {
         let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title},}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         type VecTupleFields<'a> = Vec<(&'a str, String)>;
@@ -663,7 +861,7 @@ mod tests {
         );
 
         let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title},}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         #[derive(Deserialize, Debug, PartialEq)]
@@ -695,7 +893,7 @@ mod tests {
     #[test]
     fn test_fields_as_map_enum() {
         let reader = StrReader::new(", year = 2012, month = 11, day = 5,}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
@@ -726,7 +924,7 @@ mod tests {
 
         let reader =
             StrReader::new(", year = 20 # 12, author = {Alex Rutar}, title = {A nice title}}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         assert_eq!(
@@ -749,7 +947,7 @@ mod tests {
             year: Option<u32>,
         }
         let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title}}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         assert_eq!(

@@ -1,5 +1,7 @@
 macro_rules! input_read_impl {
     ($target:ty, $name:ident, $var:ident, $convert:expr) => {
+        use crate::de::Deserializer;
+
         #[derive(Debug)]
         pub struct $name<'r> {
             pub(crate) input: &'r $target,
@@ -19,9 +21,13 @@ macro_rules! input_read_impl {
                 self.input = input;
                 Ok(ret)
             }
+
+            pub fn deserialize(self) -> Deserializer<'r, Self> {
+                Deserializer::new(self)
+            }
         }
 
-        impl<'r> InputRead<'r> for $name<'r> {
+        impl<'r> Read<'r> for $name<'r> {
             fn peek(&self) -> Option<u8> {
                 let bytes = $convert(self.input);
                 bytes.first().copied()
@@ -61,7 +67,7 @@ macro_rules! input_read_impl {
                 self.apply(number)
             }
         }
-        impl<'r> BibtexParser<'r> for $name<'r> {}
+        impl<'r> BibtexParse<'r> for $name<'r> {}
     };
 }
 

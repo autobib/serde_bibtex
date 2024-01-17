@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::bib::token::{Token, Variable};
+use super::{Token, Variable};
 
 #[derive(Debug, Default, Clone)]
 pub struct MacroDictionary<'r> {

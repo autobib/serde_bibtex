@@ -2,12 +2,12 @@
 //! safety! All of the cuts must be performed either immediately before or after an ascii codepoint,
 //! so the resulting slices are valid str if they began as valid str.
 use super::{AsciiIdentifier, Text, UnicodeIdentifier};
-use super::{InputRead, ReadError};
+use super::{Read, ReadError};
 use memchr::{memchr, memchr2, memchr2_iter, memchr3_iter};
 use std::borrow::Cow;
 use std::str::from_utf8;
 
-use crate::bib::BibtexParser;
+use crate::parse::BibtexParse;
 
 /// Ignore junk characters between entries.
 pub fn next_entry_or_eof(input: &[u8]) -> (&[u8], bool) {

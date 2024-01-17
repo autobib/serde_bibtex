@@ -2,8 +2,10 @@ use crate::error::TokenConversionError;
 use std::borrow::Cow;
 use unicase::{Ascii, UniCase};
 
-use crate::read::{AsciiIdentifier, Text, UnicodeIdentifier};
-pub const DISALLOWED_PRINTABLE_CHARS: &str = "{}(),=\\#%'\"";
+use super::{AsciiIdentifier, Text, UnicodeIdentifier};
+
+/// ASCII Printable characters not permitted in any identifiers.
+const DISALLOWED_PRINTABLE_CHARS: &str = "{}(),=\\#%'\"";
 
 /// Entry type, such as `article` in `@article{...`.
 ///

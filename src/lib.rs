@@ -1,71 +1,64 @@
+//! # Serde BibTex
+//!
+//! The `.bib` format is a common format for storing bibliographic data originally popularized by
+//! the [BibTex](https://en.wikipedia.org/wiki/BibTeX) bibliography management software.
+//! ```bib
+//! @article{key,
+//!   title = {Title},
+//!   author = {One, Author},
+//!   year = 2024,
+//! }
+//! ```
+//! This module provides a [serde](https://docs.rs/serde/latest/serde/) interface for deserializing
+//! `.bib` files into strongly typed data structures.
+//!
+//! ## Basic Example
+//! ```
+//! use serde::Deserialize;
+//! use serde_bibtex::StrReader;
+//! use std::collections::HashMap;
+//!
+//! #[derive(Debug, Deserialize, PartialEq)]
+//! struct Entry {
+//!     entry_type: String,
+//!     citation_key: String,
+//!     fields: HashMap<String, String>
+//! }
+//!
+//! let input = r#"
+//!     @article{key,
+//!       title = {Title},
+//!       author = {One, Author},
+//!       year = 2024,
+//!     }
+//! "#;
+//!
+//! let de = StrReader::new(input).deserialize();
+//!
+//! let mut entry_iter = de.into_iter_entry();
+//!
+//! let mut expected_fields = HashMap::new();
+//! expected_fields.insert("title".into(), "Title".into());
+//! expected_fields.insert("author".into(), "One, Author".into());
+//! expected_fields.insert("year".into(), "2024".into());
+//!
+//! assert_eq!(
+//!     entry_iter.next(),
+//!     Some(Ok(Entry {
+//!         entry_type: "article".into(),
+//!         citation_key: "key".into(),
+//!         fields: expected_fields
+//!     }))
+//! );
+//! ```
 pub mod de;
-
-pub mod bib;
 pub mod error;
+
 pub(crate) mod naming;
-mod read;
 
-#[cfg(test)]
-mod tests {
-    use crate::de::BibtexDeserializer;
-    use crate::error::Error;
-    use crate::read::StrReader;
-    use serde::Deserialize;
-    use std::borrow::Cow;
+pub(crate) mod parse;
+pub use parse::SliceReader;
+pub use parse::StrReader;
 
-    #[derive(Deserialize, Debug, PartialEq)]
-    enum TestChunk<'a> {
-        #[serde(borrow)]
-        Entry(TestEntry<'a>),
-        Abbreviation,
-        Comment,
-        Preamble,
-    }
-
-    #[derive(Deserialize, Debug, PartialEq)]
-    struct TestEntry<'a> {
-        entry_type: &'a str,
-        citation_key: &'a str,
-        #[serde(borrow)]
-        fields: TestFields<'a>,
-    }
-
-    #[derive(Deserialize, Debug, PartialEq)]
-    struct TestFields<'a> {
-        #[serde(borrow)]
-        author: Cow<'a, str>,
-        #[serde(borrow)]
-        title: Cow<'a, str>,
-    }
-
-    type TestBibliography<'a> = Vec<TestChunk<'a>>;
-
-    #[test]
-    fn example_capture_entries() {
-        let input = r#"
-        @article{key,
-           author = {One, Author} # { and } # {Two, Author},
-           title = {Title},
-           year = 2024,
-           nonsense = 12,
-        }
-
-        @string(k={v})
-
-        @preamble{"a value"}
-
-        @comment{ignored}
-
-        @book{key2,
-           author = {Auth},
-           title = 1 # {Year},
-        }
-        "#;
-
-        let reader = StrReader::new(input);
-        let mut bib_de = BibtexDeserializer::new(reader);
-
-        let data: Result<TestBibliography, Error> = TestBibliography::deserialize(&mut bib_de);
-        assert!(data.is_ok());
-    }
-}
+pub use de::{from_bytes, from_str, Deserializer};
+pub use error::Error;

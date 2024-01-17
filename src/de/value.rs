@@ -7,12 +7,11 @@ use serde::de::{
 };
 use serde::forward_to_deserialize_any;
 
-use crate::bib::{token::Token, BibtexParser};
 use crate::error::Error;
 use crate::naming::{MACRO_TOKEN_VARIANT_NAME, TEXT_TOKEN_VARIANT_NAME};
-use crate::read::Text;
+use crate::parse::{BibtexParse, Text, Token};
 
-use super::BibtexDeserializer;
+use super::Deserializer;
 
 pub struct KeyValueDeserializer<'a, 'r> {
     k: Option<Cow<'r, str>>,
@@ -293,11 +292,9 @@ impl<'a, 'r> ValueDeserializer<'a, 'r> {
     }
 
     /// Create a new value from the tokens after resolving macros.
-    pub(crate) fn try_from_de_resolved<R>(
-        de: &'a mut BibtexDeserializer<'r, R>,
-    ) -> Result<Self, Error>
+    pub(crate) fn try_from_de_resolved<R>(de: &'a mut Deserializer<'r, R>) -> Result<Self, Error>
     where
-        R: BibtexParser<'r>,
+        R: BibtexParse<'r>,
     {
         de.parser.value_into(&mut de.scratch)?;
         de.macros.resolve(&mut de.scratch);
@@ -525,10 +522,10 @@ impl<'de> de::Deserializer<'de> for TextDeserializer<'de> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::bib::macros::MacroDictionary;
-    use crate::bib::token::Variable;
-    use crate::de::BibtexDeserializer;
-    use crate::read::StrReader;
+    use crate::de::Deserializer;
+    use crate::parse::MacroDictionary;
+    use crate::parse::StrReader;
+    use crate::parse::Variable;
     use serde::Deserialize;
 
     #[derive(Debug, Deserialize, PartialEq)]
@@ -542,7 +539,7 @@ mod tests {
     macro_rules! assert_de {
         ($input:expr, $expected:expr, $target:tt) => {
             let reader = StrReader::new($input);
-            let mut bib_de = BibtexDeserializer::new(reader);
+            let mut bib_de = Deserializer::new(reader);
             let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
             assert_eq!(Ok($expected), $target::deserialize(deserializer));
         };
@@ -551,7 +548,7 @@ mod tests {
     macro_rules! assert_de_err {
         ($input:expr, $target:tt) => {
             let reader = StrReader::new($input);
-            let mut bib_de = BibtexDeserializer::new(reader);
+            let mut bib_de = Deserializer::new(reader);
             let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
             assert!($target::deserialize(deserializer).is_err());
         };
@@ -592,7 +589,7 @@ mod tests {
         }
 
         let reader = StrReader::new("{a} # { b} # C");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
         assert_eq!(
             Ok(vec![
@@ -604,7 +601,7 @@ mod tests {
         );
 
         let reader = StrReader::new("{u} # {v}");
-        let mut bib_de = BibtexDeserializer::new(reader);
+        let mut bib_de = Deserializer::new(reader);
         let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
         assert_eq!(
             vec![b'u', b'v'],
@@ -720,7 +717,7 @@ mod tests {
         macro_rules! assert_value_string {
             ($input:expr, $expected:expr) => {
                 let reader = StrReader::new($input);
-                let mut bib_de = BibtexDeserializer::new_with_macros(reader, abbrevs.clone());
+                let mut bib_de = Deserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
                 let data = String::deserialize(deserializer);
                 let expected = $expected.to_string();
@@ -731,7 +728,7 @@ mod tests {
         macro_rules! assert_value_fail {
             ($input:expr) => {
                 let reader = StrReader::new($input);
-                let mut bib_de = BibtexDeserializer::new_with_macros(reader, abbrevs.clone());
+                let mut bib_de = Deserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
                 let data = String::deserialize(deserializer);
                 assert!(data.is_err());
@@ -741,7 +738,7 @@ mod tests {
         macro_rules! assert_value_seq {
             ($input:expr, $expected:expr) => {
                 let reader = StrReader::new($input);
-                let mut bib_de = BibtexDeserializer::new_with_macros(reader, abbrevs.clone());
+                let mut bib_de = Deserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
 
                 let data: Result<Vec<Tok>, _> = Vec::deserialize(deserializer);
@@ -827,7 +824,7 @@ mod tests {
         macro_rules! assert_value_matching {
             ($input:expr, $expected:expr, $cow:pat) => {
                 let reader = StrReader::new($input);
-                let mut bib_de = BibtexDeserializer::new_with_macros(reader, abbrevs.clone());
+                let mut bib_de = Deserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
                 let data = Val::deserialize(deserializer);
                 let expected = Val($expected.into());
