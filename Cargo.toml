@@ -8,6 +8,9 @@ keywords = ["bibtex", "serde", "serialization"]
 categories = ["encoding", "parser-implementations"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/autobib/serde_bibtex"
+exclude = [
+    "assets/*",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
