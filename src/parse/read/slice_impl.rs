@@ -5,7 +5,7 @@ use super::{AsciiIdentifier, Text, UnicodeIdentifier};
 use super::{Read, ReadError};
 use memchr::{memchr, memchr2, memchr2_iter, memchr3_iter};
 use std::borrow::Cow;
-use std::str::from_utf8;
+use std::str::{from_utf8, from_utf8_unchecked};
 
 use crate::parse::BibtexParse;
 
@@ -147,7 +147,7 @@ pub fn identifier_ascii(b: &[u8]) -> Result<(&[u8], AsciiIdentifier), ReadError>
     // must be an ascii printable character and therefore valid utf8.
     Ok((
         &b[pos..],
-        AsciiIdentifier(Cow::Borrowed(from_utf8(&b[..pos]).unwrap())),
+        AsciiIdentifier(Cow::Borrowed(unsafe { from_utf8_unchecked(&b[..pos]) })),
     ))
 }
 
@@ -170,7 +170,7 @@ pub fn number(input: &[u8]) -> Result<(&[u8], Text), ReadError> {
     // valid utf8.
     Ok((
         &input[pos..],
-        Text::Str(Cow::Borrowed(from_utf8(&input[..pos]).unwrap())),
+        Text::Str(Cow::Borrowed(unsafe { from_utf8_unchecked(&input[..pos]) })),
     ))
 }
 

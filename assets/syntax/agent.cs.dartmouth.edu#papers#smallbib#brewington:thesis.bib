@@ -1,0 +1,35 @@
+@phdthesis{brewington:thesis,
+    author = {Brian Brewington},
+    title = {Observation of changing information sources},
+    year = {2000},
+    month = {June},
+    school = {Thayer School of Engineering, Dartmouth College},
+    copyright = {Brian Brewington},
+    group = {agents, actcomm},
+    url = {http://actcomm.dartmouth.edu/papers/brewington:thesis.ps.gz},
+    keyword = {world-wide web, search engine, modeling},
+    abstract = {Many modern information management tasks consist of an observer
+that must maintain current knowledge of a collection of changing information.
+The goal of this observer is to maintain acceptably accurate state estimates
+given limited observation resources, such as bandwidth, time, and storage.
+Good examples of such ``observation problems'' are found in any situation
+where bandwidth is limited and old observations become less useful over time.
+Two such examples are maintaining a search engine's index of the World Wide
+Web (WWW) and automated monitoring of multiple sensors. This thesis addresses
+the general observation problem by (1) devising a formal framework of what it
+means to be ``up-to-date'', (2) gathering empirical data about the web that
+allows us to apply this framework to an important setting, and (3) presenting
+algorithms for scheduling revisits to optimize formal performance measures.
+One year's worth of web page observations are analyzed to show how quickly
+and in what ways web pages change. The observations are used to estimate the
+distribution of web page change rates. Using this data as a model of the web
+we present and benchmark an algorithm for optimizing the observation of a set
+of web documents such that fewer changes go unnoticed. Our experiments on
+real search engines show that between 40 and 50% of results returned have
+been altered at least once since the search engine last observed them. Our
+algorithm can theoretically reduce these figures to between 36 and 44%,
+assuming that existing search engines currently use simple round-robin
+re-indexing strategies. These methods benefit the ``overworked'' observer
+much more than the one with ample bandwidth, and are general enough to be of
+use in a wide variety of monitoring tasks.},
+}

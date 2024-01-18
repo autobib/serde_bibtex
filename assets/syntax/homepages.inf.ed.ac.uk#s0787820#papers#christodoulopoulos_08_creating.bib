@@ -1,0 +1,30 @@
+@mastersthesis{Christodoulopoulos08Creating,
+    abstract = {This dissertation presents an integrated system for producing Natural Logic inferences,
+which are used in a wide variety of natural language understanding tasks. Natural
+Logic is the process of creating valid inferences by making incremental edits to natural
+language expressions with respect to a universal monotonicity calculus, without
+resorting to logical representation of the expressions (using First Order Logic for instance).
+The system generates inferences from surface forms using a three-stage process.
+First, each sentence is subjected to syntactic analysis, using a purpose-built syntactic
+parser. Then the rules of the monotonicity calculus are applied, specifying the directionality
+of entailment for each sentence constituents. A constituent can be either
+upward or downward entailing, meaning that we may replace it with a semantically
+broader or narrower term. Finally, we can find all suitable replacement terms for each
+target word by using the WordNet lexical database, which contains hypernymic and
+hyponymic relations.
+Using Combinatory Categorial Grammar, we were able to incorporate the monotonicity
+determination step in the syntactic derivation process. In order to achieve wide
+coverage over English sentences we had to introduce statistical models into our syntactic
+parser. At the current stage we have implemented a simple statistical model similar
+to those of Probabilistic Context-Free Grammars.
+The system is intended to provide input to  ” deep” reasoning engines, used for
+higher-level Natural Language Processing applications such as Recognising Textual
+Entailment. In addition to independently evaluating each component of the system, we
+present our comprehensive findings using Cyc, a large-scale knowledge base, and we
+outline a solution for its relatively limited concept coverage.},
+    author = {Christodoulopoulos, Christos},
+    school = {School of Informatics, University of Edinburgh},
+    title = {Creating a Natural Logic Inference System with Combinatory Categorial Grammar},
+    year = {2008}
+}
+

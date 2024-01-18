@@ -9,7 +9,10 @@ use crate::error::ReadError;
 use std::borrow::Cow;
 use std::str::Utf8Error;
 
+#[derive(Debug)]
 pub struct UnicodeIdentifier<'r>(pub Cow<'r, str>);
+
+#[derive(Debug)]
 pub struct AsciiIdentifier<'r>(pub Cow<'r, str>);
 
 /// The core Text handling object.

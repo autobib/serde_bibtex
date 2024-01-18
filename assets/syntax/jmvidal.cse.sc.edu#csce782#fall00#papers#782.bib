@@ -1,0 +1,360 @@
+%  Jose M. Vidal 
+% Annotated bibliography for 822 (multiagent systems)
+%
+% NOTE: If using tth to convert to html, use hyperplain.bst
+%
+% $Id: 782.bib,v 1.1.1.1 2000/08/16 14:54:03 jmvidal Exp $
+%
+% The Entries
+% The skey (aka abstract) .bst supports:
+%     keyword, abstract, comment
+% Put the url, when available, in the url field.
+%
+		  
+%publishers
+@STRING{pub-lnai = {Lecture Notes in Artificial Intelligence} }
+@STRING{pub-aw	= {Ad\-di\-son-Wes\-ley} }
+@STRING{pub-aw:adr={Reading, MA} }
+@STRING{pub-mit	= {The {MIT} Press} }
+@STRING{pub-mit:adr={Cambridge, MA} }
+@STRING{pub-mk	= {Morgan Kaufmann} }
+@STRING{pub-mk:adr={San Mateo, CA} }
+@String{pub-sv = {Sprin\-ger-Ver\-lag} }
+@String{pub-ss = {Simon \& Schuster}}
+@STRING{pub-aaai = {{AAAI} Press} }
+@STRING{pub-aaai:adr={Menlo Park, CA} }
+
+
+
+@InCollection{Dorer99a,
+  author = 	 {Klaus Dorer},
+  title = 	 {The magmaFreiburg Soccer Team},
+  booktitle = 	 {RoboCup-99: Robot Soccer World Cup III},
+  publisher =	 pub-sv,
+  year =	 1999,
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/magmaFreiburg99.ps}
+}
+
+@InProceedings{StoneRileyVeloso2000a,
+  author="Peter Stone and Patrick Riley and Manuela Veloso",
+  title="The {CMU}nited-99 Champion Simulator Team",
+  booktitle= "{R}obo{C}up-99: Robot Soccer World Cup III",
+  editor="Manuela Veloso and Enrico Pagello and Hiroaki Kitano",
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/CMUnited-99-sim.ps},
+  publisher=pub-sv,
+  address="Berlin",
+  note = 	 {General descriptions of the team architecture},
+  year="2000"}
+
+@InProceedings{StoneRileyVeloso2000b,  
+  author="Peter Stone and Patrick Riley and Manuela Veloso",
+  title="Defining and Using Ideal Teammate and Opponent Agent Models",
+  booktitle="Submitted Proceedings of the Fourth International Conference on MultiAgent Systems",
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/IMBBOP.ps},
+  year="2000"}
+
+@InProceedings{StoneRileyVeloso2000c,
+  author="Peter Stone and Patrick Riley and Manuela Veloso",
+  title="Layered Extrospection:  Why is the agent doing what it's doing?",
+  booktitle="Submitted to Proceedings of the Fourth International Conference on Autonomous Agents",
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/extrospection.ps}, 
+  year="2000"}
+
+@InCollection{bonabeau97a,
+  author = 	 {Eric Bonabeau and Andrej Sobkowski and Guy Theraulaz and Jean-Louis Deneubourg},
+  title = 	 {Adaptive Task Allocation Inspired by a Model of Division of Labor in Social Insects},
+  booktitle = 	 {Bio Computation and Emergent Computing},
+  pages =	 {36--45},
+  publisher =	 {World Scientific},
+  year =	 1997,
+  editor =	 {D. Lundh and B. Olsson and A. Narayanan},
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/98-01-004.ps},
+  abstract = {Social insects provide us with a powerful metaphor to
+  create decentralized systems of simple interacting, and often
+  mobile, agents. The emergent collective intelligence of social
+  insects---swarm intelligence---resides not in complex individual
+  abilities but rather in networks of interactions that exist among
+  individuals and between individuals and their environment. In
+  particular, a recently proposed model of division of labor in a
+  colony of primitively eusocial wasps, based on a simple
+  reinforcement of response thresholds, can be transformed into a
+  decentralized adaptive algorithm of task allocation. An application
+  of such an algorithm is proposed in the context of a mail company,
+  but virtually any type of flexible task allocation can be described
+  within the same framework. },
+}
+
+
+@Article{botee99a,
+  author = 	 {Hozefa M. Botee and Eric Bonabeau},
+  title = 	 {Evolving Ant Colony Optimization},
+  journal = 	 {Advances in Complex Systems },
+  year = 	 1999,
+  volume =	 1,
+  number =	 {2/3},
+  pages =	 {149--159},
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/99-01-009.ps},
+  abstract = {Social insects---ants, bees, termites and wasps---exhibit
+  a collective problem-solving ability (Deneubourg and Goss, 1989;
+  Bonabeau et al., 1997). In particular, several ant species are
+  capable of selecting the shortest pathway, among a set of
+  alternative pathways, from their nest to a food source (Beckers et
+  al., 1990). Ants deploy a chemical trail (or pheromone trail) as
+  they walk; this trail attracts other ants to take the path that has
+  the most pheromone. This reinforcement process results in the
+  selection of the shortest path: the first ants coming back to the
+  nest are those that took the shortest path twice (to go from the
+  nest to the source and to return to the nest), so that more
+  pheromone is present on the shortest path than on longer paths
+  immediatly after these ants have returned, stimulating nestmates to
+  choose the shortest path. Taking advantage of this ant-based
+  optimizing principle combined with pheromone evaporation to avoid
+  early convergence to bad solutions, Colorni et al. (1991, 1992,
+  1993), Dorigo et al. (1996), Dorigo and Gambardella (1997a, 1997b;
+  Gambardella and Dorigo, 1995) and Gambardella et al.(1997) have
+  proposed a remarkable optimization method, Ant Colony Optimization
+  (ACO), which they applied to classical NP-hard combinatorial
+  optimization problems, such as the traveling salesman problem
+  (Lawler et al., 1985), the quadratic assignment problem (Gambardella
+  et al., 1998) or the job-shop scheduling problem (Colorni et al.,
+  1993), with reasonable success. More applications are described by
+  Bonabeau et al. (1998). The parameters of the ACO algorithms
+  developed in these papers were hand-tuned. In the present letter we
+  demonstrate the good performance of ACO algorithms when parameters
+  are selected using a systematic procedure. More precisely we use a
+  genetic algorithm (Goldberg, 1989) to evolve ACO algorithms. A
+  simple implementation of this approach, tested on the traveling
+  salesman problem (TSP), resulted in: (1) increased convergence speed
+  (compared to the performance of the best hand-tuned ACO algorithm)
+  toward the optimal solution for a 30-city problem (Whitley et al.,
+  1989), and (2) several very good floating point solutions for a
+  51-city problem (Eilon et al., 1969). Our results suggest that it
+  might be possible to systematically find parameters that
+  significantly increase the performance of ACO algorithms, and
+  confirm that ACO is more than an exotic metaheuristic as it compares
+  well with existing algorithms on popular benchmark problems.},
+}
+
+@InProceedings{doher99b,
+  author = 	 {Klaus Doher},
+  title = 	 {Behavior Networks for Continuous Domains using Situation-Dependent Motivations},
+  booktitle = 	 {Proceedings of the 16th International Joint Conference on Artificial Intelligence (IJCAI'99)},
+  pages =	 {1233--1238},
+  year =	 1999,
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/doher99.ps}
+}
+
+@Article{jennings00,
+  author = 	 {Nicholas R. Jennings},
+  title = 	 {On agent-based software engineering},
+  journal = 	 {Artificial Intelligence},
+  year = 	 2000,
+
+  abstract = {Agent-based computing represents an exciting new
+  synthesis both for Artificial Intelligence (AI) and, more generally,
+  Computer Science. It has the potential to significantly improve the
+  theory and the practice of modeling, designing, and implementing
+  computer systems. Yet, to date, there has been little systematic
+  analysis of what makes the agent-based approach such an appealing
+  and powerful computational model. Moreover, even less effort has
+  been devoted to discussing the inherent disadvantages that stem from
+  adopting an agent-oriented view. Here both sets of issues are
+  explored. The standpoint of this analysis is the role of agent-based
+  software in solving complex, real-world problems. In particular, it
+  will be argued that the development of robust and scalable software
+  systems requires autonomous agents that can complete their
+  objectives while situated in a dynamic and uncertain environment,
+  that can engage in rich, high-level social interactions, and that
+  can operate within flexible organisational structures.}, 
+  
+  url =  {http://jmvidal.cse.sc.edu/822/papers/aij2000.ps} 
+}
+
+@TechReport{kube99a,
+  author = 	 {C. Ronald Kube and Eric Bonabeau},
+  title = 	 {Cooperative Transport By Ants and Robots},
+  institution =  {Santa Fe Institute},
+  year = 	 1999,
+  note =	 {Submitted to Robotics and Autonomous Systems},
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/99-01-008.ps},
+  abstract = {In several species of ants, workers cooperate to
+  retrieve large prey. Usually, one ant finds a prey item, tries to
+  move it, and, when unsucessful for some time, recuits nestmates
+  through direct contact or chemical marking. When a group of ants
+  tries to move large prey, the ants change position and alignment
+  until the prey can be moved toward the nest. A robotic
+  implementation of this phenomenon is described. Although the robotic
+  system may not appear to be very efficient, it is an interesting
+  example of decentralized problem-solving by a group of robots, and
+  it provides the first formalized model of cooperative transport in
+  ants.}
+}
+
+@Unpublished{odell00a,
+  author = 	 {James Odell and H. Van Dyke Parunak and Bernhard
+                  Bauer},
+  title = 	 {Representing Agent Interaction Protocols in {UML}},
+  note = 	 {Submitted to Agents 2000},
+  abstract = 	 {Gaining wide acceptance for the use of agents in
+                  industry requires both relating it to the nearest
+                  antecedent technology (object-oriented software
+                  development) and using artifacts to support the
+                  development environment throughout the full system
+                  lifecycle. We address both of these requirements
+                  using AUML, the Agent UML (Unified Modeling
+                  Language)-a set of UML idioms and extensions. This
+                  paper illustrates the approach by presenting a
+                  three-layer AUML representation for agent
+                  interaction protocols: templates and packages to
+                  represent the protocol as a whole; sequence and
+                  collaboration diagrams to capture inter-agent
+                  dynamics; and activity diagrams and state charts to
+                  capture both intra-agent and inter-agent dynamics. },
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/Rep_Agent_Protocols.pdf}
+}
+
+
+@Article{parunak97a,
+  author = 	 {H. Van Dyke Parunak},
+  title = 	 {"Go to the Ant": Engineering Principles from Natural Agent Systems},
+  journal = 	 {Annals of Operations Research},
+  year = 	 1997,
+  volume =	 75,
+  pages =	 {69--101},
+  abstract = 	 {Agent architectures need to organize themselves and
+                  adapt dynamically to changing circumstances without
+                  top-down control from a system operator. Many
+                  researchers provide this capability with complex
+                  agents that emulate human intelligence and reason
+                  explicitly about their coordination, reintroducing
+                  many of the problems of complex system design and
+                  implementation that motivated increasing software
+                  localization in the first place. Naturally occurring
+                  systems of simple agents (such as populations of
+                  insects or other animals) suggest that this retreat
+                  is not necessary. This paper summarizes several
+                  studies of such systems, and derives from them a set
+                  of general principles that artificial agent-based
+                  systems can use to support overall system behavior
+                  significantly more complex than the behavior of the
+                  individuals agents.},
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/gotoant.pdf}
+}
+
+
+
+@InCollection{peter98,
+  abstract = 	 {The CMUnited-98 simulator team became the 1998
+                  RoboCup simulator league champion by winning all 8
+                  of its games, outscoring opponents by a total of
+                  66-0. CMUnited-98 builds upon the successful
+                  CMUnited-97 implementation, but also improves upon
+                  it in many ways. This article describes the complete
+                  CMUnited-98 software, emphasizing the recent
+                  improvements. Coupled with the publicly-available
+                  CMUnited-98 source code, it is designed to help
+                  other RoboCup and multi-agent systems researchers
+                  build upon our success. },
+  url =
+                  {http://www.cs.cmu.edu/afs/cs/usr/pstone/public/papers/98springer/final-champ/final-champ.html},
+  postscript = 	 {http://jmvidal.cse.sc.edu/822/papers/cmunited98.ps},
+  author = 	 {Peter Stone and Manuela Veloso and Patrick Riley},
+  title = 	 {The CMUnited-98 Champion Simulator Team},
+  booktitle = 	 {RoboCup-98: Robot Soccer World Cup II},
+  publisher =	 pub-sv,
+  year =	 1999,
+  editor =	 {M. Asada and H. Kitano}
+}
+
+@Manual{soccerserver,
+  title = 	 {Soccerserver Manual},
+  author =	 {E. Corten and K. Dorer and F. Heintz and K. Kostiadis and J. Kummeneje and H. Myritz and I. Noda and J. Riekki and P. Riley and P. Stone and T. Yeap},
+  month =	 {July},
+  year =	 1999,
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/manual.ps}
+}
+
+
+
+@Unpublished{vidalclri,
+  author = 	 {Jos\'{e} M. Vidal and Edmund H. Durfee},
+  title = 	 {Predicting the expected behavior of agents that
+                  learn about agents: the {CLRI} framework}, 
+  abstract = 	 {We describe a framework and equations used to model
+                  and predict the behavior of multi-agent systems
+                  (MASs) with learning agents. A difference equation
+                  is used for calculating the progression of an
+                  agent's error in its decision function, thereby
+                  telling us how the agent is expected to fare in the
+                  MAS. The equation relies on parameters which capture
+                  the agent's learning abilities, such as its change
+                  rate, learning rate and retention rate, as well as
+                  relevant aspects of the MAS such as the impact that
+                  agents have on each other. We validate the framework
+                  with experimental results using reinforcement
+                  learning agents in a market system, as well as with
+                  other experimental results gathered from the AI
+                  literature. Finally, we use PAC-theory to show how
+                  to calculate bounds on the values of the learning
+                  parameters},
+  url = 	 {http://xxx.lanl.gov/abs/cs.MA/0001008},
+  note = 	 {Unpublished}
+}
+
+@Article{voting:econ,
+  author = 	 {editor},
+  title = 	 {Democratic Symmetry: The Mathematics of Voting},
+  journal = 	 {The Economist},
+  year = 	 2000,
+  pages =	 83,
+  month =	 {March 4-10},
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/econ-voting.html}
+}
+
+
+
+@InCollection{wendler00,
+  author = 	 {Wendler, J. and Hannebauer, M. and H.-D. Burkhard and Myritz, H. and Sander, O. and Meinert, T.:},
+  title = 	 {{BDI} Design Principles and Cooperative Implementation in RoboCup},
+  booktitle = 	 {Robo{C}up-99: Robot Soccer World Cup {III}},
+  publisher =	 pub-sv,
+  year =	 2000,
+  url = 	 {http://jmvidal.cse.sc.edu/822/papers/wendler_robocup99LNAI.ps}
+}
+
+@InProceedings{wolpert99a,
+  author = 	 {David H. Wolpert and Kevin R. Wheeler and Kagan Tumer},
+  title = 	 {General Principles of Learning-Based Multi-Agent Systems},
+  booktitle = 	 {Proceedings of the Third International Conference on Autonomous Agents},
+  year =	 1999,
+  abstract = 	 {We consider the problem of how to design large
+                  decentralized multi-agent systems (MAS's) in an
+                  automated fashion, with little or no
+                  hand-tuning. Our approach has each agent run a
+                  reinforcement learning algorithm. This converts the
+                  problem into one of how to automatically set/update
+                  the reward functions for each of the agents so that
+                  the global goal is achieved. In particular we do not
+                  want the agents to ``work at cross-purposes'' as far
+                  as the global goal is concerned. We use the term
+                  artificial COllective INtelligence (COIN) to refer
+                  to systems that embody solutions to this problem. In
+                  this paper we present a summary of a mathematical
+                  framework for COINs. We then investigate the
+                  real-world applicability of the core concepts of
+                  that framework via two computer experiments: we show
+                  that our COINs perform near optimally in a difficult
+                  variant of Arthur's bar problem (and in particular
+                  avoid the tragedy of the commons for that problem),
+                  and we also illustrate optimal performance for our
+                  COINs in the leader-follower problem.},
+  url = 	 {http://xxx.lanl.gov/abs/cs.MA/9905005}
+}
+
+@Unpublished{buhler00a,
+  author = 	 {Paul Buhler and Jose M. Vidal},
+  title = 	 {A Generic Agent Architecture for Multiagent Systems},
+  note = 	 {submitted to Agents 2001},
+  url = 	 {http://jmvidal.cse.sc.edu/papers/gaa/gaa.pdf}
+}
+

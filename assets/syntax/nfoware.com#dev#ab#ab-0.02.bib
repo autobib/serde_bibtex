@@ -1,0 +1,76 @@
+#! ab version="0.02 2005-05-15T23:38Z"
+#!     schema="http://nfoWare.info/dev/ab/ab-0.02.bib"
+#  0.02 version of a provisional template and format for the ab .bib format.
+#       Notice the addition of the multi-line header convention. The
+#       elements are in alphabetical sequence for ease of reference and
+#       review, not ease of use.  In this scheme, any completed *.bib is
+#       usable as its own schema, and it can be validated if there is
+#       access to a specified template schema.
+# ab-0.02.bib
+
+%#=BibNote A note on the bibliographic entry itself.  It is not intended to
+   be included in a citation, but it may be pertinent to the creator of the
+   citation and/or scholars interested in its content as an annotation.
+%$ Label for a version-control system entry.  (See the one at end of file.)
+%%=(reserved) This combination is set aside for potential meta usage.
+%*=Copyright [HCI]
+%0=CitationType [digit 0, EndNote, Artwork, Audiovisual Material, Book,
+   Book Section, Computer Program, Conference Proceedings, Edited Book,
+   Generic, Journal Article, Magazne Article, Map, Newspaper Article,
+   Patent, Personal Communication, Report, Thesis]
+%6=NumberVols [EndNote]
+%7=Edition [EndNote]
+%8=DateOfItem [e.g., date of a conference - EndNote]
+%a=Translator [and editors of translated compilations TIB]
+%A=Author [in Last, First von, Jr. format EndNote]
+%B=Book Contemporary Literary Criticism (annual) [orcmid 1988]
+%C=City [AIX 4.3 addbib]
+%D=Date [AIX 4.3 addbib]
+%E=Editor [same convention as Author]
+%G=OrderNumber [HCI includes ISBN, ISSN or other number, NTIS, etc.]
+%I=Issuer [publisher AIX 4.3 addbib; awarding institution Makhzan]
+%J=Journal [Title of the journal]
+%K=Keywords [AIX 4.3 addbib]
+%l=Language [of translated work, TIB]
+%L=LabelField used for label in the users bibliographic system.  There
+   are potentially multiple ones, with qualification as to citation type.
+%N=Number [AIX 4.3 addbib]
+   [There are numbers not in volumes for some prestigious journals. orcmid]
+%O=OtherCommentary [AIX 4.3 addbib,
+   e.g., printed right after full stop at end of citation Makhzan]
+# This raises an interesting problem of cross-referencing among these guys.
+%o=ExpandedTopic [appears right after the title material]
+%P=Pages 167 [orcmid 1988]
+   Where there might be a range or a sequence too.
+%Q=CorporateOrForeignAuthor [AIX 4.3 addbib, nonreversible name]
+%R=Report [AIX 4.3 addbib or other unpublished paper or thesis;
+   report number, 'unpublished MSc Thesis' or 'Ms' etc Makhzan]
+%S=SeriesTitle [AIX 4.3 addbib]
+%T=Title "Robert Heinlein" by Leon Stover [orcmid 1988]
+%U=UserEmail [HCI]
+%V=Volume 108       [orcmid 1988]
+%W=WebAddress ? [orcmid 2005]
+%X=Abstract
+   This is usually for arbitrary text, in my use of it. It can contain
+   lengthy material or not.  This is usually last and runs on until
+   a blank line or the end of file.  It is last because it is easier to
+   end an entry with the blank line that also ends the Abstract.  There
+   are other ways this could work. [dh:2005-04-04T04:08Z]
+      "He has put his finger on what seem some very real reasons for
+Heinlein's popularity, and his book is a welcome counterweight to
+some of the more negative exercises of the last few years."
+   As an example of a sort of fallibility, Heinlein is alleged to
+have claimed, in a conversation with Walter Cronkite, that there
+is just one equation that everbody knows. Although the equation
+is presumably Einstein's famous E = MC**2, the book has it
+mistyped as E = EC**2 ...
+%X The "Contemporary Literary Criticism" reference series,
+available on the shelves of all good public libraries, provides
+some interesting insight into the critical treatment of
+Heinlein's work.
+%Y=Contents [HCI Label must be included]
+%Z ISBN 0-8057-7509-9 alk. paper        [orcmid 1988, deprecated]
+%Z=References [HCI]
+
+%$Header:                                                            $
+#  End of ab-0.02.bib

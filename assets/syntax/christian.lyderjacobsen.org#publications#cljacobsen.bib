@@ -1,0 +1,326 @@
+
+
+
+@inproceedings{cpa-arduino-2011,
+    author={Christian L. Jacobsen and Matthew C. Jadud and  Omer Kilic and Adam T. Sampson},
+    booktitle={To appear in Communicating Process Architectures 2011},
+    month={June},
+    title={Concurrent Event-driven Programming in occam-pi for the Arduino},
+    year={2011},
+}
+
+
+@inproceedings{safepar08,
+    abstract={During the Spring 2008 semester at Olin College, 
+we introduced the programming language occam-pi to under- 
+graduates as part of their first course in robotics. Students were 
+able to explore image processing and autonomous behavioral 
+control in a parallel programming language on a small mobile 
+robotics platform with just two weeks of tutorial instruction. 
+Our experiences to date suggest that the language and tools we 
+have developed allow the concise expression of complex robotic 
+control systems, and enable the integration of events from the 
+environment in a consistent and safe model for parallel control 
+that is directly expressed in software.},
+    author={Matthew Jadud and Christian L. Jacobsen and Jon Simpson and Carl G. Ritson},
+    booktitle={2008 IEEE Conference on Technologies for Practical Robot Applications},
+    month={November},
+    pages={137--142},
+    publisher={IEEE},
+    title={Safe Parallelism for Behavioral Control},
+    year={2008},
+}
+
+
+@inproceedings{SimpsonJacobsen:2008,
+    abstract={When teaching concurrency, using a process-oriented language, it is often 
+introduced through a visual representation of programs in the form of process network 
+diagrams. These diagrams allow the design of and abstract reasoning about programs, 
+consisting of concurrently executing communicating processes, without needing any 
+syntactic knowledge of the eventual implementation language. Process network diagrams are usually drawn on paper or with general-purpose diagramming software, 
+meaning the program must be implemented as syntactically correct program code before it can be run. This paper presents POPed, an introductory parallel programming 
+tool leveraging process network diagrams as a visual language for the creation of 
+process-oriented programs. Using only visual layout and connection of pre-created 
+components, the user can explore process orientation without knowledge of the underlying programming language, enabling a ``processes first'' approach to parallel pro- 
+gramming. POPed has been targeted specifically at basic robotic control, to provide a 
+context in which introductory parallel programming can be naturally motivated.},
+    address={Amsterdam},
+    author={Jonathan Simpson and Christian L. Jacobsen},
+    booktitle={Communicating Process Architectures 2008},
+    month={September},
+    pages={365--380},
+    publisher={IOS Press},
+    series={Concurrent Systems Engineering},
+    title={Visual Process-Oriented Programming for Robotics},
+    volume={66},
+    year={2008},
+}
+
+
+@inproceedings{Matthew-C.-Jadud:2008,
+    abstract={Pipeline, Delta, and Black Hole are three simple patterns 
+used in concurrent software design. We recently presented 
+these and other patterns for parallelism at a nine-hour workshop for professional embedded systems developers. By 
+grounding these patterns in the context of robotic control 
+on the LEGO Mindstorms, we provided an engaging and 
+enjoyable educational experience for our ``students,'' and 
+reaffirmed that small, powerful languages have a place in 
+education for beginners and experts alike.},
+    address={New York},
+    author={Matthew C. Jadud and Christian L. Jacobsen and Jonathan Simpson},
+    booktitle={SIGCSE '08: Proceedings of the 39th SIGCSE technical symposium on computer science education},
+    issue={1},
+    month={February},
+    pages={231--235},
+    publisher={ACM Press},
+    title={Patterns for programming in parallel, pedagogically},
+    year={2008},
+}
+
+
+@inproceedings{SimpsonJacobsen07,
+    abstract={The LEGO Mindstorms RCX is a widely deployed educational robotics 
+platform. This paper presents a concurrent operating environment for the Mindstorms 
+RCX, implemented natively using occam-pi running on the Transterpreter virtual machine. A concurrent hardware abstraction layer aids both the developer of the operating system and facilitates the provision of process-oriented interfaces to the underlying hardware for students and hobbyists interested in small robotics platforms.},
+    address={Amsterdam},
+    author={Simpson, Jonathan and Jacobsen, Christian and Jadud, Matthew C.},
+    booktitle={Communicating Process Architectures 2007},
+    editor={McEwan, Alistair A. and Ifill, Wilson and Welch, Peter H.},
+    isbn={978-1586037673},
+    month={July},
+    pages={339--348},
+    publisher={IOS Press},
+    series={Concurrent Systems Engineering},
+    title={{A} {N}ative {T}ransterpreter for the {LEGO} {M}indstorms {RCX}},
+    volume={65},
+    year={2007},
+}
+
+
+@techreport{Jacobsen:2007,
+    abstract={Robotics is an engaging and natural application area for concurrent and parallel models of control. To explore these 
+ideas, we have developed environments and materials to 
+support the programming of robots to do interesting tasks 
+in a fundamentally concurrent manner. Our most recent 
+work involves the development of RoboDeb, a ``virtual computer'' pre-installed with the open-source Player API and 
+Stage simulator to support classroom exploration of concurrency and robotic control using the occam-pi programming 
+language.},
+    address={AAAI Press, Menlo Park, California},
+    author={C. L. Jacobsen and M. C. Jadud},
+    month={March},
+    title={Concurrency, Robotics and RoboDeb},
+    year={2007},
+}
+
+
+@phdthesis{cljacobsen-phd,
+    abstract={This thesis argues that there is a modern, broad and growing need for programming 
+languages and tools supporting highly concurrent complex systems. It claims that 
+traditional approaches, based on threads and locks, are non-compositional and do not 
+scale. Instead, it focuses on occam-pi, a derivative from classical Transputer occam, 
+whose concurrency model is based on a judicious combination of the formal algebras 
+of Hoare's Communicating Sequential Processes and Milner's pi-calculus. Previously, 
+occam-pi was available only for target platforms based on Intel x86 architecture (PCs 
+and PC-clusters), where it excels in high performance management of millions of finegrained processes. That performance comes at the cost of portability, leaving many 
+common and interesting platforms devoid of support. While performance is critical in 
+applications such as large system simulation, there are a wealth of applications where 
+the compositional concurrency model underlying occam-pi simplifies the management 
+of complexity and where high performance is not necessary. 
+Work reported in this thesis addresses this portability cost, presenting the Transterpreter: a small and highly portable virtual machine providing the necessary infrastructure required to execute occam-pi (and other) systems. It requires minimal (or 
+zero) external software support and has been ported to a wide range of target architectures. It defines and enables the execution of an occam-pi bytecode. It provides a 
+relatively simple framework for research into, and application of, future developments 
+in the occam-pi and other languages supporting high and manageable concurrency. 
+The thesis explores concurrency in several application areas: robotics, small embedded devices, and education. The Transterpreter has proven a stable and main- 
+tainable environment for these explorations, enabling a significant broadening of the 
+deployment of the occam-pi language and simplifying research into higher level concurrency patterns that may be adopted in the future. Additionally, work is reported 
+on addressing performance issues both for sequential and parallel occam-pi code. 
+This thesis claims that the work presented makes a useful contribution to simplifying the design and construction of complex systems through the use of concurrency. 
+By providing a highly portable platform for the occam-pi/csp concurrency model, it 
+enables that contribution to be felt both by learners and advanced engineers working 
+in almost any hardware environment, including those still to come.},
+    author={Christian L. Jacobsen},
+    month={December},
+    school={University of Kent at Canterbury},
+    title={A portable runtime for concurrency research and application},
+    year={2006},
+}
+
+
+@inproceedings{SimpsonJacobsenJadud06,
+    abstract={Brooks' subsumption architecture is a design paradigm for mobile robot 
+control that emphasises re-use of modules, decentralisation and concurrent, communicating processes. Through the use of occam-pi the subsumption architecture can be 
+put to use on general purpose modern robotics hardware, providing a clean and robust 
+development approach for the creation of robot control systems.},
+    address={Amsterdam},
+    author={Jonathan Simpson and Christian L. Jacobsen and Matthew C. Jadud},
+    booktitle={Communicating Process Architectures 2006},
+    editor={P. Welch and J. Kerridge and F. Barnes},
+    keywords={Mobile robots, Robot control, Subsumption architecture, occam-pi},
+    month={September},
+    pages={225--236},
+    publisher={IOS Press},
+    series={Concurrent Systems Engineering},
+    title={{M}obile {R}obot {C}ontrol - {T}he {S}ubsumption {A}rchitecture and occam-pi},
+    volume={64},
+    year={2006},
+}
+
+
+@inproceedings{JacobsenDimmichJadud06,
+    abstract={We are interested in languages that provide powerful abstractions for con- 
+currency and parallelism that execute everywhere, efficiently. Currently, the existing 
+runtime environments for the occam-pi programming language provide either one of 
+these features (portability) or some semblance of the other (performance). We believe 
+that both can be achieved through the careful generation of C from occam-pi, and 
+demonstrate that this is possible using the Transterpreter, a portable interpreter for 
+occam-pi, as our starting point.},
+    address={Amsterdam},
+    author={Christian L. Jacobsen and Damian J. Dimmich and Matthew C. Jadud},
+    booktitle={Communicating Process Architectures 2006},
+    editor={P. Welch and J. Kerridge and F. Barnes},
+    keywords={Transterpreter, native code, GCC, occam-pi},
+    month={September},
+    pages={269--280},
+    publisher={IOS Press},
+    series={Concurrent Systems Engineering},
+    title={{N}ative {C}ode {Generation} {U}sing the {T}ransterpreter},
+    volume={64},
+    year={2006},
+}
+
+
+@inproceedings{celltransterpreter,
+    abstract={The Cell Broadband Engine is a hybrid processor which consists of a PowerPC core and eight vector co-processors on a single die. Its unique design poses a 
+number of language design and implementation challenges. To begin exploring these 
+challenges, we have ported the Transterpreter to the Cell Broadband Engine. The 
+Transterpreter is a small, portable runtime for concurrent languages and can be used 
+as a platform for experimenting with language concepts. This paper describes a preliminary attempt at porting the Transterpreter runtime to the Cell Broadband Engine 
+and explores ways to program it using a concurrent language.},
+    address={Amsterdam},
+    author={Damian J. Dimmich and Christian L. Jacobsen and Matthew C. Jadud},
+    booktitle={Communicating Process Architectures 2006},
+    editor={Peter Welch and Jon Kerridge and Fred Barnes},
+    month={September},
+    pages={215--224},
+    publisher={IOS Press},
+    series={Concurrent Systems Engineering Series},
+    title={A {C}ell {T}ransterpreter},
+    volume={29},
+    year={2006},
+}
+
+
+@article{seuc2006,
+    author={Matthew C. Jadud and Christian L. Jacobsen and Damian J. Dimmich},
+    journal={SEUC 2006 workshop},
+    month={June},
+    title={Concurrency on and off the sensor network node},
+    year={2006},
+}
+
+
+@inproceedings{DimmichJacobsen05,
+    abstract={occam-pi is a programming language based on the CSP process algebra and 
+the pi-calculus, and has a powerful syntax for expressing concurrency. occam-pi does 
+not however, come with interfaces to a broad range of standard libraries (such as those 
+used for graphics or mathematics). Programmers wishing to use these must write their 
+own wrappers using occam-pi's foreign function interface, which can be tedious and 
+time consuming. SWIG offers automatic generation of wrappers for libraries written in 
+C and C++, allowing access to these for the target languages supported by SWIG. This 
+paper describes the occam-pi module for SWIG, which will allow automatic wrapper 
+generation for occam-pi, and will ensure that occam-pi's library base can be grown 
+in a quick and efficient manner. Access to database, graphics and hardware interfacing 
+libraries can all be provided with relative ease when using SWIG to automate the bulk 
+of the work.},
+    address={Amsterdam},
+    author={Damian J. Dimmich and Christan L. Jacobsen},
+    booktitle={Communicating Process Architectures 2005},
+    editor={J. Broenink and H. Roebbers and J. Sunter and P. Welch and D. Wood},
+    isbn={1-58603-561-4},
+    issn={1383-7575},
+    keywords={occam-pi, SWIG, ocinf},
+    month={September},
+    pages={235--248},
+    publisher={IOS Press},
+    series={Concurrent Systems Engineering},
+    title={{A} {F}oreign {F}unction {I}nterface {G}enerator for occam-pi},
+    volume={63},
+    year={2005},
+}
+
+
+@inproceedings{1047485,
+    abstract={In a world of ad-hoc networks, highly interconnected mobile devices and increasingly large supercomputer clusters, 
+students need models of computation that help them think 
+about dynamic and concurrent systems. Many of the tools 
+currently available for introducing students to concurrency 
+are difficult to use and are not intrinsically motivating. To 
+provide an authentic, hands-on, and enjoyable introduction 
+to concurrency, we have ported occam-pi, a language whose 
+expressive powers are especially compelling for describing 
+communicating dynamic reactive processes, to the LEGO 
+Mindstorms.},
+    address={New York},
+    author={Christian L. Jacobsen and Matthew C. Jadud},
+    booktitle={SIGCSE '05: Proceedings of the 36th SIGCSE technical symposium on Computer science education},
+    isbn={1-58113-997-7},
+    month={February},
+    pages={431--435},
+    publisher={ACM Press},
+    title={Towards concrete concurrency: occam-pi on the LEGO mindstorms},
+    year={2005},
+}
+
+
+@inproceedings{2004,
+    abstract={This paper reports on the Transterpreter: a virtual machine for executing 
+the Transputer instruction set. This interpreter is a small, portable, efficient and extensible run-time. It is intended to be easily ported to handheld computers, mobile 
+phones, and other embedded contexts. In striving for this level of portability, occam 
+programs compiled to Transputer byte-code can currently be run on desktop computers, handhelds, and even the LEGO Mindstorms robotics kit.},
+    address={Amsterdam},
+    author={Jacobsen, Christian L. and Jadud, Matthew C.},
+    booktitle={Communicating Process Architectures 2004},
+    editor={East, Ian R. and Duce, David and Green, Mark and Martin, Jeremy M. R. and Welch, Peter H.},
+    isbn={1 58603 458 8},
+    issn={1383-7575},
+    keywords={Transputer, occam, interpreter},
+    month={September},
+    pages={99--106},
+    publisher={IOS Press},
+    series={Concurrent Systems Engineering Series},
+    title={{T}he {T}ransterpreter: {A} {T}ransputer {I}nterpreter},
+    volume={62},
+    year={2004},
+}
+
+
+@inproceedings{1721,
+    abstract={Operating-systems are the core software component of many modern computer systems, ranging from small specialised embedded systems through to large 
+distributed operating-systems. This paper presents RMoX: a highly concurrent CSP-based operating-system written in occam. The motivation for this stems from the 
+overwhelming need for reliable, secure and scalable operating-systems. The majority of operating-systems are written in C, a language that easily offers the level of 
+flexibility required (for example, interfacing with assembly routines). C compilers, 
+however, provide little or no mechanism to guard against race-hazard and aliasing errors, that can lead to catastrophic run-time failure (as well as to more subtle errors, 
+such as security loop-holes). The RMoX operating-system presents a novel approach 
+to operating-system design (although this is not the first CSP-based operating-system). 
+Concurrency is utilised at all levels, resulting in a system design that is well defined, 
+easily understood and scalable. The implementation, using the KRoC extended occam, provides guarantees of freedom from race-hazard and aliasing errors, and makes 
+extensive use of the recently added support for dynamic process creation and channel 
+mobility. Whilst targeted at mainstream computing, the ideas and methods presented 
+are equally applicable for small-scale embedded systems --- where advantage can be 
+made of the lightweight nature of RMoX (providing fast interrupt responses, for example).},
+    address={Amsterdam},
+    author={Fred Barnes and Christian Jacobsen and Brian Vinter},
+    booktitle={Communicating Process Architectures 2003},
+    editor={J.F. Broenink and G.H. Hilderink},
+    isbn={1-58603-381-6},
+    issn={1383-7575},
+    keywords={occam concurrency operating-system embedded},
+    month={September},
+    pages={269--288},
+    publisher={IOS Press},
+    series={Concurrent Systems Engineering Series},
+    title={{RMoX}: A Raw-Metal \occamplain Experiment},
+    volume={61},
+    year={2003},
+}
+

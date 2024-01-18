@@ -1,0 +1,2117 @@
+%% bibtex-file{
+%%   author	= {Don Sannella},
+%%   date	= {27 Sep 2010},
+%%   filename	= {SannellaDT.bib},
+%%   www-home	= {http://homepages.inf.ed.ac.uk/dts},
+%%   address	= {Laboratory for the Foundations of Computer Science,
+%%		   School of Informatics,
+%%		   The University of Edinburgh,
+%%		   Edinburgh EH8 9AB, UK},
+%%   telephone	= {+44 131 650 5184},
+%%   fax	= {+44 131 651 1426},
+%%   ftp-archive= {http://homepages.inf.ed.ac.uk/dts/pub},
+%%   email	= {dts at inf.ed.ac.uk},
+%%   dates	= {1956--},
+%%   keywords	= {},
+%%   supported	= {yes},
+%%   supported-by= {Don Sannella <dts at inf.ed.ac.uk>},
+%%   abstract	= {Bibliography for Don Sannella}}
+
+%%ALF-DELIMITER
+%  ================================================================
+%  =         Algebraic and logical foundations of formal          =
+%  =            program development and related topics            =
+%  ================================================================
+
+@inproceedings{SannellaDT:implementations82,
+	author = {Donald Sannella and Martin Wirsing},
+	title = {Implementation of Parameterised Specifications},
+	booktitle = {Proc.\ 9th Intl.\ Colloq.\ on Automata, Languages
+		 and Programming},
+	location = {Aarhus},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 140,
+	pages = {473--488},
+	year = 1982,
+        pdf = {http://homepages.inf.ed.ac.uk/dts/pub/icalp82.pdf},
+	abstract =
+{A new notion is given for the \emph{implementation} of one
+specification by another.  Unlike most previous notions, this
+generalises to handle parameterised specifications as well as
+\emph{loose} specifications (having an assortment of non-isomorphic
+models).  Examples are given to illustrate the notion.  The definition
+of implementation is based on a new notion of the \emph{simulation}
+of a theory by an algebra.  For the bulk of the paper we employ a
+variant of the Clear specification language [BG77] in which the notion
+of a \emph{data constraint} is replaced by the weaker notion of a
+\emph{hierarchy constraint}.  All results hold for Clear with data
+constraints as well, but only under more restrictive conditions.
+
+We prove that implementations compose \emph{vertically} (two
+successive implementation steps compose to give one large step) and
+that they compose \emph{horizontally} under application of
+(well-behaved) parameterised specifications (separate implementations
+of the parameterised specification and the actual parameter compose to
+give an implementation of the application).},
+	comment = {[Long version: Report CSR-103-82, Dept. of Computer
+		 Science, Univ. of Edinburgh, 1982; reviewed in
+		 Zbl 492.68023.]}}
+
+%  ----------------------------------------------------------------
+
+@phdthesis{SannellaDT:phd82,
+	author = {Donald Sannella},
+	title = {Semantics, Implementation and Pragmatics of {C}lear,
+		 a Program Specification Language},
+	school = {Department of Computer Science, University of Edinburgh},
+	year = 1982,
+	abstract =
+{Specifications are necessary for communicating decisions and
+intentions and for documenting results at many stages of the program
+development process.  Informal specifications are typically used
+today, but they are imprecise and often ambiguous.  Formal
+specifications are precise and exact but are more difficult to write
+and understand.  We present work aimed toward enabling the practical
+use of formal specifications in program development, concentrating on
+the Clear language for structured algebraic specification.
+
+Two different but equivalent denotational semantics for Clear are
+given.  One is a version of a semantics due to Burstall and Goguen
+with a few corrections, in which the category-theoretic notion of a
+colimit is used to define Clear's structuring operations independently
+of the underlying ``institution'' (logical formalism).  The other
+semantics defines the same operations by means of straightforward
+set-theoretic constructions; it is not institution-independent but it
+can be modified to handle all institutions of apparent interest.
+
+Both versions of the semantics have been implemented.  The
+set-theoretic implementation is by far the more useful of the two, and
+includes a parser and typechecker.  An implementation is useful for
+detecting syntax and type errors in specifications, and can be used as
+a front end for systems which manipulate specifications.  Several
+large specifications which have been processed by the set-theoretic
+implementation are presented.
+
+A semi-automatic theorem prover for Clear built on top of the
+Edinburgh LCF system is described.  It takes advantage of the
+structure of Clear specifications to restrict the available
+information to that which seems relevant to proving the theorem at
+hand.  If the system is unable to prove a theorem automatically the
+user can attempt the proof interactively using the high-level
+primitives and inference rules provided.
+
+We lay a theoretical foundation for the use of Clear in systematic
+program development by investigating a new notion of the
+implementation of a specification by a lower-level specification.
+This notion extends to handle parameterised specifications.  We show
+that this implementation relation is transitive and commutes with
+Clear's structuring operations under certain conditions.  This means
+that a large specification can be refined to a program in a gradual
+and modular fashion, where the correctness of the individual
+refinements guarantees the correctness of the resulting program.},
+	note = {Report CST-17-82}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:structured-theories83,
+	author = {Donald Sannella and Rod Burstall},
+	title = {Structured Theories in {LCF}},
+	booktitle = {Proc.\ 8th Colloq.\ on Trees in Algebra and
+		 Programming},
+	location = {L'Aquila},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 159,
+	pages = {377--391},
+	year = 1983,
+        pdf = {http://homepages.inf.ed.ac.uk/dts/pub/caap83.pdf},
+	abstract =
+{An extension to the Edinburgh LCF interactive theorem-proving system
+is described which provides new ways of constructing theories, drawing
+upon ideas from the Clear specification language.  A new theory can be
+built from an existing theory in two new ways: by \emph{renaming} its
+types and constants, or by \emph{abstraction} (forgetting some types
+and constants and perhaps renaming the rest).  A way of providing
+\emph{parameterised} theories is described.  These theory-building
+operations --- together with operations for forming a \emph{primitive}
+theory and for taking the \emph{union} of theories --- allow large
+theories to be built in a flexible and well-structured fashion.
+Inference rules and strategies for proof in structured theories are
+also discussed.}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:asl83,
+	author = {Donald Sannella and Martin Wirsing},
+	title = {A Kernel Language for Algebraic Specification and
+		 Implementation},
+	booktitle = {Proc.\ 1983 Intl.\ Conf.\ on Foundations of
+		 Computation Theory},
+	location = {Borgholm},
+	year = 1983,
+	comment = {[Long version: Report CSR-131-83, Dept. of Computer
+		 Science, Univ. of Edinburgh, 1983.]},
+	pages = {413--427},
+	series = {Lecture Notes in Computer Science},
+	volume = 158,
+	publisher = {Springer},
+        pdf = {http://homepages.inf.ed.ac.uk/dts/pub/asl.pdf},
+	abstract =
+{A kernel specification language called ASL is presented.  ASL
+comprises five fundamental but powerful specification-building
+operations and has a simple semantics.  Behavioural abstraction with
+respect to a set of observable sorts can be expressed, and (recursive)
+parameterised specifications can be defined using a more powerful and
+more expressive parameterisation mechanism than usual.  A simple
+notion of implementation permitting vertical and horizontal
+composition (i.e. it is transitive and monotonic) is adopted and
+compared with previous more elaborate notions.  A collection of
+identities is given which can provide a foundation for the development
+of programs by transformation.}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:behavioural-abstraction83,
+	author = {Donald Sannella},
+	title = {Behavioural Abstraction and Algebraic Specification},
+	pages = {153--166},
+	booktitle = {Proc.\ 1983 Workshop on Semantics of Programming
+		 Languages},
+	location = {G{\"}oteborg},
+	year = 1983,
+	abstract =
+{We argue that a proper notion of behavioural equivalence (a relation
+on algebras) is fundamental to the theory of program
+development.  This view is supported by arguments from abstract data
+types, from program specification, and from stepwise refinement.  Many
+different definitions of behavioural equivalence have appeared in the
+literature, but each definition yields one of three relations which
+differ only in their treatment of algebras containing unreachable data
+elements.  Such algebras can be of use and so we adopt the relation
+which seems to treat them properly.}}
+
+%  ----------------------------------------------------------------
+
+@article{SannellaDT:clear-semantics84,
+	author = {Donald Sannella},
+	title = {A Set-Theoretic Semantics for {C}lear},
+	journal = {Acta Informatica},
+	volume = 21,
+	pages = {443--472},
+	year = 1984,
+        pdf = {http://homepages.inf.ed.ac.uk/dts/pub/clear-semantics.pdf},
+	abstract =
+{A semantics for the Clear specification language is given.  The
+language of set theory is employed to present constructions
+corresponding to Clear's specification-combining operations, which are
+then used as the basis for a denotational semantics.  This is in
+contrast to Burstall and Goguen's 1980 semantics which described the
+meanings of these operations more abstractly via concepts from
+category theory.},
+	comment = {[An early version is: A new semantics for {C}lear,
+		 Report CSR-79-81, Dept. of Computer Science, Univ. of
+		 Edinburgh, 1981.]}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:specs-arbitrary-institution84,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Building Specifications in an Arbitrary Institution},
+	booktitle = {Proc.\ Intl.\ Symp.\ on Semantics of Data Types},
+	location = {Sophia-Antipolis},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 173,
+	pages = {337--356},
+	year = 1984,
+        pdf = {http://homepages.inf.ed.ac.uk/dts/pub/inst-asl-conf.pdf},
+	note =
+{\textbf{An extended and improved version is \cite{SannellaDT:specs-arbitrary-institution88}}},
+	abstract =
+{A set of operations for constructing algebraic specifications in an
+arbitrary logical system is presented. This builds on the framework
+provided by Goguen and Burstall's work on the notion of an institution
+as a formalisation of the concept of a logical system for writing
+specifications. We show how to introduce free variables into the
+sentences of an arbitrary institution and how to add quantifiers which
+bind them. We use this foundation to define a set of primitive
+operations for building specifications in an arbitrary institution
+based loosely on those in the ASL kernel specification language, We
+examine the set of operations which results when the definitions are
+instantiated in an institution of first-order logic and compare these
+with the operations found in existing specification languages. The
+result of instantiating the operations in an institution of partial
+first-order logic is also discussed,},
+	comment = {[Reviewed in CR 8505-0419.]}}
+
+@article{SannellaDT:specs-arbitrary-institution88,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Specifications in an Arbitrary Institution},
+	journal = {Information and Computation},
+	volume = 76,
+	pages = {165--210},
+	year = 1988,
+        pdf = {http://homepages.inf.ed.ac.uk/dts/pub/inst-asl.pdf},
+	abstract =
+{A formalism for constructing and using axiomatic specifications in an
+arbitrary logical system is presented.  This builds on the framework
+provided by Goguen and Burstall's work on the notion of an
+\emph{institution} as a formalisation of the concept of a logical
+system for writing specifications.  We show how to introduce free
+variables into the sentences of an arbitrary institution and how to
+add quantifiers which bind them.  We use this foundation to define a
+set of primitive operations for building specifications in an
+arbitrary institution based loosely on those in the ASL kernel
+specification language.  We examine the set of operations which
+results when the definitions are instantiated in institutions of total
+and partial first-order logic and compare these with the operations
+found in existing specification languages.  We present proof rules
+which allow proofs to be conducted in specifications built using the
+operations we define.  Finally, we introduce a simple mechanism for
+defining and applying parameterised specifications and briefly discuss
+the program development process.},
+	comment = {[Reviewed in MR 89d:68056 and Zbl 654.68017;
+		 an early short version was
+		 \cite{SannellaDT:specs-arbitrary-institution84}.]}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:thoughts85,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Some Thoughts on Algebraic Specification},
+	booktitle = {Proc.\ 3rd Workshop on Theory and Applications of
+		 Abstract Data Types},
+	location = {Bremen},
+	publisher = {Springer},
+	series = {Informatik-Fachberichte},
+	volume = 116,
+	pages = {31--38},
+	year = 1985,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/thoughts.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/thoughts.pdf},
+	comment = {[Reviewed in Zbl 584.68036.]}}
+
+%  ----------------------------------------------------------------
+
+@article{SannellaDT:completeness85,
+	author = {David MacQueen and Donald Sannella},
+	title = {Completeness of Proof Systems for Equational
+		 Specifications},
+	journal = {{IEEE} Trans.\ on Software Engineering},
+	volume = {{SE}-11},
+	number = 5,
+	pages = {454--461},
+	year = 1985,
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/completeness.pdf},
+	abstract =
+{Contrary to popular belief, equational logic with induction is not
+complete for initial models of equational specifications.  Indeed,
+under some regimes (the Clear specification language and most other
+algebraic specification languages) no proof system exists which is
+complete even with respect to ground equations.  A collection of known
+results is presented along with some new observations.},
+	comment = {[Reviewed in Zbl 558.68017.]}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:observational-equivalence85,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {On Observational Equivalence and Algebraic
+		 Specification},
+	year = 1985,
+	booktitle = {Proc.\ 10th Colloq.\ on Trees in Algebra and
+		 Programming.  Intl.\ Joint Conf.\ on Theory and
+		 Practice of Software Development ({TAPSOFT}'85)},
+	location = {Berlin},
+	series = {Lecture Notes in Computer Science},
+	volume = 185,
+	publisher = {Springer},
+	pages = {308--322},
+        pdf = {http://homepages.inf.ed.ac.uk/dts/pub/obs-equiv-conf.pdf},
+	note =
+{\textbf{Extended abstract; the final full version of this is
+\cite{SannellaDT:observational-equivalence87}}},
+	abstract =
+{The properties of a simple and natural notion of observational
+equivalence of algebras and the corresponding specification-building
+operation (observational abstraction) are studied. We begin with a
+definition of observational equivalence which is adequate to handle
+reachable algebras only, and show how to extend it to cope with
+unreachable algebras and also how it may be generalised to make
+sense under an arbitrary institution . Behavioural equivalence is
+treated as an important special case of observational equivalence, and
+its central role in program development is shown by means of an example.},
+	comment = {[Long version: Report CSR-172-84, Dept. of Computer
+		 Science, Univ. of Edinburgh, 1984.]}}
+
+
+@article{SannellaDT:observational-equivalence87,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {On Observational Equivalence and Algebraic
+		 Specification},
+	journal = {Journal of Computer and System Sciences},
+	volume = 34,
+	pages = {150--178},
+	year = 1987,
+        pdf = {http://homepages.inf.ed.ac.uk/dts/pub/obs-equiv.pdf},
+	abstract =
+{The properties of a simple and natural notion of observational
+equivalence of algebras and the corresponding specification-building
+operation are studied.  We begin with a definition of observational
+equivalence which is adequate to handle reachable algebras only, and
+show how to extend it to cope with unreachable algebras and also how
+it may be generalised to make sense under an arbitrary institution.
+Behavioural equivalence is treated as an important special case of
+observational equivalence, and its central role in program development
+is shown by means of an example.},
+	comment = {[Reviewed in MR 88j:68118 and CR 8808-0615; this is
+		 the final complete version of
+		 \cite{SannellaDT:observational-equivalence85}.]}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:implementations-revisited87,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Toward Formal Development of Programs from Algebraic
+		 Specifications: Implementations Revisited},
+	booktitle = {Proc.\ 12th Colloq.\ on Trees in Algebra and
+		 Programming.  Intl.\ Joint Conf.\ on Theory and
+		 Practice of Software Development ({TAPSOFT}'87)},
+	location = {Pisa},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 249,
+	pages = {96--110},
+	year = 1987,
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/impl-conf.pdf},
+	abstract =
+{The program development process is viewed as a sequence of
+implementation steps leading from a specification to a program. Based
+on an elementary notion of refinement, two notions of implementation
+are studied: constructor implementations which involve a construction
+``on top of'' the implementing specification, and abstractor
+implementations which additionally provide for abstraction from some
+details of the implemented specification. These subsume most formal
+notions of implementation in the literature. Both kinds of
+implementations satisfy a vertical composition and a (modified)
+horizontal composition property. All the definitions and results
+generalise to the framework of an arbitrary institution.},
+	note =
+{\textbf{Extended abstract; the final full version of this is
+ \cite{SannellaDT:implementations-revisited88}}}}
+
+@article{SannellaDT:implementations-revisited88,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Toward Formal Development of Programs from Algebraic
+		 Specifications: Implementations Revisited},
+	journal = {Acta Informatica},
+	volume = 25,
+	pages = {233--281},
+	year = 1988,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/impl.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/impl.pdf},
+	abstract =
+{The program development process is viewed as a sequence of
+implementation steps leading from a specification to a program.  Based
+on an elementary notion of refinement, two notions of implementation
+are studied: constructor implementations which involve a construction
+``on top of'' the implementing specification, and abstractor
+implementations which additionally provide for abstraction from some
+details of the implemented specification.  These subsume most formal
+notions of implementation in the literature.  Both kinds of
+implementations satisfy a vertical composition and a (modified)
+horizontal composition property.  All the definitions and results are
+shown to generalise to the framework of an arbitrary institution, and
+a way of changing institutions during the implementation process is
+introduced.  All this is illustrated by means of simple concrete
+examples.},
+	comment = {[This is the final version of
+		 \cite{SannellaDT:implementations-revisited87}.]}}
+
+%  ----------------------------------------------------------------
+
+@article{SannellaDT:lfcs-newsletter-survey88,
+	author = {Donald Sannella},
+	title = {Algebraic Specification and Formal Program
+		 Development: Motivation, Present State and Future
+		 Prospects},
+	journal = {{LFCS} Newsletter},
+	volume = 1,
+	pages = {7--10},
+	year = 1988}
+
+%  ----------------------------------------------------------------
+
+@article{SannellaDT:lfcs-newsletter-tools88,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Tools for Formal Program Development: Some
+		 Fantasies},
+	journal = {{LFCS} Newsletter},
+	volume = 1,
+	pages = {10--15},
+	year = 1988}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:structure-representation89,
+	author = {Robert Harper and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {Structure and Representation in {LF}},
+	booktitle = {Proc.\ 4th {IEEE} Symp.\ on Logic in Computer
+		 Science},
+	location = {Asilomar},
+	pages = {226--237},
+	year = 1989,
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/lf-conf.pdf},
+	note =
+{\textbf{Extended abstract; the final full version of this is
+\cite{SannellaDT:structured-presentations94}}},
+	abstract =
+{The purpose of a logical framework such as LF is to provide a language for
+defining logical systems suitable for use in a logic-independent proof
+development environment.  All inferential activity in an object logic (in
+particular, proof search) is to be conducted in the logical framework via the
+representation of that logic in the framework.  An important tool for
+controlling search in an object logic is the use of structured theory
+presentations.  In order to apply these ideas to the setting of a logical
+framework, we study the behavior of structured theory presentations under
+representation in a framework, focusing on the problem of ``lifting''
+presentations from the object logic to the metalogic of the framework.
+We also consider imposing structure on logic presentations so that logical
+systems may themselves be defined in a modular fashion.  This opens the way to
+a CLEAR-like language for defining both theories and logics in a logical
+framework.},
+	comment = {[This is an extended abstract of
+		 \cite{SannellaDT:structure-representation89a}, which is a
+		 preliminary version of
+		 \cite{SannellaDT:structured-presentations94}.]}}
+
+@inproceedings{SannellaDT:structure-representation89a,
+	author = {Robert Harper and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {Structure and Representation in {LF}},
+	booktitle = {Proc.\ 1989 Workshop on Programming Logic},
+	location = {B\aa{}stad},
+	pages = {232--257},
+	year = 1989,
+	note =
+{\textbf{Extended abstract; the final full version of this is
+\cite{SannellaDT:structured-presentations94}}},
+	comment = {[This is a longer version of
+		 \cite{SannellaDT:structure-representation89} and a
+		 preliminary version of
+		 \cite{SannellaDT:structured-presentations94}.]}}
+
+@article{SannellaDT:structured-presentations94,
+	author = {Robert Harper and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {Structured Presentations and Logic Representations},
+	journal = {Annals of Pure and Applied Logic},
+	volume = 67,
+	pages = {113--160},
+	year = 1994,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/apal.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/apal.pdf},
+	abstract =
+{The purpose of a logical framework such as LF is to provide a
+language for defining logical systems suitable for use in a
+logic-independent proof development environment.  All inferential
+activity in an object logic (in particular, proof search) is to be
+conducted in the logical framework via the representation of that
+logic in the framework.  An important tool for controlling search in
+an object logic, the need for which is motivated by the difficulty of
+reasoning about large and complex systems, is the use of structured
+theory presentations.  In this paper a rudimentary language of
+structured theory presentations is presented, and the use of this
+structure in proof search for an arbitrary object logic is explored.
+The behaviour of structured theory presentations under representation
+in a logical framework is studied, focusing on the problem of
+``lifting'' presentations from the object logic to the metalogic of
+the framework.  The topic of imposing structure on logic
+presentations, so that logical systems may themselves be defined in a
+modular fashion, is also briefly considered.},
+	comment = {[Reviewed in MR~95i:03024;
+		 this is the extended final version of
+		 \cite{SannellaDT:structure-representation89} and
+		 \cite{SannellaDT:structure-representation89a}.]}}
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:logic-representation89,
+	author = {Robert Harper and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {Logic Representation in {LF}},
+	volume = 389,
+	series = {Lecture Notes in Computer Science},
+	pages = {250--272},
+	booktitle = {Proc.\ 3rd Summer Conf.\ on Category Theory and
+		 Computer Science},
+	location = {Manchester},
+	year = 1989,
+	publisher = {Springer},
+	abstract =
+{The purpose of a logical framework such as LF is to provide a
+language for defining logical systems suitable for use in a
+logic-independent proof development environment.  In previous work we
+have developed a theory of representation of logics in a logical
+framework and considered the behaviour of structured theory
+presentations under representation.  That work was based on the
+simplifying assumption that logics are characterized as families of
+consequence relations on ``closed'' sentences.  In this report we
+extend the notion of logical system to account for open formula, and
+study its basic properties.  Following standard practice, we
+distinguish two types of logical system of open formulae that differ
+in the treatment of free variables, and show how they may be induced
+from a logical system of closed sentences.  The technical notions of a
+logic presentation and a uniform encoding of a logical system in LF
+are generalized to the present setting.}}
+
+%  ----------------------------------------------------------------
+
+@incollection{SannellaDT:real-problems93,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Algebraic Specification and Formal Methods for
+		 Program Development: What are the Real Problems?},
+	booktitle = {Current Trends in Theoretical Computer Science.
+		 Essays and Tutorials},
+	publisher = {World Scientific},
+	editor = {G. Rozenberg and A. Salomaa},
+	pages = {115--120},
+	year = 1993,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/problems.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/problems.pdf},
+	abstract =
+{The long-term goal of work on algebraic specification is formal
+development of correct programs from specifications via
+verified-correct refinement steps.  Define a \emph{real problem} to
+be an unsolved problem which lies on (or near) the path betwen the
+current state of the art and this ultimate goal.  Long-term progress
+depends on solving these problems, so it seems worthwhile to attack
+the real problems before worrying about other issues.
+
+It is perhaps surprising that there is little agreement concerning
+what these problems are, at least if one takes the problems being
+tackled as an indication of what various researchers think the real
+problems are.  Some sort of consensus seems desirable to promote
+effective joint progress towards our common goal.
+
+We list some (not all) of what we think are the real problems.  In an
+attempt to spark controversy, some things which we think are not real
+problems are also listed.  Neither of these lists is exhaustive.},
+	note = {Originally published in \emph{EATCS Bulletin}
+		 41:134--137 (1990).}}
+
+%  ----------------------------------------------------------------
+
+@book{SannellaDT:compass-bibliography91,
+	editor = {Michel Bidoit and Hans-J{\"o}rg Kreowski and
+		 Pierre Lescanne and Fernando Orejas and
+		 Donald Sannella}, 
+	title = {Algebraic System Specification and Development:
+		 A Survey and Annotated Bibliography},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 501,
+	year = 1991,
+	comment = {[Reviewed in CR 9209-0662.]}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:asl+91,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {A Kernel Specification Formalism with Higher-Order
+		 Parameterisation},
+	booktitle = {Proc.\ 7th Workshop on Specification of Abstract
+		 Data Types},
+	location = {Wusterhausen},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 534,
+	pages = {274--296},
+	year = 1991,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/spec-formalism.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/spec-formalism.pdf},
+	abstract =
+{A specification formalism with parameterisation of an arbitrary order
+is presented.  It is given a denotational-style semantics, accompanied
+by an inference system for proving that an object satisfies a
+specification.  The inference system incorporates, but is not limited
+to, a clearly identified type-checking component.
+
+Special effort is made to carefully distinguish between parameterised
+specifications, which denote functions yielding classes of objects,
+and specifications of parameterised objects, which denote classes of
+functions yielding objects.  To deal with both of these in a uniform
+framework, it was convenient to view specifications, which specify
+objects, as objects themselves, and to introduce a notion of a
+specification of specifications.
+
+The formalism includes the basic specification-building operations of
+the ASL specification language.  This choice, however, is orthogonal
+to the new ideas presented.  The formalism is also
+institution-independent, although this issue is not explicitly
+discussed at any length here.},
+	comment = {[Superceded by Section 7 of
+		 \cite{SannellaDT:parameterisation-revisited92}.]}}
+
+@article{SannellaDT:parameterisation-revisited92,
+	author = {Donald Sannella and Stefan Soko{\l}owski and
+		 Andrzej Tarlecki},
+	title = {Toward Formal Development of Programs from Algebraic
+		 Specifications: Parameterisation Revisited},
+	journal = {Acta Informatica},
+	volume = 29,
+	number = 8,
+	pages = {689--736},
+	comment = {[Reviewed in CR 9405-0310, CR 9503-0176; an early
+		 version of this, with an extended example in an
+		 appendix, appeared as report 6/90, Univ. Bremen,
+		 1990.]},
+	year = 1992,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/param.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/param.pdf},
+	abstract =
+{Parameterisation is an important mechanism for structuring programs
+and specifications into modular units.  The interplay between
+parameterisation (of programs and of specifications) and specification
+(of parameterised and of non-parameterised programs) is analysed,
+exposing important semantic and methodological differences between
+specifications of parameterised programs and parameterised
+specifications.  The extension of parameterisation mechanisms to the
+higher-order case is considered, both for parameterised programs and
+parameterised specifications, and the methodological consequences of
+such an extension are explored.
+
+A specification formalism with parameterisation of an arbitrary order
+is presented.  Its denotational-style semantics is accompanied by an
+inference system for proving that an object satisfies a specification.
+The formalism includes the basic specification-building operations of
+the ASL specification language and is institution independent.}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:model-theoretic-foundations92,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Toward Formal Development of Programs from Algebraic
+		 Specifications: Model-Theoretic Foundations},
+	booktitle = {Proc.\ 19th Intl.\ Colloq.\ on Automata,
+		 Languages and Programming},
+	location = {Vienna},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 623,
+	pages = {656--671},
+	year = 1992,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/mtf.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/mtf.pdf},
+	abstract =
+{This paper presents in an informal way the main ideas underlying our work on
+the model-theoretic foundations of algebraic specification and program
+development.
+We attempt to offer an overall view, rather than new results,
+and focus on the basic motivation behind the technicalities
+presented elsewhere and on the conclusions from this work.},
+	note = {\textbf{This is superceded by \cite{SannellaDT:essential-concepts97}}}}
+
+@article{SannellaDT:essential-concepts97,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Essential Concepts of Algebraic
+		 Specification and Program Development},
+	journal = {Formal Aspects of Computing},
+	volume = 9,
+	pages = {229--269},
+	year = 1997,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/concepts.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/concepts.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/concepts.pdf},
+	comment = {[An early short version of this is \cite{SannellaDT:model-theoretic-foundations92}.]},
+	abstract =
+{The main ideas underlying work on the model-theoretic foundations of
+algebraic specification and formal program development are presented
+in an informal way.  An attempt is made to offer an overall view,
+rather than new results, and to focus on the basic motivation behind
+the technicalities presented elsewhere.}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:behavioural-abstraction-hol95,
+	author = {Martin Hofmann and Donald Sannella},
+	title = {On Behavioural Abstraction and Behavioural
+		 Satisfaction in Higher-Order Logic},
+	booktitle = {Proc.\ 20th Colloq.\ on Trees in Algebra and
+		 Programming.  Intl.\ Joint Conf.\ on Theory and
+		 Practice of Software Development ({TAPSOFT}'95)},
+	location = {Aarhus},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 915,
+	pages = {247--261},
+	year = 1995,
+	note =
+{\textbf{The final full version of this is \cite{SannellaDT:behavioural-abstraction-hol96}}},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/beh-equiv.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/beh-equiv.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/beh-equiv.pdf},
+	abstract =
+{The behavioural semantics of specifications with higher-order logical
+formulae as axioms is analyzed.  A characterization of behavioural
+abstraction via behavioural satisfaction of formulae in which the
+equality symbol is interpreted as indistinguishability, which is due
+to Reichel and was recently generalized to the case of first-order
+logic by Bidoit \emph{et al}, is further generalized to this case.  The
+fact that higher-order logic is powerful enough to express the
+indistinguishability relation is used to characterize behavioural
+satisfaction in terms of ordinary satisfaction, and to develop new
+methods for reasoning about specifications under behavioural
+semantics.}}
+% Springer: http://dx.doi.org/10.1007/3-540-59293-8_199
+
+@article{SannellaDT:behavioural-abstraction-hol96,
+	author = {Martin Hofmann and Donald Sannella},
+	title = {On Behavioural Abstraction and Behavioural
+		 Satisfaction in Higher-Order Logic},
+	journal = {Theoretical Computer Science},
+	volume = 167,
+	pages = {3--45},
+	year = 1996,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/beh-equiv-tcs.dvi},
+  	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/beh-equiv-tcs.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/beh-equiv-tcs.pdf},
+	abstract =
+{The behavioural semantics of specifications with higher-order logical
+formulae as axioms is analyzed.  A characterization of behavioural
+abstraction via behavioural satisfaction of formulae in which the
+equality symbol is interpreted as indistinguishability, which is due
+to Reichel and was recently generalized to the case of first-order
+logic by Bidoit \emph{et al}, is further generalized to this case.  The
+fact that higher-order logic is powerful enough to express the
+indistinguishability relation is used to characterize behavioural
+satisfaction in terms of ordinary satisfaction, and to develop new
+methods for reasoning about specifications under behavioural
+semantics.},
+	comment = {[This is the full version of
+		 \cite{SannellaDT:behavioural-abstraction-hol95}.]}}
+
+%  ----------------------------------------------------------------
+
+@incollection{SannellaDT:prelimaries96,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Algebraic Preliminaries},
+	booktitle = {Algebraic Foundations of Systems Specification},
+	publisher = {Springer},
+	chapter = 2,
+	editor = {Egidio Astesiano and Hans-J{\"o}rg Kreowski and
+		 Bernd Krieg-Br{\"u}ckner},
+	year = 1999,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/prelim.dvi},
+  	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/prelim.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/prelim.pdf}}
+
+%  ----------------------------------------------------------------
+
+@incollection{SannellaDT:specification-languages96,
+	author = {Donald Sannella and Martin Wirsing},
+	title = {Specification Languages},
+	booktitle = {Algebraic Foundations of Systems Specification},
+	publisher = {Springer},
+	chapter = 8,
+	editor = {Egidio Astesiano and Hans-J{\"o}rg Kreowski and
+		 Bernd Krieg-Br{\"u}ckner},
+	year = 1999,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/spec-lang.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/spec-lang.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/spec-lang.pdf}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:mind-the-gap96,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Mind the Gap! {A}bstract versus Concrete Models of
+		 Specifications},
+	booktitle = {Proc.\ 21st Intl.\ Symp.\ on Mathematical
+		 Foundations of Computer Science},
+	location = {Cracow},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1113,
+	pages = {114--134},
+	year = 1996,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs96.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs96.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs96.pdf},
+	abstract =
+{In the theory of algebraic specifications, many-sorted algebras are
+used to model programs: the representation of data is arbitrary and
+operations are modelled as ordinary functions.  The theory that
+underlies the formal development of programs from specifications takes
+advantage of the many useful properties that these models enjoy.
+
+The models that underlie the semantics of programming languages are
+different.  For example, the semantics of Standard~ML uses rather
+concrete models, where data values are represented as closed
+constructor terms and functions are represented as ``closures''.  The
+properties of these models are quite different from those of
+many-sorted algebras.
+
+This discrepancy brings into question the applicability of the theory
+of specification and formal program development in the context of a
+concrete programming language, as has been attempted in the
+Extended~ML framework for the formal development of Standard~ML
+programs.  This paper is a preliminary study of the difference between
+abstract and concrete models of specifications, inspired by the kind
+of concrete models used in the semantics of Standard~ML, in an attempt
+to determine the consequences of the discrepancy.}}
+% Springer: http://dx.doi.org/10.1007/3-540-61550-4_143
+
+%  ----------------------------------------------------------------
+%  The following should also be in the EML section
+
+@article{SannellaDT:alg-methods99,
+	author = {Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {Algebraic Methods for Specification and Formal
+		Development of Programs}, 
+	journal = {ACM Computing Surveys},
+	volume = 31,
+	number = {3es},
+	year = 1999,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/computing-surveys.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/computing-surveys.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/computing-surveys.pdf},
+	abstract =
+{This note gives our personal perspective on the state of foundations of software
+specification and development including applications to the formal development of
+reliable complex software systems.}}
+
+@inproceedings{SannellaDT:lax-logical-relations00,
+	author = {Gordon Plotkin and John Power and Donald Sannella and Robert Tennent},
+	title = {Lax Logical Relations},
+	booktitle = {Proc.\ 27th Intl.\ Colloq.\ on Automata, Languages
+	and Programming},
+	location = {Geneva},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1853,
+	pages = {85--102},
+	year = 2000,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/laxlogrel.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/laxlogrel.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/laxlogrel.pdf},
+	abstract =
+{Lax logical relations are a categorical generalisation of logical
+relations; though they preserve product types, they need not preserve
+exponential types.  But, like logical relations, they are preserved by
+the meanings of all lambda-calculus terms.  We show that lax logical
+relations coincide with the correspondences of Schoett, the algebraic
+relations of Mitchell and the pre-logical relations of Honsell and
+Sannella on Henkin models, but also generalise naturally to models in
+cartesian closed categories and to richer languages.}}
+
+@inproceedings{SannellaDT:prelogical-relations99,
+	author = {Furio Honsell and Donald Sannella},
+	title = {Pre-logical Relations},
+	booktitle = {Proc.\ Computer Science Logic, CSL'99},
+	location = {Madrid},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1683,
+	pages = {546--561},
+	year = 1999,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/prelogrel.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/prelogrel.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/prelogrel.pdf},
+	abstract =
+{We study a weakening of the notion of logical relations, called
+pre-logical relations, that has many of the features that make logical
+relations so useful as well as further algebraic properties including
+composability.  The basic idea is simply to require the reverse
+implication in the definition of logical relations to hold only for
+pairs of functions that are expressible by the same lambda term.
+Pre-logical relations are the minimal weakening of logical relations
+that gives composability for extensional structures and simultaneously
+the most liberal definition that gives the Basic Lemma.  The use of
+pre-logical relations in place of logical relations gives an improved
+version of Mitchell's representation independence theorem which
+characterizes observational equivalence for all signatures rather than
+just for first-order signatures.  Pre-logical relations can be used in
+place of logical relations to give an account of data refinement where
+the fact that pre-logical relations compose explains why stepwise
+refinement is sound.},
+	note =
+{\textbf{The final full version of this is \cite{SannellaDT:prelogical-relations00}}}}
+
+@article{SannellaDT:prelogical-relations00,
+	author = {Furio Honsell and Donald Sannella},
+	title = {Prelogical Relations},
+	journal={Information and Computation},
+	year = {2002},
+	volume = {178},
+	pages = {23--43},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/prelogrel-long.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/prelogrel-long.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/prelogrel-long.pdf},
+	abstract =
+{We study a weakening of the notion of logical relations, called
+prelogical relations, that has many of the features that make logical
+relations so useful as well as further algebraic properties including
+composability.  The basic idea is simply to require the reverse
+implication in the definition of logical relations to hold only for
+pairs of functions that are expressible by the same lambda term.
+Prelogical relations are the minimal weakening of logical relations
+that gives composability for extensional structures and simultaneously
+the most liberal definition that gives the Basic Lemma.  Prelogical predicates (i.e., unary prelogical relations) coincide
+with sets that are invariant under Kripke logical relations with
+varying arity as introduced by Jung and Tiuryn, and prelogical
+relations are the closure under projection and intersection of logical
+relations.
+These conceptually independent characterizations of prelogical
+relations suggest that the concept is rather intrinsic and robust.
+The use of
+prelogical relations gives an improved
+version of Mitchell's representation independence theorem which
+characterizes observational equivalence for all signatures rather than
+just for first-order signatures.  Prelogical relations can be used in
+place of logical relations to give an account of data refinement where
+the fact that prelogical relations compose explains why stepwise
+refinement is sound.},
+	comment = {[This is an
+extended version of \cite{SannellaDT:prelogical-relations99} that supercedes
+Report ECS-LFCS-99-405, Laboratory for Foundations of Computer Science,
+Univ.\ of Edinburgh (1999).]}}
+
+@inproceedings{SannellaDT:refinement99,
+	author = {Donald Sannella},
+	title = {Algebraic Specification and Program Development
+	by Stepwise Refinement},
+	booktitle = {Proc.\ 9th Intl.\ Workshop on
+	Logic-based Program Synthesis and Transformation, {LOPSTR}'99},
+	location = {Venice},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1817,
+	pages = {1--9},
+	year = 2000,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/lopstr99.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/lopstr99.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/lopstr99.pdf},
+	abstract =
+{Various formalizations of the concept of ``refinement step'' as used
+in the formal development of programs from algebraic specifications
+are presented and compared.}}
+
+@inproceedings{SannellaDT:constructive-refinement00,
+	author = {Furio Honsell and John Longley and Donald Sannella and Andrzej Tarlecki},
+	title = {Constructive Data Refinement in Typed Lambda Calculus},
+	booktitle = {Proc.\ 3rd Intl.\ Conf.\ on Foundations of Software
+		Science and Computation Structures.
+		European Joint Conferences on Theory and Practice of
+		Software ({ETAPS} 2000)},
+	location = {Berlin},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1784,
+	pages = {161--176},
+	year = 2000,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/refinement.ps},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/refinement.dvi},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/refinement.pdf},
+	abstract =
+{A new treatment of data refinement in typed lambda calculus is proposed,
+phrased in terms of pre-logical relations [HS99] rather than logical
+relations, and incorporating a constructive element.  Constructive data
+refinement is shown to have desirable properties, and a substantial example
+of refinement is presented.}}
+
+@inproceedings{SannellaDT:simulation-relations03,
+	author = {Jo Hannay and {Shin-ya} Katsumata and Donald Sannella},
+	title = {Semantic and Syntactic Approaches to Simulation Relations},
+	booktitle = {Proc.\ 28th Intl.\ Symp.\ on Mathematical
+		 Foundations of Computer Science},
+	location = {Bratislava},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 2747,
+	pages = {68--91},
+	year = 2003,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs2003.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs2003.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs2003.pdf},
+	abstract =
+{Simulation relations are tools for establishing the correctness of
+data refinement steps.  In the simply-typed lambda calculus, logical
+relations are the standard choice for simulation relations, but they
+suffer from certain shortcomings; these are resolved by use of the
+weaker notion of pre-logical relations instead.  Developed from a
+syntactic setting, abstraction barrier-observing simulation
+relations serve the same purpose, and also handle polymorphic
+operations.  Meanwhile, second-order pre-logical relations directly
+generalise pre-logical relations to polymorphic lambda calculus
+(System F).  We compile the main refinement-pertinent results of
+these various notions of simulation relation, and try to raise some
+issues for aiding their comparison and reconciliation.}}
+
+%  ----------------------------------------------------------------
+%  The following should also be in the EML section
+
+@inproceedings{SannellaDT:global-dev02,
+	author = {Michel Bidoit and Donald Sannella and Andrzej Tarlecki},
+	title = {Global Development via Local Observational Construction Steps},
+	booktitle = {Proc.\ 27th Intl.\ Symp.\ on Mathematical
+		 Foundations of Computer Science},
+	location = {Warsaw},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	year = 2002,
+	volume = 2420,
+	pages = {1--24},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/global-dev.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/global-dev.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/global-dev.pdf},
+	note= {\textbf{An extended version appeared in \cite{SannellaDT:obs-interp-casl-specs08}}},
+	abstract =
+{The way that refinement of individual ``local'' components of a
+specification relates to development of a ``global'' system from a
+specification of requirements is explored.  Observational
+interpretation of specifications and refinements add expressive power
+and flexibility while bringing in some subtle problems.
+The results are instantiated in the context of CASL architectural
+specifications.}}
+
+
+@inproceedings{SannellaDT:horizontal-composition06,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Horizontal Composability Revisited},
+	booktitle = {Algebra, Meaning and Computation: Essays Dedicated to
+Joseph A. Goguen on the Occasion of his 65th Birthday},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	year = 2006,
+	volume = 4060,
+	pages = {296--316},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/goguen-festschrift.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/goguen-festschrift.pdf},
+	abstract =
+{We recall the contribution of Goguen and Burstall's 1980 CAT paper
+and its powerful influence on theories of specification
+implementation that were emerging at about the same time, via the
+introduction of the notions of vertical and horizontal
+composition of implementations.  We then give a different view of
+implementation which we believe provides a more adequate reflection of
+the rather subtle interplay between implementation, specification
+structure and program structure.}}
+
+@inproceedings{SannellaDT:observability08,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Observability Concepts in Abstract Data Type Specification,
+30 Years Later},
+	booktitle = {Concurrency, Graphs and Models: Essays Dedicated to
+Ugo Montanari on the Occasion of his 65th Birthday},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	year = 2008,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/montanari-festschrift.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/montanari-festschrift.pdf},
+	abstract =
+{We recall the contribution of Montanari's paper [GGM76] and
+sketch a framework for observable behaviour specification that blends
+some of these early ideas, seen from a more modern perspective, with
+our own approach.}}
+
+
+%%EML-DELIMITER
+%  ================================================================
+%  =           Extended ML, CoFI/CASL, and related topics         =
+%  ================================================================
+
+@inproceedings{SannellaDT:eml-intro85,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Program Specification and Development in
+		 {S}tandard {ML}},
+	booktitle = {Proc.\ 12th {ACM} Symp.\ on Principles of
+		 Programming Languages},
+	location = {New Orleans},
+	pages = {67--77},
+	year = 1985,
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/eml-popl.pdf},
+	abstract =
+{An attempt is made to apply ideas about algebraic specification in
+the context of a programming language.  Standard ML with modules is
+extended by allowing axioms in module interface specifications and in
+place of code.  The resulting specification language, called Extended
+ML, is given a semantics based on the primitive specification-building
+operations of the kernel algebraic specification language
+ASL. Extended ML provides a framework for the formal development of
+programs from specifications by stepwise refinement, which is
+illustrated by means of a simple example.  From its semantic basis
+Extended ML inherits complete independence from the logical system
+(institution) used to write specifications.  This allows different
+styles of specification as well as different programming languages to
+be accommodated.},
+	comment = {[Obsolete with respect to the current design of
+		 Extended ML.]}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:eml-institution-independent86,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Extended {ML}: An Institution-Independent Framework
+		 for Formal Program Development},
+	booktitle = {Proc.\ Workshop on Category Theory and Computer
+		 Programming},
+	location = {Guildford},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 240,
+	pages = {364--389},
+	year = 1986,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/abstract-eml.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/abstract-eml.pdf},
+	abstract =
+{The Extended ML specification language provides a framework for the
+formal stepwise development of modular programs in the Standard ML
+programming language from specifications.  The object of this paper is
+to equip Extended ML with a semantics which is completely independent
+of the logical system used to write specifications, building on Goguen
+and Burstall's work on the notion of an \emph{institution} as a
+formalisation of the concept of a logical system.  One advantage of
+this is that it permits freedom in the choice of the logic used in
+writing specifications; an intriguing side-effect is that it enables
+Extended ML to be used to develop programs in languages other than
+Standard ML since we view programs as simply Extended ML
+specifications which happen to include only ``executable'' axioms.
+The semantics of Extended ML is defined in terms of the primitive
+specification-building operations of the ASL kernel specification
+language which itself has an institution-independent semantics.
+
+It is not possible to give a semantics for Extended ML in an
+institutional framework without extending the notion of an
+institution; the new notion of an \emph{institution with syntax} is
+introduced to provide an adequate foundation for this enterprise.  An
+institution with syntax is an institution with three additions: the
+category of signatures is assumed to form a concrete category; an
+additional functor is provided which gives concrete syntactic
+representations of sentences; and a natural transformation associates
+these concrete objects with the ``abstract'' sentences they represent.
+We use the first addition to ``lift'' certain necessary set-theoretic
+constructions to the category of signatures, and the other two
+additions to deal with the low-level semantics of axioms.},
+	comment = {[Reviewed in MR~88f:68100; somewhat obsolete with
+		 respect to the current design of Extended ML but
+		 the technicalities are still relevant.]}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:eml-tutorial87,
+	author = {Donald Sannella},
+	title = {Formal Specification of {ML} Programs},
+	booktitle = {Jornadas Rank Xerox Sobre Inteligencia Artificial
+		 Razonamiento Automatizado},
+	location = {Blanes},
+	pages = {79--98},
+	year = 1987,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/ml-spec.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/ml-spec.pdf},
+	abstract =
+{A tutorial introduction to specifying ML programs using ideas from
+Extended ML}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:eml-methodology89,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Toward Formal Development of {ML} Programs:
+		 Foundations and Methodology},
+	booktitle = {Proc.\ Colloq.\ on Current Issues in Programming
+		 Languages.  Intl.\ Joint Conf.\ on Theory and
+		 Practice of Software Development ({TAPSOFT}'89)},
+	location = {Barcelona},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 352,
+	pages = {375--389},
+	year = 1989,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/eml-methodology.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/eml-methodology.pdf},
+	abstract =
+{A formal methodology is presented for the systematic evolution of
+modular Standard ML programs from specifications by means of verified
+refinement steps, in the framework of the Extended ML specification
+language. Program development proceeds via a sequence of
+\emph{design} (modular decomposition) \emph{coding} and
+\emph{refinement} steps.  For each of these three kinds of steps,
+conditions are given which ensure the correctness of the result.
+These conditions seem to be as weak as possible under the constraint
+of being expressible as ``local'' interface matching requirements.
+Interfaces are only required to match up to behavioural equivalence,
+which is seen as vital to the use of data abstraction in program
+development.},
+	comment = {[Long version: Report ECS-LFCS-89-71, Dept. of
+		 Computer Science, Univ. of Edinburgh, 1989.]}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:eml-working-programmer91,
+	author = {Donald Sannella},
+	title = {Formal Program Development in {E}xtended {ML} for the
+		 Working Programmer},
+	booktitle = {Proc.\ 3rd {BCS}/{FACS} Workshop on Refinement},
+	location = {Hursley Park},
+	publisher = {Springer},
+	series = {Workshops in Computing},
+	pages = {99--130},
+	year = 1991,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/bcs.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/bcs.pdf},
+	abstract =
+{Extended ML is a framework for the formal development of programs in
+the Standard ML programming language from high-level specifications of
+their required input/output behaviour.  It strongly supports the
+development of modular programs consisting of an interconnected
+collection of generic and reusable units.  The Extended ML framework
+includes a methodology for formal program development which
+establishes a number of ways of proceeding from a given specification
+of a programming task towards a program.  Each such step gives rise to
+one or more proof obligations which must be proved in order to
+establish the correctness of that step.  This paper is intended as a
+user-oriented summary of the Extended ML language and methodology.
+Theoretical technicalities are avoided whenever possible, with
+emphasis placed on the practical aspects of formal program
+development.  An extended example of a complete program development in
+Extended ML is included.}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:eml-overview91,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {{E}xtended {ML}: Past, Present and Future},
+	booktitle = {Proc.\ 7th Workshop on Specification of Abstract
+		 Data Types},
+	location = {Wusterhausen},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 534,
+	pages = {297--322},
+	year = 1991,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/eml-overview.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/eml-overview.pdf},
+	abstract =
+{An overview of past, present and future work on the Extended ML
+formal program development framework is given, with emphasis on two
+topics of current active research: the semantics of the Extended ML
+specification language, and tools to support formal program
+development.}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:spectral91,
+	author = {Bernd Krieg-Br{\"u}ckner and Donald Sannella},
+	title = {Structuring Specifications in-the-Large and
+		 in-the-Small: Higher-Order Functions, Dependent Types
+		 and Inheritance in {SPECTRAL}},
+	booktitle = {Proc.\ Colloq.\ on Combining Paradigms for
+		 Software Development.  Intl.\ Joint Conf.\ on Theory
+		 and Practice of Software Development ({TAPSOFT}'91)},
+	location = {Brighton},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 494,
+	pages = {103--120},
+	year = 1991,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/spectral.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/spectral.pdf},
+	abstract =
+{SPECTRAL is an experiment in specification language design that tries
+to maintain compactness in spite of a number of orthogonal concepts.
+The design is based on Extended ML and PROSPECTRA, generalising and
+extending both approaches.  Of particular concern are the means for
+structuring specifications and programs in-the-large and in-the-small.
+The language includes constructs for defining general higher-order
+functions yielding specifications or program modules.  Concepts of
+subtyping and (object-oriented) inheritance are included to support
+the specification development process and to enhance re-usability.
+Much of the power of the language comes from the use of dependent
+types.}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:eml-gentle-intro93,
+	author = {Stefan Kahrs and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {The Semantics of {E}xtended {ML}: A Gentle
+		 Introduction},
+	booktitle = {Proc.\ Intl.\ Workshop on Semantics of
+		 Specification Languages},
+	location = {Utrecht},
+	publisher = {Springer},
+	series = {Workshops in Computing},
+	pages = {186--215},
+	year = 1994,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/gentle-conf.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/gentle-conf.pdf},
+	abstract =
+{Extended ML (EML) is a framework for the formal development of
+modular Standard ML (SML) software systems.  Development commences
+with a specification of the behaviour required and proceeds via a
+sequence of partial solutions until a complete solution, an executable
+SML program, is obtained.  All stages in this development process are
+expressed in the EML language, an extension of SML with axioms for
+describing properties of module components.
+
+This is a report on the current state of the semantics of the EML
+specification language as in nears completion.  EML is unusual in
+being built around a ``real'' programming language having a formal
+semantics.  Interesting and complex problems arise both from the
+nature of this relationship and from interactions between the
+features of the language.},
+	note =
+{\textbf{An extended and improved version is \cite{SannellaDT:eml-gentle-intro97}}}}
+
+@article{SannellaDT:eml-gentle-intro97,
+	author = {Stefan Kahrs and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {The Definition of {E}xtended {ML}: A Gentle
+		 Introduction},
+	journal = {Theoretical Computer Science},
+	volume = 173,
+	pages = {445--484},
+	year = 1997,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/gentle-tcs.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/gentle-tcs.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/gentle-tcs.pdf},
+	abstract =
+{Extended ML (EML) is a framework for the formal development of
+modular Standard ML (SML) software systems.  Development commences
+with a specification of the behaviour required and proceeds via a
+sequence of partial solutions until a complete solution, an executable
+SML program, is obtained.  All stages in this development process are
+expressed in the EML language, an extension of SML with axioms for
+describing properties of module components.
+
+This is an overview of the formal definition of the EML language.  To
+complement the full technical details presented elsewhere, it provides
+an informal explanation of the main ideas, gives the rationale for
+certain design decisions, and outlines some of the technical issues
+involved.  EML is unusual in being built around a ``real'' programming
+language having a formally-defined syntax and semantics.  Interesting
+and complex problems arise both from the nature of this relationship
+and from interactions between the features of the language.},
+	comment = {[This is the final version of
+		 \cite{SannellaDT:eml-gentle-intro93}; a close-to-final
+		 version of this is: Report ECS-LFCS-95-322, Dept. of
+		 Computer Science, Univ. of Edinburgh, 1995.]},
+	note =
+{\textbf{The published version contains two typos:
+p461, rule at bottom: second gamma should be gamma';
+p462, rule in middle: second premise should start with E}}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:eml-interfaces94,
+	author = {Stefan Kahrs and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {Interfaces and {E}xtended {ML}},
+	booktitle = {Proc.\ {ACM} Workshop on Interface Definition
+		 Languages},
+	location = {Portland},
+	pages = {111--118},
+	publisher = {{ACM} {SIGPLAN} Notices 29(8)},
+	year = 1994,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/interfaces.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/interfaces.pdf},
+	abstract =
+{This is a position paper giving our views on the uses and makeup of
+module interfaces. The position espoused is inspired by our work on
+the Extended ML (EML) formal software development framework and by
+ideas in the algebraic foundations of specification and formal
+development. The present state of interfaces in EML is outlined and
+set in the context of plans for a more general EML-like framework with
+axioms in interfaces taken from an arbitrary logical system formulated
+as an \emph{institution}. Some more speculative plans are sketched
+concerning the simultaneous use of multiple institutions in
+specification and development.}}
+
+%  ----------------------------------------------------------------
+
+@techreport{SannellaDT:eml-definition94,
+	author = {Stefan Kahrs and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {The Definition of {E}xtended {ML}},
+	institution = {University of Edinburgh},
+	type = {Report},
+	number = {{ECS}-{LFCS}-94-300},
+	year = 1994,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/eml.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/eml.pdf},
+	abstract =
+{This document formally defines the syntax and semantics of the
+Extended ML language.  It is based directly on the published semantics
+of Standard ML in an attempt to ensure compatibility between the two
+languages.},
+	comment = {[Version 1; a later version is \cite{SannellaDT:eml-definition97}.]}}
+
+%  ----------------------------------------------------------------
+
+@unpublished{SannellaDT:eml-definition97,
+	author = {Stefan Kahrs and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {The Definition of {E}xtended {ML}, version 1.21},
+	year = 1997,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/eml-final.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/eml-final.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/eml-final.pdf},
+	abstract =
+{This document formally defines the syntax and semantics of the
+Extended ML language.  It is based directly on the published semantics
+of Standard ML in an attempt to ensure compatibility between the two
+languages.},
+	note = {Revised version of \cite{SannellaDT:eml-definition94}}}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:eml-reflections98,
+	author = {Stefan Kahrs and Donald Sannella},
+	title = {Reflections on the Design of a
+		Specification Language},
+	booktitle = {Proc.\ Intl.\ Colloq.\ on Fundamental
+		Approaches to Software Engineering.
+		European Joint Conferences on Theory and Practice of
+		Software ({ETAPS}'98)},
+	location = {Lisbon},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1382,
+	pages = {154--170},
+	year = 1998,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/reflections.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/reflections.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/reflections.pdf},
+	abstract =
+{We reflect on our experiences from work on the design and semantic
+underpinnings of Extended~ML, a specification language which supports
+the specification and formal development of Standard~ML programs.  Our
+aim is to isolate problems and issues that are intrinsic to the
+general enterprise of designing a specification language for use with
+a given programming language.  Consequently the lessons learned go far
+beyond our original aim of designing a specification language for ML.}}
+
+@inproceedings{SannellaDT:arch-specs98,
+	author = {Michel Bidoit and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {Architectural Specifications in {CASL}},
+	booktitle = {Proc.\ 7th Intl.\ Conference on Algebraic Methodology and
+  Software Technology (AMAST'98)},
+	location = {Manaus},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1548,
+	pages = {341--357},
+	year = 1999,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/archs-amast.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/archs-amast.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/archs-amast.pdf},
+	abstract =
+{One of the novel features of CASL, the Common Algebraic
+Specification Language, is the provision of so-called architectural
+specifications for describing the modular structure of software
+systems.  A discussion of refinement of CASL specifications
+provides the setting for a presentation of the rationale behind
+architectural specifications.  This is followed by details of the
+features provided in CASL for architectural specifications, hints
+concerning their semantics, and simple results justifying their
+usefulness in the development process.},
+	note = {\textbf{An extended version appeared in \cite{SannellaDT:arch-specs01}}}}
+
+@article{SannellaDT:arch-specs01,
+	author = {Michel Bidoit and Donald Sannella and
+		 Andrzej Tarlecki},
+	title = {Architectural Specifications in {CASL}},
+	journal={Formal Aspects of Computing},
+	year = {2002},
+	volume = 13,
+	pages = {252--273},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/archs.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/archs.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/archs.pdf},
+	abstract =
+{One of the most novel features of CASL, the Common Algebraic
+Specification Language, is the provision of so-called architectural
+specifications for describing the modular structure of software
+systems.  A brief discussion of refinement of CASL specifications
+provides the setting for a presentation of the rationale behind
+architectural specifications.  This is followed by some details of the
+features provided in CASL for architectural specifications, hints
+concerning their semantics, and simple results justifying their
+usefulness in the development process.},
+	comment = {[This is an
+extended version of \cite{SannellaDT:arch-specs98} that supercedes
+Report ECS-LFCS-99-407, Laboratory for Foundations of Computer Science,
+Univ.\ of Edinburgh (1999).]}}
+
+
+@inproceedings{SannellaDT:cofi99,
+	author = {Donald Sannella},
+	title = {The {C}ommon {F}ramework {I}nitiative for Algebraic
+Specification and Development of Software},
+	booktitle = {Proc.\ 3rd Intl.\ Conf.\ on Perspectives of System
+Informatics (PSI'99)},
+	location = {Novosibirsk},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1755,
+	year = 2000,
+	pages = {1--9},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/psi.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/psi.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/psi.pdf},
+	abstract =
+{The Common Framework Initiative (CoFI) is an open international
+collaboration which aims to provide a common framework for algebraic
+specification and development of software.  The central element of the
+Common Framework is a specification language called CASL for formal
+specification of functional requirements and modular software design
+which subsumes many previous algebraic specification languages.  This
+paper is a brief summary of past and present work on CoFI.}}
+
+@article{SannellaDT:casl01,
+	author = {Egidio Astesiano and Michel Bidoit and H{\'e}l{\`e}ne
+		Kirchner and Bernd Krieg-Br{\"u}ckner and Peter Mosses
+		and Donald Sannella and Andrzej Tarlecki},
+	title = {{CASL}: The Common Algebraic Specification Language},
+	journal = {Theoretical Computer Science},
+	volume = 286,
+	year = 2002,
+	pages = {153--196},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/casl.dvi},
+  	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/casl.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/casl.pdf},
+	abstract =
+{CASL is an expressive language for the formal specification of
+functional requirements and modular design of software.  It has been
+designed by CoFI, the international Common Framework Initiative for
+algebraic specification and development.  It is based on a critical
+selection of features that have already been explored in various
+contexts, including subsorts, partial functions, first-order logic,
+and structured and architectural specifications. CASL should
+facilitate interoperability of many existing algebraic prototyping and
+verification tools.
+
+This paper gives an overview of the CASL design.  The major issues
+that had to be resolved in the design process are indicated, and all
+the main concepts and constructs of CASL are briefly explained and
+illustrated -- the reader is referred to the CASL Language Summary for
+further details.  Some familiarity with the fundamental concepts of
+algebraic specification would be advantageous.}}
+
+@inproceedings{SannellaDT:cofi01,
+	author = {Donald Sannella},
+	title = {The {C}ommon {F}ramework {I}nitiative for Algebraic
+Specification and Development of Software: Recent Progress},
+	booktitle = {Recent Trends in Algebraic Development Techniques:
+Selected Papers from WADT 2001},
+	location = {Genova},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 2267,
+	pages = {328--343},
+	year = {2001},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/wadt2001.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/wadt2001.pdf},
+	abstract =
+{The Common Framework Initiative (CoFI) is an open international
+collaboration which aims to provide a common framework for algebraic
+specification and development of software.  The central element of the
+Common Framework is a specification language called CASL for formal
+specification of functional requirements and modular software design
+which subsumes many previous algebraic specification languages.  This
+paper is a brief summary of progress on CoFI during the period
+1998-2001, when CoFI received funding from the European Commission
+as a Working Group under the Esprit programme.}}
+
+@inproceedings{SannellaDT:unit-testing02,
+	author = {Patricia D.L. Machado and Donald Sannella},
+	title = {Unit Testing for {CASL} Architectural Specifications},
+	booktitle = {Proc.\ 27th Intl.\ Symp.\ on Mathematical
+		 Foundations of Computer Science},
+	location = {Warsaw},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	year = 2002,
+	volume = 2420,
+	pages = {506--518},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs2002.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs2002.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/mfcs2002.pdf},
+	abstract =
+{The problem of testing modular systems against algebraic
+specifications is discussed. We focus on systems where the
+decomposition into parts is specified by a CASL-style architectural
+specification and the parts (\emph{units}) are developed separately,
+perhaps by an independent supplier.  We consider how to test such
+units without reference to their context of use.  This problem is most
+acute for generic units where the particular instantiation cannot be
+predicted.}}
+
+%  ----------------------------------------------------------------
+%  The following should also be in the ALF section
+
+@inproceedings{SannellaDT:component-oriented04,
+	author = {Michel Bidoit and Donald Sannella and Andrzej Tarlecki},
+	title = {Toward Component-oriented Formal Software Development: An
+	Algebraic Approach},
+	booktitle = {Proc.\ 9th Monterey Workshop, Radical Innovations of
+	Software and Systems Engineering in the Future},
+	location = {Venice, October 2002},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	year = 2004,
+	volume = 2941,
+	pages = {75--90},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/monterey.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/monterey.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/monterey.pdf},
+	abstract =
+{Component based design and development of software is one of the most
+challenging issues in software engineering. In this paper, we adopt a
+somewhat simplified view of software components and discuss how they
+can be conveniently modeled in a framework that provides a modular
+approach to formal software development by means of stepwise
+refinements. In particular we take into account an observational
+interpretation of requirements specifications and study its impact on
+the definition of the semantics of specifications of (parametrized)
+components. Our study is carried out in the context of CASL
+architectural specifications.}}
+
+@inproceedings{SannellaDT:spec-code-CASL02,
+	author = {David Aspinall and Donald Sannella},
+	title = {From Specifications to Code in {CASL}},
+	booktitle = {Proc.\ 9th Intl.\ Conf.\ on Algebraic Methodology And Software Technology},
+	location = {Reunion},
+	publisher = {Springer},
+	series = {LNCS},
+	year = 2002,
+	volume = 2422,
+	pages = {1--14},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/amast2002.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/amast2002.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/amast2002.pdf},
+	abstract =
+{The status of the Common Framework Initiative (CoFI) and the Common
+Algebraic Specification Language (CASL) are briefly presented.  One
+important outstanding point concerns the relationship between CASL and
+programming languages; making a proper connection is obviously central
+to the use of CASL specifications for software specification and
+development.  Some of the issues involved in making this connection
+are discussed.}}
+
+@article{SannellaDT:proof-theory04,
+	author = {Till Mossakowski and Anne Haxthausen and Donald Sannella and Andrzej Tarlecki},
+	title = {{CASL} --- The Common Algebraic Specification Language: Semantics and Proof Theory},
+	journal={Computing and Informatics},
+	volume = 22,
+	pages = {285--321},
+	year = {2003},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/cai.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/cai.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/cai.pdf},
+	note= {\textbf{An extended version appeared in \cite{SannellaDT:proof-theory08}}},
+	abstract =
+{CASL is an expressive specification language that has been
+designed to supersede many existing algebraic specification
+languages and provide a standard. CASL consists of several
+layers, including basic (unstructured) specifications,
+structured specifications and architectural specifications
+(the latter are used to prescribe the structure of implementations).
+
+We describe an simplified version of the CASL syntax, semantics
+and proof calculus at each of these three layers and state the
+corresponding soundness and completeness theorems. The layers
+are orthogonal in the sense that the semantics of a given layer 
+uses that of the previous layer as a ``black box'', and
+similarly for the proof calculi. In particular, this means
+that CASL can easily be adapted to other logical systems.}}
+
+@incollection{SannellaDT:proof-theory08,
+	author = {Till Mossakowski and Anne Haxthausen and Donald Sannella and Andrzej Tarlecki},
+	title = {{CASL} --- The Common Algebraic Specification Language},
+	booktitle = {Logics of Specification Languages},
+	publisher = {Springer},
+	editor = {Dines Bj{\o}rner and Martin Henson},
+	year = {2008},
+	pages = {241--298},
+	abstract =
+{CASL is an expressive specification language that has been
+designed to supersede many existing algebraic specification
+languages and provide a standard. CASL consists of several
+layers, including basic (unstructured) specifications,
+structured specifications and architectural specifications;
+the latter are used to prescribe the structure of implementations.
+
+We describe an simplified version of the CASL syntax, semantics
+and proof calculus for each of these three layers and state the
+corresponding soundness and completeness theorems. The layers
+are orthogonal in the sense that the semantics of a given layer 
+uses that of the previous layer as a ``black box'', and
+similarly for the proof calculi. In particular, this means
+that CASL can easily be adapted to other logical systems.
+
+We conclude with a detailed example specification of a warehouse,
+which serves to illustrate the application of both CASL and the
+proof calculi for the various layers.},
+	comment = {[This is an extended version of \cite{SannellaDT:proof-theory04}.]}}
+
+@incollection{SannellaDT:foundations03,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Foundations},
+	booktitle = {{CASL} User Manual},
+	chapter = 10,
+        pages = {125--129},
+	bookauthor = {Michel Bidoit and Peter Mosses},
+	series = {Lecture Notes in Computer Science},
+	publisher = {Springer},
+	volume = 2900,
+	year = 2003}
+
+@incollection{SannellaDT:CASL-semantics04,
+	author = {Donald Sannella and Andrzej {Tarlecki, editors}},
+	title = {{CASL} Semantics},
+	booktitle = {{CASL} Reference Manual},
+	part = {III},
+        pages = {115--274},
+	editor = {Peter Mosses},
+	series = {Lecture Notes in Computer Science},
+	publisher = {Springer},
+	volume = 2960,
+	year = 2004}
+
+@incollection{SannellaDT:CASL-semantics-intro04,
+	author = {Donald Sannella},
+	title = {{CASL} Semantics: Introduction},
+	booktitle = {{CASL} Reference Manual},
+	chapter = {III.1},
+        pages = {117--123},
+	editor = {Peter Mosses},
+	series = {Lecture Notes in Computer Science},
+	publisher = {Springer},
+	volume = 2960,
+	year = 2004}
+
+@incollection{SannellaDT:CASL-semantics-basic-specs04,
+	author = {Donald Sannella},
+	title = {{CASL} Semantics: Basic Specifications},
+	booktitle = {{CASL} Reference Manual},
+	chapter = {III.2},
+        pages = {125--170},
+	editor = {Peter Mosses},
+	series = {Lecture Notes in Computer Science},
+	publisher = {Springer},
+	volume = 2960,
+	year = 2004}
+
+@inproceedings{SannellaDT:casl-refinement04,
+	author = {Till Mossakowski and Donald Sannella and Andrzej Tarlecki},
+	title = {A Simple Refinement Language for {CASL}},
+	booktitle = {Recent Trends in Algebraic Development Techniques:
+Selected Papers from WADT 2004},
+	location = {Barcelona},
+	publisher = {Springer},
+	series = {LNCS},
+	volume = 3423,
+	pages = {162--185},
+	year = 2004,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/casl-refinement.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/casl-refinement.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/casl-refinement.pdf},
+	abstract =
+{We extend CASL architectural specifications with a simple
+refinement language that allows the formalization of developments as
+refinement trees.  The essence of the extension is to allow
+refinements of unit specifications in CASL architectural specifications.}}
+
+%  ----------------------------------------------------------------
+%  The following should also be in the ALF section
+
+@article{SannellaDT:obs-interp-casl-specs08,
+	author = {Michel Bidoit and Donald Sannella and Andrzej Tarlecki},
+	title = {Observational Interpretation of {CASL} Specifications},
+	journal = {Mathematical Structures in Computer Science},
+	volume = {18},
+	pages = {325--371},
+	year = 2008,
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/casl-obs.pdf},
+	abstract =
+{The way that refinement of individual ``local'' components of a
+specification relates to development of a ``global'' system from a
+specification of requirements is explored.  Observational
+interpretation of specifications and refinements add expressive power
+and flexibility while bringing in some subtle problems.  Our study of
+these issues is carried out in the context of CASL architectural
+specifications.  We introduce a definition of observational
+equivalence for CASL models, leading to an observational semantics for
+architectural specifications for which we prove important properties.
+Overall, this fulfills the long-standing goal of complementing the
+standard semantics of CASL specifications with an observational view
+that supports observational refinement of specifications in
+combination with CASL-style architectural design.},
+	comment = {[An early short version was \cite{SannellaDT:global-dev02}.]}}
+
+%%MISC-DELIMITER
+%  ================================================================
+%  =                        Miscellaneous                         =
+%  ================================================================
+
+@inproceedings{SannellaDT:hope80,
+	author = {Rod Burstall and David MacQueen and
+		 Donald Sannella},
+	title = {{HOPE}: An Experimental Applicative Language},
+	booktitle = {Proc.\ 1980 {LISP} Conference},
+	location = {Stanford},
+	year = 1980,
+	pages = {136--143},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/hope.pdf},
+	abstract =
+{An applicative language called HOPE is described and discussed.  The
+underlying goal of the design and implementation effort was to produce
+a very simple programming language which encourages the construction
+of clear and manipulable programs.  HOPE does not include an
+assignment statement; this is felt to be an important simplification.
+The user may freely define his own data types, without the need to
+devise a complicated encoding in terms of low-level types.  The
+language is very strongly typed, and as implemented it incorporates a
+typechecker which handles polymorphic types and overloaded operators.
+Functions are defined by a set of recursion equations; the left-hand
+side of each equation includes a pattern used to determine which
+equation to use for a given argument.  The availability of arbitrary
+higher-order types allows functions to be defined which ``package''
+recursion.  Lazily-evaluated lists are provided, allowing the use of
+infinite lists which could be used to provide interactive input/output
+and concurrency.  HOPE also includes a simple modularisation facility
+which may be used to protect the implementation of an abstract data
+type.}}
+
+%  ----------------------------------------------------------------
+
+@article{SannellaDT:functional-programming-intro87,
+	author = {Martin Wirsing and Donald Sannella},
+	title = {Une Introduction {\`a} la Programmation Fontionnelle:
+		 {HOPE} et {ML}},
+	journal = {Technique et Science Informatiques},
+	volume = 6,
+	pages = {517--525},
+	year = 1987,
+	comment =
+{[A terrible english translation is: Introduction to Functional
+		 Programming: {HOPE} and {ML}.  \emph{Technology and
+		 Science of Informatics} 6:693--700 (1989).]}}
+
+%  ----------------------------------------------------------------
+
+@book{SannellaDT:WADT88,
+	author = {Donald Sannella and Andrzej Tarlecki},
+	title = {Recent Trends in Data Type Specification:
+5th Workshop on Specification of Abstract Data Types --- Selected Papers},
+	series = {Lecture Notes in Computer Science},
+	publisher = {Springer},
+	volume = 332,
+	year = 1988}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:proving-logic-programs88,
+	author = {Alan Bundy and Donald Sannella and Roberto Desimone
+		 and Fausto Giunchiglia and Frank van Harmelen and
+		 Jane Hesketh and Peter Madden and Alan Smaill and
+		 Andrew Stevens and Lincoln Wallen},
+	title = {Proving Properties of Logic Programs: A Progress
+		 Report},
+	booktitle = {Proc.\ 1988 Alvey Technical Conference},
+	pages = {153--156},
+	year = 1988}
+
+%  ----------------------------------------------------------------
+
+@incollection{SannellaDT:formal-methods-survey93,
+	author = {Donald Sannella},
+	title = {A Survey of Formal Software Development Methods},
+	booktitle = {Software Engineering: A European Perspective},
+	publisher = {{IEEE} Computer Society Press},
+	editor = {Richard Thayer and Andrew McGettrick},
+	comment = {[Originally published as report ECS-LFCS-88-56,
+		 Dept. of Computer Science, Univ. of Edinburgh, 1988.]},
+	pages = {281--297},
+	year = 1993,
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/survey.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/survey.pdf},
+	abstract =
+{This paper is a survey of the state of the art in 1988 of research on
+methods for formal software development.}}
+
+%  ----------------------------------------------------------------
+
+@techreport{SannellaDT:exam-questions88,
+	author = {Donald Sannella},
+	title = {Edinburgh {U}niversity Postgraduate Examination
+		 Questions in Computation Theory, 1978--1988},
+	institution = {University of Edinburgh},
+	type = {Report},
+	number = {{ECS}-{LFCS}-88-64},
+	year = 1988}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:modular-rule-bases89,
+	author = {Jaume Agust{\'\i} and Carlos Sierra and
+		 Donald Sannella},
+	title = {Adding Generic Modules to Flat Rule-Based Languages:
+		 A Low-Cost Approach},
+	location = {Charlotte, North Carolina},
+	booktitle = {Proc.\ 4th Intl.\ Symp.\ on Methodologies for
+		 Intelligent Systems},
+	publisher = {North Holland},
+	pages = {43--51},
+	year = 1989}
+
+%  ----------------------------------------------------------------
+
+@inproceedings{SannellaDT:modular-prolog87,
+	author = {Donald Sannella and Lincoln Wallen},
+	title = {A Calculus for the Construction of Modular {P}rolog
+		 Programs},
+	booktitle = {Proc.\ 1987 {IEEE} Symp.\ on Logic Programming},
+	location = {San Francisco},
+	pages = {368--378},
+	year = 1987,
+	note =
+{\textbf{Extended abstract; the final full version of this is \cite{SannellaDT:modular-prolog92}}},
+	abstract =
+{We present a module language for Prolog based on the theory of
+modularity underlying the Standard ML module system.  The calculus
+supports the construction of hierarchically-structured programs from
+parameterised components and provides a form of structural data
+abstraction.  The system has a formal semantics which translates
+modular programs into conventional programs.}}
+
+@article{SannellaDT:modular-prolog92,
+	author = {Donald Sannella and Lincoln Wallen},
+	title = {A Calculus for the Construction of Modular {P}rolog
+		 Programs},
+	journal = {Journal of Logic Programming},
+	volume = 12,
+	year = 1992,
+	pages = {147--177},
+	abstract =
+{We present a module language for Prolog based on the theory of
+modularity underlying the Standard ML module system.  The language
+supports the construction of hierarchically-structured programs from
+parameterised components and provides a form of structural data
+abstraction.  A formal semantics is given for the system which
+translates modular programs into conventional programs.},
+	comment = {[An extended abstract of this is
+		 \cite{SannellaDT:modular-prolog87}.]}}
+
+%  ----------------------------------------------------------------		  
+@inproceedings{SannellaDT:future-of-TCS97,
+	author = {Donald Sannella},
+	title = {What Does the Future Hold for Theoretical Computer
+		  	Science?},
+	booktitle = {Proc.\ 7th Intl.\ Joint Conf.\ on Theory and
+		  	Practice of Software Development ({TAPSOFT}'97)},
+	location = {Lille},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 1214,
+	pages = {15--19},
+	year = 1997,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/tapsoft97.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/tapsoft97.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/tapsoft97.pdf},
+	abstract =
+{Prospects for research in theoretical computer science are discussed.
+The maintenance of a genuine link between theory and practice is seen
+as key to the future health of both.}}
+
+%  ----------------------------------------------------------------		  
+@article{SannellaDT:burstall-festschrift02,
+	author = {David Rydeheard and Donald Sannella},
+	title = {Preface to a Collection of Papers and Memoirs Celebrating the Contribution of {R}od {B}urstall to Advances in {C}omputer {S}cience},
+	journal = {Formal Aspects of Computing},
+	volume = 13,
+	year = 2002,
+	pages = {187--193},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/burstall.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/burstall.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/burstall.pdf},
+	abstract =
+{In this Preface, we attempt to summarize Rod Burstall's scientific achievements.
+In addition, we describe the personal style and enthusiasm that Rod has brought
+to the subject.}}
+
+%  ----------------------------------------------------------------		  
+@inproceedings{SannellaDT:mrg-overview04,
+	author = {David Aspinall and Stephen Gilmore and Martin Hofmann and Donald Sannella and Ian Stark},
+	title = {Mobile Resource Guarantees for Smart Devices},
+	booktitle = {Proc.\ Intl.\ Workshop on Construction and Analysis of Safe, Secure and Interoperable Smart Devices (CASSIS 2004)},
+	location = {Marseille},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume = 3362,
+	year = 2005,
+	pages = {1--26},
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/cassis2004.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/cassis2004.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/cassis2004.pdf},
+	abstract =
+{We present the Mobile Resource Guarantees framework: a system for
+ensuring that downloaded programs are free from run-time violations of
+resource bounds.  Certificates are attached to code in the form of
+efficiently checkable proofs of resource bounds; in contrast to
+cryptographic certificates of code origin, these are independent of
+trust networks.  A novel programming language with resource
+constraints encoded in function types is used to streamline the
+generation of proofs of resource usage.}}
+
+@inproceedings{SannellaDT:mrg-summary05,
+	author = {Donald Sannella and Martin Hofmann and David Aspinall and Stephen Gilmore and Ian Stark and Lennart Beringer and Hans-Wolfgang Loidl and Kenneth MacKenzie and Alberto Momigliano and Olha Shkaravska},
+	title = {Mobile Resource Guarantees},
+	booktitle = {Trends in Functional Programming},
+	publisher = {Intellect},
+	volume = 6,
+	pages = {211--226},
+	year = 2007,
+	dvi = {http://homepages.inf.ed.ac.uk/dts/pub/mrg-summary.dvi},
+	postscript = {http://homepages.inf.ed.ac.uk/dts/pub/mrg-summary.ps},
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/mrg-summary.pdf},
+	abstract =
+{The Mobile Resource Guarantees (MRG) project has developed a
+proof-carrying-code infrastructure for certifying resource bounds of
+mobile code.  Key components of this infrastructure are a certifying
+compiler for a high-level language, a hierarchy of program logics,
+tailored for reasoning about resource consumption, and an embedding of
+the logics into a theorem prover. In this paper, we give an overview
+of the project's results, discuss the lessons learnt from it and
+introduce follow-up work in new projects that will build on these
+results.}}
+
+@inproceedings{SannellaDT:request10,
+	author = {David Aspinall and Robert Atkey and Kenneth MacKenzie and Donald Sannella},
+	title = {Symbolic and Analytical Techniques for Resource Analysis of
+	{Java} Bytecode},
+	booktitle = {Proc.\ 5th Symp.\ on Trustworthy Global Computing (TGC 2010)},
+	location = {Munich},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	volume =  6084,
+	pages = {1--22},
+	year = 2010,
+	pdf = {http://homepages.inf.ed.ac.uk/dts/pub/tgc2010.pdf},
+	abstract =
+{Recent work in resource analysis has translated the idea of amortised
+resource analysis to imperative languages using a program logic that
+allows mixing of assertions about heap shapes, in the tradition of
+separation logic, and assertions about consumable
+resources. Separately, polyhedral methods have been used to calculate
+bounds on numbers of iterations in loop-based programs.
+We are attempting to combine these ideas to deal with Java programs
+involving both data structures and loops, focusing on the bytecode
+level rather than on source code.}}
+
+%%END-DELIMITER

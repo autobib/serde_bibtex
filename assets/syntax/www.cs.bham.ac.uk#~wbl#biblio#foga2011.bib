@@ -1,0 +1,749 @@
+%WBL 14 April 2011 (6 May)
+@proceedings(Beyer:2011:foga,
+  title =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor =	{Hans-Georg Beyer and W.B. Langdon},
+  volume =	{},
+  series =	{},
+  address =	{Schwarzenberg, Austria},
+  publisher_address =	{},
+  month =	{5-9 Jan},
+  organisation ={SigEvo},
+  publisher =	{ACM},
+  note =	{},
+% email =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {http://portal.acm.org/citation.cfm?id=1967654},
+  size =	{252 pages},
+  abstract =	{},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Jansen:2011:foga,
+title = {Analysis of evolutionary algorithms: from computational complexity analysis to algorithm engineering},
+  author = {Thomas Jansen and Christine Zarges},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {1--14},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967656},
+  abstract = {Analysing
+ the computational complexity of evolutionary algorithms has become an 
+accepted and important branch in evolutionary computation theory. This 
+is usually done by analyzing the (expected) optimisation time measured 
+by means of the number of function evaluations and describing its growth
+ as a function of a measure for the size of the search space. Most often
+ asymptotic results describing only the order of growth are derived. 
+This corresponds to classical analysis of (randomised) algorithms in 
+algorithmics. Recently, the emerging field of algorithm engineering has 
+demonstrated that for practical purposes this analysis can be too coarse
+ and more details of the algorithm and its implementation have to be 
+taken into account in order to obtain results that are valid in 
+practice. Using a very recent analysis of a simple evolutionary 
+algorithm as starting point it is shown that the same holds for 
+evolutionary algorithms. Considering this example it is demonstrated 
+that counting function evaluations more precisely can lead to results 
+contradicting actual run times. Motivated by these limitations of 
+computational complexity analysis an algorithm engineering-like approach
+ is presented.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Arnold:2011:foga,
+  title = {On the behaviour of the (1,lambda)-es for a simple constrained problem},
+  author = {Dirk V. Arnold},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {15--24},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967657},
+abstract = {We
+ study the behaviour of the (1,lambda)-ES for a linear problem with a single 
+linear constraint. The algorithm produces offspring until lambda feasible 
+candidate solutions have been generated and selects the best of those as
+ the next generation's parent. Integral expressions that describe the 
+strategy's one-generation behaviour are developed and used in a simple 
+zeroth order model for the steady state of the strategy. Implications 
+for the performance of cumulative step size adaptation are discussed and
+ a comparison with the (1+1)-ES is drawn.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Langdon:2011:foga,
+  title = {Elementary bit string mutation landscapes},
+  author = {W. B. Langdon},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {25--41},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967658},
+  abstract = {Genetic Programming parity with only XOR is not elementary. GP parity can be represented as the sum of k/2+1
+ elementary landscapes. Statistics, including fitness distance 
+correlation (FDC), of Parity's fitness landscape are calculated. Using 
+Walsh analysis the eigen values and eigenvectors of the Laplacian of the
+ two bit, three bit, n-bit and mutation only Genetic Algorithm fitness 
+landscapes are given. Indeed all elementary bit string landscapes are 
+related to the discrete Fourier functions. However most are rough (lambda/d approx 1). Also in many cases fitness autocorrelation falls rapidly with distance. GA runs support eigenvalue/graph degree (lambda/d)
+ as a measure of the ruggedness of elementary landscapes for predicting 
+problem difficulty. The elementary needle in a haystack (NIH) landscape 
+is described.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Popovici:2011:foga,
+  title = {On the practicality of optimal output mechanisms for co-optimization algorithms},
+  author = {Elena Popovici and Ezra Winston and Anthony Bucci},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {43--59},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967659},
+  abstract = {Co-optimisation
+ problems involve one or more search spaces and a means of assessing 
+interactions between entities in these spaces. Assessing a potential 
+solution requires aggregating in some way the outcomes of a very large 
+or infinite number of such interactions. This layer of complexity 
+presents difficulties for algorithm design that are not encountered in 
+ordinary optimisation. For example, what a co-optimization algorithm 
+should output is not at all obvious.
+
+Theoretical research has 
+shown that some output selection mechanisms yield better overall 
+performance than others and described an optimal mechanism. This 
+mechanism was shown to be strictly better than a greedy method in common
+ use, but appeared prohibitive from a practical standpoint. In this 
+paper we exhibit the optimal output mechanism for a particular class of 
+co-optimization problems and a certain definition of better overall 
+performance, and provide quantitative characterisations of domains for 
+which this optimal mechanism becomes straightforward to implement. We 
+conclude with a discussion of potential extensions of this work to other
+ problem classes and other views on performance.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Coulom:2011:foga,
+  title = {Handling expensive optimization with large noise},
+  author = {Remi Coulom and Philippe Rolet and Nataliya Sokolovska and Olivier Teytaud},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {61--68},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967660},
+  abstract = {We
+ present lower and upper bounds on run times for expensive noisy 
+optimisation problems. Runtimes are expressed in terms of number of 
+fitness evaluations. Fitnesses considered are monotonic transformations 
+of the sphere function. The analysis focuses on the common case 
+of fitness functions quadratic in the distance to the optimum in the 
+neighbourhood of this optimum - it is nonetheless also valid for any 
+monotonic polynomial of degree p &gt; 2. Upper bounds are derived via a bandit-based estimation of distribution algorithm that relies on Bernstein races
+ called R-EDA. It is an evolutionary algorithm in the sense that it is 
+based on selection, random mutations, with a distribution (updated at 
+each iteration) for generating new individuals. It is known that the 
+algorithm is consistent (i.e. it converges to the optimum asymptotically
+ in the number of examples) even in some non-differentiable cases. Here 
+we show that: (i) if the variance of the noise decreases to 0 around the
+ optimum, it can perform well for quadratic transformations of the norm 
+to the optimum, (ii) otherwise, a convergence rate is slower than the 
+one exhibited empirically by an algorithm called Quadratic Logistic 
+Regression (QLR) based on surrogate models - although QLR requires a 
+probabilistic prior on the fitness class.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Durrett:2011:foga,
+  title = {Computational complexity analysis of simple genetic programming on two problems modeling isolated program semantics},
+  author = {Greg Durrett and Frank Neumann and Una-May O'Reilly},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {69--80},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967661},
+abstract = {Analysing
+ the computational complexity of evolutionary algorithms (EAs) for 
+binary search spaces has significantly informed our understanding of EAs
+ in general. With this paper, we start the computational complexity 
+analysis of genetic programming (GP). We set up several simplified GP 
+algorithms and analyse them on two separable model problems, ORDER and 
+MAJORITY, each of which captures a relevant facet of typical GP 
+problems. Both analyses give first rigorous insights into aspects of GP 
+design, highlighting in particular the impact of accepting or rejecting 
+neutral moves and the importance of a local mutation operator.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Friedrich:2011:foga,
+  title = {The logarithmic hypervolume indicator},
+  author = {Tobias Friedrich and Karl Bringmann and Thomas Voss and Christian Igel},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {81--91},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967662},
+  abstract = {It was recently proven that sets of points maximising the hypervolume indicator do not
+ give a good multiplicative approximation of the Pareto front. We 
+introduce a new "logarithmic hypervolume indicator" and prove that it 
+achieves a close-to-optimal multiplicative approximation ratio. This is 
+experimentally verified on several benchmark functions by comparing the 
+approximation quality of the multi-objective covariance matrix evolution
+ strategy (MO-CMA-ES) with the classic hypervolume indicator and the 
+MO-CMA-ES with the logarithmic hypervolume indicator.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Sutton:2011:foga,
+  title = {Approximating the distribution of fitness over hamming regions},
+  author = {Andrew M. Sutton and Darrell Whitley and Adele E. Howe},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {93--103},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967663},
+  abstract = {The
+ distribution of fitness values across a set of states sharply 
+influences the dynamics of evolutionary processes and heuristic search 
+in combinatorial optimisation. In this paper we present a method for 
+approximating the distribution of fitness values over Hamming regions by
+ solving a linear programming problem that incorporates low order 
+moments of the target function. These moments can be retrieved in 
+polynomial time for select problems such as MAX-k-SAT using Walsh
+ analysis. The method is applicable to any real function on binary 
+strings that is epistatically bounded and discrete with asymptotic 
+bounds on the cardinality of its codomain.
+
+We perform several studies on the ONE-MAX and MAX-k-SAT
+ domains to assess the accuracy of the approximation and its dependence 
+on various factors. We show that the approximation can accurately 
+predict the number of states within a Hamming region that have an 
+improving fitness value.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Kaden:2011:foga,
+  title = {The role of selective pressure when solving symmetric functions in polynomial time},
+  author = {Lars Kaden and Nicole Weicker and Karsten Weicker},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {105--117},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967664},
+  abstract = {This
+ paper is concerned with the question to which extent a change in the 
+selective pressure might improve the run time of an optimisation 
+algorithm considerably. The subject of this examination is the class of 
+symmetric functions, i.e. OneMax with a subsequent application of a real
+ valued function. We consider an improvement in runtime as considerable 
+if an exponential run time becomes polynomial. The basis for this 
+examination is a Markov chain analysis. An exact criterion for static 
+selective pressure, telling which functions are solvable in polynomial 
+time, is extended to a sufficient (but not necessary) criterion for 
+changing selection pressure.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Doerr:2011:foga,
+  title = {Runtime analysis of the (1+1) evolutionary algorithm on strings over finite alphabets},
+  author = {Benjamin Doerr and Daniel Johannsen and Martin Schmidt},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {119--126},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967665},
+  abstract = {In this work, we investigate a (1+1) Evolutionary Algorithm for optimizing functions over the space {0,...,r} <sup>n</sup>, where r is a positive integer. We show that for linear functions over {0,1,2}<sup>n</sup>, the expected runtime time of this algorithm is O(n log n).
+ This result generalises an existing result on pseudo-Boolean functions 
+and is derived using drift analysis. We also show that for large values 
+of r, no upper bound for the run time of the (1+1) Evolutionary Algorithm for linear function on {0,...,r}<sup>n</sup>
+ can be obtained with this approach nor with any other approach based on
+ drift analysis with weight-independent linear potential functions.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Auger:2011:foga,
+  title = {Analyzing the impact of mirrored sampling and sequential selection in elitist evolution strategies},
+  author = {Anne Auger and Dimo Brockhoff and Nikolaus Hansen},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {127--138},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967666},
+  abstract = {This
+ paper presents a refined single parent evolution strategy that is 
+derandomized with mirrored sampling and/or uses sequential selection. 
+The paper analyses some of the elitist variants of this algorithm. We 
+prove, on spherical functions with finite dimension, linear convergence 
+of different strategies with scale-invariant step-size and provide 
+expressions for the convergence rates as the expectation of some known 
+random variables. In addition, we derive explicit asymptotic formulae 
+for the convergence rate when the dimension of the search space goes to 
+infinity. Convergence rates on the sphere reveal lower bounds for the 
+convergence rate of the respective step-size adaptive strategies. We 
+prove the surprising result that the (1+2)-ES with mirrored sampling 
+converges at the same rate as the (1+1)-ES without and show that the 
+tight lower bound for the (1+lambda-ES with mirrored sampling and sequential 
+selection improves by 16% over the (1+1)-ES reaching an asymptotic value
+ of about -0.235.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Sudholt:2011:foga,
+  title = {Using Markov-chain mixing time estimates for the analysis of ant colony optimization},
+  author = {Dirk Sudholt},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {139--150},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967667},
+abstract = {The
+ Markov chain Monte Carlo paradigm has developed powerful and elegant 
+techniques for estimating the time until a Markov chain approaches a 
+stationary distribution. This time is known as mixing time. We introduce
+ the reader into mixing time estimations via coupling arguments and use 
+the mixing of pheromone models for analysing the expected optimisation 
+time of ant colony optimization. We demonstrate the approach for 
+plateaus in pseudo-Boolean optimisation and derive upper bounds for the 
+time until a target set is found. We also describe how mixing times can 
+be estimated for MMAS ant systems on shortest path problems.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Moraglio:2011:foga,
+  title = {Abstract convex evolutionary search},
+  author = {Alberto Moraglio},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {151--162},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967668},
+  abstract = {Geometric
+ crossover is a formal class of crossovers which includes many 
+well-known recombination operators across representations. In this 
+paper, we present a general result showing that all evolutionary 
+algorithms using geometric crossover with no mutation perform the same 
+form of convex search regardless of the underlying representation, the 
+specific selection mechanism, the specific offspring distribution, the 
+specific search space, and the problem at hand. We then start 
+investigating a few representation/space-independent geometric 
+conditions on the fitness landscape - various forms of generalised 
+concavity - that when matched with the convex evolutionary search 
+guarantee, to different extents, improvement of offspring over parents 
+for any choice of parents. This is a first step towards showing that the
+ convexity relation between search and landscape may play an important 
+role towards explaining the performance of evolutionary algorithms in a 
+general setting across representations.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Wagner:2011:foga,
+  title = {Faster black-box algorithms through higher arity operators},
+  author = {Benjamin Doerr and Daniel Johannsen and Timo Kotzing and Per Kristian Lehre and Markus Wagner and Carola Winzen},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {163--171},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967669},
+  abstract = {We
+ extend the work of Lehre and Witt (GECCO 2010) on the unbiased 
+black-box model by considering higher arity variation operators. In 
+particular, we show that already for binary operators the black-box 
+complexity of LeadingOnes drops from Theta(n<sup>2</sup>) for unary operators to O(n log n). For OneMax, the Omega(n log n) unary black-box complexity drops to O(n) in the binary case. For k-ary operators, k lteq n, the OneMax-complexity further decreases to O(n / log k).},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Cathabard:2011:foga,
+  title = {Non-uniform mutation rates for problems with unknown solution lengths},
+  author = {Stephan Cathabard and Per Kristian Lehre and Xin Yao},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {173--180},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967670},
+abstract = {Many
+ practical optimisation problems allow candidate solutions of varying 
+lengths, and where the length of the optimal solution is thereby a priori
+ unknown. We suggest that non-uniform mutation rates can be beneficial 
+when solving such problems. In particular, we consider a mutation 
+operator that flips each bit with a probability that is inversely 
+proportional to the bit position, rather than the bitstring length. The 
+runtime of the (1+1) EA using this mutation operator is analysed 
+rigorously on standard example functions. Furthermore, the behaviour of 
+the new mutation operator is investigated empirically on a real world 
+software engineering problem that has variable, and unknown solution 
+lengths. The results show how the speedup that can be achieved with the 
+new operator depends on the distribution of the solution lengths in the 
+solution space. We consider a truncated geometric distribution, and show
+ that the new operator can yield exponentially faster runtimes for some 
+parameters of this distribution. The experimental results show that the 
+new mutation operator leads to dramatically shorter run times on a class 
+of instances of the software engineering problem that is conjectured to 
+have short solutions on average.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Lassig:2011:foga,
+  title = {Adaptive population models for offspring populations and parallel evolutionary algorithms},
+  author = {Jorg Lassig and Dirk Sudholt},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {181--192},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967671},
+  abstract = {We
+ present two adaptive schemes for dynamically choosing the number of 
+parallel instances in parallel evolutionary algorithms. This includes 
+the choice of the offspring population size in a (1+lambda) EA as a special 
+case. Our schemes are parameterless and they work in a black-box setting
+ where no knowledge on the problem is available. Both schemes double the
+ number of instances in case a generation ends without finding an 
+improvement. In a successful generation, the first scheme resets the 
+system to one instance, while the second scheme halves the number of 
+instances. Both schemes provide near-optimal speed-ups in terms of the 
+parallel time. We give upper bounds for the asymptotic sequential time 
+(i.e., the total number of function evaluations) that are not larger 
+than upper bounds for a corresponding non-parallel algorithm derived by 
+the fitness-level method.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Wright:2011:foga,
+  title = {On the movement of vertex fixed points in the simple GA},
+  author = {Alden H. Wright and Tomas Gedeon and J. Neal Richter},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {193--207},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967672},
+  abstract = {The
+ Vose dynamical system model of the simple genetic algorithm models the 
+behaviour of this algorithm for large population sizes and is the basis 
+of the exact Markov chain model. Populations consisting of multiple 
+copies of one individual correspond to vertices of the simplex. For zero
+ mutation, these are fixed points of the dynamical system and absorbing 
+states of the Markov chain. For proportional selection, the asymptotic 
+stability of vertex fixed points is understood from previous work. We 
+derive the eigenvalues of the differential at vertex fixed points of the
+ dynamical system model for tournament selection. We show that as 
+mutation increases from zero, hyperbolic asymptotically stable fixed 
+points move into the simplex, and hyperbolic asymptotically unstable 
+fixed points move outside of the simplex. We calculate the derivative of
+ local path of the fixed point with respect to the mutation rate for 
+proportional selection. Simulation analysis shows how fixed points 
+bifurcate with larger changes in the mutation rate and changes in the 
+crossover rate.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Kotzing:2011:foga,
+  title = {Simple max-min ant systems and the optimization of linear pseudo-Boolean functions},
+  author = {Timo Kotzing and Frank Neumann and Dirk Sudholt and Markus Wagner},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {209--218},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967673},
+  abstract = {With
+ this paper, we contribute to the understanding of ant colony 
+optimisation (ACO) algorithms by formally analysing their runtime 
+behaviour. We study simple MAX-MIN ant systems on the class of linear 
+pseudo-Boolean functions defined on binary strings of length n. Our investigations point out how the progress according to function values is stored in the pheromones.
+
+We provide a general upper bound of O((n<sup>3</sup> log n)rho)
+ on the running time for two ACO variants on all linear functions, where
+ rho determines the pheromone update strength. Furthermore, we show 
+improved bounds for two well-known linear pseudo-Boolean functions 
+called ONEMAX and BINVAL and give additional insights using an 
+experimental study.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Bassett:2011:foga,
+  title = {Using multivariate quantitative genetics theory to assist in EA customization},
+  author = {Jeffrey Kermes Bassett and Kenneth Alan {De Jong}},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {219--229},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967674},
+  abstract = {Customising
+ and evolutionary algorithm (EA) for a new or unusual problem can seem 
+relatively simple as long as one can devise an appropriate 
+representation and reproductive operators to modify it. Unfortunately 
+getting a customized EA to produce high quality results in a reasonable 
+amount of time can be quite challenging. There is little guidance 
+available to help practitioners deal with this issue. Most evolutionary 
+computation (EC) theory is only applicable to specific representations, 
+or assumes knowledge of the fitness function, such as the location of 
+optima.
+
+We are developing an approach based on theory from the 
+biology community to address this problem. Multivariate quantitative 
+genetics theory characterises evolving populations as multivariate 
+probability distributions of phenotypic traits. Some advantages it 
+offers are a degree of independence from the underlying representation, 
+and useful concepts such as phenotypic heritability. Re-working the 
+quantitative genetics equations, we expose an additional term that we 
+call "perturbation". We believe that perturbation and heritability 
+provide quantitative measures of the exploration and exploitation, and 
+that practitioners can use these to identify and diagnose imbalances in 
+customised reproductive operators.
+
+To illustrate, we use these 
+tools to diagnose problems with a standard recombination operator for a 
+Pittsburgh approach classifier system. With this knowledge we develop a 
+new, more balanced, recombination operator, and show that its use leads 
+to significantly better results.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Malago:2011:foga,
+  title = {Towards the geometry of estimation of distribution algorithms based on the exponential family},
+  author = {Luigi Malago and Matteo Matteucci and Giovanni Pistone},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {230--242},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967675},
+  abstract = {In
+ this paper we present a geometrical framework for the analysis of 
+Estimation of Distribution Algorithms (EDAs) based on the exponential 
+family. From a theoretical point of view, an EDA can be modelled as a 
+sequence of densities in a statistical model that converges towards 
+distributions with reduced support. Under this framework, at each 
+iteration the empirical mean of the fitness function decreases in 
+probability, until convergence of the population. This is the context of
+ stochastic relaxation, i.e., the idea of looking for the minima of a 
+function by minimising its expected value over a set of probability 
+densities. Our main interest is in the study of the gradient of the 
+expected value of the function to be minimized, and in particular on how
+ its landscape changes according to the fitness function and the 
+statistical model used in the relaxation. After introducing some 
+properties of the exponential family, such as the description of its 
+topological closure and of its tangent space, we provide a 
+characterisation of the stationary points of the relaxed problem, 
+together with a study of the minimising sequences with reduced support. 
+The analysis developed in the paper aims to provide a theoretical 
+understanding of the behaviour of EDAs, and in particular their ability 
+to converge to the global minimum of the fitness function. The 
+theoretical results of this paper, beside providing a formal framework 
+for the analysis of EDAs, lead to the definition of a new class 
+algorithms for binary functions optimisation based on Stochastic Natural
+ Gradient Descent (SNGD), where the estimation of the parameters of the 
+distribution is replaced by the direct update of the model parameters by
+ estimating the natural gradient of the expected value of the fitness 
+function.},
+  notes =	{ACM order number 910114},
+)
+
+@inproceedings(Beume:2011:foga,
+  title = {Convergence rates of SMS-EMOA on continuous bi-objective problem classes},
+  author = {Nicola Beume and Marco Laumanns and Gunter Rudolph},
+  booktitle =	{Foundations of Genetic Algorithms},
+  year =	2011,
+  editor = 	{Hans-Georg Beyer and W.B. Langdon},
+  pages =       {243--251},
+  address = 	{Schwarzenberg, Austria},
+  month = 	{5-9 Jan},
+  organisation = {SigEvo},
+  publisher = 	{ACM},
+  note =	{},
+  keywords =    {},
+  ISBN13 =      {978-1-4503-0633-1},
+  url =         {},
+  size = 	{},
+  doi = {doi:10.1145/1967654.1967676},
+  abstract = {Convergence
+ rate analyses of evolutionary multi-objective optimization algorithms 
+in continuous search space are yet rare. First results have been 
+obtained for simple algorithms. Here, we provide concrete results of 
+convergence rates for a state-of-the-art algorithm, namely the S-metric 
+selection evolutionary multi-objective optimization algorithm (SMSEMOA).
+ We show that the SMS-EMOA produces the same sequence of populations as 
+certain single-objective evolutionary algorithms on arbitrary problem 
+classes. Thereby we are able to transfer known convergence properties 
+for classes of convex functions. We especially consider the SMS-EMOA 
+with populations of parents and offspring greater than one and different
+ concepts for the choice of the reference point used for the internal 
+calculation of the dominated hypervolume within the selection
+operator.},
+  notes =	{ACM order number 910114},
+)

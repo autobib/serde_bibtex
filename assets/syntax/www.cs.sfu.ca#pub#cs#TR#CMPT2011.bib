@@ -1,0 +1,103 @@
+@String{SFU_CS_School = "School of Computing Science, Simon Fraser
+		 University, Burnaby, BC, Canada"}
+
+@TechReport{U-SFraser-CMPT-TR:2011-01,
+ number =      "TR 2011-01",
+ author =      "Thomas Torsney-Weir and Ahmed Saad and Torsten M{\"o}ller and 
+               Britta Weber and Hans-Christian Hege and Jean-Marc Verbavatz",
+ title =       "P{R}e{SM}: Principled parameter finding for image segmentation 
+               algorithms using visual response surface exploration",
+ month =       "Mar",
+ year =        "2011",
+ org =         "SFU-CMPT",
+ institution = SFU_CS_School,
+ pages =       "9",
+ url =         "ftp://fas.sfu.ca/pub/cs/TR/2011/CMPT2011-01.pdf",
+ abstract =    "In this paper we address the difficult problem of parameter-finding
+               in image segmentation. We replace a tedious manual process, that is 
+               often times based on guess-work and luck, by a principled approach
+               that systematically explores the parameter space. Our core idea is
+               the following two-stage technique: We start with a sparse sampling
+               of the parameter space and apply a statistical model to estimate the
+               response of the segmentation algorithm. The statistical model 
+               incorporates a model of uncertainty of the estimation which we use in 
+               conjunction with the actual estimate in (visually) guiding the user 
+               towards areas that need refinement by placing additional sample 
+               points. In the second stage the user navigates through the parameter
+               space in order to determine areas where the response value (goodness
+               of segmentation) is high.
+
+               In our exploration we rely on existing ground-truth images in order
+               to evaluate the 'goodness' of an image segmentation technique. We 
+               evaluate its usefulness by demonstrating this technique on two image
+               segmentation algorithms: a three parameter model to detect 
+               microtubules in electron tomograms and an eight parameter model to 
+               identify functional regions in dynamic Positron Emission Tomography 
+               scans.",
+}
+
+@TechReport{U-SFraser-CMPT-TR:2011-02,
+ number =      "TR 2011-02",
+ author =      "Hassan Khosravi and Oliver Schulte and Martin Ester",
+ title =       "Parametrized Bayes Nets for Modelling Database Distributions",
+ month =       "May",
+ year =        "2011",
+ org =         "SFU-CMPT",
+ institution = SFU_CS_School,
+ pages =       "",
+ url =         "ftp://fas.sfu.ca/pub/cs/TR/2011/CMPT2011-02.pdf",
+ abstract =    "Many databases store data in relational format, with different
+               types of entities and information about links between the entities.
+               Poole introduced Parametrized Bayes nets (PBNs) as a graphical model
+               for relational data. Their main use has been for first-order 
+               probabilistic inference, where the goal is to predict facts about 
+               individual entities. In this paper we utilize PBNs for a new task: 
+               Learning class-level or first-order dependencies, which model the 
+               general database statistics over attributes of linked objects and links 
+               (e.g., the percentage of A grades given in computer science classes). 
+               Class-level statistical relationships are important in themselves, and
+               they support applications like policy making, strategic planning, and 
+               query optimization. We describe efficient structure and parameter 
+               learning algorithms that construct a PBN model for a given input 
+               database. An evaluation of our methods on three data sets shows that
+               they are computationally feasible for realistic table sizes, and that 
+               the learned structures represent the statistical information in the 
+               databases well. After learning compiles the database statistics 
+               into a parametrized Bayes net, querying these statistics via Bayes net 
+               inference is faster than with SQL queries, and does not depend on the 
+               size of the database.",
+}
+
+
+@TechReport{U-SFraser-CMPT-TR:2011-03,
+ number =      "TR 2011-03",
+ author =      "Shawn Andrews and Chris McIntosh and Ghassan Hamarneh",
+ title =       "Convex Multi-Region Probabilistic Segmentation with Shape Prior
+               in the Isometric Log-Ratio Transformation Space",
+ month =       "July",
+ year =        "2011",
+ org =         "SFU-CMPT",
+ institution = SFU_CS_School,
+ pages =       "1-17",
+ url =         "ftp://fas.sfu.ca/pub/cs/TR/2011/CMPT2011-03.pdf",
+ abstract =    "Image segmentation is often performed via the minimization of an energy
+               function over a domain of possible segmentations. The effectiveness and 
+               applicability of such methods depends greatly on the properties of the 
+               energy function and its domain, and on what information can be encoded by
+               it. Here we propose an energy function that achieves several important 
+               goals. Specifically, our energy function is convex and incorporates shape
+               prior information while simultaneously generating a probabilistic 
+               segmentation for multiple regions. Our energy function represents multi-
+               region probabilistic segmentations as elements of a vector space using the
+               isometric log-ratio (ILR) transformation. To our knowledge, these four 
+               goals (convex, with shape priors, multi-region, and probabilistic) do not 
+               exist together in any other method, and this is the first time ILR is used
+               in an image segmentation method. We provide examples demonstrating the 
+               usefulness of these features.",
+}
+
+
+@COMMENT {
+ number = "TR 2010-04",
+ note =   "This TR number has been canceled",
+}

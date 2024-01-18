@@ -1,0 +1,227 @@
+@comment{ Bill Triggs' Personal Bibliography }
+
+@string{eccv="European Conference on Computer Vision"}
+@string{iccv="{IEEE} Int. Conf. Computer Vision"}
+@string{ijcv="Int. J. Computer Vision"}
+@string{cvpr="Int. Conf. Computer Vision \& Pattern Recognition"}
+@string{trans-pami="{IEEE} Trans. Pattern Analysis \& Machine Intelligence"}
+@string{icra="{IEEE} Int. Conf. Robotics {\&} Automation"}
+@string{iros="{IEEE} Int. Workshop Intelligent Robots \& Systems"}
+@string{pami="{IEEE} Trans. Pattern Analysis \& Machine Intelligence"}
+@string{ijrr="Int. J. Robotics Research"}
+@string{isrr="Int. Symposium Robotics Research"}
+@string{ras="Robotics \& Autonomous Systems"}
+
+@article{Bard:etal:ijrr95,
+	author="C. Bard and C. Bellier and J. Troccaz and C. Laugier and
+		  B. Triggs and G. Vercelli",
+	title="Achieving Dextrous Grasping by Integrating Planning and Vision Based Sensing", 
+	journal=ijrr, 
+	pages="445--64",
+	volume=14,
+	number=5,
+	month=oct,
+	year=1995,
+	comment="Summary of grasping work on SECOND project. Mainly Ch. Bard's 
+		heuristic pre-shape based geometric grasp placement planner."
+}
+@unpublished{Mohr:Triggs:isprs96,
+	author="R. Mohr and B. Triggs",
+	title="Projective Geometry for Image Analysis",
+	booktitle="International Symposium of Photogrammetry and Remote Sensing",
+	address="Vienna",
+	month=jul,
+	year=1996,
+	keywords="Projective Geometry, Visual Reconstruction, Invariants"
+}
+@inproceedings{Sturm:Triggs:eccv96,
+	author="P. Sturm and B. Triggs",
+	title="A Factorization Based Algorithm for Multi-Image 
+		Projective Structure and Motion", 
+	booktitle=eccv, pages="709--20",
+	address="Cambridge, England",
+	publisher="Springer-Verlag",
+	year=1996
+}
+@unpublished{Triggs:scene-rep95,
+	author="B. Triggs",
+	title="A Fully Projective Error Model for Visual Reconstruction", 
+	note="Submitted to {\em IEEE Workshop on Representations of
+		  Visual Scenes}, Cambridge, MA",
+	month=jun,
+	year=1995,
+	keywords="least squares estimation, uncertainty modelling,
+		  visual reconstruction, projective geometry",
+	comment="Short version of work-in-progress on Projective Least Squares.",
+}
+@unpublished{Triggs:projective-least-squares:95,
+	author="B. Triggs",
+	title="Least Squares Estimation in Projective Spaces", 
+	note="To appear",
+	institution="LIFIA",
+	address="INRIA Rh\^one-Alpes, Grenoble, France",
+	year=1995,
+	comment="A natural fully projective generalization of standard affine
+		  least squares, for use in error modelling for
+		  projective reconstruction and vision. Works for lines,
+		  hyperplanes, fundamental matrices as well as points."
+}
+@unpublished{Triggs:ijcv95,
+	author="B. Triggs",
+	title="The Geometry of Projective Reconstruction {I}: Matching
+		Constraints and the Joint Image", 
+	note="Submitted to IJCV",
+	year=1995,
+	keywords="multi-image stereo, projective reconstruction, matching
+		constraints, tensor calculus, geometric invariants",
+	comment="Nice theoretical study of the geometric structure of
+		  multi-image projection and bi-/tri-/quad-linear multi-image matching
+		  constraints. Uses tensors and Grassmannian geometry. A
+		  summary appears in Triggs:iccv95."
+}
+@inproceedings{Triggs:iccv95,
+	author="B. Triggs",
+	title="Matching	Constraints and the Joint Image", 
+	booktitle=iccv,
+	address="Cambridge, {MA}",
+	editor="E. Grimson",
+	month=jun,
+	year=1995,
+	keywords="multi-image stereo, projective reconstruction, matching
+		constraints, tensor calculus, geometric invariants",
+	comment="Compact summary of Triggs:ijcv95."
+}
+@inproceedings{Triggs:cvpr96,
+	author="B. Triggs",
+	title="Factorization Methods for Projective Structure and Motion",
+	booktitle=cvpr,
+	address="San Francisco",
+	year=1996,
+	keywords="Projective Reconstruction, Multiple Images,
+		  Structure/Motion Decomposition, Matrix Factorization",
+	comment="Tomasi-Kanade-like projective reconstruction method for
+		  points and lines",
+}
+@unpublished{Triggs:bmvc96,
+	author="B. Triggs",
+	title="Linear Projective Reconstruction from Matching Tensors",
+	note="Submitted to {\em British Machine Vision Conference}.",
+	address="Edinburgh",
+	year=1996,
+	keywords=" Multi-image Structure, Projective Reconstruction, Matching Tensors",
+}
+@inproceedings{Triggs:Laugier:icra95,
+	author="B. Triggs and C. Laugier",
+	title="Automatic Camera Placement for Robot Vision Tasks",
+	booktitle=icra,
+	address="Nagoya, Japan",
+	year=1995,
+	comment="Global search to optimize heuristic view quality
+		  metric for robot mounted camera. Takes accont of
+		  kinematics, collisions, occlusion, focus...",
+}
+@inproceedings{Triggs:Laugier:isrr95,
+	author="B. Triggs and C. Laugier",
+	title="Automatic Task Planning for Robot Vision",
+	booktitle=isrr,
+	address="Munich",
+	year=1995,
+	comment="Global search to optimize heuristic view quality
+		metric for robot mounted camera. Takes accont of
+		kinematics, collisions, occlusion, focus...  Task
+		scheduling and path planning for a sequence of 
+		viewing tasks.",
+}
+@incollection{Triggs:Hague:Cameron:agv94,
+	author="B. Triggs and T. Hague and S. Cameron",
+	title="Chapter 13: Modelling",
+	booktitle="{Advanced Guided Vehicles}: Aspects of the {Oxford} {AGV} Project",
+	editor="S. Cameron and P. Probert",
+	publisher="World Scientific",
+	address="Singapore",
+	pages="227--45",
+	year=1994,
+	comment="Summary of world modelling work (such as it was) on Oxford AGV project.",
+}
+@article{Triggs:ras94,
+	author="Bill Triggs",
+	title="Model-Based Sonar Localization for Mobile Robots", 
+	journal=ras, 
+	pages="173--86",
+	volume=12,
+	year=1994,
+	keywords="mobile robots, sonar sensing, Kalman filtering, probabilistic data fusion",
+	note="Originally appeared in {\em Int. Workshop Intelligent Robot
+		  Systems}, Zakopane, Poland, 1993",
+	comment="Strongly geometric-model-bound Kalman-filter-based
+		  sonar localization for mobiles (cf J. Leonard's work).
+		  Tries to make most of each sonar event, but ends up very
+		  model sensitive.",  
+}
+@inproceedings{Triggs:irs93,
+	author="Bill Triggs",
+	title="Model-Based Sonar Localization for Mobile Robots", 
+	booktitle="Int. Workshop Intelligent Robotic Systems",
+	address="Zakopane, Poland",
+	year=1993,
+	comment="Reprinted in Triggs:ras94",
+}
+@unpublished{Triggs:non-hol-planning:93,
+	author="B. Triggs",
+	title="Motion Planning for Nonholonomic Vehicles: An Introduction", 
+	note="Survey paper presented at {\em Workshop on Computer
+		  Vision and Robotics}, {Newton Institute of Mathematical
+		  Sciences}, Cambridge, England in June 1993. Available
+		  from the author",
+	institution="Oxford University Robotics Research Group",
+	address="Parks Rd, Oxford, England",
+	comment="Unpublished -- couldn't decide where to send it. Some
+		  figures from other people's papers are missing from
+		  on-line version",
+}
+@inproceedings{Triggs:Cameron:etfa92,
+	author="Bill Triggs and Stephen Cameron",
+	title="Sonar Localisation for Mobile Robots: A Model-Based Approach",
+	booktitle="{IEEE} Int. Workshop Emerging Technologies for Factory Automation",
+	address="Melbourne",
+	year=1992,
+	comment="An early version of Triggs:irs93",
+}
+@inproceedings{Triggs:Cameron:asi90,
+	author="Bill Triggs and Stephen Cameron",
+	title="The {Oxford Robot World Model}",
+	booktitle="NATO ASI Expert Systems and Robotics",
+	pages="275--284",
+	volume="F-71",
+	publisher="Springer Verag",
+	address="Corfu",
+	year=1990,
+	comment="Initial version of Oxford AGV world model geometric
+		  database. Not very conclusive.",
+}
+@unpublished{Triggs:gauge-theories:83,
+	author="B. Triggs",
+	title="Gauge Theories and Gravitation", 
+	note="Master's-level qualifying thesis",
+	institution=" Mathematical Institute, University of Oxford",
+	address="Keble Rd, Oxford, England",
+	year=1983,
+	comment="Summary of fibre-bundle-theoretic formulations of gauge theories",
+}
+@article{Triggs:nuclear-physics:83,
+	author="B. Triggs and A. R. Poletti and G. Dracoulis",
+	title="High Spin States in Radon-208", 
+	journal="Nuclear Physics", 
+	pages="274--300",
+	volume="A-395",
+	year=1983,
+	comment="Experimental study of high-spin states in a neutron poor
+		  highly excited nucleus. Mainly gamma-gamma spectroscopy."
+}
+@mscthesis{Triggs:msc-thesis:82,
+	author="Bill Triggs",
+	title="High Spin States in Radon-208", 
+	school="Dept. of Physics, Auckland University",
+	month=jul,
+	year=1982,
+}

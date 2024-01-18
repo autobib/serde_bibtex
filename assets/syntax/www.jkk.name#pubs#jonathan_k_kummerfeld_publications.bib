@@ -1,0 +1,119 @@
+@InProceedings{Kummerfeld-Bansal-Burkett-Klein:2011:CoNLL,
+  title     = {Mention Detection: Heuristics for the OntoNotes annotations},
+  author    = {Jonathan K. Kummerfeld and Mohit Bansal and David Burkett and Dan Klein},
+  shortvenue = {Proceedings of CoNLL: Shared Task},
+  booktitle = {Proceedings of the Fifteenth Conference on Computational Natural Language Learning: Shared Task},
+  year      = {2011},
+  pages     = {102--106},
+  month     = {June},
+  address   = {Portland, Oregon, USA},
+  publisher = {Association for Computational Linguistics},
+  url       = {http://www.aclweb.org/anthology/W11-1916},
+  abstract  = {Our submission was a reduced version of the system described in Haghighi and Klein (2010), with extensions to improve mention detection to suit the OntoNotes annotation scheme. Including exact matching mention detection in this shared task added a new and challenging dimension to the problem, particularly for our system, which previously used a very permissive detection method. We improved this aspect of the system by adding filters based on the annotation scheme for OntoNotes and analysis of system behavior on the development set. These changes led to improvements in coreference F-score of 10.06, 5.71, 6.78, 6.63 and 3.09 on the MUC, B3 , Ceaf-e, Ceaf-m and Blanc, metrics, respectively, and a final task score of 47.10.},
+}
+
+@Article{Candelier-WidmerCooper-Kummerfeld-Dauchot-Biroli-Harrowell-Reichman:2010:PRL,
+  title     = {Spatiotemporal Hierarchy of Relaxation Events, Dynamical Heterogeneities, and Structural Reorganization in a Supercooled Liquid},
+  author    = {Raphael Candelier and Asaph Widmer-Cooper and Jonathan K. Kummerfeld and Olivier Dauchot and Giulio Biroli and Peter Harrowell and David R. Reichman},
+  journal   = {Physical Review Letters},
+  volume    = {105},
+  number    = {13},
+  pages     = {135702},
+  numpages  = {4},
+  year      = {2010},
+  month     = {September},
+  doi       = {10.1103/PhysRevLett.105.135702},
+  publisher = {American Physical Society},
+  url       = {http://prl.aps.org/pdf/PRL/v105/i13/e135702},
+  abstract  = {We identify the pattern of microscopic dynamical relaxation for a two-dimensional glass-forming liquid. On short time scales, bursts of irreversible particle motion, called cage jumps, aggregate into clusters. On larger time scales, clusters aggregate both spatially and temporally into avalanches. This propagation of mobility takes place along the soft regions of the systems, which have been identified by computing isoconfigurational Debye-Waller maps. Our results characterize the way in which dynamical heterogeneity evolves in moderately supercooled liquids and reveal that it is astonishingly similar to the one found for dense glassy granular media.},
+}
+
+@InProceedings{Honnibal-Kummerfeld-Curran:2010:CoLing,
+  title     = {Morphological Analysis Can Improve a CCG Parser for English},
+  author    = {Matthew Honnibal and Jonathan K. Kummerfeld and James R. Curran},
+  booktitle = {Proceedings of the 23rd International Conference on Computational Linguistics},
+  year      = {2010},
+  pages     = {445--453},
+  address   = {Beijing, China},
+  month     = {August},
+  url       = {http://aclweb.org/anthology/C/C10/C10-2051.pdf},
+  abstract  = {Because English is a low morphology language, current statistical parsers tend to ignore morphology and accept some level of redundancy. This paper investigates how costly such redundancy is for a lexicalised grammar such as CCG.
+
+We use morphological analysis to split verb inflectional suffixes into separate tokens, so that they can receive their own lexical categories. We find that this improves accuracy when the splits are based on correct POS tags, but that errors in gold standard or automatically assigned POS tags are costly for the system. This shows that the parser can benefit from morphological analysis, so long as the analysis is correct.},
+}
+
+@InProceedings{Kummerfeld-Roesner-Dawborn-Haggerty-Curran-Clark:2010:ACL,
+  title     = {Faster Parsing by Supertagger Adaptation},
+  author    = {Jonathan K. Kummerfeld and Jessica Roesner and Tim Dawborn and James Haggerty and James R. Curran and Stephen Clark},
+  booktitle = {Proceedings of the 48th Annual Meeting of the Association for Computational Linguistics},
+  month     = {July},
+  year      = {2010},
+  address   = {Uppsala, Sweden},
+  publisher = {Association for Computational Linguistics},
+  pages     = {345--355},
+  url       = {http://www.aclweb.org/anthology/P/P10/P10-1036.pdf},
+  abstract  = {We propose a novel self-training method for a parser which uses a lexicalised grammar and supertagger, focusing on increasing the speed of the parser rather than its accuracy. The idea is to train the supertagger on large amounts of parser output, so that the supertagger can learn to supply the supertags that the parser will eventually choose as part of the highest scoring derivation. Since the supertagger supplies fewer supertags overall, the parsing speed is increased. We demonstrate the effectiveness of the method using a CCG supertagger and parser, obtaining significant speed increases on newspaper text with no loss in accuracy. We also show that the method can be used to adapt the CCG parser to new domains, obtaining accuracy and speed improvements for Wikipedia and biomedical text.},
+}
+
+@PhDThesis{Kummerfeld:2009:Honours,
+  title     = {Adaptive Supertagging for Faster Parsing},
+  author    = {Jonathan K. Kummerfeld},
+  school    = {The University of Sydney},
+  year      = {2009},
+  address   = {Sydney, Australia},
+}
+
+@InProceedings{Kummerfeld-Roesner-Curran:2009:ALTA,
+  title     = {Faster parsing and supertagging model estimation},
+  author    = {Jonathan K. Kummerfeld and Jessika Roesner and James R. Curran},
+  booktitle = {Proceedings of the Australasian Language Technology Association Workshop  2009},
+  year      = {2009},
+  pages     = {62--70},
+  address   = {Sydney, Australia},
+  month     = {December},
+  url       = {http://www.aclweb.org/anthology/U/U09/U09-1009.pdf},
+  abstract  = {Parsers are often the bottleneck for data acquisition, processing text too slowly to be widely applied. One way to improve the efficiency of parsers is to construct more confident statistical models. More training data would enable the use of more sophisticated features and also provide more evidence for current features, but gold standard annotated data is limited and expensive to produce.
+
+We demonstrate faster methods for training a supertagger using hundreds of millions of automatically annotated words, constructing statistical models that further constrain the number of derivations the parser must consider. By introducing new features and using an automatically annotated corpus we are able to double parsing speed on Wikipedia and the Wall Street Journal, and gain accuracy slightly when parsing Section 00 of the Wall Street Journal.},
+}
+
+@TechReport{Clark-Copestake-Curran-Zhang-Herbelot-Haggerty-Ahn-VanWyk-Roesner-Kummerfeld-Dawborn:2009:JHU,
+  title     = {Large-Scale Syntactic Processing: Parsing the Web},
+  author    = {Stephen Clark and Ann Copestake and James R. Curran and Yue Zhang and Aurelie Herbelot and James Haggerty and Byung-Gyu Ahn and Curt Van Wyk and Jessika Roesner and Jonathan Kummerfeld and Tim Dawborn},
+  year      = {2009},
+  institution = {Johns Hopkins University},
+  url       = {http://www.clsp.jhu.edu/workshops/ws09/documents/Clark.pdf},
+  abstract  = {Scalable syntactic processing will underpin the sophisticated language technology needed for next generation information access. Companies are already using nlp tools to create web-scale question answering and “semantic search” engines. Massive amounts of parsed web data will also allow the automatic creation of semantic knowledge resources on an unprecedented scale. The web is a challenging arena for syntactic parsing, because of its scale and variety of styles, genres, and domains.
+
+The goals of our workshop were to scale and adapt an existing wide-coverage parser to Wikipedia text; improve the efficiency of the parser through various methods of chart pruning; use self-training to improve the efficiency and accuracy of the parser; use the parsed wiki data for an innovative form of bootstrapping to make the parser both more efficient and more accurate; and finally use the parsed web data for improved disambiguation of coordination structures, using a variety of syntactic and semantic knowledge sources.
+
+The focus of the research was the c&c parser (Clark and Curran, 2007c), a state-of-the-art statistical parser based on Combinatory Categorial Grammar (ccg). The parser has been evaluated on a number of standard test sets achieving state-of-the-art accuracies. It has also recently been adapted successfully to the biomedical domain (Rimell and Clark, 2009). The parser is surprisingly efficient, given its detailed output, processing tens of sentences per second. For web-scale text processing, we aimed to make the parser an order of magnitude faster still. The c&c parser is one of only very few parsers currently available which has the potential to produce detailed, accurate analyses at the scale we were considering.},
+}
+
+@Article{Kummerfeld-Hudson-Harrowell:2008:JPhysChemB,
+  title     = {The densest packing of AB binary hard-sphere homogeneous compounds across all size ratios},
+  author    = {Jonathan K Kummerfeld and Toby S Hudson and Peter Harrowell},
+  journal   = {The Journal of Physical Chemistry B},
+  month     = {August},
+  year      = {2008},
+  volume    = {112},
+  issue     = {35},
+  pages     = {10773--10776},
+  url       = {http://pubs.acs.org/doi/abs/10.1021/jp804953r},
+  abstract  = {This paper considers the homogeneous packing of binary hard spheres in an equimolar stoichiometry, and postulates the densest packing at each sphere size ratio. Monte Carlo simulated annealing optimizations are seeded with all known atomic inorganic crystal structures, and the search is performed within the degrees of freedom associated with each homogeneous AB structure type. Structures isopointal to the FeB structure type are found to have the highest packing fraction at all sphere size ratios. The optimized structures match or improve on the best previously demonstrated packings of this type, and show that compound structures can pack more densely than segregated close-packed structures at all radius ratios less than 0.62.},
+}
+
+@InProceedings{Kummerfeld-Curran:2008:ALTA,
+  title     = {Classification of Verb Particle Constructions with the Google Web1T Corpus},
+  author    = {Jonathan K. Kummerfeld and James R. Curran},
+  booktitle = {Proceedings of the Australasian Language Technology Association Workshop 2008},
+  month     = {December},
+  year      = {2008},
+  address   = {Hobart, Australia},
+  pages     = {55--63},
+  volume    = {6},
+  url       = {http://www.aclweb.org/anthology/U/U08/U08-1008.pdf},
+  abstract  = {Manually maintaining comprehensive databases of multi-word expressions, for example Verb-Particle Constructions (VPCs), is infeasible. We describe a new classifier for potential VPCs, which uses information in the Google Web1T corpus to perform a simple linguistic constituency test. Specifically, we consider the fronting test, comparing the frequencies of the two possible orderings of the given verb and particle. Using only a small set of queries for each verb-particle pair, the system was able to achieve an F-score of 78.4% in our evaluation while processing thousands of queries a second.},
+}
+
+

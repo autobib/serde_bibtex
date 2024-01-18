@@ -1,0 +1,3917 @@
+% Bibliography disseminated via http://www.cnri.reston.va.us/home/koe/bib/
+% Maintained by Jeremy Hylton, jeremy@cnri.reston.va.us
+% Copyright 1997-8 CNRI
+%
+% I'm going to include subject categories in each entry to distinguish
+% some of the various flavors of mobile code that exists. I'll try to
+% to keep it simple and limit the number of categories.
+% 
+% ma = mobile agent
+% an = active networks
+% sec = safety and security		  
+% mc = mobile code/objects
+% mob = mobile computing		  
+% misc = miscellaneous		  
+
+@string{dartmouthcs = "Department of Computer Science, Dartmouth College"}
+
+@string{ecoop-mos2 = "2nd ECOOP Workshop on Mobile Object Systems"}
+
+@string{ecoop-mos3 = "3rd ECOOP Workshop on Mobile Object Systems"}
+
+@String{pdpta98 = "Proceedings of the International Conference on
+                  Parallel and Distributed Processing Techniques and
+                  Applications (PDPTA'98)"}
+
+@string{sosp15 = "Proceedings of the 15th ACM Symposium on Operating
+                  Systems Principles"}
+		  
+@string{sigops7 = "Proceedings of the Seventh ACM SIGOPS European
+		  Workshop"}
+		  
+@string{iwooos96 = "Proceedings of the Fifth International Workshop on
+		  Object Orientation in Operating Systems"}
+		  
+@string{ma97 = "Proceedings of the First International Workshop on
+		  Mobile Agents"}
+
+@string{tocs = "ACM Transactions on Computer Systems"}
+
+@string{toplas = "ACM Transactions on Programming Languages and
+		  Systems"}
+		  
+@string{tse = "IEEE Transactions on Software Engineering"}
+		  
+@String{mob-obj-sys = "Mobile Object Systems: Towards the Programmable
+		  {I}nternet"}  
+		  
+@string{lncs1222 = "Lecture Notes in Computer Science No. 1222"}
+
+@string{hotos6 = "Proceedings of the 6th Workshop on Hot Topics in
+		  Operating Sytems (HotOS-VI)"}
+
+@string{icdcs17 = "Proceedings of the 17th International Conference on
+		  Distributed Computing Systems"}
+
+@string{IC = "IEEE Internet Computing"}
+
+		  
+		  
+@InCollection{acharya97:dynamic,
+  author =	"Anurag Acharya and Mudumbai Ranganathan and Joel Saltz",
+  title =	"Dynamic Linking for Mobile Programs",
+  year =	1997,
+  pages =	"245--262",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  url =		{http://www.cs.umd.edu/\~{}acha/papers/lncs97-2.html},
+  subject =	"ma",
+  abstract =	"Programs that use mobility as a mechanism to adapt to
+		  resource changes have three requirements that are
+		  not shared with other mobile programs. First, they
+		  need to monitor the level and quality of resources
+		  in their operating environment. Second, they need to
+		  be able to react to changes in resource
+		  availability. Third, they need to be able to control
+		  the way in which resources are used on their behalf
+		  (by libraries and other support code). In this
+		  chapter, we describe the design and implementation
+		  of Sumatra, an extension of Java that supports
+		  resource-aware mobile programs. We also describe the
+		  design and implementation of a distributed resource
+		  monitor that provides the information required by
+		  Sumatra programs." 
+}
+
+
+
+@InCollection{acharya97:sumatra,
+  author =	"Anurag Acharya and Mudumbai Ranganathan and Joel Saltz",
+  title	=	"Sumatra: A Language for Resource-Aware Mobile Programs",
+  year	=	1997,
+  pages	= 	"111--130",
+  month	= 	apr,
+  note =	lncs1222,
+  publisher =	"Springer-Verlag",
+  booktitle =	mob-obj-sys,
+  url =		{http://www.cs.umd.edu/\~{}acha/papers/lncs97-1.html},
+  subject =	"ma",
+  abstract =	"Programs that use mobility as a mechanism to adapt to
+		  resource changes have three requirements that are
+		  not shared with other mobile programs. First, they
+		  need to monitor the level and quality of resources
+		  in their operating environment. Second, they need to
+		  be able to react to changes in resource
+		  availability. Third, they need to be able to control
+		  the way in which resources are used on their behalf
+		  (by libraries and other support code). In this
+		  chapter, we describe the design and implementation
+		  of Sumatra, an extension of Java that supports
+		  resource-aware mobile programs. We also describe the
+		  design and implementation of a distributed resource
+		  monitor that provides the information required by
+		  Sumatra programs. changes." 
+}
+
+@InProceedings{adl-tabatabai96:efficient,
+  author = 	 "Ali-Reza Adl-Tabatabai and Geoff Langdale and Steven
+		  Lucco and Robert Wahbe",
+  title = 	 "Efficient and language-independent mobile programs",
+  pages =	 "127--136",
+  booktitle =	 "Proceedings of the ACM SIGPLAN '96 Conference on
+		  Programming Language Design and Implementation
+		  (PLDI)",
+  address =	 "Philadelphia, Pa.",
+  url =		{http://www.cs.cmu.edu/afs/cs.cmu.edu/user/ali/www/pldi96-omniware.ps},
+  subject =      "mc:sec",
+  abstract = "This paper evaluates the design and
+		  implementation of Omniware: a safe, efficient, and
+		  language-independent system for executing mobile
+		  program modules. Previous approaches to implementing
+		  mobile code rely on either language semantics or
+		  abstract machine interpretation to enforce
+		  safety. In the former case, the mobile code system
+		  sacrifices universality to gain safety by dictating
+		  a particular source language or type system. In the
+		  latter case, the mobile code system sacrifices
+		  performance to gain safety through abstract machine
+		  interpretation. Omniware uses software fault
+		  isolation, a technology developed to provide safe
+		  extension code for databases and operating systems,
+		  to achieve a unique combination of
+		  language-independence and excellent
+		  performance. Software fault isolation uses only the
+		  semantics of the underlying processor to determine
+		  whether a mobile code module can corrupt its
+		  execution environment. This separation of
+		  programming language implementation from program
+		  module safety enables our mobile code system to use
+		  a radically simplified virtual machine as its basis
+		  for portability. We measured the performance of
+		  Omniware using a suite of four SPEC92 programs on
+		  the Pentium, PowerPC, Mips, and Sparc processor
+		  architectures. Including the overhead for enforcing
+		  safety on all four processors, OmniVM executed the
+		  benchmark programs within 21% as fast as the
+		  optimized, unsafe code produced by the
+		  vendor-supplied compiler.",
+  year =	 1996,
+  month =	 may
+}
+
+@InProceedings{baldi97:exploiting,
+  author = 	 "Mario Baldi and Silvano Gai and Gian Pietro Picco",
+  title = 	 "Exploiting Code Mobility in Decentralized and
+		  Flexible Network Management",
+  booktitle =	 ma97,
+  year =	 1997,
+  address =	 "Berlin, Germany",
+  month =	 apr,
+  subject =	 "ma:an",
+  url =		{http://www.polito.it/\~{}picco/papers/ma97.ps.gz},
+  abstract =	 "Network management is gaining increasing importance
+		  due to the pervasiveness of computer networks.
+		  Nevertheless, mainstream approaches to network
+		  management are presently limited by centralized
+		  management strategies and poor flexibility---a
+		  consequence of their rigid client-server
+		  architecture. In this paper we analyze how to
+		  overcome these problems by new design paradigms and
+		  technologies encompassing the capability to relocate
+		  dynamically the components of a distributed
+		  application. We evaluate the opportunities offered
+		  by this approach and provide feasibility
+		  considerations, also discussing a few interim
+		  architectural solutions adopted in our on-going
+		  implementation work." 
+}
+
+@InProceedings{baumann97:communication,
+  author = 	 "Joachim Baumann and Fritz Hohl and Nikolaos
+		  Radouniklis and Kurt Rothermel and Markus Strßer",
+  title = 	 "Communication Concepts for Mobile Agent Systems",
+  booktitle =	 ma97,
+  subject =	 "ma",
+  address =	 "Berlin, Germany",
+  month =	 apr,
+  year =	 1997,
+  url =		 {http://www.informatik.uni-stuttgart.de/ipvr/vs/Publications/1997-baumann-01.sub.ps.gz},
+  abstract =	 "Driven by the question how to identify potential
+		  communication partners and the need for well-suited
+		  communication schemes in agent-based systems, we
+		  discuss two communication concepts: sessions and
+		  global event management. Sessions establish either
+		  actively or passively a context for inter-agent
+		  interactions. Communication partners are addressed
+		  by globally unique agent identifiers or via
+		  badges. Communication in sessions is based on RPC or
+		  message mechanisms. Global event management
+		  addresses the need for anonymous
+		  communication. Event managers are employed as a
+		  synchronization means within agent groups. Based on
+		  this approach, we introduce synchronization objects,
+		  -- active components that offer various
+		  synchronization services. The presented model is
+		  finally mapped onto OMG event services." 
+}
+
+@Article{bennett90:experience,
+  author = 	 "John K. Bennett",
+  title = 	 "Experience with {D}istributed {S}malltalk",
+  journal =	 "Software--Practice and Experience",
+  year =	 1990,
+  volume =	 20,
+  number =	 2,
+  pages =	 "157--180",
+  month =	 feb,
+  subject =	 "mc"
+}
+
+		  
+		  
+@InProceedings{bharat95:migratory,
+  author = 	 "Krishna A. Bharat and Luca Cardelli",
+  title = 	 "Migratory Applications",
+  booktitle =	 "Proceedings of the 8th Annual ACM Symposium on User Interface Software and Technology",
+  year =	 1995,
+  note =	 "Also available as Digital Systems Research Center
+		  Research Report 138",
+  month =	 nov,
+  subject =      "mc",
+  address =      "Pittsburgh, Pa.",
+  url =		{http://gatekeeper.dec.com/pub/DEC/SRC/research-reports/abstracts/src-rr-138.html},
+  abstract =	 "We introduce a new genre of user
+		  interface applications that can migrate from one
+		  machine to another, taking their user interface and
+		  application contexts with them, and continue from
+		  where they left off. Such applications are not tied
+		  to one user or one machine, and can roam freely over
+		  the network, rendering service to a community of
+		  users, gathering human input and interacting with
+		  people. We envisage that this will support many new
+		  agent-based collaboration metaphors. The ability to
+		  migrate executing programs has applicability to
+		  mobile computing as well. Users can have their
+		  applications travel with them, as they move from one
+		  computing environment to another. We present an
+		  elegant programming model for creating migratory
+		  applications and describe an implementation. The
+		  biggest strength of our implementation is that the
+		  details of migration are completely hidden from the
+		  application programmer; arbitrary user interface
+		  applications can be migrated by a single
+		  ``migration'' command. We address system issues such
+		  as robustness, persistence and memory usage, and
+		  also human factors relating to application design
+		  the interaction metaphor and safety. "
+}
+
+@InCollection{bharat97:migratory,
+  author =	"Krishna Bharat and Luca Cardelli",
+  title =	"Migratory Applications",
+  year =	1997,
+  pages =	"131--149",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  url =		{},
+  annote =	"An earlier version appeared as \cite{bharat95:migratory}.",
+  subject =	"ma",
+  abstract =	"We present a new genre of user interface
+		  applications: applications that can migrate from one
+		  machine to another, taking their user interface and
+		  application contexts with them, and continue from
+		  where they left off. Such applications are not tied
+		  to one user or one machine, and can roam freely over
+		  the network, rendering service to a community of
+		  users, gathering human input and interacting with
+		  people. We envisage that this will support many new
+		  agent-based collaboration metaphors. The ability to
+		  migrate executing programs has applicability to
+		  mobile computing as well. Users can have their
+		  applications travel with them, as they move from one
+		  computing environment to another. We present an
+		  elegant programming model for creating migratory
+		  applications and describe an implementation. The
+		  biggest strength of our implementation is that the
+		  details of migration are completely hidden from the
+		  application programmer; arbitrary user interface
+		  applications can be migrated by a single ``migration''
+		  command. We address system issues such as
+		  robustness, persistence and memory usage, and also
+		  human factors relating to the application design
+		  process, the interaction metaphor and safety." 
+}
+
+@Article{bic96:distributed,
+  author = 	 "Lubomir F. Bic and Munehiro Fukuda and Michael
+		  B. Dillencourt ",
+  title = 	 "Distributed Computing using Autonomous Objects",
+  journal =	 "IEEE Computer",
+  year =	 1996,
+  month =	 aug,
+  url =		 {http://www.ics.uci.edu/\~{}bic/messengers/COMPUTER.ps},
+  subject =	 "ma",
+  abstract =	 "Autonomous Objects are a new paradigm for
+		  distributed systems, based on the concept of
+		  intelligent messages that carry their own behavior
+		  as they navigate autonomously through the underlying
+		  computational network."
+}
+
+@Article{birrell95,
+  author =       "Andrew Birrell and Greg Nelson and Susan Owicki and
+                  Edward Wobber",
+  title =        "Network Objects",
+  journal =      "Software--Practice and Experience",
+  year =         1995,
+  volume =       25,
+  number =       "S4",
+  pages =        "87--130",
+  month =        dec,
+  note =         "Also available as Digital Systems Research Center
+		  Research Report 115.", 
+  url =		{http://gatekeeper.dec.com/pub/DEC/SRC/research-reports/abstracts/src-rr-115.html},
+  subject =      "mc",
+  abstract =	 "A network object is an object whose
+		  methods can be invoked over a network. This report
+		  describes the design and implementation of a network
+		  objects system for Modula-3. The system is novel for
+		  its overall simplicity.  The report includes a
+		  thorough description of realistic marshaling
+		  algorithms for network objects, precise informal
+		  specifications of the major internal interfaces,
+		  preliminary experience, and performance results."
+}
+
+@Book{bradshaw96:software,
+  title = 	 "Software Agents",
+  publisher = 	 "AAAI Press/MIT Press",
+  year = 	 1996,
+  editor =	 "Jeffrey Bradshaw",
+  address =	 "Menlo Park, Cal."
+}
+
+		  
+@TechReport{bredin98:demand,
+    author = "Jonathan Bredin and David Kotz and Daniela Rus",
+    title = "Utility Driven Mobile-Agent Scheduling",
+    year = 1998,
+    month = may,
+    number = "PCS-TR98-331",
+    institution = "Dept. of Computer Science, Dartmouth College",
+    url = {ftp://ftp.cs.dartmouth.edu/TR/TR98-331.ps.Z},
+    abstract = "We investigate the possibility of using markets to regulate
+mobile agents, computer programs that are capable of migrating from one
+machine to another. Market participation requires quantitative information
+about resource consumption to define demand and calculate utility. \par We
+create a formal utility model to derive user-demand functions, allowing
+agents to efficiently plan expenditure and deal with price fluctuations. By
+quantifying demand and utility, resource owners can precisely set a value for
+a good. We simulate our model in a mobile agent scheduling environment and
+show how prices fluctuate, compounding uncertainty in an agent's plans. To
+solve this problem, we propose that resource owners sell options to allow
+agents to trade away their risk."
+}
+
+@InProceedings{bredin98:market,
+  author = 	 "Jonathan Bredin and David Kotz and Daniela Rus",
+  title = 	 "Market-based resource control for mobile agents",
+  url =		 "ftp://ftp.cs.dartmouth.edu/TR/TR97-326.ps.Z",
+  subject =	 "ma",
+  abstract =	 "Mobile agents are programs that can migrate from machine to machine in
+    a heterogeneous, partially disconnected network. As mobile agents move
+    across a network, they consume resources.  We discuss a system for
+    controlling the activities of mobile agents that uses electronic cash,
+    a banking system, and a set of resource managers.  We describe
+    protocols for transactions between agents.  We present fixed-pricing
+    and dynamic-pricing policies for resources.  We focus on and analyze
+    the sealed-bid second-price auction as a mechanism for dynamic
+    pricing.",
+  booktitle =	 "Proceedings of Autonomous Agents '98",
+  year =	 1998,
+  pages =        "197--204",
+  note =	 "Earlier version published as Darmouth College,
+		  Department of Computer Science technical report
+		  TR97-326."
+}
+
+
+
+@TechReport{cai96:dataflow,
+  author = 	 "Ting Cai and Peter Gloor and Saurab Nog",
+  title = 	 "DataFlow: A Workflow Management System on the {W}eb
+		  using transportable Agents", 
+  institution =  dartmouthcs,
+  year = 	 1996,
+  number =	 "TR96-283",
+  address =	 "Hanover, N.H.",
+  url =		{http://www.cs.dartmouth.edu/reports/abstracts/TR96-283/},
+  subject =      "ma"
+}
+ 
+@Article{cardelli95:language,
+  author =       "Luca Cardelli",
+  title =        "A language with distributed scope",
+  journal =      "Computing Systems",
+  year =         1995,
+  note =	 "Also available as Digital Systems Research Center
+		  Research Report 122",
+  subject =      "mc",
+  url =		{http://gatekeeper.dec.com/pub/DEC/SRC/research-reports/abstracts/src-rr-122.html},
+  volume =       8,
+  number =       1,
+  pages =        "27--59",
+  abstract = "Obliq is a lexically-scoped untyped
+		  interpreted language that supports distributed
+		  object-oriented computation.  An Obliq computation
+		  may involve multiple threads of control within an
+		  address space, multiple address spaces on a machine,
+		  heterogeneous machines over a local network, and
+		  multiple networks over the Internet. Obliq objects
+		  have state and are local to a site. Obliq
+		  computations can roam over the network, while
+		  maintaining network connections."
+}
+
+@InCollection{cardelli97:mobile,
+  author =	"Luca Cardelli",
+  title =	"Mobile Computations",
+  year =	1997,
+  pages =	"3--6",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  url =		{http://www.research.digital.com:80/SRC/personal/Luca_Cardelli/Papers/MobileComputBookIntro.ps},
+  booktitle =	mob-obj-sys
+}
+
+@InProceedings{carzaniga97:designing,
+  author = 	 "Antonio Carzaniga and Gian Pietro Picco and Giovanni
+		  Vigna", 
+  title = 	 "Designing Distributed Applications with a Mobile
+		  Code Paradigm",
+  booktitle =	 "Proceedings of the 19th International Conference on
+		  Software Engineering", 
+  year =	 1997,
+  address =	 "Boston, Ma.",
+  subject =      "mc",
+  url =		{http://www.polito.it/\~{}picco/papers/icse97.ps.gz},
+  abstract =     "Large scale distributed systems are becoming of
+		  paramount importance, due to the evolution of
+		  technology and to the interest of market. Their
+		  development, however, is not yet supported by a
+		  sound technological and methodological background,
+		  as the results developed for small size distributed
+		  systems often do not scale up. Recently, {\em mobile
+		  code languages} (MCLs) have been proposed as a
+		  technological answer to the problem. In this work,
+		  we abstract away from the details of these languages
+		  by deriving design paradigms exploiting code
+		  mobility that are independent of any particular
+		  technology. We present such design paradigms,
+		  together with a discussion of their features, their
+		  application domain, and some hints about the
+		  selection of the correct paradigm for a given
+		  distributed application.",  
+  month =	 may
+}
+
+@Article{cejtin95:higher,
+  author = 	 "Henry Cejtin and Suresh Jagannathan and Richard Kelsey",
+  title = 	 "Higher-Order Distributed Objects",
+  journal =	 toplas,
+  year =	 1995,
+  volume =	 17,
+  number =	 5,
+  pages =	 "704--739",
+  month =	 sep,
+  url =		{ftp://ftp.nj.nec.com/pub/pls/toplas95.ps},
+  subject =      "mc",
+  abstract =	 "We describe a distributed implementation of Scheme
+		  that permits efficient transmission of higher-order
+		  objects such as closures and continuations. The
+		  integration of distributed communication facilities
+		  within a higher-order programming language engenders
+		  a number of new abstractions and paradigms for
+		  distributed computing. Among these are
+		  user-specified load-balancing and migration policies
+		  for threads, incrementally linked distributed
+		  computations, and parameterized client-server
+		  applications. To our knowledge, this is the first
+		  distributed dialect of Scheme (or a related
+		  language) that addresses lightweight communication
+		  abstractions for higher-order objects."
+}
+
+@TechReport{chess95:itinerant,
+  author = 	 "David Chess and Benjamin Grosof and Colin Harrison
+		  and David Levine and Colin Paris and Gene Tsudik",
+  title = 	 "Itinerant Agents for Mobile Computing",
+  institution =  "IBM",
+  year = 	 1995,
+  type =	 "IBM Research Report",
+  number =	 "RC 20010",
+  month =	 mar,
+  url =		{http://www.research.ibm.com/massdist/rc20010.ps},
+  subject =      "mob:ma"
+}
+
+		  
+		  
+@InCollection{chess97:mobile,
+  author =	"David Chess and Colin Harrison  and Aaron Kershenbaum",
+  title =	"Mobile Agents: Are They a Good Idea? -- Update",
+  year =	1997,
+  pages =	"46--48",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys
+}
+
+@InCollection{ciancarini97:jada,
+  author =	"Paolo Ciancarini and Davide Rossi",
+  title =	"Jada -- Coordination and Communication for Java Agents",
+  year =	1997,
+  pages =	"213--228",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  url =		{},
+  subject =	"ma",
+  abstract =	"In this chapter we are going to analyze mobile code
+		  issues in the perspective of object oriented systems
+		  in which thread migration is not supported. This
+		  means that both object's code and data can be
+		  transmitted from a place to another but not the
+		  current execution state (if any) associated to the
+		  object. This is the case with the Java language
+		  which is often used in the \WWW for developing
+		  applets  which are little applications
+		  downloaded on the fly and executed in the client
+		  machine. While this mechanism is quite useful for
+		  enhancing HTML documents with sound and animation,
+		  we think that this technology can give its best in
+		  the field of distributed-cooperative work, both in
+		  the perspective of Internet and Intranet
+		  connectivity. Java is indeed a concurrent,
+		  multithreaded language, but it offers little help
+		  for distributed programming. Thus, we introduce
+		  Jada, a coordination toolkit for Java where
+		  coordination among either concurrent threads or
+		  distributed Java objects is achieved via shared
+		  object spaces. By exchanging objects through tuple
+		  spaces, Java programs and applets can exchange data
+		  or synchronize their actions over a single host, a
+		  LAN, or even the Internet. 
+
+\par The access to an object space is performed using a set of methods
+		  of the ObjectSpace class. Such operations are \Out
+		  (to put an object in the object space), \In and
+		  \Read (to get or to read associatively an object
+		  from the object space), and others, mostly inspired
+		  by the Linda language. 
+
+\par Jada does not extends the syntax of Java because it is a set of
+		  classes. We show how it changes the way we design
+		  multiuser, distributed applications (such as the
+		  ones based on the WWW) allowing easy interactions
+		  between software components and agents. 
+
+\par Under this perspective we can outline a system of any scale which
+		  uses the dynamic linking capability of Java to
+		  distribute the code and the coordination facility of
+		  Jada to handle distributed entities
+		  inter-relations."
+}
+
+
+@InProceedings{clamen90:reliable,
+  author = 	 "Stewart M. Clamen and Linda D. Leibengood and Scott
+		  M. Nettles and Jeanette M. Wing",
+  title = 	 "Reliable Distributed Computing with
+		  {A}valon/{C}ommon {L}isp", 
+  pages =	 "169--179",
+  booktitle =	 "Proceedings of the Internional Conference on
+		  Computer Languages",
+  year =	 1990,
+  subject =	 "mc"
+}
+
+@Book{cockayne97:itinerant,
+  editor = 	 "William Cockayne and Michel Zypa",
+  title = 	 "Itinerant Agents: Explanations and Examples with CDROM",
+  publisher = 	 "Manning",
+  year = 	 1997
+}
+
+@InProceedings{condict96:towards,
+  author = 	 "Michael Condict and Dejan Milojicic and Franklin
+		  Reynolds and Don Bolinger", 
+  title = 	 "Towards a World-Wide Civilization of Objects ",
+  booktitle =	 sigops7,
+  year =	 1996,
+  address =	 "Connemara, Ireland",
+  month =	 sep,
+  url =		{http://mosquitonet.stanford.edu/sigops96/papers/condict.ps},
+  subject =      "ma"
+}
+		  
+		  
+@InProceedings{courtney95:phantom,
+  author = 	 "Antony Courtney",
+  title = 	 "Phantom: An Interpreted Language for Distributed
+		  Programming", 
+  url =		{http://www.apocalypse.org/pub/u/antony/phantom/coots.ps},
+  booktitle =	 "Proceedings of the USENIX Conference on
+		  Object-Oriented Technologies",
+  year =	 1995,
+  address =	 "Monterey, Ca.",
+  month =	 jun,
+  annote =	 "The emerging trend in writing
+		  distributed applications is to use an object-based
+		  RPC system with a statically compiled,
+		  object-oriented language. While such a programming
+		  environment is adequate for many tasks, object-based
+		  RPC systems and statically compiled languages also
+		  have certain intrinsic limitations.  These
+		  limitations become significant when writing
+		  applications which are both distributed and
+		  interactive (e.g. network information browsers,
+		  distributed conferencing systems and collaborative
+		  work tools). This paper discusses these limitations,
+		  and presents the design of Phantom, a new intepreted
+		  language for distributed programming. Phantom
+		  provides many features found in object-based RPC
+		  systems and statically compiled languages, including
+		  automatic marshalling, transparent remote procedure
+		  call, secure authentication and concurrency
+		  support. In addition to these traditional features,
+		  Phantom's interpreted nature permits the use of
+		  certain programming techniques, such as true object
+		  migration, remote evaluation, and dynamic
+		  extensibility, which are of increasing importance
+		  for distributed programming, but which are not
+		  available in statically compiled languages and RPC
+		  systems. The integration of these features in a
+		  single, coherent programming language makes whole
+		  new classes of distributed, interactive applications
+		  possible."
+}
+
+@InProceedings{cugola96:characterization,
+  author = 	 "Gianpaolo Cugola and Carlo Ghezzi and Gian Pietro
+		  Picco and Giovanni Vigna", 
+  title = 	 "A Characterization of Mobility and State
+		  Distribution in Mobile Code Languages",
+  pages =	 "10--19",
+  booktitle =	 ecoop-mos2,
+  year =	 1996,
+  address =	 "Linz, Austria",
+  month =	 jul,
+  url =		{http://www.polito.it/\~{}picco/papers/dpunkt.ps.gz},
+  subject =      "ma:mc",
+  abstract = "The growing importance of
+		  telecommunication networks has stimulatedresearch on
+		  a new generation of programming languages.  Such
+		  languagesview the network and its resources as a
+		  global environment in whichcomputations take place.
+		  In particular, they support the notion of
+		  codemobility and state distribution.  To understand,
+		  discuss, evaluate, andcompare such languages, it is
+		  necessary to develop an abstract modelthat allows
+		  the meaning of mobility and state distribution to be
+		  definedprecisely.  The purpose of this paper is to
+		  provide such a model and toapply it to the analysis
+		  of a number of existing new languages. "
+}
+
+@InCollection{cugola97:analyzing,
+  author =	"Gianpaolo Cugola and Carlo Ghezzi and Gian Pietro
+		  Picco and Giovanni Vigna", 
+  title =	"Analyzing Mobile Code Languages",
+  year =	1997,
+  pages =	"93--110",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  url =		{http://www.polito.it/\~{}picco/papers/ecoop96.ps.gz},
+  subject =	"mc",
+  abstract =	"The growing importance of telecommunication networks
+		  has stimulated research on a new generation of
+		  programming languages. Such languages view the
+		  network and its resources as a global environment in
+		  which computations take place. In particular, they
+		  support the notion of code mobility. To understand,
+		  discuss, evaluate, and compare such languages, it is
+		  necessary to develop a new set of programming
+		  language concepts and/or extend the concepts that
+		  are used to deal with conventional languages. The
+		  purpose of this paper is to provide such
+		  framework. This is done hand-in-hand with a survey
+		  of a number of existing new languages."
+}
+
+@phdthesis{dale97:agent,
+  author = "Jonathan Dale",
+  title = "A Mobile Agent Architecture for Distributed Information
+                  Management", 
+  school = "University of Southampton",
+  year = 1997,
+  month = sep,
+  url = {http://www.mmrg.ecs.soton.ac.uk/publications/archive/dale1997a/},
+  abstract = "Large-scale networked environments, such as the Internet, possess the characteristics of distributed data, distributed access and distributed
+control; this gives the user a powerful mechanism for building and integrating large repositories of distributed information from diverse resource
+sets. However, few support tools have been developed to allow the user to take advantage of the distributed nature of their information.
+\par Distributed information management is the process by which users can create, disseminate, discover and manage information that is spread
+across distributed resources. Distributed open hypermedia systems have shown how distributed information, such as documents and hypermedia
+links, can be managed and handled within an environment that integrates smoothly between the user's desktop and the network. However, such
+systems are now looking at addressing the problem of interoperability across hypermedia systems, so that documents and links can be shared
+between users on heterogeneous integrating technologies.
+\par This thesis proposes that the distributed information management provided by open hypermedia systems needs to be extended so that it is more
+interoperable, extensible and pervasive and that this can be achieved by integrating the principles of open hypermedia with the technology of
+mobile agents. Mobile agents present a new development mechanism for designing and building distributed applications which are well suited to
+the dynamic environment of large-scale networks.
+\par This thesis describes the development of a mobile agent architecture within which distributed information management tasks can be built and
+executed. Mobile agents present an important abstraction mechanism when designing distributed environments and also allow the user to
+manage distributed information indirectly through their mobile agents. A number of prototype agents are described that have been developed to
+illustrate distributed information management tasks within the architecture and to show how abstractionism and indirect management can be
+achieved. "
+}
+
+@InProceedings{dale97:mobile,
+  author = 	 {Jonathan Dale and David C. DeRoure},
+  title = 	 {A Mobile Agent Architecture for Distributed Information Management},
+  booktitle = 	 {Proceedings of the International Workshop on the Virtual Multicomputer},
+  year =	 1997,
+  month =	 mar,
+  url =		 {http://www.mmrg.ecs.soton.ac.uk/publications/archive/dale1997b/},
+  abstract =	 "Large-scale networked environments, such as the Internet, possess the characteristics of distributed data, distributed access and distributed
+control; this gives the user a powerful mechanism for building and integrating large repositories of distributed information from diverse resources.
+However, few support tools have been developed to allow the user to take advantage of the distributed nature of their information. 
+To help address this problem, we advocate the integration of two technologies; distributed information management principles to allow users to
+create, disseminate, discover and manage their information, and mobile agent technology to provide the flexibility, scalability and dynamism
+necessary to develop such distributed information management applications.
+
+\par We present four principles that we have identified as being key to achieving distributed information management and an architecture where
+mobile agents can move across distributed environments, integrate with local resources and other mobile agents, and communicate their results
+back to the user. We also describe a number of prototype distributed information management agents that we have developed. "
+}
+
+@TechReport{dale97:towards,
+  author = 	 {Jonathan Dale and David C. DeRoure},
+  title = 	 {Towards a Framework for Developing Mobile Agents for
+                  Managing Distributed Information Resources},
+  institution =  {Department of Electronics and Computer Science,
+                  University of Southampton},
+  year = 	 1997,
+  url =		 "http://www.agents.ecs.soton.ac.uk/Voyager/papers/m97-1.htm",
+  number =	 "97-1",
+  month =	 feb,
+  abstract =	 "Distributed information management tools allow users to author,
+disseminate, discover and manage information within large-scale
+networked environments, such as the Internet. Agent technology
+provides the flexibility and scalability necessary to develop such
+distributed information management applications. We present a layered
+organisation that is shared by the specific applications that we
+build. Within this organisation we describe an architecture where
+mobile agents can move across distributed environments, integrate with
+local resources and other mobile agents, and communicate their results
+back to the user."
+}
+
+@InProceedings{dasilva96:combining,
+  author = 	 "{Mira da Silva}, Miguel and Malcolm Atkinson",
+  title = 	 "Combining Mobile Agents with Persistent Systems:
+		  Opportunities and Challenges",
+  pages =	 "36--40",
+  booktitle =	 ecoop-mos2,
+  year =	 1996,
+  address =	 "Linz, Austria",
+  month =	 jul,
+  url =		{http://www.dcs.gla.ac.uk/\~{}mms/publications-abstracts.html#ECOOP96},
+  subject =      "ma",
+  abstract = "In the last three years we have been
+		  working with persistence anddistribution, in
+		  particular migration of higher-level objects (such
+		  asprocedures) between autonomous persistent
+		  programs.  In this paper weintroduce persistence and
+		  the suitability of Napier88, the persistentsystem we
+		  have used for our experiments, as an agent language.
+		  We thenpresent a few examples of opportunities and
+		  many more challenges thatexist in the combination of
+		  persistence with agents. "
+
+}
+
+@InCollection{dasilva97:mobility,
+  author =	"{Mira da Silva}, Miguel",
+  title =	"Mobility and Persistence",
+  year =	1997,
+  pages =	"157-176",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  url =		{},
+  subject =	"ma",
+  abstract =	"In the last three years we have been working with
+		  persistence and distribution, in particular
+		  migration of higher-level objects between autonomous
+		  persistent programs. In this chapter we introduce
+		  persistence and then present a few examples of
+		  opportunities and many more challenges that exist in
+		  the combination of persistence and mobility."
+}
+		  
+@InProceedings{dean96:java,
+  author = 	 "Drew Dean and Ed Felten and Dan Wallach",
+  title = 	 "Java Security: From {H}ot{J}ava to {N}etscape and Beyond",
+  booktitle =	 "Proceedings of the 1996 IEEE Symposium on Security
+		  and Privacy",
+  year =	 1996,
+  address =	 "Oakland, Cal.",
+  month =	 may,
+  subject =      "sec",
+  url =		{http://www.cs.princeton.edu/sip/pub/secure96.html},
+  abstract =	 "The introduction of Java applets has
+		  taken the WorldWide Web by storm. Information
+		  servers can customize the pre- sentation of their
+		  content with server-supplied code which executes
+		  inside the Web browser. We examine the Java language
+		  and both the HotJava and Netscape browsers 
+		  which support it, and find a significant number of
+		  flaws which compromise their security. These flaws
+		  arise for several reasons, including implementation
+		  errors, unintended interactions between browser
+		  features, differences between the Java language and
+		  bytecode semantics, and weaknesses in the design of
+		  the language and the bytecode format. On a deeper
+		  level, these flaws arise because of weaknesses in
+		  the design methodology used in creating Java and the
+		  browsers.  In addition to the flaws, we discuss the
+		  underlying tension between the openness desired by
+		  Web application writers and the security needs of
+		  their users, and we suggest how both might be
+		  accommodated.  "
+}
+
+@InProceedings{dean97:security,
+  author = 	 "Drew Dean",
+  title = 	 "The Security of Static Typing with Dynamic Linking",
+  booktitle =	 "Proceedings of the Fourth ACM Conference on Computer
+		  and Communications Security", 
+  year =	 1997,
+  address =	 "Zurich, Switzerland",
+  month =	 apr,
+  url =		{http://www.CS.Princeton.EDU/sip/pub/ccs4.html},
+  note =	 "sec",
+  abstract =	 "Dynamic linking is a requirement for portable
+		  executable content. Executable content cannot know,
+		  ahead of time, where it is going to be executed, nor
+		  know the proper operating system interface. This
+		  imposes a requirement for dynamic linking. At the
+		  same time, we would like languages supporting
+		  executable content to be statically typable, for
+		  increased efficiency and security. Static typing and
+		  dynamic linking interact in a security-relevant
+		  way. This interaction is the subject of this
+		  paper. One solution is modeled in PVS, and formally
+		  proven to be safe." 
+}
+		  
+		  
+@InCollection{domel97:interaction,
+  author =	"Peter D{\"o}mel",
+  title =	"Interaction of {J}ava and {T}elescript Agents",
+  year =	1997,
+  pages =	"295--314",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  subject =	"ma",
+  abstract = "This chapter gives an introduction into
+		  the two object-oriented programming environments
+		  Telescript and Java which both allow to write mobile
+		  code. It illustrates some of the more interesting
+		  features of these languages as platforms for mobile
+		  object systems. Further emphasis lies on the
+		  cooperation of agents in these two object-oriented
+		  worlds. Moreover, several descriptions of some
+		  higher-level agents scenarios are given."
+}
+		  
+		  
+@InProceedings{duggan96:type,
+  author = 	 "Dominic Duggan and Piotr Przybylski",
+  title = 	 "A Type-Based Implementation of a Language With
+		  Distributed Scope", 
+  pages =	 "52--59",
+  booktitle =	 ecoop-mos2,
+  year =	 1996,
+  address =	 "Linz, Austria",
+  month =	 jul,
+  subject =      "mc",
+  url =		{http://cuiwww.unige.ch/\~{}ecoopws/ws96/7.ps.gz},
+  abstract =	 "The ML programming language has several features
+		  that make it desirableas a language for distributed
+		  application programming.  It supportsfirst-class
+		  closures, which are useful for distributed scope and
+		  mobileagents.  Type inference removes much of the
+		  tedium of lower-levelprogramming, without
+		  compromising reliability.  Finally ML provides
+		  apowerful type system, including type polymorphism.
+		  A dialect of MLintended for distributed application
+		  programming is introduced.  Adistinguishing
+		  characteristic of this implementation is the use
+		  ofrun-time type information, motivated by several
+		  constructs in thelanguage.  This is intended to
+		  motivate the use of run-time types in
+		  implementations of polymorphic languages intended
+		  for distributed programming. " 
+}
+
+		  
+@InCollection{duggan97:type,
+  author =	"Dominic Duggan",
+  title =	"A Type-Based Implementation of a Language with
+		  Distributed Scope", 
+  year =	1997,
+  pages =	"277--294",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  url =		{},
+  subject =	"ma",
+  abstract =	"Several languages have been designed and implemented
+		  for programming mobile computations. This chapter
+		  describes a mobile code language based on extending
+		  the popular ML language. The language design, and
+		  its implementation, are distinguished by the use of
+		  run-time type information for computation. This is
+		  intended to motivate the use of run-time types in
+		  implementations of languages intended for
+		  distributed programming and mobile computations,
+		  particularly languages such as ML that provide type
+		  polymorphism."
+}
+
+@Proceedings{ecoop96:mos,
+  title = 	 "Proceedings of the 2nd ECOOP Workshop on Mobile
+		  Object Systems",
+  year = 	 1996,
+  editor =	 "Jaochim Baumann and Christian Tschudin and Jan
+		  Vitek",
+  address =	 "Linz, Austria",
+  month =	 jul,
+  url =		{http://cuiwww.unige.ch/\~{}ecoopws/index.html#ws96}
+}
+		  
+		  
+@InProceedings{edjlali98:history,
+  author = 	 {Guy Edjlali and Anurag Acharya and Vipin Chaudhary}, 
+  title = 	 {History-based access control for mobile code},
+  booktitle = 	 {Proceedings of the Fifth ACM Conference on Computer
+                  and Communications Security},
+  year =	 1998,
+  address =	 {San Francisco, Ca.},
+  month =	 nov,
+  url =		 {http://www.cs.ucsb.edu/\~{}acha/publications/ccs98-submitted.html},
+  abstract =	 {In this paper, we present a history-based access-control mechanism
+that is suitable for mediating accesses from mobile code. The key idea
+behind history-based access-control is to maintain a selective history
+of the access requests made by individual programs and to use this
+history to improve the differentiation between safe and potentially
+dangerous requests. What a program is allowed to do depends on its own
+behavior and identity in addition to currently used discriminators
+like the location it was loaded from or the identity of its
+author/provider. History-based access-control has the potential to
+significantly expand the set of programs that can be executed without
+compromising security or ease of use. We describe the design and
+implementation of Deeds, a history-based access-control mechanism for
+Java. Access-control policies for Deeds are written in Java, and can
+be updated while the programs whose accesses are being mediated are
+still executing.}
+}
+
+@Article{falcone87:programmable,
+  author = 	 "Joseph R. Falcone",
+  title = 	 "A Programmable Interface Language for Heterogeneous
+		  Distributed Sytems",
+  journal =	 tocs,
+  year =	 1987,
+  volume =	 5,
+  number =	 4,
+  pages =	 "330--351",
+  month =	 jul
+}
+
+@InProceedings{farmer96:authentication,
+  author = 	 "William M. Farmer and Joshua D. Guttman and Vipin
+		  Swarup",
+  title = 	 "Security for Mobile Agents: Authentication and
+		  State Appraisal",
+  pages =	 "118--130",
+  booktitle =	 "Proceedings of the Fourth European Symposium on
+		  Research in Computer Security",
+  year =	 1996,
+  address =	 "Rome, Italy",
+  subject =      "ma:sec",
+  month =	 sep,
+  note =	 "Springer-Verlag Lecture Notes in Computer Science
+		  No. 1146",
+  abstract =	 "Mobile agents are processes which can autonomously
+		  migrate to new hosts. Despite its many practical
+		  benefits, mobile agent technology results in
+		  significant new security threats from malicious
+		  agents and hosts. The primary added complication is
+		  that, as an agent traverses multiple hosts that are
+		  trusted to different degrees, its state can change
+		  in ways that adversely impact its functionality. In
+		  this paper, we discuss achievable security goals for
+		  mobile agents, and we propose an architecture to
+		  achieve these goals. The architecture models the
+		  trust relations between the principals of mobile
+		  agent systems. A unique aspect of the architecture
+		  is a ``state appraisal'' mechanism that protects
+		  users and hosts from attacks via state modifications
+		  and that provides users with flexible control over
+		  the authority of their agents."
+}
+
+@InProceedings{farmer96:issues,
+  author = 	 "William M. Farmer and Joshua D. Guttman and Vipin
+		  Swarup", 
+  title = 	 "Security for Mobile Agents: Issues and Requirements",
+  pages =	 "591--597",
+  booktitle =	 "Proceedings of the 19th National Information Systems
+		  Security Conference",
+  year =	 1996,
+  address =	 "Baltimore, Md.",
+  url =		{http://csrc.nist.gov/nissc/1996/papers/NISSC96/paper033/SWARUP96.PDF},
+  subject =      "ma:sec",
+  month =	 oct
+}
+
+@TechReport{fong98:viewer,
+  author = 	 "Philip W. L. Fong",
+  title = 	 "Viewer's Discretion: Host Security in Mobile Code Systems",
+  institution =  "School of Computing Science, Simon Fraser University",
+  year = 	 1998,
+  number = 	 "SFU CMPT TR 1998-19",
+  address = 	 "Burnaby, {BC}",
+  month = 	 nov,
+  subject =      "sec",
+  url =          {http://www.cs.sfu.ca/\~{}pwfong/personal/Pub/SFU-CMPT-TR-1998-19.ps},
+  abstract = {
+   Mobile code computation is a new paradigm for structuring distributed 
+   systems.  Mobile programs migrate from remote sites to a host, and interact
+   with the resources and facilities local to that host.  This new mode 
+   of distributed computation promises great opportunities for electronic
+   commerce, mobile computing, and information harvesting.  There has been
+   a general consensus that security is the key to the success of mobile code
+   computation.  In this paper, we survey the issues surrounding the 
+   protection of a host from potentially hostile mobile programs.
+
+   \par Decades of research in operating systems has provided significant
+   experience and insight into the nature of system security.  Before we 
+   propose any new security model for mobile code systems, it is wise to 
+   question why the existing protection mechanisms found in distributed 
+   operating systems do not fully address the security needs of mobile
+   code systems.  We propose three security challenges that are 
+   distinctive of the mobile code phenomenon, namely, the establishment of
+   anonymous trust (establishing trust with programs from unfamiliar 
+   origin), layered protection (establishing fine-grained protection
+   boundaries among mutually-distrusting parts of the same process), and
+   implicit acquisition (coping with the implicit nature of mobile
+   program acquisition).
+
+   \par We also survey various approaches to protection in existing mobile
+   code systems.  We classify protection approaches into four categories:
+   discretion, verification, transformation, and arbitration.  We 
+   evaluate each category by looking at how well they address the
+   security needs of mobile code computation.
+  }
+}
+
+@InProceedings{fong98:proof,
+  author = 	 {Philip W. L. Fong and Robert D. Cameron},
+  title = 	 {Proof Linking: An Architecture for Modular
+                  Verification of Dynamically-Linked Mobile Code},
+  booktitle = 	 "Proceedings of the Sixth ACM SIGSOFT International
+                  Symposium on the Foundations of Software
+                  Engineering",
+  pages = 	 {222--230},
+  year = 	 1998,
+  address = 	 {Orlando, Florida},
+  month = 	 nov,
+  url = {http://www.cs.sfu.ca/\~{}pwfong/personal/Pub/fse98.ps},
+  abstract = "Security flaws are routinely discovered in commercial implementations
+    of mobile code systems such as the Java Virtual Machine (JVM).  Typical
+    architectures for such systems exhibit complex interdependencies 
+    between the loader, the verifier, and the linker, making them difficult
+    to craft, validate, and maintain.  This reveals a software engineering
+    challenge that is common to all mobile code systems in which a static
+    verification phase is introduced before dynamic linking.  In such
+    systems, one has to articulate how loading, verification, and linking
+    interact with each other, and how the three processes should be
+    organized to address various security issues.
+
+    \par We propose a standard architecture for crafting mobile code verifiers,
+    based on the concept of proof linking.  This architecture modularizes
+    the verification process and isolates the dependencies among the
+    loader, verifier, and linker.  We also formalize the process of
+    proof linking and establish properties to which correct implementations
+    must conform.  As an example, we instantiate our architecture for the
+    problem of Java bytecode verification and assess the correctness of
+    this instantiation.  Finally, we briefly discuss alternative
+    mobile code verification architectures enabled by our modularization."
+}
+
+
+		  
+
+@InCollection{franz97:adapative,
+  author =	"Michael Franz",
+  title =	"Adaptive Compression of Syntax Trees and Iterative
+		  Dynamic Code  Optimization: Two Basic Technologies
+		  for Mobile Object Systems", 
+  year =	1997,
+  pages =	"263--276",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  url =		{},
+  subject =	"ma",
+  abstract =	"We are designing and implementing a flexible
+		  infrastructure for mobile-object systems. Two
+		  fundamental innovations distinguish our architecture
+		  from other proposed solutions. First, our
+		  representation of mobile code is based on adaptive
+		  compression of syntax trees. Not only is this
+		  representation more than twice as dense as Java
+		  byte-codes, but it also encodes semantic information
+		  on a much higher level than linear abstract-machine
+		  representations such as p-code or Java
+		  byte-codes. The extra structural information that is
+		  contained in our mobile-code format is directly
+		  beneficial for advanced code
+		  optimizations.
+
+\par Second, our architecture achieves superior run-time performance by
+		  integrating the activity of generating executable
+		  code into the operating system itself. Rather than
+		  being an auxiliary function performed off-line by a
+		  stand-alone compiler, code generation constitutes a
+		  central, indispensable service in our system. Our
+		  integral code generator has two distinct modes of
+		  operation: instantaneous load-time translation and
+		  continuous dynamic re-optimization.
+
+\par In contrast to just-in-time compilers that translate individual
+		  procedures on a call-by-call basis, our system's
+		  integral code-generator translates complete
+		  code-closures in a single burst during loading. This
+		  has the apparent disadvantage that it introduces a
+		  minor delay prior to the start of execution. As a
+		  consequence, to some extent we have to favor
+		  compilation speed over code quality at load time.
+
+\par But then, the second operation mode of our embedded code
+		  generator soon corrects this shortcoming. Central to
+		  our run-time architecture is a thread of activity
+		  that continually optimizes all of the already
+		  executing software in the background. Since this is
+		  strictly a re-compilation of already existing code,
+		  and since it occurs completely in the background,
+		  speed is not critical, so that aggressive, albeit
+		  slow, optimization techniques can be employed. Upon
+		  completion, the previously executing version of the
+		  same code is supplanted by the newly generated one
+		  and re-optimization starts over. By constructing
+		  globally optimized code-images from mobile software
+		  components, our architecture is able to reconcile
+		  dynamic composability with the run-time efficiency
+		  of monolithic applications."
+}
+
+@InProceedings{fukuda96:intra,
+  author = 	 "Munehiro Fukuda and Lubomir F. Bic and Michael
+                  B. Dillencourt and Fehmina Merchant", 
+  title = 	 "Intra- and Inter-Object Coordination with {\sc
+                  Messengers\/}", 
+  booktitle = 	 "Coordination Languages and Models",
+  pages =	 "179--196",
+  year =	 1996,
+  url =		 {http://www.ics.uci.edu/\~{}bic/messengers/COORD.ps},
+  address =	 "Cesena, Italy",
+  month =	 apr,
+  publisher =	 "Springer-Verlag",
+  note =	 "Lectures Notes in Computer Science 1061.",
+  abstract =	 "MESSENGERS is a paradigm for the programming of
+distributed systems. It is based on the principles of autonomous
+messages, called Messengers, which carry their own behavior in the
+form of a program. This enables them to navigate freely in the
+underlying computational network, communicate with one another, and
+invoke pre-compiled node-resident functions. Coordination is
+facilitated at two distinct levels of abstraction: first, Messengers
+coordinate the invocation and the exchange of data among the various
+functions distributed throughout the network in both time and space
+(intra-object coordination); second, Messengers, each representing a
+high-level entity, can coordinate their behaviors among themselves
+(inter-object coordination). These principles, where an application is
+composed of autonomous, mobile entities whose behaviors may change
+dynamically and which can coordinate their actions among themselves,
+offer great flexibility in interacting with and manipulating the
+application at run time, as well as improved performance. This is
+illustrated using two concrete examples--a Toxicology simulation from
+medicine and a study of collective fish behavior from biology."
+}
+
+
+
+@InProceedings{fukuda97:hierarchical,
+  author = 	 "Munehiro Fukuda and Lubomir F. Bic and Michael
+                  B. Dillencourt and Fehmina Merchant", 
+  title = 	 "A Hierarchical Mapping Scheme for Mobile Agent Systems",
+  booktitle = 	 "6th IEEE CS Workshop on Future Trends of Distributed
+                  Computing Systems (FTDCS)",
+  year =	 1997,
+  address =	 "Tunis, Tunisia",
+  month =	 oct,
+  url = {http://www.ics.uci.edu/\~{}bic/messengers/FTDCS97.ps},
+  abstract = "MESSENGERS is a system for general-purpose distributed
+computing based on the principles of mobile agents. Its underlying
+infrastructure consists of a collection of daemon processes, whose
+task it is to receive incoming agents, provide the necessary
+environment for their execution, and send them on to their next
+destinations as dictated by their behaviors.  The structure of the
+daemon processes and their mapping onto the physical network is the
+main subject of this paper. Given the autonomous nature of each
+computation, the mapping problem is very different from those
+implemented for systems of communicating processes. At the same time,
+it offers new opportunities for solving the problems of load
+balancing, dynamic resource utilization, and trade-offs between
+computation granularity and communication overhead."
+}
+
+@InProceedings{fukuda97:messages,
+  author = 	 "Munehiro Fukuda and Lubomir F. Bic and Michael
+		  B. Dillencourt and Fehima Merchant",
+  title = 	 "Messages versus Messengers in Distributed
+		  Programming",
+  booktitle =	 icdcs17,
+  year =	 1997,
+  address =	 "Baltimore, Md.",
+  month =	 may,
+  url =		 {http://www.ics.uci.edu/\~{}bic/messengers/ICDCS97.ps},
+  subject =	 "ma",
+  abstract =	 "Messengers are autonomous objects, each capable of
+		  navigating through the underlying network and
+		  performing various tasks at each node. Messengers
+		  applications are written using navigational commands
+		  rather than the send/receive primitives of
+		  conventional message-passing approaches. In this
+		  paper we contrast the two programming styles. The
+		  navigational style generally results in a smaller
+		  semantic gap between abstract algorithm descriptions
+		  and their actual implementations, which makes
+		  programs easier to construct, understand, and
+		  maintain. Other advantages of the navigational 
+		  programming style include the ability to compute in
+		  unknown or dynamically changing network topologies."
+		  
+}
+
+@InProceedings{fukuda97:performance,
+  author = 	 "Munehiro Fukuda and Lubomir F. Bic and Michael
+                  B. Dillencourt", 
+  title = 	 "Performance of the {MESSENGERS}
+                  Autonomous-Objects-Based System", 
+  booktitle = 	 "Proceedings of the First International Conference on
+                  Worldwide Computing and Its Applications (WWCA97)",
+  year =	 1997,
+  address =	 "Tsukuba, Japan",
+  month =	 mar,
+  publisher =	 "Springer-Verlag",
+  note =	 "Lecture Notes in Computer Science 1274.",
+  url = {http://www.ics.uci.edu/\~{}bic/messengers/wwca97.ps},
+  abstract =	 {MESSENGERS is a system for general-purpose distributed
+computing based on the concept of autonomous mobile objects, capable
+of navigating through a network and invoking native-mode C functions
+in the nodes they visit. We present performance measurements using
+three specific applications to illustrate the cost of using this
+paradigm for developing and using distributed applications.}
+}
+
+@Article{fukuda98:distributed,
+  author = "Munehiro Fukuda and Lubomir F. Bic and Michael
+                  B. Dillencourt and Fehmina Merchant", 
+  title = "Distributed Coordination with {MESSENGERS}",
+  journal = "Science of Computer Programming",
+  note = "Special Issue on Coordination Models, Languages, Applications",
+  volume = 31,
+  number = 2,
+  year = 1998,
+  url = {http://www.ics.uci.edu/\~{}bic/messengers/COORD-j.ps},
+  abstract = "MESSENGERS is a paradigm for the programming of
+distributed systems. It is based on the principles of autonomous
+messages, called Messengers, which carry their own behavior in the
+form of a program.  This enables them to navigate freely in the
+underlying computational network, communicate with one another, and
+invoke compiled node-resident C functions in the nodes they
+visit. Hence a distributed application is viewed as a collection of C
+functions whose invocation and interoperation is orchestrated by
+Messengers.  This provides for a clear separation between
+computations, as expressed by the individual node functions, and
+coordination, which is the order of function invocations and the
+transport of information among them as prescribed by messengers. This
+separation allows each layer to be designed and implemented
+separately. It also supports the reuse of the coordination structures
+and the interactive and incremental development and use of distributed
+applications."
+}
+
+@InProceedings{fukuda98:global,
+  author = "Munehiro Fukuda and Lubomir F. Bic and Michael B. Dillencourt",  
+  title = "Global Virtual Time Support for Individual-Based Simulations",
+  booktitle = pdpta98,
+  address = "Las Vegas, NV",
+  month = jul,
+  year = 1998,
+  url = {http://www.ics.uci.edu/\~{}bic/messengers/PDPTA.ps},
+  abstract = "An individual-based simulation organizes the application
+as a collection of autonomous entities. The behavior of the system is
+simulated as interactions among such entities and hence the
+application development focuses primarily on describing the entities'
+behaviors. A natural implementation of individual-based modeling is to
+use autonomous objects, i.e., mobile entities navigating autonomously
+through their underlying computational network. This is further
+simplified if the programming and execution environment supports
+global virtual time management. MESSENGERS is a virtual-time computing
+environment for autonomous objects, and therefore the present work is
+the first experiment in applying the paradigm of autonomous objects to
+distributed individual-based simulations.  We discuss MESSENGERS'
+advantages for application development from the software engineering
+point of view and compare its performance with conventional
+message-passing executions."
+}
+
+@InProceedings{ghezzi97:mobile,
+  author = 	 "Carlo Ghezzi and Giovanni Vigna",
+  title = 	 "Mobile Code Paradigms and Technologies: A Case Study",
+  booktitle =	 ma97,
+  year =	 1997,
+  subject =	"ma",
+  address =	 "Berlin, Germany",
+  month =	 apr,
+  url =		{http://www.elet.polimi.it/\~{}vigna/ma97.ps.gz},
+  abstract =	 "The opportunities offered by the Internet are
+		  encouraging research aimed at the creation of a
+		  computational infrastructure that exploits the wide
+		  spread communication infrastructure.  The mobile
+		  computation paradigm is a proposal to build a
+		  computational infrastructure that goes beyond the
+		  well-known client-server paradigm and increases
+		  dynamicity and flexibility. Despite the promising
+		  first steps, there is still confusion on the role of
+		  paradigms and technology in the development on
+		  applications based on the mobile computation
+		  paradigm. We present a case study in which we
+		  develop several versions of an application using
+		  different paradigms and different technologies in
+		  order to show when these concepts come into play and
+		  which are their relationships." 
+}
+
+@InProceedings{goldberg96:secure,
+  author = 	 "Ian Goldberg and David Wagner and Randi Thomas and
+		  Eric A. Brewer", 
+  title = 	 "A Secure Environment for Untrusted Helper
+		  Applications",
+  url =		{http://www.cs.berkeley.edu/\~{}daw/janus-usenix96.ps},
+  booktitle =	 "Proceedings of the 6th Usenix Security Symposium",
+  year =	 1996,
+  address =	 "San Jose, Ca.",
+  month =	 jul,
+  abstract =	 "Many popular programs, such as
+		  Netscape, use untrusted helper applications to
+		  process data from the network. Unfortunately, the
+		  unauthenticated network data they interpret could
+		  well have been created by an adversary, and the
+		  helper applications are usually too complex to be
+		  bug-free. This raises significant security
+		  concerns. Therefore, it is desirable to create a
+		  secure environment to contain untrusted helper
+		  applications. We propose to reduce the risk of a
+		  security breach by restricting the program's access
+		  to the operating system. In particular, we intercept
+		  and filter dangerous system calls via the Solaris
+		  process tracing facility. This enabled us to build a
+		  simple, clean, user-mode implementation of a secure
+		  environment for untrusted helper applications. Our
+		  implementation has negligible performance impact,
+		  and can protect pre-existing applications.",
+  subject = "sec"
+}
+
+		  
+@InProceedings{gosling86:sundew,
+  author = 	 "James Gosling",
+  title = 	 "Sundew: A distributed and extensible window
+		  system",
+  pages =	 "98--103",
+  booktitle =	 "Proceedings of the 1986 Usenix Winter Technical
+		  Conference", 
+  year =	 1986,
+  address =	 "Denver, Colorado"
+}
+
+@Book{gosling89:news,
+  author = 	 "James Gosling and Rosenthal, David S. H. and
+		  Michelle J. Arden",
+  title = 	 "The {N}e{WS} Book: An Introduction to the
+		  {N}etwork/extensible {W}indow {S}ystem",
+  publisher = 	 "Springer-Verlag",
+  year = 	 1989,
+  address =	 "New York"
+}
+
+@InProceedings{gray95:agent,
+  author = 	 "Robert S. Gray",
+  title = 	 "Agent {T}cl: A transportable agent system",
+  booktitle =	 "Proceedings of the CIKM Workshop on Intelligent
+		  Information Agents",
+  year =	 1995,
+  address =	 "Baltimore, Md.",
+  month =	 dec,
+  url =		{http://www.cs.dartmouth.edu/\~{}agent/papers/cikm95.ps.Z},
+  subject =      "ma"
+}
+
+@Manual{gray95:agent-manual,
+  author = 	 "Robert S. Gray",
+  title = 	 "Agent {T}cl: Alpha Release 1.1",
+  organization =  dartmouthcs,
+  year = 	 1995,
+  month =	 dec,
+  url =		{ftp://cs.dartmouth.edu/pub/agents/doc.1.1.ps.gz},
+  subject =	 "ma",
+  abstract =	 "Agent Tcl is a transportable agent
+		  system. The agents are written in an extended
+		  version of the Tool Command Lanuage (Tcl). Each
+		  agent can suspend its execution at an arbitrary
+		  point, transport to another machine and resume
+		  execution on the new machine. This migration is
+		  accomplished with the agent jump command. agent jump
+		  captures the current state of the Tcl script and
+		  transfers this state to the destination machine. The
+		  state is restored on the new machine and the Tcl
+		  script continues its execution from the command
+		  immediately after the agent jump. In addition to
+		  migration, agents can send messages to each other
+		  and can establish direct connections. A direct
+		  connection is more efficient than message passing
+		  for bulk data transfer. Finally, agents can use the
+		  Tk toolkit to create graphical user interfaces on
+		  their current machine. Agent Tcl is implemented as
+		  two components. The first component is an extended
+		  Tcl interpreter. The second component is a server
+		  which runs on each machine. The server accepts
+		  incoming agents, messages and connection requests
+		  and keeps track of the agents that are running on
+		  its machine. An alpha release of Agent Tcl is
+		  available for public use. This documentation
+		  describes how to obtain and compile the source code,
+		  how to run the server and how to write transportable
+		  agents."
+}
+
+@InProceedings{gray96,
+  author =       "Robert S. Gray",
+  title =        "Agent {T}cl: A flexible and secure mobile agent system",
+  booktitle =    "Proceedings of the Fourth Annual Tcl/Tk Workshop",
+  pages =        "9--23",         
+  year =         1996,
+  month =        jul,
+  address =      "Monterey, Cal.",
+  subject =      "ma",
+  url =		{http://www.cs.dartmouth.edu/\~{}agent/papers/tcl96.ps.Z},
+  subject =      "ma",
+  abstract = "An information agent manages all or a
+		  portion of a user's information space. The
+		  electronic resources in this space are often
+		  distributed across a network and can contain
+		  tremendous quantities of data. Mobile agents provide
+		  efficient access to such resources and are a
+		  powerful tool for implementing information agents. A
+		  mobile agent is an autonomous program that can
+		  migrate from machine to machine in a heterogeneous
+		  network. By migrating to the location of a resource,
+		  the agent can access the resource efficiently even
+		  if network conditions are poor or the resource has a
+		  low-level interface. Telescript is the best-known
+		  mobile-agent system. Telescript, however, requires
+		  the programmer to learn and work with a complex
+		  object-oriented language and a complex security
+		  model. Agent Tcl, on the other hand, is a simple,
+		  flexible, and secure system that is based on the Tcl
+		  scripting language and the Safe Tcl extension. In
+		  this paper we describe the architecture of Agent Tcl
+		  and its current implementation."
+}
+
+@InCollection{gray97:agent,
+  author = 	 "Robert S. Gray and George Cybenko and David Kotz and
+		  Daniela Rus",
+  title = 	 "Agent {T}cl",
+  crossref =	 "cockayne97:itinerant",
+  subject =      "ma",
+  url =		{http://www.cs.dartmouth.edu/\~{}agent/papers/chapter.ps.Z},
+}
+
+@InProceedings{gray97:mobile,
+  author = 	 "Robert S. Gray and David Kotz and Saurab Nog and
+		  Daniela Rus and George Cybenko", 
+  title = 	 "Mobile agents for mobile computing",
+  booktitle =	 "Proceedings of the Second Aizu International
+		  Symposium on Parallel Algorithms/Architectures
+		  Synthesis", 
+  year =	 1997,
+  address =	 "Fukushima, Japan",
+  month =	 mar,
+  note =	 "Also available as Dartmouth College Departmennt of
+		  Computer Science Technical Report TR96-285.",
+  url =		{http://www.cs.dartmouth.edu/reports/abstracts/TR96-285/},
+  subject =      "mob:ma"
+}
+
+@Article{gray97:security,
+  author = 	 {Robert S. Gray},
+  title = 	 {Agent {T}cl: A flexible and secure mobile-agent system},
+  journal = 	 {Dr. Dobbs Journal},
+  year = 	 1997,
+  volume =	 22,
+  number =	 3,
+  pages =	 {18--27},
+  month =	 mar
+}
+
+@InCollection{gray98:dagents,
+  author = 	 "Robert S. Gray and George Cybenko and David Kotz and 
+		  Daniela Rus",
+  title = 	 "D'Agents: Security in a multiple-language,
+		  mobile-agent system",
+  crossref =	 "vigna98:mobile",
+  subject =	 "ma:sec",
+  url =		{http://actcomm.dartmouth.edu/papers/gray:security-book.ps.Z},
+  abstract = "Mobile-agent systems must address
+		  three security issues: protecting an individual
+		  machine, protecting a group of machines, and
+		  protecting an agent. In this chapter, we discuss
+		  these three issues in the context of D'Agents, a
+		  mobile-agent system whose agents can be written in
+		  Tcl, Java and Scheme. (D'Agents was formerly known
+		  as Agent Tcl.) First we discuss mechanisms existing
+		  in D'Agents for protecting an individual machine:
+		  (1) cryptographic authentication of the agent's
+		  owner, (2) resource managers that make policy
+		  decisions based on the owner's identity, and (3)
+		  secure execution environments for each language that
+		  enforce the decisions of the resource managers. Then
+		  we discuss our planned market-based approach for
+		  protecting machine groups.  Finally we consider
+		  several (partial) solutions for protecting an agent
+		  from a malicious machine. "
+}
+
+@TechReport{gray98:tcl,
+  author = "Robert S. Gray",
+  title = "Agent Tcl: A flexible and secure mobile-agent system",
+  institution = "Dartmouth College, Computer Science",
+  address = "Hanover, NH",
+  number = "PCS-TR98-327",
+  year = 1998,
+  month = jan,
+  url = {ftp://ftp.cs.dartmouth.edu/TR/TR98-327.ps.Z},
+  subject =	 "ma",
+  note =	 "Ph.D. Thesis, June 1997.",
+  abstract = "
+    A mobile agent is an autonomous program that can migrate under its own
+    control from machine to machine in a heterogeneous network.  In other
+    words, the program can suspend its execution at an arbitrary point,
+    transport itself to another machine, and then resume execution from
+    the point of suspension.  Mobile agents have the potential to provide
+    a {\em single, general framework} in which a wide range of distributed
+    applications can be implemented efficiently and easily.  Several
+    challenges must be faced, however, most notably reducing migration
+    overhead, protecting a machine from malicious agents (and an agent
+    from malicious machines), and insulating the agent against network and
+    machine failures.  Agent Tcl is a mobile-agent system under
+    development at Dartmouth College that has evolved from a Tcl-only
+    system into a multiple-language system that currently supports Tcl,
+    Java, and Scheme.  In this thesis, we examine the motivation behind
+    mobile agents, describe the base Agent Tcl system and its security
+    mechanisms for protecting a machine against malicious agents, and
+    analyze the system's current performance.  Finally, we discuss the
+    security, fault-tolerance and performance enhancements that will be
+    necessary for Agent Tcl and mobile agents in general to realize their
+    full potential.
+  "
+}
+
+@PhdThesis{gray:thesis,
+    author = {Robert S. Gray},
+    title = {Agent {T}cl: A flexible and secure mobile-agent system},
+    year = 1997,
+    month = jun,
+    school = {Dept. of Computer Science, Dartmouth College},
+    note = {Available as Dartmouth Computer Science Technical Report TR98-327.},
+    url =  {http://actcomm.dartmouth.edu/papers/gray:thesis.ps.Z},
+}
+
+@TechReport{grimm97:access,
+  author = 	 "Robert Grimm and Brian N. Bershad",
+  title = 	 "Access Control in Extensible Systems",
+  institution =  "Department of Computer Science, University of
+		  Washington", 
+  year = 	 1997,
+  month =	 mar,
+  url =		 "http://www.cs.washington.edu/homes/rgrimm/papers/tr97-11-01.ps",
+  sub =		 "sec",
+  abstract =	 "The recent trend towards dynamically
+		  extensible systems holds the promise of more
+		  powerful and flexible systems. At the same time, the
+		  impact of extensibility on overall system security
+		  and, specifically, access control is still ill
+		  understood, and protection mechanisms in these
+		  extensible systems are rudimentary at best.  In this
+		  paper, we identify the structure of extensible
+		  systems as it relates to system security, and
+		  present an access control mechanism that is
+		  user-friendly and complete. The mechanism, by using
+		  ideas first introduced by the security community,
+		  offers mandatory access control which can be used to
+		  enforce a given security policy. Additional
+		  discretionary access control allows users to express
+		  their own fine-grained access constraints.
+
+		  \par We introduce a new access mode, called the
+		  extend access mode, in addition to the familiar
+		  execute access mode, to reflect how extensions
+		  interact. Furthermore, in a departure from work in
+		  the security community, we treat both extensions and
+		  threads of control as subjects, i.e., as active
+		  entities, in order to correctly capture their
+		  interaction in an extensible system. We present the
+		  design of the access control mechanism and define a
+		  formal model. We describe an implementation of the
+		  access control mechanism in the SPIN extensible
+		  operating system, which allows us to evaluate its
+		  performance and to explore optimizations that reduce
+		  the overhead of access control. The measured
+		  end-to-end overhead of access control in our system
+		  is less than 2%."
+}
+
+@InProceedings{grimm97:security,
+  author = 	 "Robert Grimm and Brian N. Bershad",
+  title = 	 "Security for Extensible Systems",
+  booktitle =	 hotos6,
+  year =	 1997,
+  address =	 "Cape Cod, Mass.",
+  month =	 may,
+  url =		 "http://www.cs.washington.edu/homes/rgrimm/papers/hotos97.ps",
+  subject =	 "sec"
+}		  
+
+		  
+		  
+@TechReport{grimm98:providing,
+  author = 	 {Robert Grimm and Brian N. Bershad},
+  title = 	 {Providing Policy-Neutral and Transparent Access
+                  Control in Extensible Systems},  
+  institution =  {University of Washington, Department of Computer
+                  Science and Engineering},
+  year = 	 1998,
+  number =	 {UW-CSE-98-02-02},
+  month =	 feb,
+  url =		 "http://www.cs.washington.edu/homes/rgrimm/papers/tr98-02-02.ps",
+  subject =	 "sec"
+}
+
+@InProceedings{hall96:flexible,
+  author = 	 "David Hall and Jean Bacon and John Bates",
+  title = 	 "Flexible Distributed Programming using Mobile Code",
+  booktitle =	 sigops7,
+  year =	 1996,
+  url =		{http://mosquitonet.stanford.edu/sigops96/papers/halls.ps},
+  subject =      "ma",
+  abstract = "We have designed and implemented a
+		  mobile code system. It has been integrated with an
+		  existing distributed programming environment that
+		  includes a Remote Procedure Call (RPC) system,
+		  object interface definition language, a trader, an
+		  event system and continuous media streams. This
+		  bespoke platform for distributed programming has
+		  allowed us to experiment with mobile code and
+		  propose new facilities.",
+  address =	 "Connemara, Ireland",
+  month =	 sep
+}
+
+		  
+		  
+@PhdThesis{halls97:applying,
+  author = 	 "David Halls",
+  title = 	 "Applying Mobile Code to Distributed Systems",
+  school = 	 "Computer Laboratory, University of Cambridge",
+  year = 	 1997,
+  month =	 jun,
+  url =		 "http://www.cl.cam.ac.uk/users/dah28/thesis/thesis.html",
+  url =		 "http://www.cl.cam.ac.uk/users/dah28/dah28ths.ps.gz",
+  subject =	 "ma",
+  abstract =	 "Use of mobile code can make distributed systems and the abstractions they provide more flexible to build and use. 
+
+\par Richer functionality can be given to the interaction between processes by allowing code to be sent between them. More convenient,
+application-level operations can be made over a network. By making higher order language features transmissible, distributed components
+can be tightly bound together when they communicate. At the same time, familiar distributed systems can be built using mobile code. 
+
+\par Mobile code can make distributed systems adaptable to application needs. Rather than fixing the interface to a resource and the pattern of
+interaction with it, a minimal interface can be defined and code implementing higher-level interfaces placed alongside it as and when required.
+These higher-level interfaces can be application-specific, allowing for interaction patterns that were unknown at the time the resource was
+made available. Sending code close to a resource can also reduce network usage because the point of interaction with it moves. 
+
+\par The combination of document markup supporting hypertext and a language supporting state-saving allows for stateful client-server sessions
+with stateless servers and lightweight clients. Putting dormant mobile code in documents provides an alternative to holding knowledge of
+application functionality on a server machine or running arbitrary code on a client machine. 
+
+\par Mobile code helps to support user mobility. Personalised environments that support state-saving can follow a user between computers.
+Heterogeneous state-saving allows a user's programs to be relocated between computers. By using a mobile code system with language
+support for state-saving, applications can direct arbitrary component migration without priming program servers with specific support. 
+
+\par In summary, this dissertation supports the thesis that mobile code can be used to enhance distributed systems. "
+}
+
+@TechReport{harker95:tias,
+  author = 	 "Kenneth E. Harker",
+  title = 	 "{TIAS}: A Transportable Intelligent Agent System",
+  institution =  dartmouthcs,
+  year = 	 1995,
+  number =	 "TR95-258",
+  address =	 "Hanover, N.H.",
+  note =	 "Also submitted as senior thesis.",
+  url =		{http://www.cs.dartmouth.edu/reports/abstracts/TR95-258/},
+  subject =      "ma",
+  abstract =     "In recent years, there has been an explosive growth in the
+amount of information available to our society. In particular, the
+amount of information available on-line through vast networks like the
+global Internet has been growing at a staggering rate. This growth
+rate has by far exceeded the rate of growth in network speeds, as has
+the number of individuals and organizations seeking access to this
+information. There is thus a motivation to find abstract methods of
+manipulating this on-line data in ways that both serve the needs of
+end users efficiently and use network resources intelligently. In lieu
+of a traditional client-server model of information processing, which
+is both inflexible and potentially very inefficient, a Transportable
+Intelligent Agent system has the potential to achieve a more efficient
+and flexible network system. An intelligent agent is a program that
+models the information space for a user, and allows the user to
+specify how the information is to be processed. A transportable agent
+can suspend its execution, transport itself to a new location on a
+network, and resume execution at the new location. This is a
+particularly attractive model for both wireless and dialup networks
+where a user might not be able to maintain a permanent network
+connection, as well as for situations where the amount of information
+to be processed is large relative to the network bandwidth.
+Preliminary work in the field has shown that such agent systems are
+possible and deserve further study. This thesis describes a prototype
+transportable intelligent agent system that extends work already done
+in the field. Agents are written in a modified version of the Tcl
+programming language and transported using TCP/IP connections. Several
+simple examples demonstrate the properties of the system. "
+}
+
+@Misc{harrison95:mobile,
+  author = 	 "Colin G. Harrison and David M. Chess and Aaron Kershenbaum",
+  title = 	 "Mobile Agents: Are they a good idea?",
+  series =	 "Research Report",
+  year =	 1995,
+  organization = "IBM T. J. Watson Research Center",
+  month =	 mar,
+  subject =	 "ma:mob",
+  url =		{http://www.research.ibm.com/massdist/mobag.ps},
+  abstract =	 "Mobile agents are programs, typically
+		  written in a script language, which may be
+		  dispatched from a client computer and transported to
+		  a remote server com- puter for execution. Several
+		  authors have suggested that mobile agents offer an
+		  important new method of performing transactions and
+		  information retrieval in networks.  Other writers
+		  have pointed out, however, that mobile agent
+		  introduce severe concerns for security. We consider
+		  the advantages offered by mobile agents and assess
+		  them against alternate methods of achieving the same
+		  function. We conclude that, while the individual
+		  advantages of agents do not represent an
+		  overwhelming motivation for their adoption, the
+		  creation of a pervasive agent framework facilitates
+		  a very large number of network services and
+		  applications."
+}
+
+		  
+@InProceedings{hartig97:encapsulating,
+  author = 	 "Hermann H{\"artig} and Lars Reuther",
+  title = 	 "Encapsulating Mobile Objects",
+  booktitle =	 icdcs17,
+  year =	 1997,
+  address =	 "Baltimore, Md.",
+  month =	 may,
+  subject =	 "mc:sec"
+}
+
+		  
+@TechReport{hartman96:liquid,
+  author = 	 "John Hartman and Udi Manber and Larry Peterson and
+		  Tood Proebsting",
+  title = 	 "Liquid Software: A New Paradigm for Networked Systems",
+  institution =  "Department of Computer Science, University of Arizona",
+  year = 	 1996,
+  number =	 "96-11",
+  address =	 "Tucson, AZ",
+  month =	 jun,
+  url =		{ftp://ftp.cs.arizona.edu/xkernel/Papers/tr96-11.ps},
+  subject =      "mc",
+  abstract =	 "This paper introduces the idea of
+		  dynamically moving functionality in a
+		  network---between clients and servers, and between
+		  hosts at the edge of the network and nodes inside
+		  the network. At the heart of moving functionality is
+		  the ability to support mobile code---code that is
+		  not tied to any single machine, but instead can
+		  easily move from one machine to another. Mobile code
+		  has been studied mostly for application-level
+		  code. This paper explores its use for all facets of
+		  the network, and in a much more general way. Issues
+		  of efficiency, interface design, security, and
+		  resource allocation, among others, are addressed. We
+		  use the term liquid software to describe the
+		  complete picture---liquidsoftware is an entire
+		  infrastructure for dynamically moving functionality
+		  throughout a network. We expect liquid software to
+		  enble new paradigms, such as active networks that
+		  allow users and applications to customize the
+		  network by interjecting code into it."
+}
+
+
+@TechReport{hirschl96:agdb,
+  author = 	 "Melissa Hirschl",
+  title = 	 "{AGDB}: A Debugger for {A}gent {T}cl",
+  institution =  dartmouthcs,
+  year = 	 1996,
+  number =	 "TR97-306",
+  address =	 "Hanover, N.H.",
+  url =		{http://www.cs.dartmouth.edu/reports/abstracts/TR97-306/},
+  subject =      "ma",
+  abstract =      "The Agent Tcl language is an extension of Tcl/Tk that supports
+distributed programming in the form of transportable agents.  AGDB is
+a debugger for the Agent Tcl language. AGDB mixes of traditional and
+distributed debugging facilities. Traditional debugging features
+include breakpoints (line-specific, conditional, and once-only), watch
+conditions and variables, and interrupts.  Distributed-debugging
+features address issues inherent in distributed programming such as
+migration and communication. These capabilities make debugging
+distributed programs difficult because they add complexities like race
+conditions to the set of problems a program can encounter. This paper
+discusses how AGDB uses distributed debugging features to debug
+agents."
+}
+
+@InProceedings{holder97:reflective,
+  author = 	 "Ophir Holder and Isreal Ben-Shaul",
+  title = 	 "A Reflective Model for Mobile Software Objects",
+  pages =	 "339--346",
+  booktitle =	 icdcs17,
+  year =	 1997,
+  address =	 "Baltimore, Md.",
+  month =	 may,
+  subject =	 "mc"
+}
+
+		  
+@InProceedings{hurst97:mobile,
+  author = 	 "Leon Hurst and P\'{a}draig Cunningham and Fergal Sommers",
+  title = 	 "Mobile Agents --- Smart Messages",
+  booktitle =	 "Proceedings of the 1st International Workshop on
+		  Mobile Agents",
+  year =	 1997,
+  address =	 "Berlin, Germany",
+  url =		{http://www.cs.tcd.ie/\~{}lahurst/currentwork/papers/ma97/index.html},
+  subject =      "ma",
+  abstract =	 "Wireless communication with Mobile
+		  Computing devices is known to be problematic. It is
+		  very different in character from conventional
+		  communication over wired networks. Since many
+		  distributed applications make assumptions about
+		  network characteristics, they may not be used in a
+		  hostile mobile environment.
+
+		  \par We are proposing a new kind of messaging system
+		  which incorporates adaptive behaviour into the
+		  messages themselves. We call these 'Smart Messages',
+		  and implement them using Mobile Agents. They are
+		  transported between machines via Agent Airports. The
+		  metaphor we use is of a message being delivered by a
+		  courier (Mobile Agent), through Agent Airports, on a
+		  potentially unresolved route. The 'intelligence' is
+		  in the messages (couriers in our metaphor)
+		  themselves rather than in the network.
+
+		  \par The approach taken expands on the self-routing
+		  capabilities of current Mobile Agent systems such as
+		  Aglets or Telescript. We aim to provide structured
+		  support for handling the particular problems
+		  associated with wireless communications. These
+		  include very limited, variable and asymmetric
+		  bandwidth, frequent and prolonged disconnections,
+		  geographical mobility and high usage costs. We argue
+		  that this offers an efficient, adaptable and robust
+		  solution to many of the problems associated with
+		  this hostile communications environment.",
+  month =	 apr,
+  note =	 "(to appear)"
+}
+
+
+@InProceedings{hylton96:knowbot,
+  author = 	 "Jeremy Hylton and Ken Manheimer and Drake, Jr., Fred
+		  L. and Barry Warsaw and Roger Masse and van Rossum,
+		  Guido",
+  title = 	 "Knowbot Programming: System Support for Mobile Agents",
+  pages =	 "8--13",
+  booktitle =	 iwooos96,
+  year =	 1996,
+  address =	 "Seattle, Wash.",
+  month =	 oct,
+  subject =      "ma",		  
+  url =		{http://www.cnri.reston.va.us/home/koe/iwooos.html},
+  abstract = "Knowbot ® Programs are mobile agents
+		  intended for use in widely distributed systems like
+		  the Internet. We describe our experiences
+		  implementing security, process migration, and
+		  inter-process communication in a prototype system
+		  implemented using the object-oriented programming
+		  language Python. This infrastructure supports
+		  applications that are composed of multiple,
+		  autonomous agents that can migrate to use network
+		  resources more efficiently."
+}
+
+		  
+@InProceedings{hylton96:using,
+  author = 	 "Jeremy Hylton and van Rossum, Guido",
+  title = 	 "Using the Knowbot Operating Environment in a
+		  Wide-Area Network",
+  booktitle =	 ecoop-mos3,
+  year =	 1997,
+  address = 	 "Jyv{\"a}lskyl{\"a}, Finland",
+  month =	 jun,
+  url =		 {http://the-tech.mit.edu/\~{}jeremy/finland-submit.ps},
+  subject =	 "ma",
+  abstract =	 "Mobile agents can optimize their communication
+		  patterns to reduce bandwidth and latency and can
+		  adapt to changes in network service. We report on
+		  use of the Knowbot Operating Environment to support
+		  mobile agents in a wide-area network.  Experiments
+		  with an application that monitors Web pages for
+		  changes show that a mobile program can outperform
+		  its stationary counterpart.  The performance
+		  benefits are obtained by moving clients within the
+		  network to reduce the costs of wide-area network
+		  connections."
+}
+
+@InProceedings{ionitiu96:designing,
+  author = 	 "Cristian Ionitoiu ",
+  title = 	 "Designing agents for archie and ftp sessions in {O}bliq",
+  pages =	 "49--51",
+  booktitle =	 ecoop-mos2,
+  year =	 1996,
+  address =	 "Linz, Austria",
+  month =	 jul,
+  subject =      "ma:mob",
+  url =		{http://cuiwww.unige.ch/\~{}ecoopws/ws96/6.ps.gz},
+  abstract = "This extended abstract presents a
+		  solution based on mobile agents forarchie/ftp
+		  sessions on Internet.  Due to the increased rate
+		  ofinteractivity, which imposes relatively long
+		  connection periods,required by these services, their
+		  use is not appropriate for mobile stations.  This
+		  solution provides mobile user access to these
+		  services while keeping a low rate of the
+		  connections. "
+}
+
+@InProceedings{jaeger96:building,
+  author = 	 "Trent Jaeger and Aviel D. Rubin and Atul Prakash",
+  title = 	 "Building Systems that Flexibly Control Downloaded
+		  Executable Content",
+  pages =	 "131--148",
+  booktitle =	 "Proceedings of the 6th Usenix Security Symposium",
+  year =	 1996,
+  url =		{http://www.eecs.umich.edu/\~{}jaegert/usenix96.ps},
+  subject =      "mc",
+  abstract =	 "Downloading executable content, which
+		  enables principals to run programs from remote
+		  sites, is a key technology in a number of emerging
+		  applications, including collaborative systems,
+		  electronic commerce, and web information
+		  services. However, the use of downloaded executable
+		  content also presents serious security problems
+		  because it enables remote principals to execute
+		  programs on behalf of the downloading
+		  principal. Unless downloaded executable content is
+		  properly controlled, a malicious remote principal
+		  may obtain unauthorized access to the downloading
+		  principal's resources. Current solutions either
+		  attempt to strictly limit the capabilities of
+		  downloaded content or require complete trust in the
+		  remote principal, so applications which require
+		  intermediate amounts of sharing, such as
+		  collaborative applications, cannot be constructed
+		  over insecure networks. In this paper, we describe
+		  an architecture that flexibly controls the access
+		  rights of downloaded content by: (1) authenticating
+		  content sources; (2) determining content access
+		  rights based on its source and the application that
+		  it is implementing; and (3) enforcing these access
+		  rights over a wide variety of objects and for the
+		  entire computation, even if external software is
+		  used. We describe the architecture in the context of
+		  an infrastructure for supporting collaborative
+		  applications.",
+  address =	 "San Jose, Ca.",
+  month =	 jul
+}
+
+@InProceedings{jaeger96:system,
+  author = 	 "Trent Jaeger and Aviel D. Rubin and Atul Prakash",
+  title = 	 "A System Architecture for Flexible Control of
+		  Downloaded Executable Content",
+  pages =	 "14--18",
+  booktitle =	 iwooos96,
+  year =	 1996,
+  address =	 "Seattle, Wa.",
+  subject =      "mc",
+  month =	 oct
+}
+
+		  
+		  
+@InProceedings{johansen94,
+  author =       "Dag Johansen and van Renesse, Robbert and Fred
+                  B. Schneider", 
+  title =        "Operating System support for mobile agents",
+  pages =        "42--45",
+  booktitle =    "Proceedings of the 5th IEEE Workshop on Hot Topics
+                  in Operating Systems", 
+  year =         1994,
+  month =        may,
+  address =      "Orcas Island, Wash.",
+  url =		{http://cs-tr.cs.cornell.edu/TR/CORNELLCS:TR94-1468},
+  note =         "Also available as Technical Report TR94-1468,
+		  Department of Computer Science, Cornell University",
+  subject =      "ma",
+  abstract = "An ``agent'' is a process that may
+		  migrate through a computer network in order to
+		  satisfy requests made by its clients. Agents
+		  implement a computational metaphor that is analogous
+		  to how most people conduct business in their daily
+		  lives: visit a place, use a service (perhaps after
+		  some negotiation), and then move on. Thus, for the
+		  computer illiterate, agents are an attractive way to
+		  describe network-wide computations. Agents are also
+		  useful abstractions for programmers who must
+		  implement distributed applications. This is because
+		  in the agent metaphor, the processor or ``place''
+		  the computation is performed is not hidden from the
+		  programmer, but the communications channels
+		  are. Most current research on agents has focused on
+		  language design and application issues. The TACOMA
+		  project (Tromso And COrnell Moving Agents) has,
+		  instead, focused on operating system support for
+		  agents and how agents can be used to solve problems
+		  traditionally addressed by operating systems. We
+		  have implemented prototype systems to support agents
+		  using UNIX and using Tcl/Tk on top of Horus. This
+		  paper outlines insights and questions based on that
+		  experience. We discuss abstractions needed by an
+		  operating system to support agents, and discuss some
+		  problems that arise in connection with electronic
+		  commerce involving agents."
+}
+
+		  
+		  
+@TechReport{johansen95:introduction,
+  author = 	 "Dag Johansen and van Renesse, Robbert and Fred
+		  B. Schneider",
+  title = 	 "An Introduction to the {TACOMA} Distributed System",
+  institution =  "Department of Computer Science, University of Troms\o",
+  year = 	 1995,
+  number =	 "95-23",
+  address =	 "Troms\o, Norway",
+  month =	 jun,
+  subject =      "ma",		  
+  url =		{http://www.cs.uit.no/Lokalt/Rapporter/Reports/9523.html},
+  abstract =	 "This report briefly introduces TACOMA
+		  Version 1.0. This distributed system supports
+		  agents, computations that can roam the internet. The
+		  report presents the TACOMA project, the
+		  computational model, how to get started, and the
+		  basic {TACOMA} abstractions."
+}
+
+@InProceedings{johansen96:supporting,
+  author = 	 "Dag Johansen and van Renesse, Robbert and Fred
+		  B. Schneider",
+  title = 	 "Supporting Broad Internet Access to {TACOMA}",
+  pages =	 "55--58",
+  booktitle =	 sigops7,
+  year =	 1996,
+  address =	 "Connemara, Ireland",
+  month =	 sep,
+  url =		{http://www.cs.uit.no/DOS/Tacoma/tacoma.webpages/SIGOPS.tac-www.ps},
+  subject =      "ma"
+}
+
+@InProceedings{johansen97:performance,
+  author = 	 "Dag Johansen and Nils P. Sudmann and van Renesse, Robbert",
+  title = 	 "Performance Issues in {TACOMA}",
+  booktitle =	 ecoop-mos3,
+  year =	 1997,
+  address = 	 "Jyv{\"a}lskyl{\"a}, Finland",
+  month =	 jun,
+  subject =	 "ma",
+  url =		 {http://www.cs.uit.no/DOS/Tacoma/tacoma.webpages/ECOOP.tacoma.ps},
+}
+
+@TechReport{johansen97:using,
+  author = 	 "Dag Johansen and Kjetil Jacobsen and Nils P. Sudmann
+		  and Kaare J. Lauvset and Kenneth P. Birman and
+		  Werner Vogels",
+  title = 	 "Using Software Design Patterns to build Distributed
+		  Environmental Monitoring Applications", 
+  institution =  "Cornell University, Department of Computer Science",
+  year = 	 1997,
+  number =	 "TR97-1655",
+  address =	 "Ithaca, NY",
+  month =	 dec,
+  url =		 "http://cs-tr.cs.cornell.edu/TR/CORNELLCS:TR97-1655",
+  subject =	 "ma",
+  annote =	 "Tools developers face the challenge of exposing a development methodology to users while concealing details of the underlying system. If
+that system is complex and subject to evolution, this problem can be particularly difficult. Here, we discuss the use of software design
+patterns in conjunction with StormCast, a system of tools developed to support environmental and weather monitoring tasks in the Arctic.
+Now entering its 5th generation, each version of StormCast has expanded the capabilities of the underlying distributed data management tools
+and computational facilities. This paper reviews StormCast 5.0, presents the design patterns used by developers, and describes several
+applications in terms of the application of these patterns."
+}
+
+@InProceedings{joosen96:flexible,
+  author = 	 "Wouter Joosen and Frank Matthis and van Oeyen, Johan
+		  and Bert Robben",
+  title = 	 "On Flexible Support for Mobile Objects",
+  pages =	 "3--7",
+  booktitle =	 iwooos96,
+  year =	 1996,
+  address =	 "Seattle, Wa.",
+  month =	 oct,
+  subject =	 "ma"
+}
+
+@InProceedings{joseph95,
+  author =       "Anthony D. Joseph and Alan F. deLespinasse and
+                  Joshua A. Tauber and David K. Gifford and M. Frans
+                  Kaashoek", 
+  title =        "Rover: A Toolkit for Mobile Information Access",
+  pages =        "156--171",
+  booktitle =    sosp15,
+  year =         1995,
+  month =        dec,
+  address =      "Copper Mountain, Co.",
+  url =		{http://www.pdos.lcs.mit.edu/papers/rover-sosp95.ps.gz},
+  subject =      "mob",
+  abstract = "The Rover toolkit combines relocatable
+		  dynamic objects andqueued remote procedure calls to
+		  provide unique services for ``roving'' mobile
+		  applications. A relocatable dynamic object is an
+		  object with a well-defined interface that can be
+		  dynamically loaded into a client computer from a
+		  server computer (or vice versa) to reduce
+		  client-server communication
+		  requirements. Queuedremote procedurecall is a
+		  communication system that permits applications to
+		  continue to makenon-blockingremote procedure call
+		  requests even whena host is disconnected, with
+		  requests and responses being exchangedupon network
+		  reconnection. The challenges of mobile environments
+		  include intermittent connectivity, limited
+		  bandwidth, and channel-use
+		  optimization. Experimental results from a
+		  Rover-based mail reader, calendar program, and two
+		  non-blocking versions of World-Wide Web browsers
+		  show that Rover's services are a good match to these
+		  challenges. The Rover toolkit also offers advantages
+		  for workstation applications by providing a uniform
+		  distributed object architecture for code shipping,
+		  object caching, and asynchronous object invocation."
+}
+		  
+		  
+@Article{jul88,
+  author =       "Eric Jul and Henry Levy and Norman Hutchinson and
+                  Andrew Black", 
+  title =        "Fine-grained Mobility in the {E}merald System",
+  journal =      "ACM Transactions on Computer Systems",
+  year =         1988,
+  volume =       6,
+  number =       1,
+  pages =        "109--133",
+  month =        feb,
+  subject =      "mc",
+  url =          {ftp://ftp.diku.dk/pub/diku/dists/emerald/papers.tar.Z},
+  abstract = "Emerald is an object-based language and
+		  system designed for the construction of distributed
+		  programs.  An explicit goal of Emerald is support
+		  for object mobility; objects in Emerald can freely
+		  move within the system to take advantage of
+		  distribution and dynamically changing environments.
+		  We say that Emerald has {\em fine-grained} mobility
+		  because Emerald objects can be small data objects as
+		  well as process objects.  Fine-grained mobility
+		  allows us to apply mobility in new ways but presents
+		  implementation problems as well.  This paper
+		  discusses the benefits of fine-grained mobility, the
+		  Emerald language and run-time mechanisms that
+		  support mobility, and techniques for implementing
+		  mobility that do not degrade the performance of
+		  local operations.  Performance measurements of the
+		  current implementation are included.  "
+}
+
+@Unpublished{kahn88,
+  author =       "Robert E. Kahn and Vinton G. Cerf",
+  title =        "The {D}igital {L}ibrary {P}roject, Volume {I}: The
+                  World of {K}nowbots",   
+  note =         "Unpublished manuscript, Corporation for National
+                  Research Initiatives, Reston, Va.",
+  subject =      "ma",
+  year =         1988,
+  month =        mar
+}
+
+@Article{karjoth97:security,
+  author = 	 "Günter Karjoth and Danny B. Lange and Mitsuru Oshima",
+  title = 	 "A Security Model for Agents",
+  journal =	 IC,
+  year =	 1997,
+  volume =	 1,
+  number =	 4,
+  month =	 "July/August",
+  subject =	 "ma:sec",
+  abstract ="Mobile agents offer a new paradigm
+		  for distributed computation, but their potential
+		  benefits must be weighed against the very real
+		  security threats they pose. These threats originate
+		  not just in malicious agents but in malicious hosts
+		  as well.
+
+		  \par In this article, we present our security model
+		  for the IBM Aglets Workbench, a Java-based
+		  environment for building mobile agent
+		  applications. We detail both the security model and
+		  the corresponding security architecture that
+		  represents a framework for the inclusion of security
+		  services in future releases of the AWB. This work
+		  therefore represents an additional step toward the
+		  comprehensive security model required for widespread
+		  commercial adoption of mobile agent systems to
+		  occur.  "
+}
+
+@InProceedings{kato96:protected,
+  author = 	 "Kazuhiko Kato and Kunihiko Toumura and Katsuya
+		  Matsubara and Susumu Aikawa and Jun Yoshida and
+		  Kenji Kono and Kenjiro Taura and Tatsurou
+		  Sekiguchi", 
+  title = 	 "Protected and Secure Mobile Object Computing in {PLANET}",
+  booktitle =	 ecoop-mos2,
+  year =	 1996,
+  subject =	 "ma:sec",
+  address =	 "Linz, Austria",
+  month =	 jul,
+  url =		{http://cuiwww.unige.ch/\~{}ecoopws/ws96/2.ps.gz},
+  abstract =	 "Worldwide networks such as the
+		  Internet are becoming very popular, so distributed
+		  computing environments for such networks are in high
+		  demand. We think the design of such an environment
+		  should be based on a mobile-object computing model
+		  and are therefore designing a mobile-object system
+		  called Planet. One of the most significant issues in
+		  designing mobile object systems for world-wide
+		  networks is to provide the control needed to assure
+		  the protection and security of mobile objects and of
+		  computing resources. In this paper we describe our
+		  approach to this issue."
+}
+
+		  
+@InCollection{kato97:safe,
+  author =	"Kazuhiko Kato",
+  title =	"Safe and Secure Execution Mechanisms for Mobile
+		  Objects", 
+  year =	1997,
+  pages =	"157--176",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  subject =	"ma"
+}
+		  
+		  
+@Article{kiniry97:handson,
+  author = 	 "Joseph Kiniry and Daniel Zimmerman",
+  title = 	 "A Hands-On Look at Java Mobile Agents",
+  journal =	 IC,
+  year =	 1997,
+  volume =	 1,
+  number =	 4,
+  month =	 "July/August",
+  subject =	 "ma:sec",
+  abstract =     "Several companies riding the current wave of popularity of Java want to let you play in the mobile agent sandbox. Each
+       claims that mobile agent technologies are going to change the way we live and work, and each wants to be the company that
+       provides the breakthrough system we all end up using. What do these agent systems actually do and, more importantly, what
+       distinguishes one agent system from another? 
+
+\par To help answer these questions, we downloaded three of the leading commercial systems-IBMs Aglets, General Magics
+       Odyssey, and ObjectSpaces Voyager-and looked at issues such as ease of installation, feature set, documentation, and cost.
+       We also discuss new capabilities of Java 1.1 that show promise as simple yet powerful means to create mobile agent
+       systems. We conclude with a brief look at the ways in which mobile agents are currently being used and the limitations of
+       todays technologies."
+}
+
+@PhdThesis{knabe95:language,
+  author = 	 "Frederick C. Knabe",
+  title = 	 "Language Support for Mobile Agents",
+  school = 	 "Carnegie Mellon University",
+  year = 	 1995,
+  address =	 "Paittsburgh, Pa.",
+  month =	 dec,
+  subject =      "ma",
+  abstract = "Mobile agents are code-containing objects that may be
+transmitted between communicating participants in a distributed
+system. As opposed to systems that only allow the exchange of
+nonexecutable data, systems incorporating mobile agents can achieve
+significant gains in performance and functionality.
+
+\par A programming language for mobile agents must be able to express their
+construction, transmission, receipt, and subsequent execution. Its
+implementation must handle architectural heterogeneity between
+communicating machines and provide sufficient performance for
+applications based on agents. In addition to these essential
+properties, an agent language may support desirable properties such as
+high-level abstractions for code manipulation and the ability to
+access resources on remote execution sites.
+
+\par We designed and implemented an agent programming language that
+satisfies the essential properties and a number of desirable ones. A
+key feature of our language is the use of strong static typing for
+remote resource access. Agents may be linked dynamically to resources
+on remote sites, and this linking is always guaranteed to be type
+safe. We provide this guarantee without requiring that all components
+of an agent-based system be compiled together.
+
+\par Our language also includes several features to improve the performance
+of mobile agents. Before an agent is transmitted, it is trimmed of
+values that are expected to be available on the recipient, thus
+shrinking transmissions. Agents may be interpreted or compiled
+depending on the application and the relative performance
+trade-offs. When compilation is used, it is done lazily: Each
+component of an agent is only compiled as it is needed. Furthermore,
+machine-specific representations for an agent can be transmitted with
+machine-independent ones, opening the possibility for recipients to
+skip compilation or interpretation altogether.
+
+\par To evaluate our language and to explore the potential of mobile
+agents, we developed a programming framework for agents. Several
+applications were implemented by other programmers within this
+framework using our language. Their work served to validate our design
+and our choice of agent language properties. We also analyzed the
+performance of our language on these applications and several
+synthetic benchmarks. The analysis shows that the features we
+incorporated into the implementation significantly improve
+performance.",
+  url =		{ftp://reports.adm.cs.cmu.edu/usr0/anon/1995/CMU-CS-95-223.ps.Z},
+  note =	 "Also available as Carngie Mellon School of
+		  Computer Science Technical Report CMU-CS-95-223 and
+		  European Computer Industry Centre Technical Report
+		  ECRC-95-36."
+}		  
+		  
+@InProceedings{knabe96:overview,
+  author = 	 "Frederick C. Knabe",
+  title = 	 "An overview of mobile agent programming",
+  booktitle =	 "Proceedings of the 5th LOMAPS Workshop on Analysis
+		  and Verification of Multiple-Agent Languages",
+  year =	 1996,
+  address =	 "Stockholm, Sweden",
+  month =	 jun,
+  url =		{http://matecumbe.ing.puc.cl/\~{}knabe/lomaps96.ps.gz},
+  subject =      "ma",
+  abstract =	 "Mobile agents are code-containing objects that may be
+transmitted between communicating participants in a distributed
+system. Compared to systems that only allow the exchange of
+nonexecutable data, those incorporating mobile agents can achieve
+significant gains in performance and functionality.
+
+\par Languages with first-class functions provide a good starting point for
+agent programming, as they make it easy to express the construction,
+transmission, receipt, and subsequent execution of agents. However,
+for developing real agent-based systems, a language implementation
+must handle architectural heterogeneity between communicating machines
+and provide sufficient performance for applications based on
+agents. In addition, agents need to be able to access resources on
+remote execution sites yet remain in a framework that provides
+sufficient security.
+
+\par In this paper we consider the uses of mobile agents and how a
+distributed functional language can be extended to support them. We
+review other agent languages and present several observations on how
+further work in this area may proceed."
+}
+		  
+		  
+@InCollection{knabe97:performance,
+  author =	"Frederick Knabe",
+  title =	"Performance-Oriented Implementation Strategies for a
+		  Mobile Agent Language", 
+  year =	1997,
+  pages =	"229--244",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  url =		{http://matecumbe.ing.puc.cl/\~{}knabe/performance97.ps.gz},
+  subject =	"ma",
+  abstract =	"The use of larger and more complex mobile agents in
+		  distributed applications has created a need for
+		  agent programming systems that deliver better
+		  performance. The implementation of Extended Facile,
+		  a mobile agent language, uses several strategies to
+		  boost performance. We review four main techniques:
+		  allowing agents to use different transmissible
+		  representations, optimistically transmitting machine
+		  code with agents, stripping agents of data and code
+		  that can be found at their recipients before
+		  transmitting them, and performing agent compilation
+		  lazily. Quantitative measurements show that these
+		  methods can boost absolute and relative
+		  performance."
+}
+
+@InProceedings{kotay96:transportable,
+  author = 	 "Keith Kotay and David Kotz",
+  title = 	 "Transportable Agents",
+  booktitle =	 "Proceedings of the CIKM Workshop on Intelligent
+		  Information Agents",
+  year =	 1994,
+  address =	 "Gaithersburg, Md.",
+  month =	 dec,
+  url =		{http://www.cs.dartmouth.edu/\~{}dfk/papers/kotay:agents.html},
+  subject =      "ma",
+  abstract = "As network information resources grow in
+		  size, it is often most efficient to process queries
+		  and updates at the site where the data is
+		  located. This processing can be accomplished by
+		  using a traditional client-server network interface,
+		  which constrains the client to the set of queries
+		  supported by the server, or requires the server to
+		  send all data to the client for processing. The
+		  former is inflexible; the latter is inefficient.
+		  Transportable agents, which support the movement of
+		  the client computation to the location of the remote
+		  resource, have the potential to be more flexible and
+		  more efficient. Transportable agents are capable of
+		  suspending their execution, transporting themselves
+		  to another host on a network, and resuming execution
+		  from the point at which they were
+		  suspended. Transportable agents consume fewer
+		  network resources and can support systems that do
+		  not have permanent network connections, such as
+		  mobile computers and personal digital assistants. We
+		  describe a prototype transportable-agent
+		  implementation that facilitates research in this
+		  area. Agents are written in a script language that
+		  supports agent relocation, and the language is
+		  processed at each host by an agent
+		  interpreter. Electronic mail is the current
+		  transport mechanism and we plan to explore
+		  others. We present a technical-report searching
+		  agent as a demonstration of the capabilities of our
+		  prototype implementation."
+}
+
+@InProceedings{kottmann96:stublets,
+  author = 	 "Dietmar Kottmann and Christian Sommer",
+  title = 	 "Stublets: A Notion for Mobility-Aware Application
+		  Adaption",
+  booktitle =	 "ECOOP'96 Workshop on Mobility and Replication",
+  year =	 1996,
+  address =	 "Linz, Austria",
+  month =	 jul,
+  url =		{http://www.di.uminho.pt/\~{}rco/wmr96/sommer.ps.gz},
+  subject =      "mc"
+}
+
+
+@InProceedings{kotz96:mobile,
+  author = 	 "David Kotz and Robert S. Gray and Daniela Rus",
+  title = 	 "Mobile agents support worldwide applications",
+  booktitle =	 sigops7,
+  year =	 1996,
+  address =	 "Connemara, Ireland",
+  month =	 sep,
+  url =		{http://www.cs.dartmouth.edu/\~{}dfk/papers/kotz:agents.html},
+  pages =        "41--48",
+  subject =      "ma",
+  abstract = "Worldwide applications exist in an
+		  environment that is inherently distributed, dynamic,
+		  heterogeneous, insecure, unreliable, and
+		  unpredictable. In particular, the latency and
+		  bandwidth of network connections varies tremendously
+		  from place to place and time to time, particularly
+		  when considering wireless networks, mobile devices,
+		  and satellite connections. Applications in this
+		  environment must be able to adapt to different and
+		  changing conditions. We believe that transportable
+		  autonomous agents provide an excellent mechanism for
+		  the construction of such applications. We describe
+		  our prototype transportable-agent system and several
+		  applications."
+}
+
+@Article{kotz97:agent,
+  author = 	 "David Kotz and Robert Gray and Saurab Nog and
+		  Daniela Rus and Sumit Chawla and George Cybenko ", 
+  title = 	 "Agent {TCL}: Targeting the Needs of Mobile Computers",
+  journal =	 IC,
+  year =	 1997,
+  volume =	 1,
+  number =	 4,
+  pages = {58--67},
+  url = {http://computer.org/internet/ic1997/w4058abs.htm},
+  month =	 "July/August",
+  subject =	 "ma:sec",
+  abstract = "Mobile computers have become increasingly popular as users discover the benefits of having their electronic work available
+       at all times. However, because network conditions vary from connection to connection, using Internet resources from a
+       mobile platform is a major challenge. Mobile agents are one solution. A mobile agent is an autonomous program that can
+       move from machine to machine in a heterogeneous network under its own control. It can suspend its execution at any point,
+       transport itself to a new machine, and resume execution on the new machine from the point at which it left off. On each
+       machine, it interacts with service agents and other resources to accomplish its task, returning to its home site with a final
+       result when that task is finished. 
+
+\par Agent Tcl is a mobile-agent system whose agents can be written in Tcl, Java, and Scheme. Agent Tcl has extensive
+       navigation and communication services, security mechanisms, and debugging and tracking tools. In this article we focus on
+       Agent Tcls architecture and security mechanisms, its RPC system, and its docking system, which lets an agent move
+       transparently among mobile computers, regardless of when they are connected to the network. "
+}
+
+@InCollection{kotz98:mobile,
+  author = 	 "David Kotz and Robert Gray and Saurab Nog and
+                  Daniela Rus and Sumit Chawla and George Cybenko",
+  title = 	 "Mobile agents for mobile computing",
+  booktitle = 	 "Mobility, Mobile Agents, and Process Migration--An
+                  Edited Collection",
+  publisher =	 "Addison Wesley",
+  year =	 1998,
+  note =	 {To appear.}
+}
+
+@Book{lange98:programming,
+  author =	 "Danny B. Lange and Mitsuru Ishima",
+  title = 	 "Program and Deploying Java Mobile Agents with Aglets",
+  publisher = 	 "Addison-Wesley",
+  year = 	 1998,
+  annote =	 "ISBN 0-201-32582-9"
+}
+
+@InProceedings{li96:mobile,
+  author = 	 "Weiyi Li and David G. Messerschmitt",
+  title = 	 "Mobile Agent-based Network Signaling for Resource
+		  Negotiations",
+  booktitle =	 "Workshop on Resource Allocation Problems in
+		  Multimedia Systems, IEEE Real-Time Systems
+		  Symposium", 
+  year =	 1996,
+  address =	 "Washington, DC",
+  month =	 dec,
+  subject =	 "ma",
+  url =		 {http://ptolemy.eecs.berkeley.edu/\~{}messer/PAPERS/96/ResAlloc1/}
+}
+
+		  
+@Book{mcgraw96:java,
+  author = 	 "Gary McGraw and Edward M. Felten",
+  title = 	 "Java Security: Hostile Applets, Holes, & Antidote",
+  publisher = 	 "John Wiley and Sons",
+  year = 	 1996,
+  address =	 "New York",
+  isbn =	 "0-471-17842-X"
+}
+
+@InProceedings{minsky96:cryptographic,
+  author = 	 "Yaron Minsky and van Renesse, Robbert and Fred
+		  B. Schneider and Scott D. Stoller",
+  title = 	 "Cryptographic Support for Fault-Tolerant Distributed
+		  Computing",
+  pages =	 "109--114",
+  booktitle =	 sigops7,
+  year =	 1996,
+  address =	 "Connemara, Ireland",
+  month =	 sep,
+  url =		{http://www.cs.uit.no/DOS/Tacoma/tacoma.webpages/SIGOPS.ft-agents.ps},
+  subject =      "ma"
+}
+
+@TechReport{necula96:proof,
+  author = 	 "George C. Necula and Peter Lee",
+  title = 	 "Proof-Carrying Code",
+  institution =  "School of Computer Science, Carnegie Mellon University",
+  year = 	 1996,
+  number =	 "CMU-CS-96-165",
+  address =	 "Pittsburgh, Pa.",
+  month =	 nov,
+  url =		{http://www.cs.cmu.edu/afs/cs/usr/necula/papers/tr165.ps},
+  subject =      "mc",
+  abstract =	 "This report describes Proof-Carrying
+		  Code, a software mechanism that allows a host system
+		  to determine with certainty that it is safe to
+		  execute a program supplied by an untrusted
+		  source. For this to be possible, the untrusted code
+		  supplier must provide with the code a safety proof
+		  that attests to the code's safety properties. The
+		  code consumer can easily and quickly validate the
+		  proof without using cryptography and without
+		  consulting any external agents.  In order to gain
+		  preliminary experience with proof-carrying code, we
+		  have performed a series of case studies. In one case
+		  study, we write safe assembly-language network
+		  packet filters. These filters can be executed with
+		  no run-time overhead, beyond a one-time cost of 1 to
+		  3 milliseconds for validating the attached
+		  proofs. The net result is that our packet filters
+		  are formally guaranteed to be safe and are faster
+		  than packet filters created using Berkeley Packet
+		  Filters, Software Fault Isolation, or safe languages
+		  such as Modula-3. In another case study we show how
+		  proof-carrying code can be used to develop safe
+		  assembly-language extensions of the a simplified
+		  version of the TIL run-time system for Standard
+		  ML."
+}
+
+
+@InProceedings{necula96:safe,
+  author = 	 "George C. Necula and Peter Lee",
+  title = 	 "Safe Kernel Extensions Without Run-Time Checking",
+  booktitle =	 "Proceedings of the Second Symposium on Operating
+		  System Design and Implementation",
+  year =	 1996,
+  address =	 "Seattle, Wa.",
+  month =	 oct,
+  url =		{http://www.cs.cmu.edu/afs/cs.cmu.edu/user/necula/www/osdi96.ps.gz},
+  subject =      "misc",
+  abstract = "This paper describes a mechanism by
+		  which an operating system kernel can determine with
+		  certainty that it is safe to execute a binary
+		  supplied by an untrusted source. The kernel first
+		  defines a safety policy and makes it public. Then,
+		  using this policy, an application can provide
+		  binaries in a special form called proof-carrying
+		  code, or simply PCC. Each binary contains, in
+		  addition to the native code, a formal proof that the
+		  code obeys the safety policy.  The kernel can easily
+		  validate the proof without using cryptography and
+		  without consulting any external trusted entities. If
+		  the validation succeeds, the code is guaranteed to
+		  respect the safety policy without relying on
+		  run-time checks.
+
+		  \par The main practical difficulty of is in generating
+		  the safety proofs. In order to gain some preliminary
+		  experience with this, we have written several
+		  network packet filters in hand-tuned DEC Alpha
+		  assembly language, and then generated binaries for
+		  them using a special prototype assembler. The
+		  binaries can be executed with no run-time overhead,
+		  beyond a one-time cost of 1 to 3 milliseconds for
+		  validating the enclosed proofs. The net result is
+		  that our packet filters are formally guaranteed to
+		  be safe and are faster than packet filters created
+		  using Berkeley Packet Filters, Software Fault
+		  Isolation, or safe languages such as Modula-3."
+}
+
+@InProceedings{necula97:proof,
+  author = 	 "George C. Necula",
+  title = 	 "Proof-Carrying Code",
+  booktitle =	 "Proceedings of the 24th ACM Symposium on Principles
+		  of Programming Languages",
+  year =	 1997,
+  address =	 "Paris, France",
+  month =	 jan,
+  url =		{http://www.cs.cmu.edu/afs/cs.cmu.edu/user/necula/www/popl97.ps.gz},
+  subject =      "mc",
+  abstract =	 "This paper describes proof-carrying code (PCC), a
+mechanism by which a host system can determine with
+certainty that it is safe to execute a program supplied
+(possibly in binary form) by an untrusted source. For
+this to be possible, the untrusted code producer must
+supply with the code a safety proof that attests to the
+code's adherence to a previously defined safety policy.
+The host can then easily and quickly validate the proof
+without using cryptography and without consulting any
+external agents.
+		  
+\par In order to gain preliminary experience with PCC,
+we have performed several case studies. We show in this
+paper how proof-carrying code might be used to develop
+safe assembly-language extensions of ML programs. In
+the context of this case study, we present and prove
+the adequacy of concrete representations for the safety
+policy, the safety proofs, and the proof validation. Fi-
+nally, we briefly discuss how we use proof-carrying code
+to develop network packet filters that are faster than
+similar filters developed using other techniques and are
+formally guaranteed to be safe with respect to a given
+operating system safety policy."
+}
+
+@Unpublished{necula97:safe,
+  author = 	 "George C. Necula and Peter Lee",
+  title = 	 "Safe, Untrusted Agents using Proof-Carrying Code",
+  note = 	 "Submitted for an LNCS Special Volume on Mobile Agent
+		  Security.",
+  url =		 {http://www.cs.cmu.edu/afs/cs.cmu.edu/user/necula/www/lncs98.ps.gz},
+  subject =	 "sec",
+  year =	 1997,
+  month =	 oct,
+  abstract =	 "This paper is intended to be both a comprehensive implementation guide for a Proof-Carrying Code system and a case
+       study for using PCC in a mobile agent environment. Specifically, the paper describes the use of PCC for enforcing memory safety,
+       access control and resource usage bounds for untrusted agents that access a database. "
+}
+
+@TechReport{nog96:rpc,
+  author = 	"Saurab Nog and Sumit Chawla and David Kotz",
+  title = 	"An {RPC} mechanism for transportable agents",
+  institution = dartmouthcs,
+  year = 	1996,
+  number =	"TR96-280",
+  address =	"Hanover, N.H.",
+  url =		{http://www.cs.dartmouth.edu/reports/abstracts/TR96-280/},
+  subject =	"ma"
+}
+		  
+		  
+@Article{oshuga97:plangent,
+  author = 	 "Akihiko Ohsuga and Yasuo Nagai and Yutaka Irie and
+		  Masanori Hattori and Shinichi Honiden ",
+  title = 	 "Plangent: An Approach to Making Mobile Agents Intelligent",
+  journal =	 IC,
+  year =	 1997,
+  volume =	 1,
+  number =	 4,
+  month =	 "July/August",
+  subject =	 "ma:sec",
+  abstract =     {Network environments allow computer users to employ distributed information and services to complete a task. However,
+       gathering information and using services distributed in networks requires knowing exactly what kinds of information and
+       services are required for a task, where they are, and how they can be obtained or utilized. Tracking down the answers to
+       these questions can be difficult, time-consuming tasks. Mobile agent technology is expected to free users from these tasks.
+       Instead of the user searching, \"intelligent\" mobile agents will comprehend the users requirements, search network nodes
+       autonomously for appropriate information and services, and return with the answers. 
+
+\par We developed a model based on the ability of agents to make flexible plans. The Plangent system enables mobile agents to
+       make a plan based on user input and adopt it accordingly to information gathered from the network. In this article, we
+       describe how we combined planning functions with mobile agent facilities, and show how the agents behave intelligently in
+       an example application of personal travel assistance.}
+}
+
+		  
+@PhdThesis{partridge92:late,
+  author = 	 "Craig Partridge",
+  title = 	 "Late-Binding {RPC}: A Paradigm for Distributed
+		  Computation in a Gigabit Environment",
+  school = 	 "Harvard University",
+  year = 	 1992,
+  address =	 "Cambridge, Ma.",
+  subject =	 "mc",
+  month =	 mar,
+  abstract =	 "Computers and data networks continue to
+		  get faster. However computers and networks are
+		  geting faster in different ways. This difference is
+		  best illustrated by an example.  Consider the
+		  problem of making a car faster. A 100-times
+		  improvement in speed would imply cars with cruising
+		  speeds of about 600 miles per hour. Computers are
+		  getting faster like cars get faster; they perform
+		  more instructions per second. Now imagine giving the
+		  car more storage space, while keeping its maximum
+		  speed constant. A 100-times improvement yeilds a ca
+		  that can hold 100-tomes more luggage, but stilll
+		  only goes 60 miles per hour. Networks are getting
+		  faster like larger cars, they send more bitss per
+		  packet because the speed of limit limits how fast a
+		  packet can get from one place to another. This
+		  thesis examines the implcations of this difference
+		  for the future of distributed computing. The thesis
+		  identifies four major implication: itemize The
+		  performance difference is permanent.. The speed of
+		  light is constant and there is no hope of reducing
+		  the network delay. The time spent waiting for data
+		  to cross the network will soon become the largest
+		  part of most programs' run-time. A single exchange
+		  of packets will take far more time than executing
+		  all the application's instructions.  Due to their
+		  differing latencies, LANs and WANs will probably
+		  continue to exhibit different performance
+		  characteristics for some time to come. Popular
+		  distributed computing paradigms such as RPC do not
+		  appear to scale well to an environment in which
+		  network delays are long.  itemize The thesis also
+		  presents a novel paradigm for distributed
+		  computation call late-binding in which applications
+		  send arbitrary pieces of code to arbitrary remote
+		  systems for evaluation. It is argued that this
+		  paradigm can give optimal performance in the number
+		  of network transits required to complete a
+		  computation. A model of distributed computation is
+		  developed and used to show that optimizing network
+		  transits will usually be the determining factor for
+		  the performance of distributed
+		  applications. Finally, it is shown that implementing
+		  late-binding is feasible."
+}
+
+		  
+		  
+@InProceedings{peine-97-architecture,
+  author = 	"Holger Peine and Torsten Stolpmann",
+  title = 	"The Architecture of the {A}ra Platform for Mobile
+		  Agents",   
+  booktitle =	ma97, 
+  address =	"Berlin, Germany",
+  month =	apr,
+  year =	1997,
+  subject =	"ma",
+  url =		{http://www.uni-kl.de/AG-Nehmer/Ara/Doc/architecture.ps.gz},
+  abstract =	"We describe a platform for the portable and secure
+		  execution of mobile agents written in various
+		  interpreted languages on top of a common run-time
+		  core. Agents may migrate at any point in their
+		  execution, fully preserving their state, and may
+		  exchange messages with other agents. One system may
+		  contain many virtual places, each establishing a
+		  domain of logically related services under a common
+		  security policy governing all agents at this
+		  place. Agents are equipped with allowances limiting
+		  their resource accesses, both globally per agent
+		  lifetime and locally per place. We discuss aspects
+		  of this architecture and report about ongoing work."
+}
+
+@TechReport{peine-97-introduction,
+  author = 	"Holger Peine",
+  title = 	"An Introduction to Mobile Agent Programming and the
+		  {A}ra System",
+  institution = "Department of Computer Science, University of
+		  Kaiserslautern, Germany",
+  year = 	"1997",
+  number =	"ZRI-Report 1/97",
+  subject =	"ma",
+  abstract = 	"A good starting point for people new to Ara and
+		  possibly mobile agent programming in general. This
+		  assumes very little prerequisite knowledge, so
+		  expert readers might want to only skim through its
+		  initial sections. The report introduces mobile
+		  agents and the Ara system, regards potential
+		  applications, and proceeds to a fairly complete, but
+		  nonformal description of the Ara API, subsequently
+		  demonstrated on a larger example of a WWW searching
+		  agent. The report closes with some discussion of the
+		  Ara implementation and selected aspects of mobile
+		  agents in general.", 
+  url =		{http://www.uni-kl.de/AG-Nehmer/Ara/Doc/intro-prog.ps.gz}
+}
+		  
+@InProceedings{perret96:desig,
+  author = 	 "Stephane Perret and Andrzej Duda",
+  title = 	 "Design and implementation of {MAP}: A system for
+		  mobile assistant programming",
+  booktitle =	 "Proceedings of the IEEE International Conference of
+		  Parallel and Distributed Systems",
+  year =	 1996,
+  address =	 "Tokyo, Japan",
+  month =	 jun,
+  url =		{ftp://fidji.imag.fr/pub/perret/icpads96.ps.gz},
+  subject =      "ma"
+}
+		  
+		  
+@InProceedings{perret96:map,
+  author = 	 "Stephane Perret and Andrzej Duda",
+  title = 	 "{MAP}: Mobile assisatn programming for large scale
+		  communication networks",
+  booktitle =	 "Proceedings of the IEEE International Conference on
+		  Communications",
+  year =	 1996,
+  address =	 "Dallas, Tex.",
+  month =	 jun,
+  url =		{ftp://fidji.imag.fr/pub/perret/icc96.ps.gz},
+  subject =      "ma"
+}
+
+
+@InProceedings{perret96:mobile,
+  author = 	 "Stephane Perret and Andrzej Duda",
+  title = 	 "Mobile assistant programming for efficient
+		  information access on the {WWW}",
+  booktitle =	 "Proceedings of the 5th International World-Wide Web
+		  Conference",
+  year =	 1996,
+  address =	 "Paris, France",
+  month =	 may,
+  url =		{ftp://fidji.imag.fr/pub/perret/www96/Overview.html},
+  subject =      "ma"
+}
+
+@TechReport{picco97:expressing,
+  author = 	 "Gian Pietro Picco and Gruia-Catalin Roman and Peter
+		  J. McCann", 
+  title = 	 "Expressing Code Mobility in Mobile {UNITY}",
+  institution =  "Washington University",
+  year = 	 1997,
+  number =	 "WUCS-97-02",
+  address =	 "St. Louis, Mo.",
+  month =	 jan,
+  subject =	"mob:mc",
+  url =		{http://www.polito.it/\~{}picco/papers/esec97.ps.gz},
+  abstract =	"Advancements in network technology have led to the
+		  emergence of new computing paradigms that challenge
+		  established programming practices by employing weak
+		  forms of consistency and dynamic forms of binding.
+		  Code mobility, for instance, allows for
+		  invocation-time binding between a code fragment and
+		  the location where it executes.  Similarly, mobile
+		  computing allows hosts (and the software they
+		  execute) to alter their physical location.  Despite
+		  apparent similarities, the two paradigms are
+		  distinct in their treatment of location and
+		  movement.  This paper seeks to uncover a common
+		  foundation for the two paradigms by exploring the
+		  manner in which stereotypical forms of code mobility
+		  can be expressed in a programming notation developed
+		  for mobile computing.  Several solutions to a
+		  distributed simulation problem are used to
+		  illustrate the modeling strategy for programs that
+		  employ code mobility."
+}
+
+@InProceedings{ranganathan96:distributed,
+  author = 	 "Mudumbai Ranganathan and Anurag Acharya and Joel Saltz",
+  title = 	 "Distributed Resource Monitors for Mobile Objects",
+  pages =	 "19--23",
+  booktitle =	 iwooos96,
+  year =	 1996,
+  address =	 "Seattle, Wa.",
+  month =	 oct,
+  url =		{http://www.cs.umd.edu/\~{}acha/papers/iwoos96-submitted.html},
+  subject =      "ma"
+}
+
+@InProceedings{ranganathan97:network,
+  author = 	 "Mudumbai Ranganathan and Anurag Acharya and Shamik Sharma
+		  and Joel Saltz",
+  title = 	 "Network-Aware Mobile Programs",
+  booktitle =	 "Proceedings of the USENIX 1997 Annual Technical Conference",
+  year =	 1997,
+  address =	 "Anaheim, Cal.",
+  month =	 jan,
+  url =		{http://www.cs.umd.edu/\~{}acha/papers/usenix97.ps.Z},
+  subject =      "ma",
+  abstract =	 "In this paper, we investigate
+		  network-aware mobile programs, programs that can use
+		  mobility as a tool to adapt to variations in network
+		  characteristics. We present infrastructural support
+		  for mobility and network monitoring and show how
+		  adaptalk, a Java-based mobile Internet chat
+		  application can take advantage of this support to
+		  dynamically place the chat server so as to minimize
+		  response time. Our conclusion was that on-line
+		  network monitoring and adaptive placement of shared
+		  data-structures can significantly improve
+		  performance of distributed applications on the
+		  Internet.",
+  note =	 "Version available as University of Maryland
+		  Department of Computer Science Technical Report
+		  CS-TR-3659."
+}
+
+		  
+		  
+@InProceedings{ranganathan98:adapting,
+  author = 	 {M. Ranganathan and Anurag Acharya and Joel Saltz}, 
+  title = 	 {Adapting to Bandwidth Variations in Wide-Area Data
+                  Combination}, 
+  booktitle = 	 {Proceedings of the 18th International Conference on
+                  Distributed Computing Systems},
+  year =	 1998,
+  url =		 {http://www.cs.ucsb.edu/\~{}acha/publications/icdcs98-submitted.html},
+  address =	 {Amsterdam, The Netherlands},
+  month =	 may,
+  note =	 {Also available as UCSB TRCS97-26.},
+  abstract =	 {Efficient data combination over wide-area networks is hard as
+wide-area networks have large variations in available network
+bandwidth. In this paper, we examine the utility of changing the
+location of combination operators as a technique to adapt to
+variations in wide-area network bandwidth. We try to answer the
+following questions. First, does relocation of operators provide a
+significant performance improvement? Second, is on-line relocation
+useful or does a one-time positioning at start-up time provide most if
+not all the benefits? If on-line relocation is useful, how frequently
+should it be done and is global knowledge of network performance
+required or can local knowledge and local relocation of operators
+sufficient? Fourth, does the effectiveness of operator relocation
+depend on the ordering of the combination operations. That is, are
+certain ways of ordering more amenable to adaptation than others?
+Finally, how do the results change as the number of data sources
+changes?}
+}
+
+@TechReport{ranganthan98:mobile,
+  author = 	 {M. Ranganathan and Laurent Andrey and Anurag Acharya 
+                  and Virginie Schaal},
+  title = 	 {Mobile Streams},
+  institution =  {Computer Science Department, University of
+                  California, Santa Barbara},
+  year = 	 1998,
+  number =	 {TRCS98-11},
+  month =	 apr,
+  url =		 {http://www.cs.ucsb.edu/TRs/TRCS98-11.html},
+  abstract =	 {A large class of distributed testing, control and collaborative
+applications are reactive or event driven in nature. Such applications
+can be structured as a set of handlers that react to events and that
+in turn can trigger other events. We have developed an application
+building toolkit that facilitates development of such
+applications. Our system is based on the concept of Mobile
+Streams. Applications developed in our system are dynamically
+extensible and re-configurable and our system provides the application
+designer a means to specify resource-control policy-modules that can
+control how the system can be extended and reconfigured. We describe
+our system model and compare our design to the design of other similar
+systems. We also describe three applications that have built using our
+implementation of Mobile Streams.}
+}
+
+@Misc{rulifson69:del,
+  author =	 "Jeff Rulifson",
+  title =	 "{DEL}",
+  year =	 1969,
+  month =	 jun,
+  note =	 "Internet Engineering Task Force, RFC 5",
+  subject =      "mc",
+  abstract =	 "The Decode-Encode Language (DEL) is a
+		  machine independent language tailored to two
+		  specific computer network tasks:
+ 
+		  accepting input codes from interactive consoles,
+		  giving immediate feedback, and packing the resulting
+		  information into message packets for network
+		  transmissin.
+ 
+		  and accepting message packets from another computer,
+		  unpacking them, building trees of display
+		  information, and sending other information to the
+		  user at his interactive station."
+}		  
+
+@InProceedings{rus97:transportable,
+  author = "Daniela Rus and Robert S. Gray and David Kotz",
+  title = "Transportable Information Agents",
+  booktitle = "International Conference on Autonomous Agents",
+  year = "1997",
+  month = "February",
+  pages = "228--236",
+  subject = "ma",		  
+  url =		{ftp://ftp.cs.dartmouth.edu/pub/kotz/papers/rus:autonomous2.ps.Z},
+  abstract = "Transportable agents are autonomous programs. They can move
+  through a heterogeneous network of computers under their own control,
+  migrating from host to host. They can sense the state of the network, monitor
+  software conditions, and interact with other agents or resources. The
+  network-sensing tools allow our agents to adapt to the network configuration
+  and to navigate under the control of reactive plans. In this paper we
+  describe the design and implementation of the navigation system that gives
+  our agents autonomy. We also discuss the intelligent and adaptive behavior of
+  autonomous agents in distributed information-gathering tasks."
+}
+
+@Article{rus97:transportable-information,
+    author = "Daniela Rus and Robert S. Gray and David Kotz",
+    title = "Transportable Information Agents",
+    journal = "Journal of Intelligent Information Systems",
+    year = 1997,
+    volume = 9,
+    pages = "215--238",
+    abstract = "Transportable agents are autonomous programs. They can move
+through a heterogeneous network of computers under their own control,
+migrating from host to host. They can sense the state of the network, monitor
+software conditions, and interact with other agents or resources. The
+network-sensing tools allow our agents to adapt to the network configuration
+and to navigate under the control of reactive plans. In this paper we
+describe the design and implementation of the navigation system that gives
+our agents autonomy. We also discuss the intelligent and adaptive behavior of
+autonomous agents in distributed information-gathering tasks."
+}
+		  
+		  
+@InProceedings{schneider97:towards,
+  author = 	 "Fred B. Schneider",
+  title = 	 "Towards Fault-tolerant and Secure Agentry",
+  subject =	 "ma:sec",
+  url =		 {http://cs-tr.cs.cornell.edu:80/Dienst/Repository/2.0/Body/ncstrl.cornell\%2fTR97-1636/postscript},
+  booktitle =	 "Proceedings 11th International Workshop on
+		  Distributed Algorithms", 
+  year =	 1997,
+  address =	 "Saarbucken, Germany",
+  month =	 sep,
+  annote =	 "Invited paper.",
+  note =	 "Also published as Cornell Univ., Computer Science
+		  Dept. technical report TR94-1568."
+}
+
+@PhdThesis{stamos86:remote,
+  author = 	 "James W. Stamos",
+  title = 	 "Remote Evaluation",
+  school = 	 "Massachusetts Institute of Technology",
+  year = 	 1986,
+  address =	 "Cambridge, Ma.",
+  month =	 jan,
+  abstract = "A new technique for computer-to-computer
+		  communication is presented that can increase the
+		  generality and performance of distributed systems.
+		  This technique, called Remote Evaluation, lets one
+		  computer send another computer a request in the form
+		  of a program.  A computer that receives such a
+		  request executes the program in the request and
+		  returns the results to the sending computer.
+
+		  \parRemote evaluation provides a new degree of
+		  flexibility in the design of distributed systems.
+		  In present distributed systems that use Remote
+		  Procedure Calls, server computers are designed to
+		  offer a fixed set of services.  In a system that
+		  uses remote evaluation, server computers are more
+		  properly viewed as programmable soft abstractions.
+		  One consequence of this flexibility is that remote
+		  evaluation can reduce the amount of communication
+		  that is required to accomplish a given task.
+
+		  \par Our thesis is that it is possible to design a
+		  remote evaluation system that permits the processing
+		  of a program to be distributed among remote
+		  computers without changing the program's semantics.
+		  In support of this thesis our proposal for remote
+		  evaluation uses the same argument passing semantics
+		  for local and remote procedure invocations (call by
+		  sharing); it provides atomic transactions to mask
+		  computer and communication failures; and it provides
+		  a static checking framework that identifies
+		  procedures that can not be relocated from computer
+		  to computer.
+		  
+		  \par We discuss both the semantics of remote
+		  evaluation and our experience with a prototype
+		  implementation.  The idea of a remote data type is
+		  introduced to let one computer name objects at a
+		  remote computer.  A detailed discussion of the
+		  compile-time and run-time support necessary for
+		  remote evaluation is provided, along with a detailed
+		  sample application.",
+  url =		{ftp://cstr-ftp.lcs.mit.edu/pub/cstr-ftp/publications/LCS-TR/0300-0399/LCS-TR-354},
+  note =	 "Also available as MIT Laboratory for Computer
+		  Science Technical Report MIT/LCS/TR-354."
+}
+
+@Article{stamos90:implementing,
+  author = 	 "James W. Stamos and David K. Gifford",
+  title = 	 "Implementing Remote Evaluation",
+  journal =	 tse,
+  year =	 1990,
+  volume =	 16,
+  number =	 7,
+  pages =	 "710--722",
+  month =	 "july",
+  subject =	 "mc"
+}
+
+@Article{stamos90:remote,
+  author = 	 "James W. Stamos and David K. Gifford",
+  title = 	 "Remote Evaluation",
+  journal =	 toplas,
+  year =	 1990,
+  volume =	 12,
+  number =	 4,
+  pages =	 "537--565",
+  month =	 oct,
+  subject =	 "mc"
+}
+
+		  
+		  
+@InProceedings{steensbaard95:object,
+  author = 	 "Bjarne Steensbaard and Eric Jul",
+  title = 	 "Object and Native Code Thread Mobility Among
+		  Heterogeneous Computers",
+  pages =	 "68--78",
+  booktitle = 	 sosp15,
+  year = 	 1995,
+  address =	 "Copper Moutain, Co.",
+  month =	 dec,
+  url =		{ftp://ftp.research.microsoft.com/users/rusa/sosp95.ps},
+  subject =      "mc",
+  abstract =	 "We present a technique for moving
+		  objects and threads among heterogeneous computers at
+		  the native code level. To enable mobility of threads
+		  running native code, we convert thread states among
+		  machine-dependent and machine-independent
+		  formats. We introduce the concept of bus stops,
+		  which are machine-independent representations of
+		  program points as represented by program counter
+		  values. The concept of bus stops can be used also
+		  for other purposes, e.g., to aid inspecting and
+		  debugging optimized code, garbage collection etc. We
+		  also discuss techniques for thread mobility among
+		  processors executing differently optimized codes.
+		  
+		  \par We demonstrate the viability of our ideas by
+		  providing a prototype implementation of object and
+		  thread mobility among heterogeneous computers. The
+		  prototype uses the Emerald distributed programming
+		  language without modification; we have merely
+		  extended the Emerald runtime system and the code
+		  generator of the Emerald compiler. Our extensions
+		  allow object and thread mobility among VAX, Sun-3,
+		  HP9000/300, and Sun SPARC workstations.  The
+		  excellent intra-node performance of the original
+		  homogeneous Emerald is retained: migrated threads
+		  run at native code speed before and after migration;
+		  the same speed as on homogeneous Emerald and close
+		  to C code performance. Our implementation of
+		  mobility has not been optimized: thread mobility and
+		  trans-architecture invocations take about 60% longer
+		  than in the homogeneous implementation.
+		  
+		  \par We believe this is the first implementation of full
+		  object and thread mobility among heterogeneous
+		  computers with threads executing native code.  "
+}
+
+		  
+		  
+@InProceedings{stolpmann96:execution,
+  author = 	 "Torsten Stolpmann",
+  title = 	 "Execution Environments for Mobile Code -- a
+		  cornerstone for adaptable distributed systems",
+  booktitle =	 "Position paper for 3rd CaberNet Radicals Workshop",
+  year =	 1996,
+  address =	 "Connemara, Ireland",
+  month =	 may,
+  url =		{http://www.newcastle.research.ec.org/cabernet/research/radicals/1996/papers/mobilecode-stolpmann.html},
+  annote =	 "This position paper proposes the
+		  utilisation of mobile code as a base-mechanism for
+		  an extensible and adaptable distributed system
+		  architecture. As an example MACE (Mobile Agent Code
+		  Environment) -- a flexible and efficient execution
+		  environment for mobile code -- is presented."
+}
+
+@InProceedings{stone96:mobile,
+  author = 	 "Steve Stone and Mike Zyda and Don Brutzman and John
+		  Falby",
+  title = 	 "Mobile Agents and Smart Networks for Distributed
+		  Simulation",
+  booktitle =	 "Proceedings of the 14th Distributed Simulations Conference",
+  year =	 1996,
+  address =	 "Orlando, Fl.",
+  month =	 mar,
+  url =		{http://www-npsnet.cs.nps.navy.mil/npsnet/publications/Mobile.Agents.and.Smart.Networks.for.Distributed.Simulations.pdf},
+  subject =      "ma:an",
+  abstract =	 "As the use of Distributed Interactive Simulations
+		  has grown, the need to support a large number of
+		  players in the environment has become apparent. DIS
+		  has not been able to support a large number of
+		  entities because of its high network bandwidth
+		  requirements and the large computational loads it
+		  places on host computers.  A combination of an
+		  agent based architecture and smart networks provides
+		  a promi sing solution to these problems when
+		  implementing large-scale distributed simulations. An
+		  agent system using the remote programming paradigm,
+		  transporting the necessary parameters and the
+		  necessary code for remote execution [WHITE95],
+		  could reduce the network bandwidth requirements and
+		  large computational loads associated with a large
+		  distributed simulation. This reduction would occur
+		  by eliminating unnecessary PDU traffic through the
+		  use of mobile agents that represent the originating
+		  entity. These agents would travel to, and reside on,
+		  the host computer of other entities and provide the
+		  necessary state information for stationary entities
+		  without using network resources.  Smart Networks
+		  could be used to create a flexible area of interest
+		  manager, allowing entities to specify their area of
+		  interest and the information that they require from
+		  within that area [HARR95a]. This approach allows an
+		  entity to get all of the information it requires to
+		  represent its view of the simulated world while
+		  eliminating unnecessary information processing."
+}
+
+@InProceedings{strasser96:mole,
+  author = 	 "Markus Straßer and Joachim Baumann and Fritz Hohl",
+  title = 	 "Mole -- A {J}ava Based Mobile Agent System",
+  pages =	 "28--35",
+  booktitle =	 ecoop-mos2,
+  year =	 1996,
+  address =	 "Linz, Austria",
+  month =	 jul,
+  url =		{http://www.informatik.uni-stuttgart.de/ipvr/vs/Publications/1996-strasser-01.ps.gz},
+  subject =      "ma",
+  abstract =     "Mobile agents are active, autonomous
+		  objects, which are able to movebetween locations in
+		  a so-called agent system, a distributed
+		  abstractionlayer providing security of the
+		  underlying systems on one hand and theconcepts and
+		  mechanisms for mobility and communication on the
+		  otherhand.  In this paper, the mobility, the
+		  communication concepts and thearchitecture of Mole,
+		  an agent system developed at the University
+		  of Stuttgart, are presented."
+}
+
+@InProceedings{tardo96:mobile,
+  author = 	 "Joseph Tardo and Luis Valenta",
+  title = 	 "Mobile agent security and {T}elescript",
+  booktitle =	 "Proceedings of IEEE COMPCON '96",
+  year =	 1996,
+  url =		{http://www.genmagic.com/Telescript/security.html},
+  subject =      "ma:sec",
+  month =	 feb
+}
+
+
+@Article{tennenhouse96:towards,
+  author = 	 "David L. Tennenhouse and David J. Wetherall",
+  title = 	 "Towards an Active Network Architecture",
+  journal =	 "Computer Communication Review",
+  year =	 1996,
+  volume =	 26,
+  number =	 2,
+  month =	 apr,
+  url =		{ftp://ftp.tns.lcs.mit.edu/pub/papers/ccr96.ps.gz},
+  subject =      "an",
+  abstract =	 "Active networks allow their users to inject
+customized programs into the nodes of the network. An extreme case, in
+which we are most interested, replaces packets with `capsules' --
+program fragments that are executed at each network router/switch they
+traverse.
+
+\par Active architectures permit a massive increase in the sophistication
+of the computation that is performed within the network. They will
+enable new applications, especially those based on
+application-specific multicast, information fusion, and other services
+that leverage network-based computation and storage.  Furthermore,
+they will accelerate the pace of innovation by decoupling network
+services from the underlying hardware and allowing new services to be
+loaded into the infrastructure on demand.
+
+\par In this paper, we describe our vision of an active network
+architecture, outline our approach to its design, and survey the
+technologies that can be brought to bear on its implementation. We
+propose that the research community mount a joint effort to develop
+and deploy a wide area ActiveNet."
+}
+
+
+@Article{tennenouse97:survey,
+  author = 	 "David L. Tennenhouse and Jonathan M. Smith and
+		  W. David Sincoskie and David J. Wetherall and Gary
+		  J. Minden", 
+  title = 	 "A Survey of Active Network Research",
+  journal =	 "IEEE Communications",
+  year =	 1997,
+  volume =	 35,
+  number =	 1,
+  pages =	 "80--86",
+  month =	 jan,
+  url =		{http://www.tns.lcs.mit.edu/publications/ieeecomms97.html},
+  subject =      "an",
+  abstract =	 "Active networks are a novel approach to network
+architecture in which the switches of the network perform customized
+computations on the messages flowing through them. This approach is
+motivated by both lead user applications, which perform user-driven
+computation at nodes within the network today, and the emergence of
+mobile code technologies that make dynamic network service innovation
+attainable. In this article, the authors discuss two approaches to the
+realization of active networks and provide a snapshot of the current
+research issues and activities."
+}
+
+@TechReport{thomsen93:facile,
+  author = 	 "Bent Thomsen and Lone Leth and Sanjiva Prasad and
+		  Tsung-Min Kuo and Andre Kramer and Fritz C. Knabe and
+		  and Alessandro Giacalone", 
+  title = 	 "Facile Antigua Release programming guide",
+  institution =  "European Computer Industry Research Centre",
+  year = 	 1993,
+  number =	 "ECRC-93-20",
+  address =	 "Munich, Germany",
+  month =	 dec,
+  url =		{ftp://ftp.ecrc.de/pub/ECRC_tech_reports/reports/ECRC-93-20.ps.Z},
+  subject =      "ma",
+  abstract =	 "Facile is an experimental concurrent functional
+programming language intended to support applications that require a
+combination of physical distribution and complex computation. This
+report gives an introduction to programming with Facile. Examples are
+based on the Facile Antigua release, which makes distributed
+programming over a network possible."
+}
+
+@InCollection{tschudin97:instruction,
+  author =	"Christian Tschudin",
+  title =	"Instruction-Based Communications",
+  year =	1997,
+  pages =	"67--92",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  subject =	"ma",
+  abstract =	"This papers explores a mode of communication that is
+		  based on instruction rather than
+		  interpretation. Starting from Shannon's
+		  (interpretative) communication model, I link
+		  instruction-based communications to mobile code
+		  (messengers), to ``signs'' as they are defined in
+		  semiotics, and to the virus theme commonly found in
+		  cell biology, computer science and
+		  literature. Virus-codes are conjectured to be more
+		  powerful that the equivalence codes studied by
+		  Shannon."
+}
+
+
+@InCollection{tschudin97:messenger,
+  author =	"Christian Tschudin",
+  title =	"The Messenger Environment {M0} -- A Condensed Description",
+  year =	1997,
+  pages =	"149--156",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  subject =	"ma",
+  abstract =	"Implementation techniques for distributed
+		  applications can be positioned in a spectrum that
+		  ranges from data-exchange to
+		  code-exchange. Date-exchange means that the logic
+		  (i.e., code) of a distributed application is
+		  statically installed and that coordination is done
+		  by exchanging messages with predefined
+		  meanings. Code-exchange, on the other hand, means
+		  that coordination is achieved by sending around code
+		  fragments which alter the data that is bound to the
+		  network's hosts. Actual systems usually pick and
+		  combine several techniques that are positioned at
+		  different places in this spectrum. Sun's \JAVA and
+		  the corresponding code-on-demand approach, for
+		  example, would be closer to the data-exchange
+		  viewpoint, while Stamos' and Gifford's Remote
+		  Evaluation is more in the line of mobile code
+		  because the initiator has more instructional
+		  capabilities. Mobile software agent systems are
+		  quite close to pure code-exchange, although they
+		  often mix-in classical data-exchange techniques
+		  (data streams between agents, or mailboxes). The aim
+		  of the mobile code environment \M (m-zero) is to be
+		  as faithful as possible to the code-exchange point
+		  of view."
+}
+
+@InCollection{tsichritzis97:commentary,
+  author =	"Denis Tschritzis",
+  title =	"Commentary on ``{O}bjectworld''",
+  year =	1997,
+  pages =	"23--24",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys
+}
+
+
+
+@InCollection{tsichritzis97:objectworld,
+  author =	"Denis Tschritzis",
+  title =	"Objectworld",
+  year =	1997,
+  pages =	"7--22",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  note =	"This paper originally appeared in Office Automation,
+		  Springer-Verlag, 1985.", 
+  subject =	"ma",
+  abstract =	"An environment is outlined in which programming
+		  objects collect and disseminate information, using
+		  analogies from the animal world. Objects have their
+		  own rules of behaviour. They coordinate their
+		  activities by participating in events. Objects get
+		  born, move around, communicate and receive
+		  information and, eventually, die." 
+}
+
+@InProceedings{vigna97:protecting,
+  author = 	 "Giovanni Vigna",
+  title = 	 "Protecting Mobile Agents through Tracing",
+  booktitle =	 ecoop-mos3,
+  year =	 1997,
+  address = 	 "Jyv{\"a}lskyl{\"a}, Finland",
+  month =	 jun,
+  subject =	 "ma:sec",
+  url =		 {http://www.elet.polimi.it/people/vigna/mos97.ps.gz},
+  abstract =	 "Mobile code systems provide a flexible and powerful
+		  platform to build distributed applications in an
+		  Internet scale, but they rise strong requirements
+		  from the security point of view. Security issues
+		  include au thentication of the different remote
+		  parties involved and protection of the execution
+		  environments from malicious agents. Nonetheless, the
+		  most diffcult task is to protect roaming agents from
+		  execution environments. This paper presents a new
+		  mechanism based on execution tracing and
+		  cryptography that allows an agent owner to determine
+		  if some site in the route followed by the agent
+		  tried to tamper with the agent state or code." 
+}
+
+@Book{vigna98:mobile,
+  title = 	 "Mobile Agents Security",
+  publisher = 	 "Springer-Verlag",
+  year = 	 1998,
+  editor =	 "Giovanni Vigna",
+  series =	 "Lecture Notes in Computer Science",
+  note =	 "To appear."
+}
+
+		  
+@InProceedings{vitek96:secure,
+  author = 	 "Jan Vitek",
+  title = 	 "Secure Object Spaces ",
+  pages =	 "41--48",
+  booktitle =	 ecoop-mos2,
+  year =	 1996,
+  address =	 "Linz, Austria",
+  month =	 jul,
+  url =		{http://cuiwww.unige.ch/\~{}ecoopws/ws96/5.ps.gz},
+  subject =      "ma:sec",
+  abstract = "Mobile software agents are computational
+		  entities acting on the behalfof a user which may
+		  move from computer to computer over a
+		  heterogeneousnetwork, draw on local resources, and
+		  interact with other agents.  This extended abstract
+		  discusses agent communication and its implications
+		  for security. "
+}
+
+@Book{vitek97:mobile,
+  editor =	"Jan Vitek and Christian Tschudin",
+  title =	"Mobile Oject Systems: Towards the Programmable
+		  {I}nternet", 
+  year =	1997,
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  url =		{http://cuiwww.unige.ch/\~{}ecoopws/tpi},
+  subject =	"ma",
+  abstract =	"This book presents a collection of papers dealing
+		  with different aspects of mobile
+		  computations. Mobile computations are computations
+		  that are not bound to single locations, but may move
+		  at will to best use the computer network's
+		  resources. In this view, the network becomes a
+		  single, vast, programmable environment. Among
+		  computer scientists, many feel that this approach
+		  will have a profound effect on the way we design and
+		  implement distributed applications, and they agree
+		  that we are witnessing a paradigm change. However,
+		  this new and exciting paradigm requires advances,
+		  both theoretical and applied, in fields such as
+		  programming languages (where we need a sound
+		  semantic foundation and efficient implementations),
+		  operating systems and software safety and
+		  security. Some of the first steps towards a
+		  programmable Internet are documented here." 
+}
+
+
+@InCollection{vitek97:security,
+  author =	"Jan Vitek and  Manuel Serrano and Dimitri Thanos",
+  title =	"Security and Communication in Mobile Object Systems",
+  year =	1997,
+  pages =	"177--200",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys,
+  subject =	"ma:sec"
+}
+
+@Article{volpano96:provably,
+  author = 	 "Dennis Volpano",
+  title = 	 "Provably-Secure Programming Languages for Remote
+		  Evaluation",
+  journal =	 "ACM Computing Surveys",
+  year =	 1996,
+  volume =	 "28A",
+  url =		{http://www.cs.nps.navy.mil/research/languages/papers/atsc/sdcr.ps},
+  subject =      "sec",
+  month =	 dec,
+  note =	 "Participation statement for ACM Workshop on Strategic
+		  Directions in Computing Research"
+}
+
+@Article{volpano96:sound,
+  author = 	 "Dennis Volpano and Geoffrey Smith and Cynthia
+		  Irvine",
+  title = 	 "A Sound Type System for Secure Flow Analysis",
+  journal =	 "Journal of Computer Security",
+  year =	 1996,
+  volume =	 4,
+  number =	 3,
+  pages =	 "167--187",
+  month =	 dec,
+  url =		{http://www.cs.nps.navy.mil/research/languages/papers/atsc/jcs.ps.Z},
+  subject =      "sec",
+  abstract =	 "Ensuring secure information flow within programs in
+		  the context of multiple sensitivity levels has
+		  been widely studied. Especially noteworthy is
+		  Denning's work in secure flow analysis and the
+		  lattice model [6][7]. Until now, however, the
+		  soundness of Denning's analysis has not been
+		  established satisfactorily. We formulate Denning's
+		  approach as a type system and present a notion of
+		  soundness for the system that can be viewed as a
+		  form of noninterference. Soundness is established by
+		  proving, with respect to a standard programming
+		  language semantics, that all well-typed programs
+		  have this noninterference property."
+}
+		  
+
+@InProceedings{wahbe93:efficient,
+  author = 	 "Robert Wahbe and Steven Lucco and Thomas E. Anderson
+		  and Susan L. Graham",
+  title = 	 "Efficient Software-Based Fault Isolation",
+  pages =	 "203--216",
+  booktitle =	 "Proceedings of the 14th ACM Symposium on Operating
+		  Systems Principles",
+  year =	 1993,
+  url =		{http://http.cs.berkeley.edu/\~{}tea/sfi.ps},
+  subject =      "Asheville, N.C.",
+  subject =      "sec",
+  abstract =	 "One way to provide fault isolation
+		  among cooperating software modules is to place each
+		  in its own address space. However, for
+		  tightly-coupled modules, this solution incurs
+		  prohibitive context switch overhead. In this paper,
+		  we present a software approach to implementing fault
+		  isolation within a single address space.  Our
+		  approach has two parts. First, we load the code and
+		  data for a distrusted module into its own fault
+		  domain, a logically separate portion of the
+		  application's address space. Second, we modify the
+		  object code of a distrusted module to prevent it
+		  from writing or jumping to an address outside its
+		  fault domain. Both these software operations are
+		  portable and programming language independent.
+		  
+		  \par Our approach poses a tradeoff relative to hardware
+		  fault isolation: substantially faster communication
+		  between fault domains, at a cost of slightly
+		  increased execution time for distrusted modules. We
+		  demonstrate that for frequently communicating
+		  modules, implementing fault isolation in software
+		  rather than hardware can substantially improve
+		  end-to-end application performance."
+}
+
+@InCollection{waldo97:afterword,
+  author =	"Jim Waldo and Ann Wollrath and Sam Kendall",
+  title =	"Afterword",
+  year =	1997,
+  pages =	"65-66",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	lncs1222,
+  booktitle =	mob-obj-sys
+}
+
+@InCollection{waldo97:note,
+  author =	"Jim Waldo and Geoff Wyant and Ann Wollrath and Sam
+		  Kendall", 
+  title =	"A Note on Distributed Computing",
+  year =	1997,
+  pages =	"49--64",
+  month =	apr,
+  publisher =	"Springer-Verlag",
+  note =	"Lecture Notes in Computer Science No. 1222. Also
+		  published as Sun Microsystems Laborators Technical
+		  Report TR-94-29.",
+  booktitle =	mob-obj-sys,
+  url =		{http://www.sunlabs.com/smli/technical-reports/1994/smli_tr-94-29.ps},
+  subject =	"ma",
+  abstract =	"Much of the current work in distributed,
+		  object-oriented systems is based on the assumption
+		  that objects form a single ontological class. This
+		  class consists of all entities that can be fully
+		  described by the specification of the set of
+		  interfaces supported by the object and the semantics
+		  of the operations in those interfaces. The class
+		  includes objects that share a single address space,
+		  objects that are in separate address spaces on the
+		  same machine, and objects that are in separate
+		  address spaces on different machines (with, perhaps,
+		  different architectures). On the view that all
+		  objects are essentially the same kind of entity,
+		  these differences in relative location are merely an
+		  aspect of the implementation of the object. Indeed,
+		  the location of an object may change over time, as
+		  an object migrates from one machine to another or
+		  the implementation of the object changes. 
+
+\par It is the thesis of this note that this unified view of objects
+		  is mistaken. There are fundamental differences
+		  between the interactions of distributed objects and
+		  the interactions of non-distributed
+		  objects. Further, work in distributed
+		  object-oriented systems that is based on a model
+		  that ignores or denies these differences is doomed
+		  to failure, and could easily lead to an
+		  industry-wide rejection of the notion of distributed
+		  object-based systems." 
+}
+
+		  
+		  
+@TechReport{wallach97:extensible,
+  author = 	 "Dan S. Wallach and Dirk Balfanz and Drew Dean and
+		  Edward W. Felten", 
+  title = 	 "Extensible Security Architectures for Java",
+  institution =  "Department of Computer Science, Princeton University",
+  year = 	 1997,
+  number =	 "546-97",
+  month =	 apr,
+  url =		 "http://www.CS.Princeton.EDU/sip/pub/extensible.html",
+  subject =	 "mc:sec",
+  abstract =	 "Mobile code technologies such as Java,
+		  JavaScript, and ActiveX generally limit all programs
+		  to a single security policy. However, software-based
+		  protection can allow for more flexible security
+		  models, with potentially significant performance
+		  improvements over traditional hardware-based
+		  solutions. We describe and analyze three
+		  implementation strategies for interposing flexible
+		  security policies in software-based security
+		  systems. Implementations exist for all three
+		  strategies: several vendors have adapted
+		  capabilities to Java, Netscape Communicator extended
+		  Java's stack introspection, and we built a
+		  type-hiding system as an add-on to Microsoft
+		  Internet Explorer." 
+}
+
+@InProceedings{wetherall96:active,
+  author = 	 "David J. Wetherall and David L. Tennenhouse",
+  title = 	 "The {ACTIVE} {IP} Option",
+  booktitle =	 sigops7,
+  year =	 1996,
+  address =	 "Connemara, Ireland",
+  month =	 sep,
+  url =		{http://www.tns.lcs.mit.edu/publications/sigops96ws.html},
+  subject =      "an",
+  abstract =	 "In this paper, we discuss our work on an active
+network architecture in which passive packets are replaced with active
+capsules -- encapsulated program fragments that are executed at each
+switch they traverse.  This approach allows application-specific
+processing to be injected into the network. The accessibility of
+computation and storage ``within'' the network provides a substrate
+that can be tailored to build global applications, including those
+that invoke customized multicast and merge processing.
+
+\par We describe an extension to the IP options mechanism that supports the
+embedding of program fragments in datagrams and the evaluation of
+these fragments as they traverse the Internet. The ACTIVE option
+provides a generic approach to the extension of the IP network
+service."
+}
+
+@Misc{wetherall96:safety,
+  author =	 "David J. Wetherall",
+  title =	 "Safety Mechanisms for Mobile Code",
+  howpublished = "Area Examination Paper",
+  year =	 1995,
+  month =	 nov,
+  subject = 	 "mc:sec",
+  url =		{http://www.tns.lcs.mit.edu/\~{}djw/area.html},
+  annote =	 "This report critiques papers on Java,
+		  Kali-Scheme, and software-based fault isolation. It
+		  focuses on mechanisms they employ to execute mobile
+		  code safely, meaning that such code is encapsulated,
+		  and interacts with its host only via a permitted
+		  interface.
+
+		  \par While the systems are diverse, it may be argued that
+		  each presents a different approach to safety. Java
+		  is statically type-checked during compilation and
+		  verified in bytecode form at load time. Kali-Scheme
+		  is also compiled to bytecodes, but is dynamically
+		  checked since Scheme is latently
+		  typed. Software-based fault isolation provides a
+		  lower level of encapsulation by directly inserting
+		  checks on control and data flow into the object
+		  code.
+
+		  \par Both software-based fault isolation and static type
+		  checking are found to be efficient. They need to
+		  address the issue of carrying checking information
+		  in the mobile code, however, while interpretation
+		  largely separates the issues of mobility and
+		  safety. Static type checking provides tighter
+		  integration of mobile code and host than sandboxing
+		  or interpretation."
+}
+
+@InCollection{white96:telescript,
+  author =       "James E. White",
+  title =        "Telescript Technology: Mobile Agents",
+  crossref =     "bradshaw96:software",
+  url =          {http://www.genmagic.com/agents/Whitepaper/whitepaper.html},
+  subject =      "ma",
+  note =         "Also available as General Magic White Paper"
+}
+
+@Misc{white98:thesis,
+  author = {D. Eric White},
+  title = {A Comparison of Mobile Agent Migration Mechanisms},
+  year = 1998,
+  month = jun,
+  howpublished = {Senior Honors Thesis, Dartmouth College},
+  keyword = {mobile agent},
+  abstract = {Choosing a model for agent migration is a key decision in the
+design of a Java mobile agent system. Two major models have been proposed for
+implementing mobile agent migration: one which captures the entire execution
+state of a running agent, and one which captures only object state. In this
+paper we compare the two models from the perspective of both the system
+programmer and the application programmer, in the context of Agent Java, a
+part of the D'Agents system developed at Dartmouth College. From the system
+programmer's perspective, we consider such issues as difficulty and
+complexity of implementation, while from the application programmer's
+perspective we examine the level of convenience, naturalness and
+functionality each method provides. Ideally, we would also like to compare
+the two methods in terms of performance, but time constraints and technical
+difficulties have prevented us from obtaining accurate results. Nevertheless,
+we present the results we were able to gather.}
+}

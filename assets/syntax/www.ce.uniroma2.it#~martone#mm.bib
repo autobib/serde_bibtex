@@ -1,0 +1,69 @@
+@comment{Last updated Tue Apr  5 06:51:50 UTC 2011}
+
+
+
+@inproceedings{synasc10-p,
+  title = {On {BLAS} operations with recursively stored sparse matrices},
+  author = {Martone, Michele and Filippone, Salvatore and Paprzycki, Marcin and Tucci, Salvatore},
+  booktitle = {Proceedings of the International Symposium on Symbolic and Numeric Algorithms for Scientific Computing},
+  address = {Timisoara, Romania},
+  year = 2010,
+  month = {September},
+  abstract = {Recently, we have proposed a recursive partitioning based layout formulti-core computations on sparse matrices. Based on positive results of our initial experiments with matrix-vector multiplication,  we discuss how this storage format can be utilized across a range of {BLAS}-style matrix operations.},
+  note = {\url{http://claudius.ce.uniroma2.it/~martone/pub/synasc10-p.pdf}}
+}
+
+@inproceedings{synasc10-hw,
+  title = {On the Usage of 16 Bit Indices in Recursively Stored
+Sparse Matrices},
+  author = {Martone, Michele and Filippone, Salvatore and Paprzycki, Marcin and Tucci, Salvatore},
+  booktitle = {Proceedings of the International Symposium on Symbolic and Numeric Algorithms for Scientific Computing},
+  address = {Timisoara, Romania},
+  year = 2010,
+  month = {September},
+  abstract = {In our earlier work, we have investigated on the feasibility of utilization of recursive partitioning in sparse matrix computations on multi-core cache based computers. After having assessed its effectiveness in matrix-vector multiplication in \cite{synasc10-p}, here we discuss how the use of this storage format can be tuned by limiting the bandwidth overhead by the usage of 16 bit indices in leaf submatrices (at the end of the recursion). Experimental results obtained on a collection of matrices and on 8-core machines illustrate effectiveness of the proposed approach.},
+  note = {\url{http://claudius.ce.uniroma2.it/~martone/pub/synasc10-hw.pdf}}
+}
+
+@inproceedings{cana10-mkrsb,
+  title = {About the assembly of recursive sparse matrices},
+  author = {Martone, Michele and Filippone, Salvatore and Paprzycki, Marcin and Tucci, Salvatore},
+  booktitle = {Proceedings of the International Multiconference on Computer Science and Information Technology},
+  address = {Wis{\l}a. Poland},
+  year = 2010,
+  month = {October},
+  abstract = {Recently, we have introduced an approach to multi-core computations on sparse matrices using recursive partitioning, called {Recursive Sparse Blocks} ({RSB}). In this document, we discuss issues involved in assembling matrices in the {RSB} format. Since the main expected application area is iterative methods, we compare the performance of matrix assembly to that of matrix-vector multiply ({SPMV}), outlining both scalability of the method and execution times ratio.},
+  note = {\url{http://claudius.ce.uniroma2.it/~martone/pub/cana10-mkrsb.pdf}}
+}
+
+@inproceedings{cana10-rsbcoo,
+  title = {Use of hybrid recursive {CSR/COO} data structures in sparse matrices-vector multiplication},
+  author = {Martone, Michele and Filippone, Salvatore and Gepner, {Pawe\l} and Paprzycki, Marcin and Tucci, Salvatore},
+  booktitle = {Proceedings of the International Multiconference on Computer Science and Information Technology},
+  address = {Wis{\l}a, Poland},
+  year = 2010,
+  month = {October},
+  abstract = {Recently, we have introduced an approach to basic sparse matrix computations on multicore cache based machines using recursive partitioning. Here, the memory representation of a sparse matrix consists of a set of submatrices, which are used as leaves of a quad-tree structure. In this paper, we evaluate the performance impact, on the Sparse Matrix-Vector Multiplication ({SPMV}), of a modification to our {Recursive CSR} implementation, allowing the use of multiple data structures in leaf matrices ({CSR/COO}, with either 16/32 bit indices).},
+  note = {\url{http://claudius.ce.uniroma2.it/~martone/pub/cana10-rsbcoo.pdf}}
+}
+
+@conference{rec-cata10,
+  title = {Utilizing Recursive Storage in Sparse Matrix-Vector Multiplication - Preliminary Considerations},
+  author = {Martone, Michele and Filippone, Salvatore and Tucci, Salvatore and Paprzycki, Marcin and Ganzha, Maria},
+  booktitle = {CATA},
+  pages = {300--305},
+  year = 2010,
+  crossref = {DBLP:conf/cata/2010},
+  abstract = {Computations with sparse matrices on multicore cache-based computers are affected by the irregularity of the problem at hand, and performance degrades easily. In this note we propose a recursive storage format for sparse matrices, and evaluate its usage for the {Sparse Matrix-Vector (SpMV)} operation on two multicore and one multiprocessor machines. We report benchmark results showing high performance and scalability comparable to current state of the art implementations.},
+  note = {\url{http://claudius.ce.uniroma2.it/~martone/pub/rec-cata10.pdf}}
+}
+
+@proceedings{DBLP:conf/cata/2010,
+  title = {Proceedings of the ISCA 25th International Conference on Computers and Their Applications, CATA 2010, March 24-26, 2010, Sheraton Waikiki Hotel, Honolulu, Hawaii, USA},
+  booktitle = {Computers and Their Applications},
+  editor = {Thomas Philips},
+  publisher = {ISCA},
+  year = 2010,
+  isbn = {978-1-880843-75-8}
+}
+

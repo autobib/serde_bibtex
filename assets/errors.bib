@@ -1,0 +1,9 @@
+% invalid character in identifier, should explain
+@book{a(,
+    title = {Title},
+}
+
+% unclosed quote, will try to consume whole file, should try to catch / explain
+@book{a(,
+    title = "Titl{e",
+}

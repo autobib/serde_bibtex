@@ -1,0 +1,2029 @@
+@COMMENT{ ==================================================================== }
+@COMMENT{     This version of meta.bib was generated on Mon, Feb 15, 1999      }
+@COMMENT{ ==================================================================== }
+
+@COMMENT{ ==================================================================== }
+@COMMENT{           BibTeX database file, for use with LaTeX/BibTeX            }
+@COMMENT{ ==================================================================== }
+@COMMENT{ database : Metastability                                             }
+@COMMENT{ e-mail   : igclark(at)iee.org                                        }
+@COMMENT{ URL      : http://www.iangclark.net/                                 }
+@COMMENT{ ==================================================================== }
+@COMMENT{ author   : Ian G. Clark                                              }
+@COMMENT{ address  : School of Electrical, Electronic & Computer Engineering   }
+@COMMENT{            Merz Court                                                }
+@COMMENT{            Newcastle University                                      }
+@COMMENT{            Newcastle-upon-Tyne. NE1 7RU. England.                    }
+@COMMENT{ ==================================================================== }
+
+@PREAMBLE{"\newcommand{\noopsort}[1]{}"}
+
+@COMMENT{ ==================================================================== }
+@COMMENT{                        Predefined journals                           }
+@COMMENT{ ==================================================================== }
+
+@STRING{cacm = "Communications of the ACM"}
+@STRING{dc   = "Distributed Computing"}
+@STRING{eatcs= "Bull. EATCS"}
+@STRING{el   = "Electronics Letters"}
+@STRING{fmsd = "Formal Methods in System Design"}
+@STRING{ieep = "IEE Proceedings"}
+@STRING{ieepcds = "IEE Proceedings, Circuits, Devices and Systems"}
+@STRING{ieepte  = "IEE Proceedings, Part E, Computers and Digital Techniques"}
+@STRING{ieeedt  = "IEEE Design \& Test of Computers"}
+@STRING{ieeejssc= "IEEE Journal of Solid-State Circuits"}
+@STRING{ieeeproc= "Proceedings of the IEEE"}
+@STRING{ieeetcs = "IEEE Transactions on Circuits and Systems"}
+@STRING{ieeetc  = "IEEE Transactions on Computers"}
+@STRING{ieeetcad= "IEEE Transactions on Computer-Aided Design"}
+@STRING{ieeetec = "IEEE Transactions on Electronic Computers"}
+@STRING{ieeetsp = "IEEE Transactions on Signal Processing"}
+@STRING{ieeevlsi= "IEEE Transactions on VLSI Systems"}
+@STRING{integration= "Integration, the VLSI journal"}
+@STRING{ije  = "Int. Journal Electronics"}
+@STRING{ipl  = "Information Processing Letters"}
+@STRING{jacm = "Journal of the ACM"}
+@STRING{jetta= "Journal of Electronic Testing: Theory and Applications"}
+@STRING{jcss = "Journal of Computer and System Sciences"}
+@STRING{tcca = "IEEE Technical Committee on Computer Architecture Newsletter"}
+@STRING{tcs  = "Theoretical Computer Science"} 
+@STRING{vlsisp= "Journal of VLSI Signal Processing"}
+
+@COMMENT{ ==================================================================== }
+@COMMENT{                       Predefined publishers                          }
+@COMMENT{ ==================================================================== }
+
+@STRING{ap   = "Academic Press"}
+@STRING{aw   = "Addison-Wesley"} 
+@STRING{bc   = "The Benjamin Cummings Publishing Company Inc."}
+@STRING{csp  = "Computer Science Press"}
+@STRING{cup  = "Cambridge University Press"}
+@STRING{cwi  = "CWI"}   
+@STRING{esp  = "Elsevier Science Publishers"}
+@STRING{icsp = "IEEE Computer Society Press"}
+@STRING{ieee = "IEEE Press"}
+@STRING{ios  = "IOS Press"}
+@STRING{kap  = "Kluwer Academic Publishers"}
+@STRING{mit  = "MIT Press"}
+@STRING{mot  = "Motorola Semiconductor Products Inc."}
+@STRING{phil = "Philips Semiconductors"}
+@STRING{ph   = "Prentice-Hall"}
+@STRING{springer= "Springer-Verlag"}
+@STRING{ti   = "Texas Instruments"}
+@STRING{wiley= "John Wiley \& Sons"}
+
+@COMMENT{ ==================================================================== }
+@COMMENT{                       Predefined series                              }
+@COMMENT{ ==================================================================== }
+
+@STRING{caltech= "California Institute of Technology"}
+@STRING{csn  = "Computing Science Notes"}
+@STRING{eut  = "Dept. of Math. and C.S., Eindhoven Univ. of Technology"}
+@STRING{ifip = "IFIP Transactions"}
+@STRING{lncs = "Lecture Notes in Computer Science"}
+@STRING{mctracts= "Mathematical Centre Tracts"}
+@STRING{southbank= "School of Computing, Information Systems and
+  Mathematics, South Bank University, London"}
+@STRING{su   = "Stanford University"}
+@STRING{wic  = "Workshops in Computing"}
+
+@COMMENT{ ==================================================================== }
+@COMMENT{               Predefined conference proceedings                      }
+@COMMENT{ ==================================================================== }
+
+@STRING{arvlsi= "Advanced Research in VLSI"}
+@STRING{async = "Proc. International Symposium on Advanced Research in
+                 Asynchronous Circuits and Systems"}
+@STRING{adm   = "Asynchronous Design Methodologies"}
+@STRING{cav   = "Proc. International Workshop on Computer Aided Verification"}
+@STRING{dac   = "Proc. ACM/IEEE Design Automation Conference"}
+@STRING{dcc   = "Designing Correct Circuits"}
+@STRING{edac  = "Proc. European Conference on Design Automation (EDAC)"}
+@STRING{edtc  = "Proc. European Design and Test Conference"}
+@STRING{eurodac="Proc. European Design Automation Conference (EURO-DAC)"}
+@STRING{esscirc="Proc. European Solid-State Circuits Conference (ESSCIRC)"},
+@STRING{hicss = "Proc. Hawaii International Conf. System Sciences"}
+@STRING{iccad = "Proc. International Conf. Computer-Aided Design (ICCAD)"}
+@STRING{iccd  = "Proc. International Conf. Computer Design (ICCD)"}
+@STRING{icpp  = "Proc. International Conference on Parallel Processing"}
+@STRING{iscas = "Proc. International Symposium on Circuits and Systems"}
+@STRING{ishls = "Proc. International Symposium on High-Level Synthesis"}
+@STRING{isscc = "International Solid State Circuits Conference"}
+@STRING{itc   = "Proc. International Test Conference"}
+@STRING{iwls  = "Proc. International Workshop on Logic Synthesis"}
+@STRING{midwest="Proceedings of the Midwest Symposium on Circuits and Systems"}
+@STRING{patmos= "PATMOS"}
+@STRING{prorisc="Proc. of the {IEEE/ProRISC} Symposium on Circuits,
+                 Systems and Signal Processing"}
+@STRING{ssat  = "Annual Symposium on Switching and Automata Theory"}
+@STRING{vts   = "Proc. IEEE VLSI Test Symposium"}
+
+@STRING{ta = "(To appear)"}
+
+@COMMENT{ ==================================================================== }
+@COMMENT{                        Template of entries                           }
+@COMMENT{ ==================================================================== }
+@COMMENT{                                                                      }
+@COMMENT{ ARTICLE{author, title, journal, year. [volume, number, pages, month, }
+@COMMENT{               note]}                                                 }
+@COMMENT{ BOOK{author/editor, title, publisher, year. [volume/number,          }
+@COMMENT{               series, address, edition, month, note]}                }
+@COMMENT{ BOOKLET{title. [author, howpublished, address, month, year, note]}   }
+@COMMENT{ INBOOK{author/editor, title, chapter, and/or pages, publisher, year. }
+@COMMENT{        [volume/number, series, type, address, edition, month, note]} }
+@COMMENT{ INCOLLECTION{author, title, booktitle, publisher, year. [editor,     }
+@COMMENT{               volume/number, series, type, chapter, pages, address,  }
+@COMMENT{               edition, month, note]}                                 }
+@COMMENT{ INPROCEEDINGS{author, title,booktitle, year. [editor, volume/number, }
+@COMMENT{        series, pages, address, month, organization, publisher, note]}}
+@COMMENT{ MANUAL{title. [author, organization, address, edition, month, year,  }
+@COMMENT{               note]}                                                 }
+@COMMENT{ MASTERSTHESIS{author, title, school, year. [type, address, month,    }
+@COMMENT{               note]}                                                 }
+@COMMENT{ MISC{ [author, title, howpublished, month, year, note]}              }
+@COMMENT{ PHDTHESIS{author, title, school, year. [type, address, month, note]} }
+@COMMENT{ PROCEEDINGS{title, year. [editor, volume, number, series, address,   }
+@COMMENT{               month, organization, publisher, note]}                 }
+@COMMENT{ TECHREPORT{author, title, institution, year. [type, number, address, }
+@COMMENT{               month, note]}                                          }
+@COMMENT{ UNPUBLISHED{author, title, note. [month, year]}                      }
+@COMMENT{ ==================================================================== }
+@COMMENT{                        End of Template                               }
+@COMMENT{ ==================================================================== }
+
+@COMMENT{ ==================================================================== }
+@COMMENT{                        Body of database                              }
+@COMMENT{ ==================================================================== }
+
+@INPROCEEDINGS{Acosta96,
+	author       = "A.J. Acosta and M.J. Bellido and M. Valencia and A. Barriga and J.L. Huertas",
+	title        = "A {CMOS} metastable robust asynchronous modular arbiter",
+	booktitle    = "Proceedings of the {ACiD-WG} Workshop, Groningen, The Netherlands, September 9-10,",
+	year         = 1996,
+	note         = ""}
+@ARTICLE{Afghahi92,
+	author  = "M. Afghahi and C. Svensson",
+	title   = "Performance of synchronous and asynchronous schemes for {VLSI} systems",
+	journal = ieeetc,
+	year    = 1992,
+	volume  = 41,
+	number  = 7,
+	pages   = "858--872",
+	note    = ""}
+
+@INPROCEEDINGS{Albicki83,
+	author       = "A. Albicki and T.A. Jackson",
+	title        = "Simulation of {NMOS} flip-flops under asynchronous inputs",
+	booktitle    = "Proc. IEEE Custom Integrated Circuits Conf.",
+	year         = 1983,
+	pages        = "239--244",
+	month        = "May",
+	note         = ""}
+
+@MANUAL{AMD_Bus_Interface91,
+	title        = "{AMD} Bus Interface Products",
+	year         = "1991",
+	note         = "Metastable hardened registers, Am29821/823/825. page 5.16"}
+	
+@TECHREPORT{AN219,
+	author      = "Application Note 219",
+	title       = "A Metastability Primer",
+	institution = phil,
+	year        = 1993,
+	number      = "AN219",
+	month       = "October",
+	note        = ""}
+
+@TECHREPORT{AN220,
+	author      = "Application Note 220",
+	title       = "Synchronizing and clock driving solutions - using the {74F50XXX} family",
+	institution = phil,
+	year        = 1989,
+	number      = "AN220",
+	month       = "September",
+	note        = "preliminary"}
+
+@ARTICLE{Anderson91,
+	author  = "J.H. Anderson and M.G. Gouda",
+	title   = "A new explanation of the glitch phenomenon",
+	journal = "ACTA Informatica",
+	year    = 1991,
+	volume  = 28,
+	number  = 4,
+	pages   = "297--309",
+	note    = ""}
+
+@BOOK{Balakrishnan76,
+	author = "A.V. Balakrishnan",
+	title     = "Applied Functional Analysis",
+	publisher = "Springer Verlag",
+	year      = 1976,
+	note      = ""}
+
+@ARTICLE{Barros83,
+	author  = "J.C. Barros and B.W. Johnson",
+	title   = "Equivalence of the arbiter, the synchronizer, the latch, and the inertial delay",
+	journal = ieeetc,
+	year    = 1983,
+	volume  = 32,
+	number  = 7,
+	pages   = "603--614",
+	note    = ""}
+
+@ARTICLE{Beaston86,
+	author  = "J. Beaston and R.S. Tetrick",
+	title   = "Designers confront metastability in boards and buses",
+	journal = "Computer Design",
+	year    = 1986,
+	volume  = 25,
+	pages   = "67--71",
+	month   = "March",
+	note    = ""}
+
+@INPROCEEDINGS{Bebbington94,
+	author       = "M. Bebbington",
+	title        = "Bistability and metastability in a stochastic system with positive feedback",
+	booktitle    = "30th Annual Conference Operational Research Society of New Zealand",
+	year         = 1994,
+	pages        = "354--359",
+	month        = "August",
+	publisher    = "Wellington; ORNSZ; NZSA",
+	note         = ""}
+
+@ARTICLE{Bellido95,
+	author  = "J.M. Bellido and A.J. Acosta and J. Luque and A. Barriga and M. Valencia",
+	title   = "Evaluation of metastability transfer models - an application to an {N}-bistable {CMOS} synchronizer",
+	journal = "International Journal of Electronics",
+	year    = 1995,
+	volume  = 79,
+	number  = 5,
+	pages   = "585--593",
+	note    = ""}
+
+@BOOK{Bertle76,
+	author = "R.G. Bertle",
+	title     = "The elements of Real Analysis",
+	publisher = "John Wiley and Sons, New York",
+	year      = 1976,
+	edition   = "second",
+	note      = ""}
+
+@BOOK{Bhatia70,
+	author    = "N.P. Bhatia and G.P. Szego",
+	title     = "Stability Theory of Dynamical Systems",
+	publisher = springer,
+	year      = 1970,
+	note      = ""}
+
+@BOOK{Blood82,
+	author    = "W.R. Jr. Blood",
+	title     = "{MECL} System Design Handbook",
+	publisher = mot,
+	year      = 1982,
+	edition   = "Third, second printing Pheonix",
+	note      = "Compiled by Motorola Applications Engineering Dept."}
+
+@ARTICLE{Bowns91,
+	author  = "T. Bowns",
+	title   = "Control metastability in high speed {CMOS} circuits",
+	journal = "Electronic Design",
+	year    = 1991,
+	volume  = 39,
+	pages   = "74",
+	month   = "September 26",
+	note    = ""}
+
+@ARTICLE{Brown97,
+	author  = "C. Brown and K. Feher",
+	title   = "Measuring metastability and its effect on communication signal processing systems",
+	journal = "IEEE Transactions on Instrumentation and Measurement",
+	year    = 1997,
+	volume  = 46,
+	number  = 1,
+	pages   = "61",
+	note    = ""}
+
+@ARTICLE{Bursky88,
+	author  = "D. Bursky",
+	title   = "Clock Free Macrocells Simplify Asynchronous design",
+	journal = "Electronic Design",
+	year    = 1988,
+	volume  = 36,
+	pages   = "53--56",
+	month   = "July",
+	note    = ""}
+
+@ARTICLE{Bryant91,
+	author  = "R.E. Bryant and C.J.H. Seger",
+	title   = "Formal verifacation of digital circuits using symbolic ternary system models",
+	journal = lncs,
+	year    = 1991,
+	volume  = 531,
+	pages   = "33-43",
+	note    = ""}
+
+@ARTICLE{Brzozowski79,
+  author = "J.A. Brzozowski and M. Yoeli",
+  title  = "On a Ternary Model of Gate Networks",
+  journal= ieeetc,
+  volume = "C-28",
+  number = 3,
+  pages  = "178--184",
+  month  = mar,
+  year   = 1979 }
+
+@ARTICLE{Brzozowski86,
+	author  = "J.A. Brzozowski and C.J. Seger",
+	title   = "Correspondence between ternary simulation and binary race analysis in gate networks",
+	journal = lncs,
+	year    = 1986,
+	volume  = 226,
+	pages   = "69--78",
+	note    = ""}
+
+@ARTICLE{Brzozowski87b,
+  author = "J.A. Brzozowski and C.J. Seger",
+  title  = "A Characterization of Ternary Simulation of Gate Networks",
+  journal= ieeetc,
+  volume = " C-36",
+  number = 11,
+  pages  = "1318--1327",
+  month  = nov,
+  year   = 1987 }
+
+@ARTICLE{Brzozowski90,
+  author = "J.A. Brzozowski and C.J.H. Seger",
+  title  = "Advances in Asynchronous Circuit Theory; Part {I}:
+    Gate and Unbounded Inertial Delay Models",
+  journal= eatcs,
+  number = 42,
+  pages  = "198--249",
+  month  = oct,
+  year   = 1990 }
+
+@BOOK{Brzozowski95,
+	author    = "J.A. Brzozowski and C.J.H. Seger",
+	title     = "Asynchronous Circuits",
+	publisher = springer,
+	year      = 1995,
+	note      = "Section on Multiple Winner Models which allow modelling of Metastable oscillations"}
+
+@INPROCEEDINGS{Brzozowski97a,
+  author = "J. A. Brzozowski",
+  title  = "Delay-Insensitivity and Ternary Simulation",
+  booktitle= "Proc. of the First International Conference on Semigroups and
+    Algebraic Engineering",
+  publisher= "World Scientific Publishing Co. Pte. Ltd., Singapore",
+  month  = mar,
+  year   = 1997 }
+
+@ARTICLE{Calvo91,
+	author  = "J. Calvo and M. Valencia and J.L. Huertas",
+	title   = "Metastable operation in {RS} Flip Flops",
+	journal = "International Journal of Electronics",
+	year    = 1991,
+	volume  = 70,
+	number  = 6,
+	pages   = "1073--1091",
+	note    = ""}
+
+@ARTICLE{Catt66,
+	author  = "I. Catt",
+	title   = "Time Loss through gating of asunchronous logic signal pulses",
+	journal = "IEEE Trans. on Electronic Computers", 
+	year    = 1966,
+	volume  = "EC-15",
+	pages   = "108--111",
+	month   = "February",
+	note    = ""}
+
+@INPROCEEDINGS{Chaney72,
+	author       = "T.J. Chaney and S.M. Ornstein and W.M. Littlefield",
+	title        = "Beware the Synchronizer",
+	booktitle    = "IEEE Compcon.",
+	year         = 1972,
+	month        = "September",
+	note         = ""}
+
+@ARTICLE{Chaney73,
+	author  = "T.J. Chaney and C.E. Molnar",
+	title   = "Anomalous Behavior of Synchronizer and Arbiter Circuits",
+	journal = ieeetc,
+	year    = 1973,
+	volume  = "C-22",
+	number  = 4,
+	pages   = "421--422",
+	month   = "April",
+	note    = ""}
+
+@INPROCEEDINGS{Chaney79a,
+	author       = "T.J. Chaney and F.U. Rosenberger",
+	title        = "Characterisation and scaling of MOS flip-flip performance in synchroniser applications",
+	booktitle    = "Proc. Caltech Conf. VLSI",
+	year         = 1979,
+	pages        = "357--374",
+	month        = "January",
+	note         = ""}
+
+@ARTICLE{Chaney79b,
+	author  = "T.J. Chaney",
+	title   = "Comments on 'A Note on Synchronizer and Interlock Maloperation'",
+	journal = ieeetc,
+	year    = 1979,
+	volume  = "C-28",
+	pages   = "802-804",
+	month   = "October",
+	note    = ""}
+
+@ARTICLE{Chaney82,
+	author  = "T.J. Chaney",
+	title   = "Circuit design for",
+	journal = ieeessc,
+	year    = 1982,
+	volume  = "SC-17",
+	month   = "August",
+	note    = ""}
+
+@ARTICLE{Chaney83,
+	author  = "T.J. Chaney",
+	title   = "Measured Flip-Flop Responses to Marginal Triggering",
+	journal = ieeetc,
+	year    = 1983,
+	volume  = "C-32",
+	number  = 12,
+	pages   = "1207--1209",
+	month   = "December",
+	note    = ""}
+
+@ARTICLE{Chaney83b,
+	author  = "T.J. Chaney",
+	title   = "Flip-flop flaw",
+	journal = "EDN",
+	year    = 1983,
+	volume  = 28,
+	number  = 4,
+	pages   = "23",
+	note    = "letter"}
+
+@ARTICLE{Chaney85,
+	author  = "T.J. Chaney",
+	title   = "A Comprehensive Bibliography on Synchronizers and Arbiters",
+	journal = "Institute of Biomedical Computing, Washington Uni., St Louis",
+	year    = 1985,
+	month   = "October",
+	note    = ""}
+
+@PHDTHESIS{Chapiro84,
+	author  = "D.M. Chapiro",
+	title   = "Globally asynchronous locally synchronous systems",
+	school  = "Stanford University",
+	year    = 1984,
+	month   = "October",
+	note    = "STAN-CS-84-1026"}
+
+@ARTICLE{Chapiro87,
+	author  = "D.M. Chapiro",
+	title   = "Reliable high speed arbitrary and synchronization",
+	journal = ieeetc,
+	year    = 1987,
+	volume  = "C-36",
+	pages   = "1251-1255",
+	month   = "October",
+	note    = ""}
+
+@ARTICLE{Chebotarev76,
+	author  = "A.N. Chebotarev",
+	title   = "Hazards in asynchronous logic circuits",
+	journal = "Kibernetika",
+	year    = 1976,
+	number  = 4,
+	pages   = "8--1",
+	note    = ""}
+
+@INPROCEEDINGS{Chenoweth90,
+	author  = "H.B. Chenoweth",
+	title   = "Soft failures and reliability",
+	booktitle    = "Proceedings Annual Reliability and Maintainability Symposium 1990",
+	year         = 1990,
+	pages        = "419--424",
+	note         = ""}
+
+@ARTICLE{Chiang90,
+  author = "Jen-Shiun Chiang and Damu Radhakrishnan",
+  title  = "Hazard-free Design of Mixed Operating Mode Asynchronous Sequential Circuits",
+  journal= ije,
+  volume = 68,
+  number = 1,
+  pages  = "23--37",
+  year   = 1990 }
+
+@INPROCEEDINGS{Chu92,
+  author = "Tam-Anh Chu",
+  title  = "Automatic synthesis and verification of hazard-free control circuits from asynchronous finite state machine Specifications",
+  pages  = "407--413",
+  booktitle= iccd,
+  publisher= icsp,
+  month  = oct,
+  year   = 1992 }
+
+@INPROCEEDINGS{Chu93c,
+  author = "Tam-Anh Chu",
+  title  = "On the specification and synthesis of hazard-free asynchronous control circuits",
+  pages  = "1495--1498",
+  booktitle= iscas,
+  publisher= icsp,
+  volume = 3,
+  year   = 1993 }
+
+@ARTICLE{Chu94,
+  author = "Tam-Anh Chu",
+  title  = "Synthesis of Hazard-Free Control Circuits from Asynchronous Finite State Machine Specifications",
+  pages  = "61--84",
+  journal= vlsisp,
+  volume = 7,
+  number = "1/2",
+  month  = feb,
+  year   = 1994 }
+
+@INPROCEEDINGS{Chung94,
+  author = "Edwin C.Y. Chung and Lindsay Kleeman",
+  title  = "Metastable-robust Self-timed Circuit Synthesis from Live Safe Simple Signal Transition Graphs",
+  pages  = "97--105",
+  booktitle= async,
+  month  = nov,
+  year   = 1994 }
+
+@ARTICLE{Clark98,
+	author  = "I.G. Clark and F. Xia and A.V. Yakovlev and A.C. Davies",
+	title   = "{P}etri net models of latch metastability",
+	journal = "IEE Electronics Letters",
+	year    = 1998,
+	volumne = 34,
+	number  = 7,
+	pages   = "635--636",
+	month   = "April",
+	note    = "IEE online number 19980502" }
+
+@ARTICLE{Corsini75,
+	author  = "P. Corsini",
+	title   = "Self-synchronizing Asynchronous Arbiter",
+	journal = "Digital Processes",
+	year    = 1975,
+	volume  = 1,
+	pages   = "67-73",
+	note    = ""}
+
+@ARTICLE{Corsini79,
+	author  = "P. Corsini",
+	title   = "Speed Independent Asynchronous Arbiter",
+	journal = ieepte,
+	year    = 1979,
+	volume  = 2,
+	pages   = "221-222",
+	month   = "October",
+	note    = ""}
+
+@INPROCEEDINGS{Cortadella94a,
+	author       = "J. Cortadella and L. Lavagno and P. Vanbekbergen and A. Yakovlev",
+	title        = "Designing Asynchronous Circuits from Behavioural Specifications with Internal Conflicts",
+	booktitle    = async,
+	year         = 1994,
+	pages        = "106-115",
+	month        = "November",
+	publisher    = icsp,
+	note         = ""}
+
+@TECHREPORT{Cortadella94b,
+	author      = "J. Cortadella and L. Lavagno and P. Vanbekbergen and A. Yakovlev",
+	title       = "Designing Asynchronous Circuits from Behavioural Specifications with Internal Conflicts",
+	institution = "Universitat Politecnica de Catalunya",
+	year        = 1994,
+	number      = "UPC/DAC No. 94/08",
+	note        = ""}
+
+@PHDTHESIS{Cortes-Ramos86,
+	author  = "E.R. Cortes-Ramos",
+	title   = "Metastability and the synchronization failure: a theoretical and experimental analysis",
+	school  = "Tufts University, Dept. of Electrical Engineering",
+	year    = 1986,
+	note    = "150 pages"}
+
+@ARTICLE{Couranz75,
+	author  = "G.R. Couranz and D.F. Wann",
+	title   = "Theoretical and Experimental Behavior of Synchronizers Operating in Metastable Region",
+	journal = ieeetc,
+	year    = 1975,
+	volume  = "C-24",
+	number  = 6,
+	month   = "June",
+	pages   = "604--616",
+	note    = ""}
+
+
+@ARTICLE{Couranz75b,
+	author  = "Wann Couranz",
+	title   = "Theoretical and experimental behaviour of synchronizers in the metastable region",
+	journal = ieeejssc,
+	year    = 1975,
+	volume  = "SC10",
+	note    = ""}
+
+@MASTERSTHESIS{Cunningham95,
+	author  = "A. Cunningham",
+	title   = "A study and characterisation of metastability in {AT{\&}T's} {ORCA} {FPGAs}",
+	school  = "Lehigh University",
+	year    = 1995,
+	note    = "108 pages"}
+
+@INPROCEEDINGS{Davies89,
+	author       = "A.C. Davies",
+	title        = "Analysis of the Metastable Dynamics of Bistable Flip-Flops",
+	booktitle    = "6th Int. Symp. on Networks, Systems and Signal Processing",
+	year         = 1989,
+	pages        = "379--382",
+	month        = "June",
+	note         = ""}
+
+@INPROCEEDINGS{Davies90,
+	author       = "A.C. Davies",
+	title        = "Modelling and Simulation of the Metastability of Flip-Flops",
+	booktitle    = "4th Tagung Schaltkreisentwarf",
+	year         = 1990,
+	month        = "February",
+	organisation = "Technishe Universitat Dresden",
+	note         = ""}
+
+@INPROCEEDINGS{Davies97,
+	author       = "A.C. Davies",
+	title        = "Asynchronous Communications Between Locally Synchronous Subsystems",
+	booktitle    = "Proc. Polish - Czech - Hungarian Workshop on Circuit Theory, Signal Processing and Applications",
+	year    = 1997,
+	pages   = "75--80",
+	month   = "September",
+	note    = ""}
+
+@INPROCEEDINGS{Davies99,
+	author       = "A.C. Davies",
+	title        = "Metastability in Latches, Arbiters and Data-Convertors",
+	booktitle    = "IEEE International symposium on Signals, Circuits and Systems SCS'99",
+	year         = 1999,
+	pages        = "1--4",
+	month        = "July 6-7",
+	publisher    = "IEEE",
+	note         = "Invited paper"}
+
+@INPROCEEDINGS{Davies99a,
+	author       = "A.C. Davies",
+	title        = "Multi-Flops - A View of the Dynamical Behaviour",
+	booktitle    = "7th International Specialist Workshop on NonLinear Dynaics of Electronic Subsystems (NDES'99)",
+	year         = 1999,
+	pages        = "133-136",
+	address      = "Ronne, Island of Bornholm, Denmark",
+	month        = "July 15-17"}
+
+@BOOK{Dillenger88,
+	author    = "Dillenger",
+	title     = "{VLSI} Engineering",
+	publisher = ph,
+	year      = 1988,
+	note      = "ISBN 013-942731-7-025"}
+
+@ARTICLE{Dingman91,
+	author  = "S. Dingman",
+	title   = "Determine {PLD} metastability to derive ample {MTBF}s",
+	journal = "EDN",
+	year    = 1991,
+	volume  = 36,
+	number  = 16,
+	pages   = "147--154",
+	month   = "August 5",
+	note    = ""}
+
+@INPROCEEDINGS{Doughty92,
+	author       = "D.C. Doughty and S. Lemon and P. Bonneau",
+	title        = "Asynchronous inputs and flip-flop metastability in the {CLAS} trigger at {CEBAF}",
+	booktitle    = "Nuclear Science Symposium and Medical Imaging Conference",
+	year         = 1992,
+	series       = "IEEE Transactions on Nuclear Science 1993, Vol 40",
+	pages        = "680--684",
+	publisher    = "IEEE",
+	note         = ""}
+
+@ARTICLE{Dudziak95,
+	author  = "H.F. Dudziak",
+	title   = "The behavior of flip-flops under different boundary conditions",
+	journal = "Microelectronics Journal",
+	year    = 1995,
+	volume  = 26,
+	number  = 4,
+	pages   = "361--374",
+	note    = ""}
+
+@ARTICLE{Dutton92,
+	author  = "R.W. Dutton",
+	title   = "Metastability of {CMOS} latch flip-flops - reply",
+	journal = ieeejssc,
+	year    = 1992,
+	volume  = 27,
+	number  = 1,
+	pages   = "131--132",
+	note    = ""}
+
+@INPROCEEDINGS{Eklund97,
+	author       = "J.E. Eklund and C. Svensson",
+	title        = "Metastability determines the noise in fast and accurate {A/D} converters",
+	booktitle    = "International Workshop on ADC modeling and testing",
+	year         = 1997,
+	editor       = "Halttunen J., Daponte P., Michaeli L.",
+	series       = "ADC Modeling anf Testing",
+	pages        = "171--176",
+	month        = "June",
+	publisher    = "Helsinki; Finnish Society of Automation",
+	note         = ""}
+
+@ARTICLE{Elamawy93,
+	author  = "A. Elamawy and M. Naraghipour and M. Hegde",
+	title   = "Noise modelling effects in redundant synchronisers",
+	journal = ieeetc,
+	year    = 1993,
+	volume  = 42,
+	number  = 12,
+	pages   = "1487--1494",
+	note    = ""}
+
+@ARTICLE{Elineau77,
+	author  = "G. Elineau and W. Wisebeck",
+	title   = "A New {J-K} Flip-Flop for Synchronizers",
+	journal = ieeetc,
+	year    = 1977,
+	volume  = "C-26",
+	pages   = "1277-1278",
+	month   = "December",
+	note    = ""}
+
+@ARTICLE{Flannagan85,
+	author  = "S.T. Flannagan",
+	title   = "Synchronization Reliability in {CMOS} Technology",
+	journal = ieeejssc,
+	year    = 1985,
+	pages   = "880",
+	month   = "August",
+	note    = ""}
+
+@ARTICLE{Fleischhammer79,
+  author = "W. Fleischhammer and O. Dortok",
+  title  = "The anomalous behavior of flip-flops in synchronizer circuits",
+  pages  = "273--276",
+  journal= ieeetc,
+  volume = "C-28",
+  number = 3,
+  month  = mar,
+  year   = 1979 }
+
+@INPROCEEDINGS{Foley96,
+	author       = "C. Foley",
+	title        = "Characterizing metastability",
+	booktitle    = "2nd International Symposium on Advanced Research into Asynchronous Circuits and Systems",
+	year         = 1996,
+	pages        = "175--187",
+	month        = "March",
+	publisher    = ieeecsp,
+	note         = ""}
+
+@INPROCEEDINGS{Freeman86,
+	author       = "G.G. Freeman and D.L. Liu and B. Wooley and E.J. McCluskey",
+	title        = "Two {CMOS} Metastable Sensors",
+	booktitle    = itc,
+	year         = 1986,
+	address      = "Centre for Reliable Computing",
+	organisation = su,
+	note         = "Paper 4.1 IEEE CH2339-0/86/0000/014"}
+
+@ARTICLE{Friedman92,
+	author  = "E.G. Friedman",
+	title   = "The Limiting performance of a {CMOS} bistable register based on wave form considerations",
+	journal = "International Journal of Electronics",
+	year    = 1992,
+	volume  = 73,
+	number  = 2,
+	pages   = "371--384",
+	note    = ""}
+
+@ARTICLE{Friedman93,
+	author  = "E.G. Friedman",
+	title   = "Latching characteristics of a {CMOS} Bistable register",
+	journal = "IEEE Transactions on Circuits and Systems I-Fundamental Theory and Applications",
+	year    = 1993,
+	volume  = 40,
+	number  = 12,
+	pages   = "902--908",
+	note    = ""}
+
+@INPROCEEDINGS{Frosini71,
+  author = "G. Frosini and G. B. Gerace",
+  title  = "Synthesis of asynchronous sequential circuits with master-slave subcircuits",
+  pages  = "60--78",
+  booktitle= ssat,
+  publisher= icsp,
+  year   = 1971 }
+
+@ARTICLE{Gabara92,
+	author  = "T.J. Gabara and G.J. Cyr and C.E. Stroud",
+	title   = "Metastability of {CMOS} master slave flip-flops",
+	journal = "IEEE Transactions on Circuits and Systems II - Analog and Digital Signal Processing",
+	year    = 1992,
+	volume  = 39,
+	number  = 10,
+	pages   = "734--740",
+	note    = ""}
+
+@ARTICLE{Galves87,
+	author  = "A. Galves and E. Olivieri and M.E. Vares",
+	title   = "Metastability for a class of dynamical systems subject to small random perturbations",
+	journal = "Annals of Probability",
+	year    = 1987,
+	volume  = 15,
+	number  = 4,
+	pages   = "1288--1305",
+	note    = ""}
+
+@BOOK{Glasser85,
+	author    = "L.A. Glasser and D.W. Dobber-Puhl",
+	title     = "The Design and Analysis of {VLSI} Circuits",
+	publisher = aw,
+	year      = 1985,
+	note      = "Section 6.5, ISBN 0-201-12580-3"}
+
+@INPROCEEDINGS{Greenstreet94,
+  author = "Mark R. Greenstreet and Peter Cahoon",
+  title  = "How fast will the flip flop\?",
+  pages  = "77--86",
+  booktitle= async,
+  month  = nov,
+  year   = 1994,
+  note = "" }
+
+@ARTICLE{Grosse94,
+	author  = "D. Grosse",
+	title   = "Keep metastability from killing your digital design",
+	journal = "EDN",
+	year    = 1994,
+	volume  = 39,
+	pages   = "109",
+	month   = "June 23",
+	note    = ""}
+
+@ARTICLE{Halijak76,
+	author  = "C.A. Halijak",
+	title   = "Characteristic equation and stable states of flip-flops",
+	journal = "Comp. Elect. Eng.",
+	year    = 1976,
+	volume  = 3,
+	pages   = "339-343",
+	note    = ""}
+
+@PHDTHESIS{Haus74,
+	author  = "J.W. Haus",
+	title   = "Metastability in continuum systems",
+	school  = "Catholic University of America",
+	year    = 1974,
+	note    = "105 pages"}
+
+@INBOOK{Hill93,
+	author    = "F.J. Hill and G.R. Peterson",
+	title     = "Computer aided logic design with emphasis on {VLSI}",
+	chapter   = "14.9 Eliminate the fundamental-mode restriction at your own risk",
+	pages     = "445--448",
+	publisher = wiley,
+	year      = 1993,
+	edition   = "Fourth",
+	note      = ""}
+
+@ARTICLE{Hohl84,
+	author  = "J.H. Hohl and W.R. Larsen and L.C. Schooley",
+	title   = "Prediction of error probabilities for integrated digital synchronizers",
+	journal = ieeejssc,
+	year    = 1984,
+	volume  = "SC-19",
+	pages   = "236-244",
+	month   = "April",
+	note    = ""}
+
+@INBOOK{Horowitz94,
+	author    = "P. Horowitz and W. Hill",
+	title     = "The Art of Electronics",
+	chapter   = "8, 11",
+	pages     = "511, 552, 757",
+	publisher = cup,
+	year      = 1994,
+	edition   = "2nd",
+	note      = ""}
+
+@TECHREPORT{Horstmann87,
+	author      = "J. Horstmann and R. Coates",
+	title       = "Metastable behaviour of {LSI} Logic flip-flops, 1.5u technology",
+	institution = "LSI Logic Corp., Palo Alto, CA",
+	year        = 1987,
+	month       = "September",
+	note        = ""}
+
+@ARTICLE{Horstmann89,
+	author  = "J.U. Horstmann and H.W. Eichel and R.L. Coates",
+	title   = "Metastability behavior of {CMOS} {ASIC} Flip-Flops in Theory and Test",
+	journal = ieeejssc,
+	year    = 1989,
+	volume  = 24,
+	number  = 1,
+	pages   = "146--157",
+	month   = "February",
+	note    = ""}
+
+@INPROCEEDINGS{Hurtado75a,
+  author = "M. Hurtado and D.L. Elliott",
+  title  = "Ambiguous Behavior of Logic Bistable Systems",
+  pages  = "605--611",
+  booktitle="Proceedings of the 13th Annual Allerton Conference on Circuit {\&} System Theory",
+  month  = oct,
+  year   = 1975 }
+
+@PHDTHESIS{Hurtado75b,
+	author  = "M. Hurtado",
+	title   = "Structure and preformance of asymptotically bistable dynamical systems",
+	school  = "Sever Institute, Washington University",
+	year    = 1975,
+	note    = ""}
+
+@BOOK{Husain77,
+	author  = "T. Husain",
+	title   = "Topology and maps",
+	publisher = "Plenum Press",
+	year    = 1977,
+	note    = ""}
+
+@PROCEEDINGS{IMA87,
+	title        = "Metastability and incompletely possed problems",
+	year         = 1987,
+	volume       = 3,
+	publisher    = "Springer-Verlag",
+	note         = "ISBN 0387964622, 372 pages"}
+
+@ARTICLE{Izmailov93,
+	author  = "A.F. Izmailov and A.S. Myerson",
+	title   = "Theory of metastable state relaxation for noncritical binary systems with nonconserved order parameter",
+	journal = "Physica A",
+	year    = 1993,
+	volume  = 192,
+	number  = "1-2",
+	pages   = "85--106",
+	note    = ""}
+
+@PHDTHESIS{Jackson85a,
+	author  = "T.A. Jackson",
+	title   = "Metastable operation of n{MOS} flip-flops",
+	school  = "Elec. Eng. Dept. Univ of Rochester, NY",
+	year    = 1985,
+	note    = ""}
+
+@INPROCEEDINGS{Jackson85b,
+	author       = "T.A. Jackson and A. Albicki",
+	title        = "Reduction of the probability of synchronization failure in {NMOS} systems through proper flip-flop design",
+	booktitle    = "Proc. 6th Biennial University/Government/Industry Microelectronics Symp.",
+	year         = 1985,
+	pages        = "177-182",
+	month        = "June",
+	note         = ""}
+
+@INPROCEEDINGS{Jackson85c,
+	author       = "T.A. Jackson and A. Albicki",
+	title        = "Modelling and Simulation of {NMOS} flip-flops in metastable region",
+	booktitle    = "Proc. 12th Int. Conf. Applied Simulation and Modelling",
+	year         = 1985,
+	month        = "July",
+	note         = ""}
+
+@ARTICLE{Jackson89,
+	author  = "T.A. Jackson and A. Albicki",
+	title   = "Analysis of Metastable Operation in {D} Latches",
+	journal = ieeetcs,
+	year    = 1989,
+	volume  = 36,
+	number  = 11,
+	pages   = "1392--1404",
+	month   = "November",
+	note    = ""}
+
+@ARTICLE{Jackson89b,
+	author  = "T.A. Jackson and A. Albicki",
+	title   = "Analysis of a double latch synchroniser circuit",
+	journal = el,
+	year    = 1989,
+	volume  = 25,
+	number  = 5,
+	pages   = "315--316",
+	note    = ""}
+
+@TECHREPORT{Jackson96,
+	author      = "T. Jackson",
+	title       = "{FIFO} Memories: Solution to reduced {FIFO} Metastability",
+	institution = ti,
+	year        = 1996,
+	number      = "SCAA011A",
+	note        = ""}
+
+@INPROCEEDINGS{Jeager85,
+	author       = "R.C. Jeager and R.M. Fox",
+	title        = "Phase plane analysis of the upset characteristics of {CMOS} {RAM} cells",
+	booktitle    = "Proc. 6th Biennial University/Government/Industry Microelectronics Symp.",
+	year         = 1985,
+	pages        = "183-187",
+	month        = "June",
+	note         = ""}
+
+@ARTICLE{JuanChico97,
+	author  = "J. JuanChico and M.J. Bellido and A.J. Acosta and M. Valencia and J.L. Huertas",
+	title   = "Analysis of metastable operation in a {CMOS} dynamic {D}-latch",
+	journal = "Analog Integrated Circuits and Signal Processing",
+	year    = 1997,
+	volume  = 14,
+	number  = "1-2",
+	pages   = "143--157",
+	note    = ""}
+
+@ARTICLE{Jump75,
+  author = "J. Robert Jump and P. S. Thiagarajan",
+  title  = "On the interconnection of asynchronous control structures",
+  journal= jacm,
+  volume = 22,
+  pages  = "596--612",
+  month  = oct,
+  year   = 1975 }
+
+@INPROCEEDINGS{Kacprzak85,
+	author       = "T. Kacprzak",
+	title        = "Analysis of metastable operation in cross-coupled {CMOS} circuits",
+	booktitle    = midwest,
+	year         = 1985,
+	pages        = "190-193",
+	month        = "August",
+	note         = ""}
+
+@ARTICLE{Kacprzak87,
+	author  = "T. Kacprzak and A. Albicki",
+	title   = "Analysis of Metastable Operation in {RS} {CMOS} Flip-Flops",
+	journal = ieeejssc,
+	year    = 1987,
+	volume  = SC-22,
+	number  = 1,
+	pages   = "57--64",
+	month   = "February",
+	note    = ""}
+
+@ARTICLE{Kacprzak88,
+	author  = "T. Kacprzak",
+	title   = "Analysis of Oscillatory Metastable Operation of an {RS} Flip-Flop",
+	journal = ieeejssc,
+	year    = 1988,
+	volume  = 23,
+	number  = 1,
+	pages   = "260--266",
+	month   = "February",
+	note    = ""}
+
+@INBOOK{Katz94,
+	author    = "R. Katz",
+	title     = "Contemporary Logic Design",
+	chapter   = "6",
+	pages     = "309--313, 320",
+	publisher = bc,
+	year      = 1994,
+	note      = ""}
+
+@ARTICLE{Kim90,
+	author  = "L.S. Kim and R.W. Dutton",
+	title   = "Metastability of {CMOS} latch/flip-flop",
+	journal = ieeejssc,
+	year    = 1990,
+	volume  = 25,
+	number  = 4,
+	pages   = "942--951",
+	month   = "August",
+	note    = ""}
+
+@MASTERSTHESIS{King90,
+	author  = "T.M. King",
+	title   = "Test of metastability failure rates in synchronizer circuits",
+	school  = "MIT, Dept. of Electrical Engineering and Computer Science",
+	year    = 1990,
+	note    = "40 pages"}
+
+ARTICLE{Kinniment73
+        author  = "D.J. Kinniment and D.B.G. Edwards",
+        title   = "Circuit Technology in a Large Computer System",
+        journal = The Radio and Electronic Engineer, year    = 1973,
+        volume  = "43", number  = 7, pages   = "435--441", month   =
+        "July", note    = "Based on paper presented at the joint
+        IERE-IEE-BCS Conference on Computers-Systems and Technology,
+        London 24 - 27 1972"}
+
+@ARTICLE{Kinniment76,
+	author  = "D.J. Kinniment and J.V. Woods",
+	title   = "Synchronisation and arbitration circuits in digital systems",
+	journal = ieep,
+	year    = 1976,
+	volume  = 123,
+	number  = 10,
+	pages   = "961--966",
+	month   = "October",
+	note    = ""}
+
+@TECHREPORT{Kinniment97,
+	author      = "D. Kinniment and A.V. Yakovlev and B. Gao",
+	title       = "Metastable behaviour in arbiter circuits",
+	institution = "University of Newcastle upon Tyne",
+	year        = 1997,
+	number      = "TR604",
+	month       = "March",
+	note        = ""}
+
+@INPROCEEDINGS{Kinniment97b,
+	author       = "D. Kinniment and A.V. Yakovlev and B. Gao",
+	title        = "Metastable Behavior and System Performance",
+	booktitle    = "Proc. 2nd UK Asynchronous Forum, Newcastle Uni.",
+	year         = 1997,
+	month        = "July",
+	note         = ""}
+
+@INPROCEEDINGS{Kinniment98,
+	author       = "D.J. Kinniment and B. Gao and A.V. Yakovlev and F. Xia",
+	title        = "Towards asynchronous {A-D} conversion",
+	booktitle    = "Proc. 4th Int. Symp. on Advanced Research in Asynchronous Circuits and Systems (ASYNC'98)",
+	year         = 1998,
+	month        = "March-April",
+	organisation = "NCL",
+	publisher    = "IEEE Computer Society Press",
+	note         = "San Diego, CA." }
+
+@TECHREPORT{Kittrell95,
+	author      = "K. Kittrell",
+	title       = "{1Kx9x2} Asynchronous {FIFO}s {SN74ACT2235} and {SN74ACT2236}",
+	institution = ti,
+	year        = 1995,
+	number      = "SCAA010A",
+	note        = ""}
+
+@TECHREPORT{Kittrell96,
+	author      = "K. Kittrell",
+	title       = "{FIFO} Solutions for Increasing Clock Rates and Data Widths",
+	institution = ti,
+	year        = 1996,
+	number      = "SZZA001A",
+	note        = ""}
+
+@ARTICLE{Kleeman86,
+  author = "Kleeman Lindsay and Cantoni Antonio",
+  title  = "Can redundancy and masking improve the performance of synchronizers",
+  journal= ieeetc,
+  pages  = "643--646",
+  volume = 35,
+  month  = jul,
+  year   = 1986,
+  note = ""}
+
+@PHDTHESIS{Kleeman86a,
+  author = "Lindsay Kleeman",
+  title  = "Service and Metastability Performance of Arbiters",
+  school = "Dept. of Electrical and Computer Eng., Univ. of Newcastle, Australia",
+  month  = aug,
+  year   = 1986 }
+
+@ARTICLE{Kleeman87a,
+  author = "Kleeman Lindsay and Cantoni Antonio",
+  title  = "On the Unavoidability of Metastable Behavior in Digital Systems",
+  journal= ieeetc,
+  volume = "C-36",
+  number = 1,
+  pages  = "109--112",
+  month  = "January",
+  year   = 1987,
+  note = ""}
+
+@ARTICLE{Kleeman87b,
+	author  = "L. Kleeman and A. Cantoni",
+	title   = "Metastable behavior in Digital Systems",
+	journal = ieeedt,
+	year    = 1987,
+	volume  = 4,
+	number  = 6,
+	pages   = "4--19",
+	month   = "December",
+	note    = ""}
+
+@ARTICLE{Kleeman89,
+	author  = "L. Kleeman and A. Cantoni",
+	title   = "Can redundancy and masking improve the performance of synchronisers - reply",
+	journal = ieeetc,
+	year    = 1989,
+	volume  = 38,
+	number  = 5,
+	pages   = "753",
+	note    = ""}
+
+@ARTICLE{Kleeman90,
+	author  = "L. Kleeman",
+	title   = "The jitter model for metastability and its application to redundant synchronizers",
+	journal = ieeetc,
+	year    = 1990,
+	volume  = 39,
+	number  = 7,
+	pages   = "930--942",
+	note    = ""}
+
+@ARTICLE{Lacroix80,
+	author  = "G. Lacroix and et al",
+	title   = "Critical triggering og integrated flip-flops in synchronizer circuits",
+	journal = "Int. J. Electron.",
+	year    = 1980,
+	volume  = 49,
+	number  = 3,
+	pages   = "179--184",
+	note    = ""}
+
+@ARTICLE{Lacroix82,
+  author = "G. Lacroix and P. Marchegay and G. Piel",
+  title  = "Comments on `The anomalous behavior of flip-flops in synchronizer circuits'",
+  pages  = "77--78",
+  journal= ieeetc,
+  volume = 31,
+  number = 1,
+  note   = "See: Fleischhammer 1979",
+  month  = jan,
+  year   = 1982 }
+
+@ARTICLE{Langer94,
+	author  = "J.M. Langer",
+	title   = "Metastable defects in semiconductors, where are we now",
+	journal = "Institute of Physics Conference Series",
+	year    = 1994,
+	volume  = 135,
+	pages   = "197--206",
+	note    = ""}
+
+@INPROCEEDINGS{Lavagno92a,
+  author = "L. Lavagno and A. Sangiovanni-Vincentelli",
+  title  = "Linear Programming for Optimum Hazard Elimination in Asynchronous Circuits",
+  pages  = "275--278",
+  booktitle= iccd,
+  publisher= icsp,
+  month  = oct,
+  year   = 1992 }
+
+@ARTICLE{Lavagno94,
+  author = "L. Lavagno and N. Shenoy and A. Sangiovanni-Vincentelli",
+  title  = "Linear Programming for Hazard Elimination in Asynchronous Circuits",
+  pages  = "137--160",
+  journal= vlsisp,
+  volume = 7,
+  number = "1/2",
+  month  = feb,
+  year   = 1994 }
+
+@ARTICLE{Lavagno95,
+  author = "Luciano Lavagno and Kurt Keutzer and Alberto Sangiovanni-Vincentelli",
+  title  = "Synthesis of Hazard-Free Asynchronous Circuits with Bounded Wire Delays",
+  journal= ieeetcad,
+  volume = 14,
+  number = 1,
+  pages  = "61--86",
+  month  = jan,
+  year   = 1995 }
+
+@ARTICLE{Liapunov66,
+	author  = "A.M. Liapunov",
+	title   = "Stability of motion",
+	journal = "Academic Press",
+	year    = 1966,
+	note    = ""}
+
+@ARTICLE{Lim83,
+	author  = "Y.W. Lim and J.R. Cox",
+	title   = "Clocks and the performance of synchronisers",
+	journal = ieepte,
+	year    = 1983,
+	volume  = 130,
+	number  = 2,
+	pages   = "57--64",
+	month   = "March"}
+
+@TECHREPORT{Littlefield66,
+	author      = "W.M. Littlefield and T.J. Chaney",
+	title       = "The Glitch Phenomenon",
+	institution = wu,
+	year        = 1966,
+	number      = "Tech. Memo No. 10",
+	note        = ""}
+
+@ARTICLE{Littlewood87,
+	author  = "P.B. Littlewood",
+	title   = "Metastability, memory, and dynamics of charge-density waves",
+	journal = "Japanese Journal of Applied Physics, Part 1 - regular papers and short notes",
+	year    = 1987,
+	volume  = 26,
+	pages   = "1901--1906",
+	note    = ""}
+
+@ARTICLE{Liu77,
+	author  = "B. Liu and N.C. Gallagher",
+	title   = "On the Metasatble Region of Flip-Flop Circuits",
+	journal = "Proc. IEEE",
+	year    = 1977,
+	volume  = 65,
+	pages   = "581-583",
+	month   = "April",
+	note    = ""}
+
+@ARTICLE{Manner88,
+	author  = "R. Manner",
+	title   = "Metastable states in asynchronous digital systems - avoidable or unavoidable",
+	journal = "Microelectronics and Reliability",
+	year    = 1988,
+	volume  = 28,
+	number  = 2,
+	pages   = "295--307",
+	note    = ""}
+
+@INPROCEEDINGS{Marchgay82,
+	author       = "P. Marchgay and et al",
+	title        = "Characterisation and testing of synchroniser circuits",
+	booktitle    = "Proc. 3rd Int. Conf. Reliability and Maintainability",
+	year         = 1982,
+	pages        = "663-667",
+	note         = ""}
+
+@ARTICLE{Marino77,
+  author = "Leonard R. Marino",
+  title  = "The effect of asynchronous inputs on sequential network reliability",
+  journal= ieeetc,
+  volume = 26,
+  number = 11,
+  pages  = "1082--1090",
+  month = "November",
+  year   = 1977 }
+
+@ARTICLE{Marino81,
+	author  = "L.R. Marino",
+	title   = "General Theory of Metastable Operation",
+	journal = ieeetc,
+	year    = 1981,
+	volume  = "C-30",
+	number  = 2,
+	pages   = "107--115",
+	month   = "February",
+	note    = ""}
+
+@ARTICLE{Marrin85,
+	author  = "K. Marrin",
+	title   = "Metastability haunts {VME}bus and Multibus {II} systems designers",
+	journal = "Computer Design",
+	year    = 1985,
+	volume  = 24,
+	pages   = "29",
+	month   = "August",
+	note    = ""}
+
+@ARTICLE{Marino86,
+	author  = "L.R. Marino",
+	title   = "Principles of computer design",
+	journal = "Computer Science Press, Rockwell",
+	year    = 1986,
+	note    = ""}
+
+@ARTICLE{Mason91,
+	author  = "N.J. Mason and W.R. Newell",
+	title   = "A state selective metastable detector",
+	journal = "Measurement Science and Technology",
+	year    = 1991,
+	volume  = 2,
+	pages   = "568--570",
+	month   = "June",
+	note    = ""}
+
+@ARTICLE{Masteller91,
+	author  = "S.R. Masteller",
+	title   = "Design a digital synchronizer with a low metastable failure rate",
+	journal = "EDN",
+	year    = 1991,
+	volume  = 36,
+	number  = 9,
+	pages   = "169",
+	month   = "April 25",
+	note    = ""}
+
+@ARTICLE{Mayne74,
+	author  = "D. Mayne and R. Moore",
+	title   = "Minimize Computer Crahes",
+	journal = "Electronic Design",
+	year    = 1974,
+	volume  = 22,
+	number  = 9,
+	pages   = "168--172",
+	note    = ""}
+
+@BOOK{Mead88,
+	author    = "Conway Mead",
+	title     = "Introduction to {VLSI} Systems",
+	publisher = aw,
+	year      = 1988,
+	month     = "October",
+	note      = "Sections 1.14, 7.5, 9.6, ISBN 0-201-04358-0"}
+
+@MASTERSTHESIS{Melchiorre92,
+	author  = "R. Melchiorre",
+	title   = "A study of metastability in {CMOS} latches",
+	school  = "Lehigh University",
+	year    = 1992,
+	note    = "104 pages"}
+
+@ARTICLE{Mendler93,
+	author  = "M. Mendler and T. Stroup",
+	title   = "Newtonian arbiters cannot be proven correct",
+	journal = "Formal Methods in System Design",
+	year    = 1993,
+	volume  = 3,
+	pages   = "233--257",
+	month   = "December",
+	note    = "" }
+
+@MASTERSTHESIS{Mitchell96,
+	author  = "I. Mitchell and M. Greenstreet",
+	title   = "Proving Newtonian Arbiters Correct, Almost Surely",
+	school  = "University of British Colombia",
+	year    = "1996",
+	note    = ""}
+
+@ARTICLE{Morin89,
+	author  = "L. Morin and H.F. Li",
+	title   = "Design of synchronisers: a review",
+	journal = ieepte,
+	year    = 1989,
+	volume  = 136,
+	pages   = "557--564",
+	month   = "November",
+	note    = ""}
+
+@ARTICLE{Muehlemann79,
+	author  = "K. Muehlemann",
+	title   = "Arbiters, priority access conflicts and the glitch problem",
+	journal = "Microprocessors and their application",
+	year    = 1979,
+	pages   = "391-401",
+	note    = ""}
+
+@ARTICLE{Nootbaar90,
+	author  = "K. Nootbaar and R.W. Spehn and E. Tyler",
+	title   = "Minimizing the effect of metastability in {BiCMOS} circuit design",
+	journal = "EDN",
+	year    = 1990,
+	volume  = 35,
+	pages   = "141--146",
+	month   = "September 3",
+	note    = ""}
+
+@TECHREPORT{Patil74,
+	author      = "S.S. Patil",
+	title       = "Bounded and unbounded delay synchronisers and arbiters",
+	institution = mit,
+	year        = 1974,
+	number      = "Memo 103",
+	month       = "June",
+	note        = ""}
+
+@ARTICLE{Pearce75,
+	author  = "R.C. Pearce and J.A. Field and W.D. Little",
+	title   = "Asynchronous Arbiter Module",
+	journal = ieeetc,
+	year    = 1975,
+	volume  = "C-24",
+	pages   = "931--932",
+	month   = "September",
+	note    = ""}
+
+@ARTICLE{Pechoucek76,
+	author  = "M. Pechoucek",
+	title   = "Anomalous Response Times of Input Synchronisers",
+	journal = ieeetc,
+	year    = 1976,
+	volume  = C-25,
+	number  = 2,
+	pages   = "133--139",
+	month   = "February",
+	note    = ""}
+
+@INPROCEEDINGS{Pechoucek78,
+	author       = "M. Pechoucek",
+	title        = "Random errors of digital systems by flip-flops",
+	booktitle    = "Proc. Compcon.",
+	year         = 1978,
+	pages        = "370--376",
+	month        = "September",
+	note         = ""}
+
+@BOOK{Pfister89,
+	author = "A. Pfister",
+	title     = "Metastability in digital circuits with emphasis on {CMOS} technology amplifier",
+	publisher = "Hartung Gorre",
+	year      = 1989,
+	number    = "ISBN 3891912692",
+	edition   = "1",
+	note      = "236 pages, abstract in German"}
+
+@ARTICLE{Plummer72,
+	author  = "W.W. Plummer",
+	title   = "Asynchronous Arbiters",
+	journal = ieeetc,
+	year    = 1972,
+	volume  = "C-21",
+	pages   = "37--42",
+	month   = "January",
+	note    = ""}
+
+@BOOK{Porat79,
+	author    = "B. Porat",
+	title     = "Introduction to Digital Techniques",
+	publisher = wiley,
+	year      = 1979,
+	note      = "Chapter 7, ISBN 0-471-02924-6"}
+
+@ARTICLE{Portmann95,
+  author = "Clemenz L. Portmann and Teresa H. Y. Meng",
+  title  = "Metastability in {CMOS} Library Elements in Reduced Supply and Technology Scaled Applications",
+  journal= ieeejssc,
+  volume = 30,
+  number = 1,
+  pages  = "39--46",
+  month  = jan,
+  year   = 1995 }
+
+@PHDTHESIS{Portmann95b,
+	author  = "C.L. Portmann",
+	title   = "Charaterization and reduction of metastability errors in {CMOS} interface circuits",
+	school  = "Stanford University, Dept. of Electrical Engineering",
+	year    = 1995,
+	note    = "104 pages"}
+
+@ARTICLE{Portmann95c,
+	author  = "C.L. Portmann and T.H.Y. Meng",
+	title   = "Supply noise and {CMOS} synchronization errors",
+	journal = ieeejssc,
+	year    = 1995,
+	volume  = 30,
+	number  = 9,
+	pages   = "1015--1017",
+	note    = ""}
+
+@ARTICLE{Portmann96,
+	author  = "C.L. Portmann and T.H.Y. Meng",
+	title   = "Power efficient metastability error reduction in {CMOS} flash {A/D} converters",
+	journal = ieeejssc,
+	year    = 1996,
+	volume  = 31,
+	number  = 8,
+	pages   = "1132",
+	note    = ""}
+
+@ARTICLE{Reyneri90,
+	author  = "L.M. Reyneri and D. Delcorso and B. Sacco",
+	title   = "Oscillatory metastability in homogeneous and inhomogeneous flip-flops",
+	journal = ieeejssc,
+	year    = 1990,
+	volume  = 25,
+	number  = 1,
+	pages   = "254--264",
+	note    = ""}
+
+@ARTICLE{Rockermann89,
+	author  = "B. Rockermann",
+	title   = "Buffer prevents metastability",
+	journal = "EDN",
+	year    = 1989,
+	volume  = 34,
+	pages   = "156",
+	month   = "February",
+	note    = ""}
+
+@ARTICLE{Rogina96,
+	author  = "B.M. Rogina and K. Skala and B. Vojnovic",
+	title   = "Metastability characteristics testing for prorammable logic design",
+	journal = lncs,
+	year    = 1996,
+	volume  = 1142,
+	pages   = "381--388",
+	note    = ""}
+
+@ARTICLE{Rosenberger82,
+	author  = "F.U. Rosenberger and T.J. Chaney",
+	title   = "Flip-Flop resolving time test circuit",
+	journal = ieeejssc,
+	year    = 1982,
+	volume  = "SC-17",
+	pages   = "731-738",
+	month   = "August",
+	note    = ""}
+
+@ARTICLE{Rosenberger92,
+  author = "Fred U. Rosenberger and Charles E. Molnar",
+  title  = "Comments on `Metastability of {CMOS} Latch/Flip-Flop'",
+  pages  = "128--130",
+  note   = "Reply by Robert W. Dutton pages 131--132 of same issue",
+  journal= ieeejssc,
+  volume = 27,
+  number = 1,
+  month  = jan,
+  year   = 1992 }
+
+@INPROCEEDINGS{Sawasaki95,
+  author = "Milton Sawasaki and Chantal Ykman-Couvreur and Bill Lin",
+  title  = "Externally Hazard-Free Implementations of Asynchronous Circuits",
+  booktitle= dac,
+  month  = jun,
+  year   = 1995 }
+
+@ARTICLE{Schonmann92,
+	author  = "R.H. Schonmann",
+	title   = "The pattern of excape from metastability of a stochastic ising-model",
+	journal = "Communications in Methematical Physics",
+	year    = 1992,
+	volume  = 147,
+	number  = 2,
+	pages   = "231--240",
+	note    = ""}
+
+@ARTICLE{Scoppola93,
+	author  = "E. Scoppola",
+	title   = "Renormalization group for Markov chains and application to metastability",
+	journal = "Journal of Statistical Physics",
+	year    = 1993,
+	volume  = 73,
+	number  = "1-2",
+	pages   = "83",
+	month   = "October",
+	note    = ""}
+
+@INPROCEEDINGS{Seitz79,
+	author       = "C.L. Seitz",
+	title        = "Self-times {VLSI} systems",
+	booktitle    = "Proceedings of the 1st Caltech Conference on Very Large Scale Integration",
+	year         = 1979,
+	editor       = "Seitz C.L.",
+	pages        = "345-355",
+	address      = "C.S. Dept., Pasadena.",
+	month        = "January",
+	organisation = "Caltech"}
+
+@ARTICLE{Seitz80,
+	author  = "C.L. Seitz",
+	title   = "Ideas about arbiters",
+	journal = "Lambda, 1 (1, first quarter)",
+	year    = 1980,
+	pages   = "10--14",
+	note    = ""}
+
+@ARTICLE{Seger88,
+	author  = "C.J. Seger and J.A. Brzozowski",
+	title   = "An optimistic ternary simulation of gate races",
+	journal = tcs,
+	year    = 1988,
+	volume  = 61,
+	number  = 1,
+	pages   = "49--66",
+	note    = ""}
+
+@ARTICLE{Seger94,
+	author  = "C.J. Seger and J.A. Brzozowski",
+	title   = "Generalized ternary simulation of sequential-circuits",
+	journal = "Rairo-Informatique Theorique et Applications-Theoretical Informatics and Applications",
+	year    = 1994,
+	volume  = 28,
+	number  = "3-4",
+	pages   = "159--186",
+	note    = ""}
+
+@ARTICLE{Shear92,
+	author  = "D. Shear",
+	title   = "Exorcise metastability from your design",
+	journal = "EDN",
+	year    = 1992,
+	volume  = 37,
+	pages   = "58--64",
+	month   = "December 10",
+	note    = ""}
+
+@ARTICLE{Shelor98,
+	author  = "C. Shelor",
+	title   = "{VHDL} design",
+	journal = "VHDL Times",
+	year    = 1998,
+	volume  = 7,
+	number  = 2,
+	pages   = "6--8, 17--18",
+	note    = ""}
+
+@ARTICLE{Siddique88,
+	author  = "N. Siddique and C. Dike",
+	title   = "Metastable-free arbitrator co-ordinates processors",
+	journal = "Electronic Design",
+	year    = 1988,
+	volume  = 14,
+	pages   = "107--112",
+	month   = "April",
+	note    = ""}
+
+@ARTICLE{Sommerer93,
+	author  = "J.C. Sommerer",
+	title   = "A universal scaling for noise induced metastability",
+	journal = "Physics Letters",
+	year    = 1993,
+	volume  = 176,
+	number  = "1-2",
+	pages   = "85",
+	month   = "May 03",
+	note    = ""}
+
+@MASTERSTHESIS{Srinivasan74,
+	author  = "R. Srinivasan",
+	title   = "Anomalous Behaviour of {TTL} circuits with Totem Pole Outputs",
+	school  = "Washington University",
+	year    = 1974,
+	note    = "D.Sc dissertation"}
+
+@ARTICLE{Stoll82,
+	author  = "P.A. Stoll",
+	title   = "How to avoid synchronization problems",
+	journal = "VLSI Design",
+	year    = 1982,
+	pages   = "56--59",
+	month   = "November/December",
+	note    = ""}
+
+@INPROCEEDINGS{Strom79,
+	author       = "B.I. Strom",
+	title        = "Proof of the equivalent realizability of a time bounded arbiter and a runt free inertial delay",
+	booktitle    = "Proc. 6th Annual Symp. on Computer Architecture",
+	year         = 1979,
+	pages        = "178-181",
+	note         = ""}
+
+@TECHREPORT{TICMOS,
+	author      = "R. Breuninger and M. Higgs and R. Schwartz",
+	title       = "Advanced {CMOS} Logic Designers Handbook",
+	institution = ti,
+	year        = "1987",
+	pages       = "3.1--3.12, 3.29--3.36",
+	note        = ""}
+
+@INPROCEEDINGS{Tretz97,
+	author       = "C. Tretz and C.T. Chuang and L.M. Terman and C.J. Anderson",
+	title        = "Metastability of {SOI} {CMOIS} latches",
+	booktitle    = "IEEE International {SOI} Conference Proceedings",
+	year         = 1997,
+	series       = "IEEE International SOI Conference",
+	pages        = "162--163",
+	month        = "October",
+	publisher    = "IEEE",
+	note         = ""}
+
+@ARTICLE{Unger71,
+	author  = "S.H. Unger",
+	title   = "Asynchronous Sequential Switching Circuits with Unrestricted Input Changes",
+	journal = ieeetc,
+	year    = 1971,
+	volume  = "C-20",
+	pages   = "1437-1444",
+	month   = "December",
+	note    = ""}
+
+@ARTICLE{Unger77,
+	author  = "S.H. Unger",
+	title   = "Self Synchronizing Circuits and Nonfundamental Mode Operation",
+	journal = ieeetc,
+	year    = 1977,
+	volume  = "C-26",
+	pages   = "278--281",
+	month   = "March",
+	note    = ""}
+
+@TECHREPORT{Unger93,
+	author      = "S.H. Unger",
+	title       = "Hazards, critical races and metastability",
+	institution = "Columbia University",
+	year        = 1993,
+	number      = "CUCS-028-93",
+	address     = "Dept. of Computer Science",
+	note        = ""}
+
+@ARTICLE{Unger95,
+  author = "Stephen H. Unger",
+  title  = "Hazards, Critical Races, and Metastability",
+  pages  = "754--768",
+  journal= ieeetc,
+  volume = 44,
+  number = 6,
+  month  = jun,
+  year   = 1995 }
+
+@ARTICLE{Valencia95,
+  author = "M. Valencia and M. J. Bellido and J. L. Huertas and A. J. Acosta and S. Sanchez-Solano",
+  title  = "Modular Asynchronous Arbiter Insensitive to Metastability",
+  journal= ieeetc,
+  pages  = "1456--1461",
+  volume = 44,
+  number = 12,
+  month  = "December",
+  year   = 1995}
+
+@ARTICLE{VanScheik97,
+	author  = "W.S. VanScheik and R.F. Tinder",
+	title   = "High speed externally asynchronous internally clocked systems",
+	journal = ieeetc,
+	year    = 1997,
+	volume  = 46,
+	number  = 7,
+	pages   = "824--829",
+	note    = ""}
+
+@ARTICLE{Vares96,
+	author  = "M.E. Vares",
+	title   = "Large deviations and metastability",
+	journal = "Travaux en Cours",
+	year    = 1996,
+	volume  = 53,
+	note    = ""}
+
+@ARTICLE{Varshavskii82,
+	author  = "V.I. Varshavskii and  M.A. Kishinevskii",
+	title   = "Anomalous Behavior of Logic Circuits and the Arbitration Problem",
+	journal = "Journal of Automation and Remote Control, USSR",
+	year    = 1982,
+	number  = 1,
+	pages   = "99--105",
+	note    = "got"}
+
+@BOOK{Varshavsky90,
+	author    = "V.A. Varshavsky (Ed.) and M.A. Kishinevsky and V.B. Marakhovsky and V.A. Peschansky and L.Y. Resenblum and A.R. Taubin and B.S. Tzizlin",
+	title     = "Self Timed Control of Concurrent Processes",
+	publisher = kluwer,
+	year      = 1990,
+	edition   = "Russian edition 1986",
+	note      = ""}
+
+@INPROCEEDINGS{Veendrick79,
+	author       = "H.J. Veendrick",
+	title        = "Design Aspects and reliability of a synchronizer made in {CMOS} technology",
+	booktitle    = "Proc. 5th Eur. Solid-state circ. conf.",
+	year         = 1979,
+	pages        = "8--10",
+	note         = ""}
+
+@ARTICLE{Veendrick80,
+	author  = "H.J.M. Veendrick",
+	title   = "The Behavior of Flip-Flops Used as Synchronizers and Prediction of their Failure Rate",
+	journal = ieeejssc,
+	year    = 1980,
+	volume  = SC-15,
+	number  = 2,
+	pages   = "169--176",
+	month   = "April",
+	note    = ""}
+
+@ARTICLE{Wakerly87,
+	author  = "J.F. Wakerly",
+	title   = "Designers Guide to Synchronisers and Metastability - parts {I} {\&} {II}",
+	journal = su,
+	year    = 1987,
+	volume  = 1,
+	number  = "Part I No 1, part II No 2",
+	month   = "Part I September, part II October",
+	note    = "Microprocessor Report"}
+
+@ARTICLE{Wakerly88,
+	author  = "J.F. Wakerly",
+	title   = "{TI} Introduces Metastable Resistant Flip-Flops",
+	journal = ti,
+	year    = 1988,
+	month   = "August",
+	note    = ""}
+
+@ARTICLE{Walker96,
+	author  = "J. Walker and A. Cantoni",
+	title   = "A new synchroniser design",
+	journal = ieeetc,
+	year    = 1996,
+	volume  = 45,
+	number  = 11,
+	pages   = "1308--1311",
+	note    = ""}
+
+@TECHREPORT{Wellheuser96,
+	author      = "C. Wellheuser",
+	title       = "Metastability Performance of Clocked {FIFO}s",
+	institution = ti,
+	year        = 1996,
+	number      = "SCZA004A",
+	note        = ""}
+
+@ARTICLE{Wesson87,
+	author  = "Author unknown",
+	title   = "Wesson Session Probes Metastability Issues",
+	journal = su,
+	year    = 1987,
+	volume  = 1,
+	number  = 4,
+	month   = "December",
+	note    = "Microprocessor Report"}
+
+@ARTICLE{Wild93,
+	author  = "A. Wild and H. Fischer",
+	title   = "Modeling metastability states in {ASIC}",
+	journal = "Microelectronics and Reliability",
+	year    = 1993,
+	volume  = 33,
+	number  = 14,
+	pages   = "2079--2086",
+	note    = ""}
+
+@ARTICLE{Wormald77,
+	author  = "E.G. Wormald",
+	title   = "A Note on Synchronizer or Interlock Maloperation",
+	journal = ieeetc,
+	year    = 1977,
+	volume  = "C-26",
+	number  = 3,
+	pages   = "317--318",
+	note    = ""}
+
+@ARTICLE{Wormald79,
+	author  = "E.G. Wormald",
+	title   = "Support for Chaney's 'Comments on a note on synchronizer or interlock maloperation",
+	journal = ieeetc,
+	year    = 1979,
+	volume  = "C-28",
+	pages   = "804",
+	month   = "October",
+	note    = ""}
+
+@INPROCEEDINGS{Xia97,
+        author       = "F. Xia and I.G. Clark and A.V. Yakovlev and A.C. Davies",
+        title        = "{P}etri net models of metastable operations in latch circuits",
+        booktitle    = "Third UK Forum on Asynchronous Systems",
+        year         = 1997,
+        editor       = "Arvind D.K., Furber S.",
+        month        = "December",
+        organisation = "University of Edinburgh, UK.",
+        note         = ""}
+
+
+@TECHREPORT{Xia98a,
+        author       = "F. Xia and I.G. Clark and A.V. Yakovlev and A.C. Davies",
+        title        = "{P}etri net models of metastable operations in latch circuits (full paper)",
+	institution = "Dept. of Computing Science, University of Newcastle upon Tyne",
+	year        = 1998,
+	number      = "TR627",
+	month       = "January",
+	note        = "" }
+
+@INPROCEEDINGS{Yakovlev92,
+	author       = "A.V. Yakovlev and L. Lavagno and A. Sangiovanni-Vincentelli",
+	title        = "A Unified Signal Transistion Graph Model for Asynchronous Control Circuit Synthesis",
+	booktitle    = iccad,
+	year         = 1992,
+	month        = "November",
+	note         = ""}
+
+@MASTERSTHESIS{Yan90,
+	author  = "P.Y. Yan",
+	title   = "Metastability characterization and measurement",
+	school  = "Washington University",
+	year    = 1990,
+	note    = "120 pages"}
+
+@INBOOK{Yarbrough96,
+	author    = "J.M. Yarbrough",
+	title     = "Digital Logic Applications and Design",
+	chapter   = "5",
+	pages     = "268--271",
+	year      = 1996,
+	publisher = "publisher unknown",
+	note      = "ISBN 0-314-06675-6, Section 5.3.3"}
+
+@ARTICLE{Yoeli64,
+	author  = "M. Yoeli and S. Rinon",
+	title   = "Application of ternary algebra to the study of static hazards",
+	journal = "jacm",
+	year    = 1964,
+	volume  = 11,
+	number  = 1,
+	pages   = "84--97",
+	note    = "" }
+
+@COMMENT{ ==================================================================== }
+@COMMENT{                         End of database                              }
+@COMMENT{ ==================================================================== }

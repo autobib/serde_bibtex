@@ -1,0 +1,32 @@
+@TECHREPORT{Jon+Was+Wei:2004,
+  AUTHOR = {Simon {Peyton~Jones} and Geoffrey Washburn and Stephanie Weirich},
+  TITLE = {Wobbly types: type inference for generalised algebraic data types},
+  INSTITUTION = {University of Pennsylvania},
+  ADDRESS = {Computer and Information Science Department, Levine Hall, 
+             3330 Walnut Street, Philadelphia, Pennsylvania, 19104-6389},
+  YEAR = 2004,
+  MONTH = jul,
+  NUMBER = {MS-CIS-05-26},
+  PDF = {http://www.cis.upenn.edu/~geoffw/research/papers/MS-CIS-05-26.pdf},
+  PLCLUB = "yes",
+  ABSTRACT = {
+Generalised algebraic data types (GADTs), sometimes known as ``guarded
+recursive data types'' or ``first-class phantom types'', are a simple
+but powerful generalisation of the data types of Haskell and ML.
+Recent works have given compelling examples of the utility of GADTs,
+although type inference is known to be difficult.
+
+It is time to pluck the fruit.  Can GADTs be added to Haskell, without
+losing type inference, or requiring unacceptably heavy type annotations?
+Can this be done without completely rewriting the already-complex Haskell
+type-inference engine, and without complex interactions with (say)
+type classes?  We answer these questions in the affirmative, giving
+a type system that explains just what type annotations are required,
+and a prototype implementation that implements it.  Our main technical
+innovation is \emph{wobbly types}, which express in a declarative way
+the uncertainty caused by the incremental nature of typical type-inference
+algorithms.      
+  }
+}
+
+

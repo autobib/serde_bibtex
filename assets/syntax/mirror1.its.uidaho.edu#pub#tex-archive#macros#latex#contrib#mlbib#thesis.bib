@@ -1,0 +1,313 @@
+% thesis.bib        15-Dec-90
+% last modification 30-Oct-96
+%
+% Copyright (C) 1990--1996 Wenzel Matiaske
+%
+% A short description of entry types for BibTeX database is included
+% at the beginning of the database
+%
+% For general use of BibTeX see O. Patashnik ``btxbst.doc'' or 
+% L. Lamport ``LaTeX'' pp. 140-147
+%
+% Please send bug fixes and enhancements to the address below:
+%                              ___      
+% wenzel matiaske  |           / /_/-Berlin
+%                  |
+%                  |  mail:   Technical University Berlin
+%                  |          Dept. of Economics & Management, WW6
+%                  |          Uhlandstr. 4-5, D-10623 Berlin
+%                  |  phone:  +49 30 314-22574
+%                  |  fax:    +49 30 314-21787
+%                  |  email:  W.Matiaske!ww!TU-Berlin!de
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Types of entries currently allowed in a BibTeX file:
+%% 
+%% ARTICLE -- An article from a journal or magazine.
+%%            - required fields: author, title, journal, year.
+%%            - optional fields: volume, number, pages, month, note.
+%%
+%% BOOK -- A book with an explicit publisher.
+%%            - required: author or edititor, title, publisher, year.
+%%            - optional: volume, series, address, edition, month, note.
+%%
+%% BOOKLET -- A work that is printed and bound,
+%% but without a named publisher or sponsoring institution.
+%%            - required: title.
+%%            - optional: author, howpublished, address, month, year, note.
+%% 
+%% CONFERENCE -- The same as INPROCEEDINGS,
+%% included for Scribe compatibility.
+%% 
+%% INBOOK -- A part of a book,
+%% which may be a chapter (or section or whatever) and/or a range of pages.
+%%            - required: author or editor, title, chapter and/or pages,
+%%                        publisher, year.
+%%            - optional: volume, series, address, edition, month, note.
+%% 
+%% INCOLLECTION -- A part of a book having its own title.
+%%             - required: author, title, booktitle, publisher, year.
+%%             - optional: editor, chapter, pages, address, month, note.
+%% 
+%% INPROCEEDINGS -- An article in a conference proceedings.
+%%             - required: author, title, booktitle, year.
+%%             - optional: editor, pages, organization, publisher, address,
+%%                         month, note.
+%% 
+%% MANUAL -- Technical documentation.  
+%%             - required: title.
+%%             - optional: author, organization, address, edition, month,
+%%                         year, note.
+%%  
+%% MASTERSTHESIS -- A Master's thesis.
+%%             - required: author, title, school, year.
+%%             - optional: address, month, note.
+%% 
+%% MISC -- Use this type when nothing else fits.
+%%             - required: ---
+%%             - optional: author, title, howpublished, month, year, note.
+%% 
+%% PHDTHESIS -- A PhD thesis.
+%%             - required: author, title, school, year.
+%%             - optional: address, month, note.
+%% 
+%% PROCEEDINGS -- The proceedings of a conference.
+%%            - required: title, year.
+%%            - optional: editor, publisher, organization, address, month, note.
+%% 
+%% TECHREPORT -- A report published by a school or other institution,
+%% usually numbered within a series.
+%%            - required: author, title, institution, year.
+%%            - optional: type, number, address, month, note.
+%% 
+%% UNPUBLISHED -- A document having an author and title, but not formally
+%% published.
+%%            - required: author, title, note.
+%%            - optional: month, year.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@string{aAW    = "angewandte Arbeitswissenschaft"}
+@string{ADMS   = "Administration and Society"}
+@string{AER    = "American Economic Review"}
+@string{AfK    = "Archiv f{{\"u}}r Kommunalforschung???"}
+@string{AJPS   = "American Journal of Political Science"}
+@string{AJS    = "American Journal of Sociology"}
+@string{AME    = "Academy of Management Executive"}
+@string{AMJ    = "Academy of Management Journal"}
+@string{AMR    = "Academy of Management Review"}
+@string{AP     = "American Psychologist"}
+@string{APSR   = "American Political Science Review"}
+@string{ARP    = "Annual Review of Psychology"}
+@string{ARS    = "Annual Review of Sociology"}
+@string{AS     = "The American Sociologist"}
+@string{ASQ    = "Administrative Science Quarterly"}
+@string{ASR    = "American Sociological Review"}
+@string{AdMJ   = "Advanced Management Journal"}
+@string{AfSW   = "Archiv f{{\"u}}r Sozialwissenschaft und Sozialpolitik"}
+@string{AuL    = "Arbeit und Leistung"}
+@string{BAnz   = "Bundesanzeiger"}
+@string{BB     = "Betriebs Berater"}
+@string{BFuP   = "Betriebswirtschaftliche Forschung und Praxis"}
+@string{BH     = "Business Horizons"}
+@string{BIOM   = "Biometrika"}
+@string{BJM    = "British Journal of Management"}
+@string{BJS    = "British Journal of Sociology"}
+@string{BS     = "Behavioral Sciences"}
+@string{BT-Dr  = "Bundestagsdrucksache"}
+@string{BW     = "Der Betriebswirt"}
+@string{CMR    = "California Management Review"}
+@string{DB     = "Der Betrieb"}
+@string{DBW    = "Die Betriebswirtschaft"}
+@string{DIAG   = "Diagnostika"}
+@string{DU     = "Die Unternehmung"}
+@string{DV     = "Die Verwaltung"}
+@string{DoV    = "Die {{\"o}}ffentliche Verwaltung"}
+@string{ECO    = "Economica"}
+@string{EER    = "European Economic Review"}
+@string{EaPM   = "Educational and Psychological Measurement"}
+@string{FB     = "Fortschrittliche Betriebsf{{\"u}}hrung"}
+@string{FB/IE  = "Fortschrittliche Betriebsf{{\"u}}hrung/Industrial Engineering"}
+@string{FUB    = "Freie Universit{{\"a}}t Berlin"}
+@string{GD     = "Gruppendynamik"}
+@string{GS     = "General Systems"}
+@string{HB     = "Handelsblatt"}
+@string{HBR    = "Harvard Business Review"}
+@string{HBS    = "Harvard Business School"}
+@string{HCR    = "Human Communication Research"}
+@string{HER    = "Harvard Education Review"}
+@string{HF     = "Human Factors"}
+@string{HIOP   = "Handbook of Industrial and Organizational Psychology"}
+@string{HIOP   = "Handbook of Industrial and Organizational Psychology"}
+@string{HM     = "Harvard Manager"}
+@string{HO     = "Human Organization"}
+@string{HOB    = "The Handbook of Organizational Behavior"}
+@string{HR     = "Human Relations"}
+@string{HRM    = "Human Resource Management"}
+@string{HSP    = "The Handbook of Social Psychology"}
+@string{HSR    = "Historical Social Research"}
+@string{HUB    = "Humboldt Universit{{\"a}}t Berlin"}
+@string{HWA    = "Handw{{\"o}}rterbuch der Absatzwirtschaft"}
+@string{HWB    = "Handw{{\"o}}rterbuch der Betriebswirtschaft"}
+@string{HWF    = "Handw{{\"o}}rterbuch der F{{\"u}}hrung"}
+@string{HWO    = "Handw{{\"o}}rterbuch der Organisation"}
+@string{HWP    = "Handw{{\"o}}rterbuch des Personalwesens"}
+@string{HWPlan = "Handw{{\"o}}rterbuch der Planung"}
+@string{HWProd = "Handw{{\"o}}rterbuch der Produktionswirtschaft"}
+@string{HWR    = "Handw{{\"o}}rterbuch des Rechnungswesens"}
+@string{HWS    = "Handw{{\"o}}rterbuch der Sozialwissenschaften"}
+@string{HWStR  = "Handw{{\"o}}rterbuch des Steuerrechts"}
+@string{HdA    = "Humanisierung der Arbeit"}
+@string{HdSW   = "Handw{{\"o}}rterbuch der Sozialwissenschaften"}
+@string{HdW    = "Handbuch der Wirtschaftswissenschaften"}
+@string{HdWW   = "Handw{{\"o}}rterbuch der Wirtschaftswissenschaften"}
+@string{IMR    = "Industrial Management Review"}
+@string{IO     = "Industrielle Organisation/Management-Zeitschrift"}
+@string{IR     = "Industrial Relations"}
+@string{IJSA   = "International Journal of Selection and Assessment"}
+@string{ISMO   = "International Studies of Management and Organization"}
+@string{ISR    = "Institute for Social Research"}
+@string{ISSJ   = "International Social Science Journal"}
+@string{JASA   = "Journal of the American Statistical Association"}
+@string{JABS   = "Journal of Applied Behavioral Science"}
+@string{JAP    = "Journal of Applied Psychology"}
+@string{JAPM   = "Journal of Applied Psychology Monograph"}
+@string{JAS    = "Journal of Applied Sociology"}
+@string{JASP   = "Journal of Abnormal and Social Psychology"}
+@string{JBR    = "Journal of Business Research"}
+@string{JBV    = "Journal of Business Venturing"}
+@string{JBus   = "Journal of Business"}
+@string{JCB    = "Journal of Contemporary Business"}
+@string{JCR    = "Journal of Consumer Research"}
+@string{JEBO   = "Journal of Economic Behavior and Organization"}
+@string{JEL    = "Journal of Economic Literature"}
+@string{JESP   = "Journal of Experimental Social Psychology"}
+@string{JET    = "Journal of European Training"}
+@string{JGM    = "Journal of General Management"}
+@string{JHR    = "Historical Social Research"}
+@string{JIE    = "Journal of Industrial Economics"}
+@string{JITE   = "Journal of Institutional and Theoretical Economics"}
+@string{JLE    = "Journal of Law and Economics"}
+@string{JLEO   = "Journal of Law, Economics and Organization"}
+@string{JM     = "Journal of Management"}
+@string{JMS    = "Journal of Management Studies"}
+@string{JoMP   = "Journal of Mathematical Psychology"}
+@string{JoMS   = "Journal of Mathematical Sociology"}
+@string{JMark  = "Journal of Marketing"}
+@string{JOB    = "Journal of Occupational Behavior"}
+@string{JOOP   = "Journal of Occupational and Organizational Psychology"}
+@string{JP     = "Journal of Psychology"}
+@string{JPE    = "Journal of Public Economy"}
+@string{JPSP   = "Journal of Personality and Social Psychology"}
+@string{JPers  = "Journal of Personality"}
+@string{JSI    = "Journal of Social Issues"}
+@string{JSP    = "Journal of Social Psychology"}
+@string{JVB    = "Journal of Vocational Behavior"}
+@string{JbSowi = "Jahrbuch f{{\"u}}r Sozialwissenschaften"}
+@string{JfB    = "Journal f{{\"u}}r Betriebswirtschaft"}
+@string{KZfSS  = "K{{\"o}}lner Zeitschrift f{{\"u}}r Soziologie und Sozialpsychologie"}
+@string{Komm   = "Kommunikation"}
+@string{LRP    = "Long Range Planning"}
+@string{MBR   =  "Multivariate Behavioral Research"}
+@string{MDE    = "Managerial and Decision Economics"}
+@string{MIR    = "Management International Review"}
+@string{MIT    = "Massachusetts Institute of Technology"}
+@string{MR     = "Managerial Review"}
+@string{MS     = "Management Science"}
+@string{MW     = "Management-Wissen"}
+@string{MZ     = "Management Zeitschrift"}
+@string{MZFP   = "Marketing ZFP"}
+@string{Merk   = "Merkur"}
+@string{MittAB = "Mitteilungen zur Arbeitsmarkt- und Berufsforschung"}
+@string{NB     = "Neue Betriebswirtschaft"}
+@string{NFA    = "Neue Formen der Arbeitsorganisation"}
+@string{OAS    = "Organization and Administrative Sciences"}
+@string{OBHP   = "Organizational Behavior and Human Performance"}
+@string{ODY    = "Organizational Dynamics"}
+@string{OE     = "Organisationsentwicklung"}
+@string{OP     = "Occupational Psychology"}
+@string{OS     = "Organization Studies"}
+@string{OeB    = "Der {{\"O}}sterreichische Betriebswirt"}
+@string{PA     = "Personnel Administration"}
+@string{PAR    = "Public Administration Review"}
+@string{PBULL  = "Psychological Bulletin"}
+@string{PBei   = "Psychologische Beitr{{\"a}}ge"}
+@string{PJ     = "Personnel Journal"}
+@string{PM     = "Psychological Monographs"}
+@string{POQ    = "Public Opinion Quarterly"}
+@string{PP     = "Personnel Psychology"}
+@string{PPM    = "Public Personel Management"}
+@string{PR     = "Psychological Review"}
+@string{PRJ    = "Public Relations Journal"}
+@string{PRP    = "Psychological Reports"}
+@string{PRQ    = "Public Relations Quarterly"}
+@string{PSR    = "Psychologische Rundschau"}
+@string{PSYCH  = "Psychometrika"}
+@string{Pers   = "Personal --- Mensch und Arbeit"}
+@string{PuA    = "Planung und Analyse"}
+@string{PuP    = "Psychologie und Praxis"}
+@string{QJE    = "Quarterly Journal of Economics"}
+@string{ROB    = "Research of Organizational Behavior"}
+@string{Stat   = "The Statistician"}
+@string{SF     = "Social Forces"}
+@string{SMJ    = "Strategic Management Journal"}
+@string{SMR    = "Sloan Management Review"}
+@string{SOFI   = "Soziologisches Forschungsinstitut G{{\"o}}ttingen"}
+@string{SP     = "Social Problems"}
+@string{SR     = "Soziologische Revue"}
+@string{STATH2 = "Statistische Hefte (N.F.)"}
+@string{STATI1 = "Statistics"}
+%@string{STOCH1 = "Stochastica"}
+%@string{STOCH2 = "Stochastics"}
+@string{SUPQA  = "Sage University Paper Series on Quantitative Applications in the Social Sciences"}
+@string{SW     = "Soziale Welt"}
+@string{Soc    = "Sociology"}
+@string{SocMR  = "Sociological Methods \& Research"},
+@string{SocQ   = "Sociological Quarterly"}
+@string{SuB    = "Sozialwissenschaften und Berufspraxis"}
+@string{TDJ    = "Training and Development Journal"}
+@string{TUB    = "Technische Universit{{\"a}}t Berlin"}
+@string{UCLA   = "University of California, Los Angeles"}
+@string{ULA    = "ULA-Nachrichten"}
+@string{WISU   = "Wirtschaftsstudium"}
+@string{WZB    = "Wissenschaftszentrum Berlin"}
+@string{WiSt   = "Wirtschaftswissenschaftliches Studium"}
+@string{Wpfg   = "Die Wirtschaftspr{{\"u}}fung"}
+@string{ZAI    = "ZA-Information"}
+@string{ZBR    = "Zeitschrift f{{\"u}}r Beamtenrecht"}
+@string{ZFO    = "Zeitschrift F{{\"u}}hrung + Organisation"}
+@string{ZfA    = "Zeitschrift f{{\"u}}r Arbeitswissenschaft"}
+@string{ZfAO   = "Zeitschrift f{{\"u}}r Arbeits- und Organisationspsychologie"}
+@string{ZfB    = "Zeitschrift f{{\"u}}r Betriebswirtschaft"}
+@string{ZfDDP  = "Zeitschrift f{{\"u}}r Differenzielle und Diagnostische Psychologie"}
+@string{ZfN    = "Zeitschrift f{{\"u}}r National{{\"o}}konomie"}
+@string{ZfO    = "Zeitschrift f{{\"u}}r Organisation"}
+@string{ZfP    = "Zeitschrift f{{\"u}}r Psychologie"}
+@string{ZfPf   = "Zeitschrift f{{\"u}}r Personalforschung"}
+@string{ZfS    = "Zeitschrift f{{\"u}}r Soziologie"}
+@string{ZfSP   = "Zeitschrift f{{\"u}}r Sozialpsychologie"}
+@string{ZfbF   = "Zeitschrift f{{\"u}}r betriebswirtschaftliche Forschung"}
+@string{ZfgK   = "Zeitschrift f{{\"u}}r das gesamte Kreditwesen"}
+@string{ZfgSt  = "Zeitschrift f{{\"u}}r die gesamte Staatswissenschaft"}
+@string{ZfhF   = "Zeitschrift f{{\"u}}r handelswissenschaftliche Forschung"}
+@string{ZUMA   = "ZUMA Nachrichten"}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@string{jan = "Januar"}
+@string{feb = "Februar"}
+@string{mar = "M{{\"a}}rz"}
+@string{apr = "April"}
+@string{mai = "Mai"}
+@string{jun = "Juni"}
+@string{jul = "Juli"}
+@string{aug = "August"}
+@string{sep = "September"}
+@string{okt = "Oktober"}
+@string{nov = "November"}
+@string{dez = "Dezember"}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@preamble{ "\providecommand{\noopsort}[1]{} "
+	# "\providecommand{\printfirst}[2]{#1} "
+	# "\providecommand{\singleletter}[1]{#1} "
+	# "\providecommand{\switchargs}[2]{#2#1} " }
+

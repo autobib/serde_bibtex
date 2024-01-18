@@ -1,0 +1,323 @@
+<HTML>
+<pre>
+
+@string{brics =	"{BRICS}"}
+@string{daimi =	"Department of Computer Science, University of Aarhus"}
+@string{iesd  =	"Department of Computer Science, Institute
+		  of Electronic Systems, Aalborg University"}
+@string{rs    =	"Research Series"}
+@string{ns    =	"Notes Series"}
+@string{ls    =	"Lecture Series"}
+@string{ds    =	"Dissertation Series"}
+
+@techreport{BRICS-DS-02-5,
+  author = 	 "Pagh, Rasmus",
+  title = 	 "Hashing, Randomness and Dictionaries",
+  institution =  brics,
+  year = 	 2002,
+  type = 	 ds,
+  number = 	 "DS-02-5",
+  address = 	 daimi,
+  month = 	 oct,
+  note = 	 "PhD thesis. x+167~pp",
+  comment = 	 "Defence: October~11, 2002",
+  abstract = 	 "This thesis is centered around one of the most
+                  basic information retrieval problems, namely
+                  that of storing and accessing the elements of a
+                  set. Each element in the set has some
+                  associated information that is returned along
+                  with it. The problem is referred to as the {\em
+                  dictionary\/} problem, due to the similarity to
+                  a bookshelf dictionary, which contains a set of
+                  words and has an explanation associated with
+                  each word. In the {\em static\/} version of the
+                  problem the set is fixed, whereas in the {\em
+                  dynamic\/} version, insertions and deletions of
+                  elements are possible.\bibpar
+                  
+                  The approach taken is that of the theoretical
+                  algorithms community. We work (almost)
+                  exclusively with a {\em model}, a mathematical
+                  object that is meant to capture essential
+                  aspects of a real computer. The main model
+                  considered here (and in most of the literature
+                  on dictionaries) is a unit cost RAM with a word
+                  size that allows a set element to be stored in
+                  one word.\bibpar
+                  
+                  We consider several variants of the dictionary
+                  problem, as well as some related problems. The
+                  problems are studied mainly from an upper bound
+                  perspective, i.e., we try to come up with
+                  algorithms that are as efficient as possible
+                  with respect to various computing resources,
+                  mainly computation time and memory space. To
+                  some extent we also consider lower bounds,
+                  i.e., we attempt to show limitations on how
+                  efficient algorithms are possible. A central
+                  theme in the thesis is {\em randomness}.
+                  Randomized algorithms play an important role,
+                  in particular through the key technique of {\em
+                  hashing}. Additionally, probabilistic methods
+                  are used in several proofs.",
+  linkhtmlabs =  "",
+  linkpdf = 	 "",
+  linkps = 	 ""
+}
+@techreport{BRICS-DS-02-4,
+  author = 	 "M{\o}ller, Anders",
+  title = 	 "Program Verification with Monadic Second-Order
+                  Logic \& Languages for {W}eb Service
+                  Development",
+  institution =  brics,
+  year = 	 2002,
+  type = 	 ds,
+  number = 	 "DS-02-4",
+  address = 	 daimi,
+  month = 	 sep,
+  note = 	 "PhD thesis. xvi+337~pp",
+  comment = 	 "Defence: September~9, 2002",
+  abstract = 	 "Domain-specific formal languages are an
+                  essential part of computer science, combining
+                  theory and practice. Such languages are
+                  characterized by being tailor-made for specific
+                  application domains and thereby providing
+                  expressiveness on high abstraction levels and
+                  allowing specialized analysis and verification
+                  techniques. This dissertation describes two
+                  projects, each exploring one particular
+                  instance of such languages: monadic
+                  second-order logic and its application to
+                  program verification, and programming languages
+                  for construction of interactive Web services.
+                  Both program verification and Web service
+                  development are areas of programming language
+                  research that have received increased attention
+                  during the last years.\bibpar
+                  
+                  We first show how the logic Weak monadic
+                  Second-order Logic on Strings and Trees can be
+                  implemented efficiently despite an intractable
+                  theoretical worst-case complexity. Among
+                  several other applications, this implementation
+                  forms the basis of a verification technique for
+                  imperative programs that perform data-type
+                  operations using pointers. To achieve this, the
+                  basic logic is extended with layers of language
+                  abstractions. Also, a language for expressing
+                  data structures and operations along with
+                  correctness specifications is designed. Using
+                  Hoare logic, programs are split into loop-free
+                  fragments which can be encoded in the logic.
+                  The technique is described for recursive data
+                  types and later extended to the whole class of
+                  graph types. As an example application, we
+                  verify correctness properties of an
+                  implementation of the insert procedure for
+                  red-black search trees.\bibpar
+                  
+                  We then show how Web service development can
+                  benefit from high-level language support.
+                  Existing programming languages for Web services
+                  are typically general-purpose languages that
+                  provide only low-level primitives for common
+                  problems, such as maintaining session state and
+                  dynamically producing HTML or XML documents. By
+                  introducing explicit language-based mechanisms
+                  for those issues, we liberate the Web service
+                  programmer from the tedious and error-prone
+                  alternatives. Specialized program analyses aid
+                  the programmer by verifying at compile time
+                  that only valid HTML documents are ever shown
+                  to the clients at runtime and that the
+                  documents are constructed consistently. In
+                  addition, the language design provides support
+                  for declarative form-field validation, caching
+                  of dynamic documents, concurrency control based
+                  on temporal-logic specifications, and
+                  syntax-level macros for making additional
+                  language extensions. In its newest version, the
+                  programming language is designed as an
+                  extension of Java. To describe classes of XML
+                  documents, we introduce a novel XML schema
+                  language aiming to both simplify and generalize
+                  existing proposals. All parts are implemented
+                  and tested in practice.\bibpar
+                  
+                  Both projects involve design of high-level
+                  languages and specialized analysis and
+                  verification techniques, supporting the thesis
+                  that the domain-specific paradigm can provide a
+                  versatile and productive approach to
+                  development of formal languages"
+}
+
+@techreport{BRICS-DS-02-3,
+  author = 	 "Jacob, Riko",
+  title = 	 "Dynamic Planar Convex hull",
+  institution =  brics,
+  year = 	 2002,
+  type = 	 ds,
+  number = 	 "DS-02-3",
+  address = 	 daimi,
+  month = 	 may,
+  note = 	 "PhD thesis. xiv+112~pp",
+  comment = 	 "Defence: May~31, 2002",
+  abstract = 	 "We determine the computational complexity of
+                  the dynamic convex hull problem in the planar
+                  case. We present a data structure that
+                  maintains a finite set of points in the plane
+                  under insertion and deletion of points in
+                  amortized $O(\log n)$ time. Here n denotes the
+                  number of points in the set. The data structure
+                  supports the reporting of the extreme point of
+                  the set in some direction in worst-case and
+                  amortized $O(\log n)$ time. The space usage of
+                  the data structure is $O(n)$. We give a lower
+                  bound on the amortized asymptotic time
+                  complexity that matches the performance of this
+                  data structure",
+  linkhtmlabs =	 "",
+  linkpdf =	 "",
+  linkps =	 ""
+}
+
+@techreport{BRICS-DS-02-2,
+  author = 	 "Dantchev, Stefan",
+  title = 	 "On Resolution Complexity of Matching
+                  Principles",
+  institution =  brics,
+  year = 	 2002,
+  type = 	 ds,
+  number = 	 "DS-02-2",
+  address = 	 daimi,
+  month = 	 may,
+  note = 	 "PhD thesis. xii+70~pp",
+  comment = 	 "Defence: May~10, 2002",
+  abstract = 	 "Studying the complexity of mathematical proofs
+                  is important not only for automated theorem
+                  proving, but also for Mathematics as a whole.
+                  Each significant result in this direction would
+                  potentially have a great impact on Foundations
+                  of mathematics.\bibpar
+                  Surprisingly enough, the general Proof
+                  Complexity is closely related to Propositional
+                  Proof Complexity. The latter area was founded
+                  by Cook and Reckhow in 1979, and enjoyed quite
+                  a fast development since then. One of the main
+                  research directions is finding the precise
+                  complexity of some natural combinatorial
+                  principle within a relatively weak
+                  propositional proof system. The results in the
+                  thesis fall in this category. We study the
+                  Resolution complexity of some Matching
+                  Principles. The three major contributions of
+                  the thesis are as follows.\bibpar
+                  Firstly, we develop a general technique of
+                  proving resolution lower bounds for the perfect
+                  matchingprinciples based on regular planar
+                  graphs. No lower bounds for these were known
+                  prior to our work. As a matter of fact, one
+                  such problem, the Mutilated Chessboard, was
+                  suggested as hard to automated theorem provers
+                  in 1964, and remained open since then. Our
+                  technique proves a tight resolution lower bound
+                  for the Mutilated Chessboard as well as for
+                  Tseitin tautologies based on rectangular grid
+                  graph. We reduce these problems to Tiling
+                  games, a concept introduced by us, which may be
+                  of interest on its own.\bibpar
+                  Secondly, we find the exact Tree-Resolution
+                  complexity of the Weak Pigeon-Hole Principle.
+                  It is the most studied combinatorial principle,
+                  but even its Tree-Resolution complexity was
+                  unknown prior to our work. We develop a new,
+                  more general method for proving Tree-Resolution
+                  lower bounds. We also define and prove
+                  non-trivial upper bounds on worst-case proofs
+                  of the Weak Pigeon-Hole Principle. The
+                  worst-case proofs are first introduced by us,
+                  as a concept opposite to the optimal
+                  proofs.\bibpar
+                  Thirdly, we prove Resolution width-size
+                  trade-offs for the Pigeon-Hole Principle.
+                  Proving the size lower bounds via the width
+                  lower bounds was known since the seminal paper
+                  of Haken, who first proved an exponential lower
+                  bound for the ordinary Pigeon-Hole Principle.
+                  The width-size trade-offs however were not
+                  studied at all prior to our work. Our result
+                  gives an optimal width-size trade-off for
+                  resolution in general"
+}
+
+@techreport{BRICS-DS-02-1,
+  author = 	 "M{\"o}ller, M. Oliver",
+  title = 	 "Structure and Hierarchy in Real-Time Systems",
+  institution =  brics,
+  year = 	 2002,
+  type = 	 ds,
+  number = 	 "DS-02-1",
+  address = 	 daimi,
+  month = 	 apr,
+  note = 	 "PhD thesis. xvi+228~pp",
+  abstract = 	 "The development of digital systems is
+                  particularly challenging, if their correctness
+                  depends on the right timing of operations. One
+                  approach to enhance the reliability of such
+                  systems is model-based development. This allows
+                  for a formal analysis throughout all stages of
+                  design.\bibpar
+                  
+                  Model-based development is hindered mainly by
+                  the lack of adequate modeling languages and the
+                  high computational cost of the analysis. In
+                  this thesis we improve the situation along both
+                  axes.\bibpar
+                  
+                  First, we bring the mathematical model closer
+                  to the human designer. This we achieve by
+                  casting hierarchical structures---as known from
+                  statechart-like formalisms---into a formal
+                  timed model. This shapes a high-level language,
+                  which allows for fully automated
+                  verification.\bibpar
+                  
+                  Second, we use sound approximations to achieve
+                  more efficient automation in the verification
+                  of timed properties. We present two novel
+                  state-based techniques that have the potential
+                  to reduce time and memory consumption
+                  drastically.\bibpar
+                  
+                  The first technique makes use of structural
+                  information, in particular loops, to exploit
+                  regularities in the reachable state space. Via
+                  shortcut-like additions to the model we avoid
+                  repetition of similar states during an
+                  exhaustive state space exploration.\bibpar
+                  
+                  The second technique applies the abstract
+                  interpretation framework to a real-time
+                  setting. We preserve the control structure and
+                  approximate only the more expensive time
+                  component of a state. The verification of
+                  infinite behavior, also known as liveness
+                  properties, requires an assumption on the
+                  progress of time. We incorporate this
+                  assumption by means of limiting the behavior of
+                  the model with respect to delay steps. For a
+                  next-free temporal logic, this modification
+                  does not change the set of valid
+                  properties.\bibpar
+                  
+                  We supplement our research with experimental
+                  run-time data. This data is gathered via
+                  prototype implementations on top of the model
+                  checking tools UPPAAL and MOCHA",
+  linkhtmlabs =  "",
+  linkpdf = 	 ""
+}
+
+</HTML>
+</pre>

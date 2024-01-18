@@ -5,44 +5,44 @@ use super::slice_impl;
 use super::{AsciiIdentifier, Text, UnicodeIdentifier};
 use super::{Read, ReadError};
 use std::borrow::Cow;
-use std::str::from_utf8;
+use std::str::from_utf8_unchecked;
 
 use crate::parse::BibtexParse;
 
 #[inline]
 pub fn next_entry_or_eof(input: &str) -> (&str, bool) {
     let (bytes, res) = slice_impl::next_entry_or_eof(input.as_bytes());
-    (from_utf8(bytes).unwrap(), res)
+    unsafe { (from_utf8_unchecked(bytes), res) }
 }
 
 #[inline]
 pub fn comment(input: &str) -> &str {
     let bytes = slice_impl::comment(input.as_bytes());
-    from_utf8(bytes).unwrap()
+    unsafe { from_utf8_unchecked(bytes) }
 }
 
 #[inline]
 pub fn identifier_unicode(input: &str) -> Result<(&str, UnicodeIdentifier), ReadError> {
     let (bytes, res) = slice_impl::identifier_unicode(input.as_bytes())?;
-    Ok((from_utf8(bytes).unwrap(), res))
+    unsafe { Ok((from_utf8_unchecked(bytes), res)) }
 }
 
 #[inline]
 pub fn identifier_ascii(input: &str) -> Result<(&str, AsciiIdentifier), ReadError> {
     let (bytes, res) = slice_impl::identifier_ascii(input.as_bytes())?;
-    Ok((from_utf8(bytes).unwrap(), res))
+    unsafe { Ok((from_utf8_unchecked(bytes), res)) }
 }
 
 #[inline]
 pub fn number(input: &str) -> Result<(&str, Text), ReadError> {
     let (bytes, res) = slice_impl::number(input.as_bytes())?;
-    Ok((from_utf8(bytes).unwrap(), res))
+    unsafe { Ok((from_utf8_unchecked(bytes), res)) }
 }
 
 #[inline]
 pub fn balanced(input: &str) -> Result<(&str, &str), ReadError> {
     let (bytes, res) = slice_impl::balanced(input.as_bytes())?;
-    Ok((from_utf8(bytes).unwrap(), from_utf8(res).unwrap()))
+    unsafe { Ok((from_utf8_unchecked(bytes), from_utf8_unchecked(res))) }
 }
 
 #[inline]
@@ -50,7 +50,7 @@ pub fn protected(until: u8) -> impl FnMut(&str) -> Result<(&str, &str), ReadErro
     debug_assert!(until.is_ascii());
     move |input: &str| {
         let (bytes, res) = slice_impl::protected(until)(input.as_bytes())?;
-        Ok((from_utf8(bytes).unwrap(), from_utf8(res).unwrap()))
+        unsafe { Ok((from_utf8_unchecked(bytes), from_utf8_unchecked(res))) }
     }
 }
 

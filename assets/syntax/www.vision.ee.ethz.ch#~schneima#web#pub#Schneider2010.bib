@@ -1,0 +1,44 @@
+@MASTERSTHESIS{Schneider2010,
+  author = {Matthias Schneider},
+  title = {Model-Based Respiratory Motion Compensation for Image-Guided Cardiac
+	Interventions},
+  school = {University of Erlangen-Nuremberg, Germany},
+  year = {2010},
+  month = {Jan},
+  abstract = {In this thesis, we describe and validate a statistical breathing motion
+	model for respiratory motion compensation during image-guided cardiac
+	interventions such as Percutaneous Coronary Interventions (PCI) for
+	Chronic Total Occlusions (CTO). In a preparatory training phase,
+	a preoperative 3-D segmentation of the coronary arteries is automatically
+	registered with a cardiacgated biplane cineangiogram at different
+	breathing phases, and used to build the subject-specific motion model.
+	The trained model mathematically describes the nature of respiratory-induced
+	motion of the heart and is used as prior knowledge for the intraoperative
+	re-registrations of the 3-D roadmap by restricting the search space
+	to the most dominant modes of the motion profile. In this way, the
+	interventionalist is provided visual guiding assistance during cardiac
+	catheterization procedures under live fluoroscopy. The model-constrained
+	registration increases the robustness and accuracy of the dynamic
+	re-registrations, especially for weak data constraints such as low
+	signal-to-noise ratio (SNR), the lack of contrast information in
+	fluoroscopic images, or an intraoperative monoplane setting. This
+	allows for reducing radiation dose without compromising on registration
+	accuracy. Synthetic data as well as phantom and clinical data sets
+	have been used to validate the model-based registration in terms
+	of accuracy, robustness and speed. We were able to significantly
+	accelerate the intraoperative registration with an average 3-D error
+	of less than 2mm even for monoplane settings and tracked guidewire
+	data in the absence of contrast agent, which makes respiratory motion
+	correction feasible during clinical procedures. Moreover, we propose
+	a new methodology for global vessel segmentation in 2-D X-ray images
+	combining a per-pixel probability map from a local vessel enhancement
+	filter with local directional information. The global segmentation
+	provides additional connectivity and geometric shape information,
+	which allows for sophisticated postprocessing techniques in order
+	to refine the segmentation with respect to the requirements of the
+	particular application. We present different postprocessing techniques
+	for hierarchical segmentation, centerline extraction, and catheter
+	removal. We further demonstrate that the global segmentation approach
+	yields better segmentation results and is more robust to noise compared
+	to two conventional local Hessian-based segmentation approaches.},
+}

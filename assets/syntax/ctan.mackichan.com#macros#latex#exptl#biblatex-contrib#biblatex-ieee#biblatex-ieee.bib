@@ -1,0 +1,398 @@
+%% ---------------------------------------------------------------
+%% biblatex-ieee --- A biblatex implementation of the IEEE 
+%%   bibliography style
+%% Maintained by Joseph Wright
+%% E-mail: joseph.wright at morningstar2.co.uk
+%% Released under the LaTeX Project Public License v1.3c or later
+%% See http://www.latex-project.org/lppl.txt
+%% ---------------------------------------------------------------
+%% 
+
+% The example here are all taken from "IEEEexample.bib", part of the
+% IEEEttran bundle which provides official support for IEEE journals.
+% The entries have been modified to follow the conventions introduced
+% by biblatex. The keys have been retained to allow direct comparison
+% of the two approaches.
+
+@inbook{IEEEexample:incollectionwithseries,
+  author        = "J. B. Anderson and K. Tepe",
+  title         = "Properties of the Tailbiting {BCJR} Decoder",
+  booktitle     = "Codes, Systems and Graphical Models",
+  series        = "{IMA} Volumes in Mathematics and Its Applications",
+  publisher     = "Springer-Verlag",
+  location      = "New York",
+  date          = "2000"  
+}
+
+@book{IEEEexample:inbookpagesnote,
+  author        = "B. K. Bul",
+  title         = "Theory Principles and Design of Magnetic Circuits",
+  publisher     = "Energia Press",
+  loction       = "Moscow",
+  date          = "1964",
+  pages         = "464",
+  note          = "(in Russian)"
+}
+
+@book{IEEEexample:bookwitheditor,
+  editor        = "J. C. Candy and G. C. Temes",
+  title         = "Oversampling Delta-Sigma Data Converters Theory,
+                   Design and Simulation",
+  publisher     = "{IEEE} Press.",
+  location      = "New York",
+  date          = "1992"
+}
+
+@article{IEEEexample:articlelargepages,
+  author        = "A. Castaldini and A. Cavallini and B. Fraboni
+                   and P. Fernandez and J. Piqueras",
+  title         = "Midgap Traps Related to Compensation Processes in
+                   {CdTe} Alloys",
+  journaltitle  = "Phys. Rev. B.",
+  volume        = "56",
+  number        = "23",
+  date          = "1997",
+  pages         = "14897-14900"
+}
+
+@article{IEEEexample:TBPmisc,
+  author        = "M. Coates and A. Hero and R. Nowak and B. Yu",
+  title         = "Internet Tomography",
+  journaltitle  = "IEEE J. Selected Areas Commun.",
+  month         = 05,
+  date          = "2002",
+  note          = "to be published"
+}
+
+@book{IEEEexample:book_typical,
+  author        = "B. D. Cullity",
+  title         = "Introduction to Magnetic Materials",
+  publisher     = "Addison--Wesley",
+  location      = "Reading, MA",
+  date          = "1972"
+}
+
+@inbook{IEEEexample:incollectionmanyauthors,
+  author        = "R. M. A. Dawson and Z. Shen and D. A. Furst and
+                   S. Connor and J. Hsu and M. G. Kane and R. G. Stewart and
+                   A. Ipri and C. N. King and P. J. Green and R. T. Flegal
+                   and S. Pearson and W. A. Barrow and E. Dickey and K. Ping
+                   and C. W. Tang and S. Van. Slyke and
+                   F. Chen and J. Shi and J. C. Sturm and M. H. Lu",
+  title         = "Design of an Improved Pixel for a Polysilicon 
+                   Active-Matrix Organic {LED} Display",
+  booktitle     = "{SID} Tech. Dig.",
+  volume        = "29",
+  date          = "1998",
+  pages         = "11-14"
+}
+
+@inbook{IEEEexample:repeatedauthorone,
+  author    = "W. Dai and H. V. Pham and and O. Milenkovic",
+  title     = "Distortion-rate functions for quantized compressive sensing",
+  booktitle =
+    "IEEE Information Theory Workshop on Networking and Information Theory",
+  year      = "2009"
+}
+
+@inbook{IEEEexample:repeatedauthortwo,
+  author    = "W. Dai and H. V. Pham and and O. Milenkovic",
+  title     = "comparative study of quantized compressive sensing schemes",
+  booktitle = 
+    "IEEE Information Theory Workshop on Networking and Information Theory",
+  year      = "2009"
+}
+
+@inproceedings{IEEEexample:presentedatconf,
+  author        = "S. G. Finn and M. M{\'e}dard and R. A. Barry",
+  title         = "A Novel Approach to Automatic Protection Switching
+                   Using Trees",
+  eventtitle    = "{IEEE} International Conference on Communications",
+  location      = "Montreal, Que., Canada",
+  date          = "1997"
+}
+
+@manual{IEEEexample:motmanual,
+  title         = "{FLEXChip} Signal Processor ({MC68175/D})",
+  organization  = "Motorola",
+  date          = "1996"
+}
+
+@inbook{IEEEexample:incollection_chpp,
+  author        = "P. Hedelin and P. Knagenhjelm and M. Skoglund",
+  editor        = "W. B. Kleijn and K. K. Paliwal",
+  title         = "Theory for Transmission of Vector Quantization Data",
+  booktitle     = "Speech Coding and Synthesis",
+  publisher     = "Elsevier Science",
+  location      = "Amsterdam, The Netherlands",
+  date          = "1995",
+  chapter       = "10",
+  pages         = "347-396"
+}
+
+@patent{IEEEexample:jppat,
+  author        = "U. Hideki",
+  title         = "Quadrature Modulation Circuit",
+  type          = "patentjp",
+  number        = "152932/92",
+  year          = "1992-05-20"
+}
+
+@periodical{IEEEexample:periodical,
+  title         = "IEEE Personal Commun. Mag., Special Issue on 
+                  Wireless {ATM}",
+  volume        = "3",
+  date          = "1996-08",
+}
+
+@misc{IEEEexample:standard,
+  title         = "Wireless {LAN} Medium Access Control {(MAC)} and 
+                   Physical Layer {(PHY)} Specification",
+  howpublished  = "{IEEE} Std. 802.11",
+  date          = "1997"
+}
+
+@online{IEEEexample:electronhowinfo,
+  author        = "V. Jacobson",
+  title         = "Modified {TCP} Congestion Avoidance Algorithm",
+  howpublished  = "end2end-interest mailing list",
+  url           = "ftp://ftp.isi.edu/end2end/end2end-interest-1990.mail",
+  date          = "1990-04"
+}
+
+
+@report{IEEEexample:techrep,
+  author        = "R. Jain and K. K. Ramakrishnan and D. M. Chiu",
+  title         = "Congestion Avoidance in Computer Networks with a 
+                   Connectionless Network Layer",
+  institution   = "Digital Equipment Corporation",
+  location      = "MA",
+  number        = "DEC-TR-506",
+  date          = "1987-08",
+  type          = "techreport"
+}
+
+@article{IEEEexample:TBParticle,
+  author        = "N. Kahale and R. Urbanke",
+  title         = "On the Minimum Distance of Parallel and Serially
+                   Concatenated Codes",
+  journaltitle  = "IEEE Trans. Inf. Theory",
+  note          = "submitted for publication"
+}
+
+@report{IEEEexample:techrepstdsub,
+  author        = "S. Kandala",
+  title         = "Changes to {A}nnex {D}",
+  institution   = "{IEEE} 802.11 {TGe}",
+  number        = "02/680r0",
+  date          = "2002-10",
+  type          = "techreport"
+}
+
+@thesis{IEEEexample:masterstype,
+  author        = "A. Karnik",
+  title         = "Performance of {TCP} Congestion Control with Rate
+                   Feedback: {TCP/ABR} and Rate Adaptive {TCP/IP}",
+  institution   = "Indian Institute of Science",
+  type          = "M. Eng. thesis",
+  location      = "Bangalore, India",
+  date          = "1999-01"
+}
+
+@patent{IEEEexample:frenchpatreq,
+  author        = "F. Kowalik and M. Isard",
+  title         = "Estimateur d'un D{\'e}faut de Fonctionnement 
+                   d'un Modulateur en Quadrature et {\'E}tage de Modulation
+                   l'Utilisant",
+  language      = "french",
+  type          = "French Patent Request",
+  number        = "9500261",
+  date          = "1995-01-11"
+}
+
+@thesis{IEEEexample:phdurl,
+  author        = "Q. Li",
+  title         = "Delay Characterization and Performance Control of
+                   Wide-area Networks",
+  institution   = "Univ. of Delaware",
+  location      = "Newark, NJ",
+  type          = "phdthesis",
+  date          = "2000-05",
+  url           = "http://www.ece.udel.edu/~qli"
+}
+
+@thesis{IEEEexample:masters,
+  author        = "Nin C. Loh",
+  title         = "High-Resolution Micromachined Interferometric
+                   Accelerometer",
+  institution   = "Massachusetts Institute of Technology",
+  location      = "Cambridge, MA",
+  type          = "mathesis",
+  date          = "1992"
+}
+
+@online{IEEEexample:electronorgadd,
+  author        = "D. H. Lorenz and A. Orda",
+  title         = "Optimal Partition of {QoS} Requirements on Unicast
+                   Paths and Multicast Trees",
+  institution   = "Dept. Elect. Eng., Technion",
+  location      = "Haifa, Israel",
+  url           = "ftp://ftp.technion.ac.il/pub/supported/ee/Network/lor.mopq98.ps",
+  date          = "1998-07"
+}
+
+@book{IEEEexample:book,
+  author        = "S. M. Metev and V. P. Veiko",
+  editor        = "Osgood, Jr., R. M.",
+  title         = "Laser Assisted Microtechnology",
+  edition       = "2",
+  publisher     = "Springer-Verlag",
+  location      = "Berlin, Germany",
+  date          = "1998"
+}
+
+@report{IEEEexample:techreptypeii,
+  author        = "D. Middleton and A. D. Spaulding",
+  title         = "A Tutorial Review of Elements of Weak Signal Detection
+                   in Non-{G}aussian {EMI} Environments",
+  institution   = "National Telecommunications and Information
+                   Administration ({NTIA}), U.S. Dept. of Commerce",
+  type          = "NTIA Report",
+  number        = "86-194",
+  date          = "1986-05"
+}
+
+@inproceedings{IEEEexample:confwithpapertype,
+  author        = "B. Mikkelsen and G. Raybon and R.-J. Essiambre and
+                   K. Dreyer and Y. Su. and L. E. Nelson and J. E. Johnson
+                   and G. Shtengel and A. Bond and D. G. Moodie and
+                   A. D. Ellis",
+  title         = "160 {Gbit/s} Single-channel Transmission Over 300 km 
+                   Nonzero-dispersion Fiber With Semiconductor Based
+                   Transmitter and Demultiplexer",
+  booktitle     = "Proc. {ECOC}'99",
+  location      = "Nice, France",
+  date          = "1999",
+  pages         = "28-29"
+}
+
+@article{IEEEexample:articledualmonths,
+  author        = "Y. Okada and K. Dejima and T. Ohishi",
+  title         = "Analysis and Comparison of {PM} Synchronous Motor and
+                   Induction Motor Type Magnetic Bearings",
+  journaltitle  = "IEEE Trans. Ind. Appl.",
+  volume        = "31",
+  date          = "1995-09/1995-10",
+  pages         = "1047-1053"
+}
+
+@unpublished{IEEEexample:unpublished,
+  author        = "T. J. Ott and N. Aggarwal",
+  title         = "{TCP} over {ATM}: {ABR} or {UBR}",
+  howpublished  = "Unpublished"
+}
+
+@report{IEEEexample:techreptype,
+  author        = "J. Padhye and V. Firoiu and D. Towsley",
+  title         = "A Stochastic Model of {TCP} {R}eno Congestion Avoidance
+                   and Control",
+  institution   = "Univ. of Massachusetts",
+  location      = "Amherst, MA",
+  type          = "CMPSCI Tech. Rep.",
+  number        = "99-02",
+  date          = "1999",
+}
+
+@book{IEEEexample:inbook,
+  author        = "H. E. Rose",
+  title         = "A Course in Number Theory",
+  publisher     = "Oxford Univ. Press",
+  location      = "New York",
+  date          = "1988",
+  chapter       = "3"
+}
+
+@patent{IEEEexample:uspat,
+  author        = "Ronald E. Sorace and Victor S. Reinhardt and
+                   Steven A. Vaughn",
+  holder        = "Hughes Aircraft Company",
+  location      = "Los Angeles, CA",
+  title         = "High-Speed Digital-to-{RF} Converter",
+  type          = "patentus",
+  number        = "5668842",
+  datefiled     = "1995-02-28",
+  date          = "1997-09-16",
+}
+
+@inbook{IEEEexample:incollection,
+  author        = "W. V. Sorin",
+  editor        = "D. Derickson",
+  title         = "Optical Reflectometry for Component Characterization",
+  booktitle     = "Fiber Optic Test and Measurement",
+  publisher     = "Prentice--Hall",
+  location      = "Englewood Cliffs, NJ",
+  date          = "1998"
+}
+
+@online{IEEEexample:electronhowinfo2,
+  author        = "V. Valloppillil and K. W. Ross",
+  title         = "Cache Array Routing Protocol v1.1",
+  howpublished  = "Internet draft",
+  url           = "http://ds1.internic.net/internet-drafts/draft-vinod-carp-v1-03.txt",
+  date          = "1998"
+}
+
+@inproceedings{IEEEexample:confwithpaper,
+  author        = "M. Wegmuller and J. P. von der Weid and P. Oberson
+                   and N. Gisin",
+  title         = "High Resolution Fiber Distributed Measurements With
+                   Coherent {OFDR}",
+  booktitle     = "Proc. {ECOC}'00",
+  date          = "2000",
+  location      = "Munich, Germany",
+  pages         = "109"
+}
+
+@inproceedings{IEEEexample:confwithvolume,
+  author        = "M. Yajnik and S. B. Moon and J. Kurose and D. Towsley",
+  title         = "Measurement and Modeling of the Temporal Dependence in
+                   Packet Loss",
+  booktitle     = "Proc. {IEEE} {INFOCOM}'99",
+  volume        = "1",
+  location      = "New York",
+  date          = "1999-03",
+  pages         = "345-352"
+}
+
+@inproceedings{IEEEexample:confwithadddays,
+  author        = "M. S. Yee and L. Hanzo",
+  title         = "Radial Basis Function Decision Feedback Equaliser
+                   Assisted Burst-by-burst Adaptive Modulation",
+  booktitle     = "Proc. {IEEE} Globecom '99",
+  address       = "Rio de Janeiro, Brazil",
+  date          = "1999-12-05/1999-12-09",
+  pages         = "2183-2187"
+}
+
+%% 
+%% Copyright (C) 2011 by
+%%   Joseph Wright <joseph.wright at morningstar2.co.uk>
+%% 
+%% It may be distributed and/or modified under the conditions of
+%% the LaTeX Project Public License (LPPL), either version 1.3c of
+%% this license or (at your option) any later version.  The latest
+%% version of this license is in the file:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%% This work is "maintained" (as per LPPL maintenance status) by
+%%   Joseph Wright.
+%% 
+%% This work consists of the file biblatex-ieee.bib,
+%%                                biblatex-ieee.tex,
+%%                                ieee.bbx and
+%%                                ieee.cbx,
+%%           and the derived file biblatex-ieee.pdf.
+%% 
+%%
+%% End of file `biblatex-ieee.bib'.

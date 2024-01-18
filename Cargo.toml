@@ -17,6 +17,10 @@ unicase = "2.7"
 memchr = "2.7"
 
 [dev-dependencies]
-trace = "0.1"
+criterion = { version = "0.4", features = ["html_reports"] }
 proptest = "1.0.0"
 serde_bytes = "0.11"
+
+[[bench]]
+name = "small"
+harness = false

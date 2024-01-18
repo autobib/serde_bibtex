@@ -1,0 +1,792 @@
+% This file was created with JabRef 2.5.
+% Encoding: UTF8
+
+@ARTICLE{birman2010history,
+  author = {Birman, K.},
+  title = {A History of the Virtual Synchrony Replication Model},
+  journal = {Replication},
+  year = {2010},
+  pages = {91--120},
+  abstract = {A “Cloud Computing” revolution is underway, supported by massive data
+	centers that often contain thousands (if not hundreds of thousands)
+	of servers. In such systems, scalability is the mantra and this,
+	in turn, compels application developers to replicate various forms
+	of information. By replicating the data needed to handle client requests,
+	many services can be spread over a cluster to exploit parallelism.
+	Servers also use replication to implement high availability and fault‐tolerance
+	mechanisms, ensure low latency, implement caching, and provide distributed
+	management and control. On the other hand, replication is hard to
+	implement, hence developers typically turn to standard replication
+	solutions, packaged as sharable libraries.
+	
+	Virtual synchrony, the technology on which this article will focus,
+	was created by the author and his colleagues in the early 1980’s
+	to support these sorts of applications, and was the first widely
+	adopted solution in the area. Viewed purely as a model, virtual synchrony
+	defines rules for replicating data or a service that will behave
+	in a manner indistinguishable from the behavior of some non‐replicated
+	reference system running on a single non‐faulty node. The model is
+	defined in the standard asynchronous network model for crash failures.
+	This turns out to be ideal for the uses listed above.},
+  publisher = {Springer},
+  url = {http://www.cs.cornell.edu/ken/History.pdf}
+}
+
+@ARTICLE{birman1993process,
+  author = {Birman, K.P.},
+  title = {The process group approach to reliable distributed computing},
+  journal = {Communications of the ACM},
+  year = {1993},
+  volume = {36},
+  pages = {53},
+  number = {12},
+  abstract = {One might expect the reliability of a distributed system to correspond
+	directly to the reliability of its constituents, but this is not
+	always the case. The mechanisms used to structure a distributed system
+	and to implement cooperation between components play a vital role
+	in determining the reliability of the system. Many contemporary distributed
+	operating systems have placed emphasis on com- munication performance,
+	overlooking the need for tools to integrate com- ponents into a reliable
+	whole. The communication primitives supported give generally reliable
+	behavior, but exhibit problematic semantics when transient failures
+	or system config- uration changes occur. The resulting building blocks
+	are, therefore, unsuit- able for facilitating the construction of
+	systems where reliability is important.
+	
+	This article reviews 10 years of research on ISIS, a system that pro-
+	vides tools to support the construc- tion of reliable distributed
+	software. The thesis underlying ISIS is that development of reliable
+	distributed software can be simplified using pro- cess groups and
+	group programming tools. This article describes the ap- proach taken,
+	surveys the system, and discusses experiences with real applications.},
+  publisher = {ACM},
+  url = {http://www.cs.cornell.edu/projects/spinglass/public_pdfs/Process%20Group%20Approach.pdf}
+}
+
+@CONFERENCE{burrows2006chubby,
+  author = {Burrows, M.},
+  title = {The Chubby lock service for loosely-coupled distributed systems},
+  booktitle = {Proceedings of the 7th symposium on Operating systems design and
+	implementation},
+  year = {2006},
+  pages = {350},
+  organization = {USENIX Association},
+  abstract = {We describe our experiences with the Chubby lock service, which is
+	intended to provide coarse-grained locking as well as reliable (though
+	low-volume) storage for a loosely-coupled distributed system. Chubby
+	provides an interface much like a distributed file system with advisory
+	locks, but the design emphasis is on availability and reliability,
+	as opposed to high performance. Many instances of the service have
+	been used for over a year, with several of them each handling a few
+	tens of thousands of clients concurrently. The paper describes the
+	initial design and expected use, compares it with actual use, and
+	explains how the design had to be modified to accommodate the differences.},
+  url = {http://labs.google.com/papers/chubby-osdi06.pdf}
+}
+
+@ARTICLE{chang2008bigtable,
+  author = {Chang, F. and Dean, J. and Ghemawat, S. and Hsieh, W.C. and Wallach,
+	D.A. and Burrows, M. and Chandra, T. and Fikes, A. and Gruber, R.E.},
+  title = {Bigtable: A distributed storage system for structured data},
+  journal = {ACM Transactions on Computer Systems (TOCS)},
+  year = {2008},
+  volume = {26},
+  pages = {4},
+  number = {2},
+  abstract = {Bigtable is a distributed storage system for managing structured data
+	that is designed to scale to a very large size: petabytes of data
+	across thousands of commodity servers. Many projects at Google store
+	data in Bigtable, including web indexing, Google Earth, and Google
+	Finance. These applications place very different demands on Bigtable,
+	both in terms of data size (from URLs to web pages to satellite imagery)
+	and latency requirements (from backend bulk processing to real-time
+	data serving). Despite these varied demands, Bigtable has successfully
+	provided a flexible, high-performance solution for all of these Google
+	products. In this paper we describe the simple data model provided
+	by Bigtable, which gives clients dynamic control over data layout
+	and format, and we describe the design and implementation of Bigtable.},
+  publisher = {ACM},
+  url = {http://labs.google.com/papers/bigtable-osdi06.pdf}
+}
+
+@ARTICLE{codd1970relational,
+  author = {Codd, E.F.},
+  title = {A relational model of data for large shared data banks},
+  journal = {Communications of the ACM},
+  year = {1970},
+  volume = {13},
+  pages = {387},
+  number = {6},
+  abstract = {Future users of large data banks must be protected from having to
+	know how the data is organized in the machine (the internal representation).
+	A prompting service which supplies such information is not a satisfactory
+	solution. Activities of users at terminals and most application programs
+	should remain unaffected when the internal representation of data
+	is changed and even when some aspects of the external representation
+	are changed. Changes in data representation will often be needed
+	as a result of changes in query, update, and report traffic and natural
+	growth in the types of stored information.},
+  publisher = {ACM},
+  url = {http://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf}
+}
+
+@ARTICLE{cooper2008pnuts,
+  author = {Cooper, B.F. and Ramakrishnan, R. and Srivastava, U. and Silberstein,
+	A. and Bohannon, P. and Jacobsen, H.A. and Puz, N. and Weaver, D.
+	and Yerneni, R.},
+  title = {PNUTS: Yahoo!'s hosted data serving platform},
+  journal = {Proceedings of the VLDB Endowment},
+  year = {2008},
+  volume = {1},
+  pages = {1277--1288},
+  number = {2},
+  abstract = {We describe PNUTS, a massively parallel and geographically distributed
+	database system for Yahoo!’s web applications. PNUTS provides data
+	storage organized as hashed or ordered tables, low latency for large
+	numbers of concurrent requests including updates and queries, and
+	novel per-record consistency guarantees. It is a hosted, centrally
+	managed, and geographically distributed service, and utilizes automated
+	load-balancing and failover to reduce operational complexity. The
+	first version of the system is currently serving in production. We
+	describe the motivation for PNUTS and the design and implementation
+	of its table storage and replication layers, and then present experimental
+	results.},
+  publisher = {VLDB Endowment},
+  url = {http://www.brianfrankcooper.net/pubs/pnuts.pdf}
+}
+
+@CONFERENCE{cooper2010benchmarking,
+  author = {Cooper, B.F. and Silberstein, A. and Tam, E. and Ramakrishnan, R.
+	and Sears, R.},
+  title = {Benchmarking cloud serving systems with YCSB},
+  booktitle = {Proceedings of the 1st ACM symposium on Cloud computing},
+  year = {2010},
+  pages = {143--154},
+  organization = {ACM},
+  abstract = {While the use of MapReduce systems (such as Hadoop) for large scale
+	data analysis has been widely recognized and studied, we have recently
+	seen an explosion in the number of systems developed for cloud data
+	serving. These newer systems address “cloud OLTP” applications, though
+	they typically do not support ACID transactions. Examples of systems
+	proposed for cloud serving use include BigTable, PNUTS, Cassandra,
+	HBase, Azure, CouchDB, SimpleDB, Voldemort, and many others. Further,
+	they are being ap- plied to a diverse range of applications that
+	differ consider- ably from traditional (e.g., TPC-C like) serving
+	workloads. The number of emerging cloud serving systems and the wide
+	range of proposed applications, coupled with a lack of apples- to-apples
+	performance comparisons, makes it difficult to un- derstand the tradeoffs
+	between systems and the workloads for which they are suited. We present
+	the Yahoo! Cloud Serving Benchmark (YCSB) framework, with the goal
+	of fa- cilitating performance comparisons of the new generation of
+	cloud data serving systems. We define a core set of benchmarks and
+	report results for four widely used systems: Cassandra, HBase, Yahoo!’s
+	PNUTS, and a simple sharded MySQL implementation. We also hope to
+	foster the devel- opment of additional cloud benchmark suites that
+	represent other classes of applications by making our benchmark tool
+	available via open source. In this regard, a key feature of the YCSB
+	framework/tool is that it is extensible—it supports easy definition
+	of new workloads, in addition to making it easy to benchmark new
+	systems.},
+  url = {http://research.yahoo.com/files/ycsb.pdf}
+}
+
+@ARTICLE{dean2008mapreduce,
+  author = {Dean, J. and Ghemawat, S.},
+  title = {MapReduce: Simplified data processing on large clusters},
+  journal = {Communications of the ACM},
+  year = {2008},
+  volume = {51},
+  pages = {107--113},
+  number = {1},
+  abstract = {MapReduce is a programming model and an associated implementation
+	for processing and generating large data sets. Users specify a map
+	function that processes a key/value pair to generate a set of intermediate
+	key/value pairs, and a reduce function that merges all intermediate
+	values associated with the same intermediate key. Many real world
+	tasks are expressible in this model, as shown in the paper.
+	
+	Programs written in this functional style are automatically parallelized
+	and executed on a large cluster of commodity machines. The run-time
+	system takes care of the details of partitioning the input data,
+	scheduling the program's execution across a set of machines, handling
+	machine failures, and managing the required inter-machine communication.
+	This allows programmers without any experience with parallel and
+	distributed systems to easily utilize the resources of a large distributed
+	system.
+	
+	Our implementation of MapReduce runs on a large cluster of commodity
+	machines and is highly scalable: a typical MapReduce computation
+	processes many terabytes of data on thousands of machines. Programmers
+	find the system easy to use: hundreds of MapReduce programs have
+	been implemented and upwards of one thousand MapReduce jobs are executed
+	on Google's clusters every day.},
+  publisher = {ACM},
+  url = {http://labs.google.com/papers/mapreduce-osdi04.pdf}
+}
+
+@ARTICLE{decandia2007dynamo,
+  author = {DeCandia, G. and Hastorun, D. and Jampani, M. and Kakulapati, G.
+	and Lakshman, A. and Pilchin, A. and Sivasubramanian, S. and Vosshall,
+	P. and Vogels, W.},
+  title = {Dynamo: amazon's highly available key-value store},
+  journal = {ACM SIGOPS Operating Systems Review},
+  year = {2007},
+  volume = {41},
+  pages = {220},
+  number = {6},
+  abstract = {Reliability at massive scale is one of the biggest challenges we face
+	at Amazon.com, one of the largest e-commerce operations in the world;
+	even the slightest outage has significant financial consequences
+	and impacts customer trust. The Amazon.com platform, which provides
+	services for many web sites worldwide, is implemented on top of an
+	infrastructure of tens of thousands of servers and network components
+	located in many datacenters around the world. At this scale, small
+	and large components fail continuously and the way persistent state
+	is managed in the face of these failures drives the reliability and
+	scalability of the software systems.
+	
+	This paper presents the design and implementation of Dynamo, a highly
+	available key-value storage system that some of Amazon’s core services
+	use to provide an “always-on” experience. To achieve this level of
+	availability, Dynamo sacrifices consistency under certain failure
+	scenarios. It makes extensive use of object versioning and application-assisted
+	conflict resolution in a manner that provides a novel interface for
+	developers to use.},
+  publisher = {ACM},
+  url = {http://s3.amazonaws.com/AllThingsDistributed/sosp/amazon-dynamo-sosp2007.pdf}
+}
+
+@CONFERENCE{fidge1988timestamps,
+  author = {Fidge, C.J.},
+  title = {Timestamps in message-passing systems that preserve the partial ordering},
+  booktitle = {Proceedings of the 11th Australian Computer Science Conference},
+  year = {1988},
+  volume = {10},
+  number = {1},
+  pages = {56--66},
+  abstract = {Timestamping is a common method of totally ordering events in concurrent
+	programs. However, for applications requiring access to the global
+	state, a total ordering is inappropriate. This paper presents algorithms
+	for timestamping events in both synchronous and asynchronous message-passing
+	programs that allow for access to the partial ordering inherent in
+	a parallel system. The algorithms do not hcnage the communications
+	graph or require a central timestamp issuing authority.},
+  url = {http://sky.scitech.qut.edu.au/~fidgec/Publications/fidge88a.pdf}
+}
+
+@CONFERENCE{fox1999harvest,
+  author = {Fox, A. and Brewer, E.A.},
+  title = {Harvest, yield, and scalable tolerant systems},
+  booktitle = {Proceedings of the Seventh Workshop on Hot Topics in Operating Systems,
+	1999},
+  year = {1999},
+  pages = {174--178},
+  abstract = {The cost of reconciling consistency and state manage- ment with high
+	availability is highly magnified by the un- precedented scale and
+	robustness requirements of today’s Internet applications. We propose
+	two strategies for im- proving overall availability using simple
+	mechanisms that scale over large applications whose output behavior
+	toler- ates graceful degradation. We characterize this degradation
+	in terms of harvest and yield, and map it directly onto engi- neering
+	mechanisms that enhance availability by improving fault isolation,
+	and in some cases also simplify program- ming. By collecting examples
+	of related techniques in the literature and illustrating the surprising
+	range of applica- tions that can benefit from these approaches, we
+	hope to motivate a broader research program in this area.},
+  url = {http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.24.3690&rep=rep1&type=pdf}
+}
+
+@ARTICLE{gilbert2002brewer,
+  author = {Gilbert, S. and Lynch, N.},
+  title = {Brewer's conjecture and the feasibility of consistent, available,
+	partition-tolerant web services},
+  journal = {ACM SIGACT News},
+  year = {2002},
+  volume = {33},
+  pages = {59},
+  number = {2},
+  abstract = {When designing distributed web services, there are three properties
+	that are commonly desired: consistency, availability, and partition
+	tolerance. It is impossible to achieve all three. In this note, we
+	prove this conjecture in the asynchronous network model, and then
+	discuss solutions to this dilemma in the partially synchronous model.},
+  publisher = {ACM},
+  url = {http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.20.1495&rep=rep1&type=pdf}
+}
+
+@CONFERENCE{gray1981transaction,
+  author = {Gray, J. and others},
+  title = {The transaction concept: Virtues and limitations},
+  booktitle = {Proceedings of the Very Large Database Conference},
+  year = {1981},
+  pages = {144--154},
+  organization = {Citeseer},
+  abstract = {A transaction is a transformation of state which has the properties
+	of atomicity (all or nothing), durability (effects survive failures)
+	and consistency (a correct transformation). The transaction concept
+	is key to the structuring of data management applications. The concept
+	may have applicability to programming systems in general. This paper
+	restates the transaction concepts and attempts to put several implementation
+	approaches in perspective. It then describes some areas which require
+	further study: (1) the integration of the transaction concept with
+	the notion of abstract data type, (2) some techniques to allow transactions
+	to be composed of sub- transactions, and (3) handling transactions
+	which last for extremely long times (days or months).},
+  url = {http://research.microsoft.com/en-us/um/people/gray/papers/theTransactionConcept.pdf}
+}
+
+@CONFERENCE{hamilton2007designing,
+  author = {Hamilton, J.},
+  title = {On designing and deploying internet-scale services},
+  booktitle = {Proceedings of LISA},
+  year = {2007},
+  pages = {1--12},
+  abstract = {The system-to-administrator ratio is commonly used as a rough metric
+	to understand adminis- trative costs in high-scale services. With
+	smaller, less automated services this ratio can be as low as 2:1,
+	whereas on industry leading, highly automated services, we’ve seen
+	ratios as high as 2,500:1. Within Microsoft services, Autopilot is
+	often cited as the magic behind the success of the Win- dows Live
+	Search team in achieving high system-to-administrator ratios. While
+	auto-administration is important, the most important factor is actually
+	the service itself. Is the service efficient to auto- mate? Is it
+	what we refer to more generally as operations-friendly? Services
+	that are operations- friendly require little human intervention,
+	and both detect and recover from all but the most obscure failures
+	without administrative intervention. This paper summarizes the best
+	practices accumulated over many years in scaling some of the largest
+	services at MSN and Windows Live.},
+  url = {http://www.mvdirona.com/jrh/talksAndPapers/JamesRH_Lisa.pdf}
+}
+
+@CONFERENCE{helland2007life,
+  author = {Helland, P.},
+  title = {Life beyond Distributed Transactions: an Apostate's Opinion},
+  booktitle = {Proc. CIDR},
+  year = {2007},
+  abstract = {Many decades of work have been invested in the area of distributed
+	transactions including protocols such as 2PC, Paxos, and various
+	approaches to quorum. These protocols provide the application programmer
+	a façade of global serializability. Personally, I have invested a
+	non- trivial portion of my career as a strong advocate for the implementation
+	and use of platforms providing guarantees of global serializability.
+	
+	My experience over the last decade has led me to liken these platforms
+	to the Maginot Line1. In general, application developers simply do
+	not implement large scalable applications assuming distributed transactions.
+	When they attempt to use distributed transactions, the projects founder
+	because the performance costs and fragility make them impractical.
+	Natural selection kicks in ...
+	
+	Instead, applications are built using different techniques which do
+	not provide the same transactional guarantees but still meet the
+	needs of their businesses.
+	
+	This paper explores and names some of the practical approaches used
+	in the implementations of large-scale mission-critical applications
+	in a world which rejects distributed transactions. We discuss the
+	management of fine-grained pieces of application data which may be
+	repartitioned over time as the application grows. We also discuss
+	the design patterns used in sending messages between these repartitionable
+	pieces of data.
+	
+	The reason for starting this discussion is to raise awareness of new
+	patterns for two reasons. First, it is my belief that this awareness
+	can ease the challenges of people hand-crafting very large scalable
+	applications. Second, by observing the patterns, hopefully the industry
+	can work towards the creation of platforms that make it easier to
+	build these very large applications.},
+  url = {http://www.cidrdb.org/cidr2007/papers/cidr07p15.pdf}
+}
+
+@ARTICLE{lakshman2010cassandra,
+  author = {Lakshman, A. and Malik, P.},
+  title = {Cassandra: a decentralized structured storage system},
+  journal = {ACM SIGOPS Operating Systems Review},
+  year = {2010},
+  volume = {44},
+  pages = {35--40},
+  number = {2},
+  abstract = {Cassandra is a distributed storage system for managing very large
+	amounts of structured data spread out across many commodity servers,
+	while providing highly available service with no single point of
+	failure. Cassandra aims to run on top of an infrastructure of hundreds
+	of nodes (possibly spread across different data centers). At this
+	scale, small and large components fail continuously. The way Cassandra
+	man- ages the persistent state in the face of these failures drives
+	the reliability and scalability of the software systems rely- ing
+	on this service. While in many ways Cassandra resem- bles a database
+	and shares many design and implementation strategies therewith, Cassandra
+	does not support a full rela- tional data model; instead, it provides
+	clients with a simple data model that supports dynamic control over
+	data lay- out and format. Cassandra system was designed to run on
+	cheap commodity hardware and handle high write through- put while
+	not sacrificing read efficiency.},
+  publisher = {ACM},
+  url = {http://www.cs.cornell.edu/projects/ladis2009/papers/lakshman-ladis2009.pdf}
+}
+
+@ARTICLE{lamport2001paxos,
+  author = {Lamport, L.},
+  title = {Paxos made simple},
+  journal = {ACM SIGACT News},
+  year = {2001},
+  volume = {32},
+  pages = {18--25},
+  number = {4},
+  abstract = {The Paxos algorithm, when presented in plain English, is very simple.},
+  publisher = {Citeseer},
+  url = {http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf}
+}
+
+@ARTICLE{lamport1978time,
+  author = {Lamport, L.},
+  title = {Time, clocks, and the ordering of events in a distributed system},
+  journal = {Communications of the ACM},
+  year = {1978},
+  volume = {21},
+  pages = {558--565},
+  number = {7},
+  abstract = {The concept of one event happening before another in a distributed
+	system is examined, and is shown to define a partial ordering of
+	the events. A distributed algorithm is given for synchronizing a
+	system of logical clocks which can be used to totally order the events.
+	The use of the total ordering is illustrated with a method for solving
+	synchronization problems. The algorithm is then specialized for synchronizing
+	physical clocks, and a bound is derived on how far out of synchrony
+	the clocks can become.},
+  publisher = {ACM},
+  url = {http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.142.3682&rep=rep1&type=pdf}
+}
+
+@ARTICLE{lamport1982byzantine,
+  author = {Lamport, L. and Shostak, R. and Pease, M.},
+  title = {The Byzantine generals problem},
+  journal = {ACM Transactions on Programming Languages and Systems (TOPLAS)},
+  year = {1982},
+  volume = {4},
+  pages = {401},
+  number = {3},
+  abstract = {Reliable computer systems must handle malfunctioningcomponents that
+	give conflicting information to different parts of the system. This
+	situation can be expressed abstractly in terms of a group of generals
+	of the Byzantine army camped with their troops around an enemy city.
+	Communicatingonly by messenger, the generals must agree upon a common
+	battle plan. However, one or more of them may be traitors who will
+	try to confuse the others. The problem is to find an algorithm to
+	ensure that the loyal generals will reach agreement. It is shown
+	that, using only oral messages, this problem is solvable if and only
+	if more than two-thirds of the generals are loyal; so a single traitor
+	can confound two loyal generals. With unforgeable written messages,
+	the problem is solvable for any number of generals and possible traitors.
+	Applications of the solutions to reliable computer systems are then
+	discussed.},
+  publisher = {ACM},
+  url = {http://research.microsoft.com/en-us/um/people/lamport/pubs/byz.pdf}
+}
+
+@ARTICLE{mattern1989virtual,
+  author = {Mattern, F.},
+  title = {Virtual time and global states of distributed systems},
+  journal = {Parallel and Distributed Algorithms},
+  year = {1989},
+  pages = {215--226},
+  abstract = {A distributed system can be characterized by the fact that the global
+	state is distributed and that a common time base does not exist.
+	However, the notion of time is an important concept in every day
+	life of our decentralized "real world" and helps to solve problems
+	like getting a consistent population census or determining the potential
+	causality between events. We argue that a linearly ordered structure
+	of time is not (always) adequate for distributed systems and propose
+	a generalized non-standard model of time which consists of vectors
+	of clocks. These clock-vectors are partially ordered and form a lattice.
+	By using timestamps and a simple clock update mechanism the structure
+	of causality is represented in an isomorphic way. The new model of
+	time has a close analogy to Minkowski's relativistic spacetime and
+	leads among others to an interesting characterization of the global
+	state problem. Finally, we present a new algorithm to compute a consistent
+	global snapshot of a distributed system where messages may be received
+	out of order.},
+  publisher = {Citeseer},
+  url = {http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.63.4399&rep=rep1&type=pdf}
+}
+
+@ARTICLE{mcjones19971995,
+  author = {McJones, P.},
+  title = {The 1995 SQL Reunion: People, projects and politics},
+  journal = {SRC Tech. Note},
+  year = {1997},
+  volume = {18},
+  abstract = {A reunion of people who worked on System R and its derivatives, including
+	SQL/DS, DB2, and R*, was held at Asilomar on May 29, 1995. This is
+	an edited transcript of the day’s discussions, incorporating changes
+	provided by the speakers. It provides an informal but first-hand
+	account of the birth of SQL, the history of System R, and the origins
+	of a number of other relational systems inside and outside IBM.
+	
+	
+	Recommended paired reading: Henry Baker’s 1991 letter to the ACM.
+	
+	http://home.pipeline.com/~hbaker1/letters/CACM-RelationalDatabases.html},
+  url = {http://www.hpl.hp.com/techreports/Compaq-DEC/SRC-TN-1997-018.pdf}
+}
+
+@ARTICLE{leția2009crdts,
+  author = {Mihai Letia, Nuno Preguiça, Marc Shapiro},
+  title = {CRDTs: Consistency without concurrency control},
+  year = {2009},
+  abstract = {A CRDT is a data type whose operations commute when they are concurrent.
+	Replicas of a CRDT eventually converge without any complex concurrency
+	control. As an existence proof, we exhibit a non-trivial CRDT: a
+	shared edit buﬀer called Treedoc. We outline the design, implementation
+	and performance of Treedoc. We discuss how the CRDT concept can be
+	generalised, and its limitations.},
+  url = {http://hal.archives-ouvertes.fr/docs/00/39/79/81/PDF/RR-6956.pdf}
+}
+
+@ARTICLE{o1996log,
+  author = {O’Neil, P. and Cheng, E. and Gawlick, D. and O’Neil, E.},
+  title = {The log-structured merge-tree (LSM-tree)},
+  journal = {Acta Informatica},
+  year = {1996},
+  volume = {33},
+  pages = {351--385},
+  number = {4},
+  abstract = {High-performance transaction system applications typically insert
+	rows in a History table to provide an activity trace; at the same
+	time the transaction system generates log records for purposes of
+	system recovery. Both types of generated information can benefit
+	from efficient indexing. An example in a well-known setting is the
+	TPC-A benchmark application, modified to support efficient queries
+	on the History for account activity for specific accounts. This requires
+	an index by account-id on the fast-growing History table. Unfortunately,
+	stan- dard disk-based index structures such as the B-tree will effectively
+	double the I/O cost of the transaction to maintain an index such
+	as this in real time, increasing the total system cost up to fifty
+	percent. Clearly a method for maintaining a real-time index at low
+	cost is desirable. The Log-Structured Merge-tree (LSM-tree) is a
+	disk-based data structure designed to provide low-cost indexing for
+	a file experiencing a high rate of record inserts (and deletes) over
+	an extended period. The LSM-tree uses an algorithm that defers and
+	batches index changes, cas- cading the changes from a memory-based
+	component through one or more disk components in an efficient manner
+	reminiscent of merge sort. During this process all index values are
+	contin- uously accessible to retrievals (aside from very short locking
+	periods), either through the memory component or one of the disk
+	components. The algorithm has greatly reduced disk arm movements
+	compared to a traditional access methods such as B-trees, and will
+	improve cost- performance in domains where disk arm costs for inserts
+	with traditional access methods overwhelm storage media costs. The
+	LSM-tree approach also generalizes to operations other than insert
+	and delete. However, indexed finds requiring immediate response will
+	lose I/O ef- ficiency in some cases, so the LSM-tree is most useful
+	in applications where index inserts are more common than finds that
+	retrieve the entries. This seems to be a common property for History
+	tables and log files, for example. The conclusions of Section 6 compare
+	the hybrid use of memory and disk components in the LSM-tree access
+	method with the commonly understood advantage of the hybrid method
+	to buffer disk pages in memory.},
+  publisher = {Springer},
+  url = {http://staff.ustc.edu.cn/~jpq/paper/flash/1996-The%20Log-Structured%20Merge-Tree%20%28LSM-Tree%29.pdf}
+}
+
+@ARTICLE{pritchett2008base,
+  author = {Pritchett, D.},
+  title = {BASE: An Acid Alternative},
+  journal = {Queue},
+  year = {2008},
+  volume = {6},
+  pages = {48--55},
+  number = {3},
+  abstract = {In partitioned databases, trading some consistency for availability
+	can lead to dramatic improvements in scalability.},
+  publisher = {ACM},
+  url = {http://portal.acm.org/ft_gateway.cfm?id=1394128&type=pdf}
+}
+
+@ARTICLE{rodriguez2010graph,
+  author = {Rodriguez, M.A. and Neubauer, P.},
+  title = {The Graph Traversal Pattern},
+  journal = {Arxiv preprint arXiv:1004.1001},
+  year = {2010},
+  abstract = {To many onlookers, it may seem that the NoSQL-hype is solely focused
+	on scaling data. Many NoSQL databases are designed such that they
+	can horizontally-scale with relatively ease. This is accomplished
+	by making use of data structures that are optimized for sharding.
+	Such data have limited to no direct references between each other.
+	Therefore, the problem of referential integrity does not exist and
+	data can be massively parallelized. Examples of such systems include
+	Amazon’s Dynamo, Google’s Big Table, Apache’s CouchDB, and so on.
+	
+	In stark contrast to this design choice, on the other side of the
+	NoSQL spectrum, there exists another design choice---the highly interconnected,
+	direct referent data structure of the graph database. Graph databases
+	allow users to solve problems by moving through their data in intelligent/directed
+	ways and with an arbitrary depth. This style of data processing is
+	known as the graph traversal pattern. This pattern is difficult to
+	efficiently achieve with systems that only allow for the joining
+	of data through the use of global indices. The graph traversal pattern
+	is all about local, index-free traversals.},
+  url = {http://arxiv.org/pdf/1004.1001v1}
+}
+
+@CONFERENCE{sears2006stasis,
+  author = {Sears, R. and Brewer, E.},
+  title = {Stasis: Flexible transactional storage},
+  booktitle = {Proceedings of the 7th symposium on Operating systems design and
+	implementation},
+  year = {2006},
+  pages = {44},
+  organization = {USENIX Association},
+  abstract = {An increasing range of applications requires robust support for atomic,
+	durable and concurrent transactions. Databases provide the default
+	solution, but force applications to interact via SQL and to forfeit
+	control over data layout and access mechanisms. We argue there is
+	a gap between DBMSs and ﬁle systems that limits designers of data-oriented
+	applications.
+	
+	Stasis is a storage framework that incorporates ideas from traditional
+	write-ahead logging algorithms and ﬁle systems. It provides applications
+	with ﬂexible control over data structures, data layout, robustness,
+	and performance. Stasis enables the development of unforeseen variants
+	on transactional storage by generalizing write-ahead logging algorithms.
+	Our partial implementation of these ideas already provides specialized
+	(and cleaner) semantics to applications.
+	
+	We evaluate the performance of a traditional transactional storage
+	system based on Stasis, and show that it performs favorably relative
+	to existing systems. We present examples that make use of custom
+	access methods, modiﬁed buffer manager semantics, direct log ﬁle
+	manipulation, and LSN-free pages. These examples facilitate sophisticated
+	performance optimizations such as zero-copy I/O. These extensions
+	are composable, easy to implement and signiﬁcantly improve performance.},
+  url = {http://www.cs.berkeley.edu/~sears/publications/Stasis-OSDI.pdf}
+}
+
+@ARTICLE{noitacol,
+  author = {P. Griffiths Selinger and M. M. Astrahan and D. D. Chamberlin and
+	It. A. Lorie and T. G. Price},
+  title = {Access path selection in a relational database management system},
+  year = {1979},
+  abstract = {In a high level query and data manipulation language such as SQL,
+	requests are stated non-procedurally, without reference to access
+	paths. This paper describes how System R chooses access paths for
+	both simple (single relation) and complex queries (such as joins),
+	given a user specification of desired data as a boolean expression
+	of predicates. System R is an experimental database management system
+	developed to carry out research on the relational model of data.
+	System R was designed and built by members of the IBM San Jose Research'Laboratory.},
+  institution = {CiteSeerX - Scientific Literature Digital Library and Search Engine
+	[http://citeseerx.ist.psu.edu/oai2] (United States)},
+  location = {http://www.scientificcommons.org/42600108},
+  url = {http://citeseerx.ist.psu.edu/viewdoc/summary?doi=?doi=10.1.1.135.4632}
+}
+
+@CONFERENCE{stonebraker2007end,
+  author = {Stonebraker, M. and Madden, S. and Abadi, D.J. and Harizopoulos,
+	S. and Hachem, N. and Helland, P.},
+  title = {The end of an architectural era:(it's time for a complete rewrite)},
+  booktitle = {Proceedings of the 33rd international conference on Very large data
+	bases},
+  year = {2007},
+  pages = {1150--1160},
+  organization = {VLDB Endowment},
+  abstract = {In previous papers, some of us predicted the end of “one size fits
+	all” as a commercial relational DBMS paradigm. These papers presented
+	reasons and experimental evidence that showed that the major RDBMS
+	vendors can be outperformed by 1-2 orders of magnitude by specialized
+	engines in the data warehouse, stream processing, text, and scientific
+	database markets.
+	
+	Assuming that specialized engines dominate these markets over time,
+	the current relational DBMS code lines will be left with the business
+	data processing (OLTP) market and hybrid markets where more than
+	one kind of capability is required. In this paper we show that current
+	RDBMSs can be beaten by nearly two orders of magnitude in the OLTP
+	market as well. The experimental evidence comes from comparing a
+	new OLTP prototype, H-Store, which we have built at M.I.T., to a
+	popular RDBMS on the standard transactional benchmark, TPC-C.
+	
+	We conclude that the current RDBMS code lines, while attempting to
+	be a “one size fits all” solution, in fact, excel at nothing. Hence,
+	they are 25 year old legacy code lines that should be retired in
+	favor of a collection of “from scratch” specialized engines. The
+	DBMS vendors (and the research community) should start with a clean
+	sheet of paper and design systems for tomorrow’s requirements, not
+	continue to push code lines and architectures designed for yesterday’s
+	needs},
+  url = {http://cs-www.cs.yale.edu/homes/dna/papers/vldb07hstore.pdf}
+}
+
+@ARTICLE{vogels2009eventually,
+  author = {Vogels, W.},
+  title = {Eventually consistent},
+  journal = {Communications of the ACM},
+  year = {2009},
+  volume = {52},
+  pages = {40--44},
+  number = {1},
+  abstract = {Building reliable distributed systems at a worldwide scale demands
+	trade-offs - between consistency and availability.
+	
+	At the foundation of Amazon’s cloud computing are infrastructure services
+	such as Amazon’s S3 (Simple Storage Service), SimpleDB, and EC2 (Elastic
+	Compute Cloud) that provide the resources for constructing Internet-scale
+	comput- ing platforms and a great variety of applications. The requirements
+	placed on these infrastructure services are very strict; they need
+	to score high marks in the areas of security, scalability, availability,
+	performance, and cost effectiveness, and they need to meet these
+	requirements while serving millions of customers around the globe,
+	continuously.
+	
+	Under the covers these services are massive distributed systems that
+	operate on a worldwide scale. This scale creates additional challenges,
+	because when a system processes trillions and trillions of requests,
+	events that normally have a low probability of occurrence are now
+	guaranteed to happen and need to be accounted for up front in the
+	design and architecture of the system. Given the worldwide scope
+	of these systems, we use replication techniques ubiquitously to guarantee
+	consistent performance and high availability. Although replication
+	brings us closer to our goals, it cannot achieve them in a perfectly
+	transparent manner; under a number of conditions the customers of
+	these services will be confronted with the consequences of using
+	replication techniques inside the services.
+	
+	One of the ways in which this manifests itself is in the type of data
+	consistency that is provided, particularly when many widespread distributed
+	systems provide an eventual consistency model in the context of data
+	replication. When designing these large-scale systems at Amazon,
+	we use a set of guiding principles and abstractions related to large-scale
+	data replication and focus on the trade-offs between high availability
+	and data consistency. In this article I present some of the relevant
+	background that has informed our approach to delivering reliable
+	distributed systems that need to operate on a global scale. An earlier
+	version of this text appeared as a posting on the All Things Distributed
+	weblog and was greatly improved with the help of its readers.},
+  publisher = {ACM},
+  url = {http://portal.acm.org/ft_gateway.cfm?id=1466448&type=pdf}
+}
+
+@comment{jabref-meta: psDirectory:./biblio;}
+
+@comment{jabref-meta: fileDirectory:./biblio;}
+
+@comment{jabref-meta: pdfDirectory:./biblio;}
+
+@comment{jabref-meta: groupsversion:3;}
+
+@comment{jabref-meta: groupstree:
+0 AllEntriesGroup:;
+1 ExplicitGroup:easy level\;0\;birman1993process\;birman2010history\;c
+ooper2008pnuts\;cooper2010benchmarking\;fox1999harvest\;hamilton2007de
+signing\;helland2007life\;lakshman2010cassandra\;lamport1982byzantine\
+;mcjones19971995\;pritchett2008base\;stonebraker2007end\;vogels2009eve
+ntually\;;
+1 ExplicitGroup:hard level\;0\;chang2008bigtable\;noitacol\;o1996log\;
+rodriguez2010graph\;;
+1 ExplicitGroup:normal level\;0\;burrows2006chubby\;codd1970relational
+\;dean2008mapreduce\;decandia2007dynamo\;fidge1988timestamps\;gilbert2
+002brewer\;gray1981transaction\;lamport1978time\;lamport2001paxos\;leț
+ia2009crdts\;mattern1989virtual\;sears2006stasis\;;
+}
+

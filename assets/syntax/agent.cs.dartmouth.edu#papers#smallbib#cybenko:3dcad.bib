@@ -1,0 +1,48 @@
+@article{cybenko:3dcad,
+    author = {George Cybenko and Aditya Bhasin and Kurt D. Cohen},
+    title = {Pattern Recognition of {3D CAD} Objects: Towards an Electronic
+Yellow Pages of Mechanical Parts},
+    journal = {Smart Engineering Systems Design},
+    year = {1997},
+    volume = {1},
+    pages = {1--13},
+    group = {agents},
+    url = {http://agent.cs.dartmouth.edu/papers/cybenko:3dcad.ps.gz},
+    keyword = {mobile agents, pattern recognition, information retrieval},
+    abstract = {Industry estimates show that aggressive reuse of existing
+inventory could reduce the delivered cost of large, complex manufactured
+systems by as much as 20\%. In most cases these savings are not captured,
+principally because the current technology to locate reusable designs and
+inventory, which uses taxonomies and other artificial indices, is too
+cumbersome. Furthermore, current systems do not address the design phase -
+where opportunities for reuse first arise. This paper describes a
+computer-based technology that will be an important step towards solving this
+problem. \par For mechanical parts, the modern design phase starts with
+computer aided design (CAD) packages. Given a prototype design of a solid
+object, the design engineer should be able to determine whether the part
+under consideration is already designed or in manufacture. Our system does
+this by using physical shape as a direct index to existing designs and
+manufactured components, eliminating time-consuming and error-prone searches
+of the taxonomy. Other applications of this technology include identification
+of warehoused parts according to scanned shape and efficient management of
+3-dimensional objects in computer animation and virtual reality systems. \par
+Our system takes a standard digital representation of a solid object, such as
+in IGES form, and produces a surface triangular mesh representing the
+boundary of the object. The surface mesh allows a voxel approximation
+representation of the solid which is computed by flood filling. Zeroth, first
+and second order geometrical moments are used to normalize the orientation of
+the solid. Then a variety of volumetric invariants are computed and used as
+features. These features determine a hash function which maps similar shapes
+to closely related feature vectors. Nearby feature vectors identify a small
+subset of objects which are compared using symmetric differencing on a voxel
+by voxel basis. This voxel symmetric difference gives a rank ordering of
+similarity between 3-dimensional shapes in the database and the object under
+consideration. Using this small subset of like-shaped objects, the design
+engineer can browse a reasonable subset of parts from the complete database.
+\par The described research has significant applications in industries which
+seek to reuse existing designs and inventory thereby reducing manufacturing
+costs. Applications in aerospace, automobile and machine tool industries are
+most promising and urgent. We expect that this research will lead to the
+commercial development of software that will enhance existing CAD and
+database systems.},
+}

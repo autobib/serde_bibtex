@@ -1,0 +1,2196 @@
+<HTML>
+<pre>
+
+@string{brics =	"{BRICS}"}
+@string{daimi =	"Department of Computer Science, University of Aarhus"}
+@string{iesd  =	"Department of Computer Science, Institute
+		  of Electronic Systems, Aalborg University"}
+@string{rs    =	"Research Series"}
+@string{ns    =	"Notes Series"}
+@string{ls    =	"Lecture Series"}
+@string{ds    =	"Dissertation Series"}
+
+@techreport{BRICS-RS-99-57,
+  author = 	 "Mosses, Peter D.",
+  title = 	 "A Modular {SOS} for {ML} Concurrency
+                  Primitives",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-57",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "22~pp",
+  abstract = 	 "Modularity is an important pragmatic aspect of
+                  semantic descriptions. In denotational
+                  semantics, the issue of modularity has received
+                  much attention, and appropriate abstractions
+                  have been introduced, so that definitions of
+                  semantic functions may be independent of the
+                  details of how computations are modelled. In
+                  structural operational semantics (SOS),
+                  however, this issue has largely been neglected,
+                  and SOS descriptions of programming languages
+                  typically exhibit rather poor modularity---for
+                  instance, extending the described language may
+                  entail a complete reformulation of the
+                  description of the original constructs.\bibpar
+                  A proposal has recently been made for a modular
+                  approach to SOS, called MSOS\@. The basic
+                  definitions of the Modular SOS framework are
+                  recalled here, but the reader is referred to
+                  other papers for a full introduction. This
+                  paper focusses on illustrating the
+                  applicability of Modular SOS, by using it to
+                  give a description of a sublanguage of
+                  Concurrent ML (CML)\@; the transition rules for
+                  the purely functional constructs do not have to
+                  be reformulated at all when adding references
+                  and/or processes. The paper concludes by
+                  comparing the MSOS description with previous
+                  operational descriptions of similar
+                  languages.\bibpar
+                  The reader is assumed to be familiar with
+                  conventional SOS, with the concepts of
+                  functional programming languages such as
+                  Standard ML, and with fundamental notions of
+                  concurrency",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-56,
+  author = 	 "Mosses, Peter D.",
+  title = 	 "A Modular {SOS} for Action Notation",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-56",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "39~pp. Full version of paper appearing in " #
+                  ns993 # ", pages 131--142",
+  abstract = 	 "Modularity is an important pragmatic aspect of
+                  semantic descriptions: good modularity is
+                  needed to allow the reuse of existing
+                  descriptions when extending or changing the
+                  described language. In denotational semantics,
+                  the issue of modularity has received much
+                  attention, and appropriate abstractions have
+                  been introduced, so that definitions of
+                  semantic functions may be independent of the
+                  details of how computations are modelled. In
+                  structural operational semantics (SOS),
+                  however, this issue has largely been neglected,
+                  and SOS descriptions of programming languages
+                  typically exhibit rather poor modularity; the
+                  original SOS given for Action Notation (the
+                  notation for the semantic entities used in
+                  action semantics) suffered from the same
+                  problem.\bibpar
+                  This paper recalls a recent proposal, called
+                  MSOS, for obtaining a high degree of modularity
+                  in SOS, and presents an MSOS description of
+                  Action Notation. Due to its modularity, the
+                  MSOS description pin-points some complications
+                  in the design of Action Notation, and should
+                  facilitate the design of an improved version of
+                  the notation. It also provides a major example
+                  of the applicability of the MSOS
+                  framework.\bibpar
+                  The reader is assumed to be familiar with
+                  conventional SOS and with the basic concepts
+                  and constructs of Action Notation. The
+                  description of Action Notation is formulated
+                  almost entirely in {\sc Casl}, the common
+                  algebraic specification language",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-55,
+  author = 	 "Mosses, Peter D.",
+  title = 	 "Logical Specification of Operational
+                  Semantics",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-55",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "18~pp. Invited paper. Appears in " # lncs1683
+                  # ", pages 32--49",
+  abstract = 	 "Various logic-based frameworks have been
+                  proposed for specifying the operational
+                  semantics of programming languages and
+                  concurrent systems, including inference systems
+                  in the styles advocated by Plotkin and by Kahn,
+                  Horn logic, equational specifications,
+                  reduction systems for evaluation contexts,
+                  rewriting logic, and tile logic.\bibpar
+                  We consider the relationship between these
+                  frameworks, and assess their respective merits
+                  and drawbacks---especially with regard to the
+                  modularity of specifications, which is a
+                  crucial feature for scaling up to practical
+                  applications. We also report on recent work
+                  towards the use of the Maude system (which
+                  provides an efficient implementation of
+                  rewriting logic) as a meta-tool for operational
+                  semantics",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-54,
+  author = 	 "Mosses, Peter D.",
+  title = 	 "Foundations of Modular {SOS}",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-54",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "17~pp. Full version of paper appearing in " #
+                  lncs1672 # ", pages 70--80",
+  abstract = 	 "A novel form of labelled transition system is
+                  proposed, where the labels are the arrows of a
+                  category, and adjacent labels in computations
+                  are required to be composable. Such transition
+                  systems provide the foundations for modular SOS
+                  descriptions of programming languages.\bibpar
+                  Three fundamental ways of transforming label
+                  categories, analogous to monad transformers,
+                  are provided, and it is shown that their
+                  applications preserve computations in modular
+                  SOS. The approach is illustrated with fragments
+                  taken from a modular SOS for ML concurrency
+                  primitives.",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-53,
+  author = 	 "Iversen, Torsten K. and Kristoffersen,
+                  K{\aa}re J. and Larsen, Kim G. and Laursen,
+                  Morten and Madsen, Rune G. and Mortensen,
+                  Steffen K. and Pettersson, Paul and Thomasen,
+                  Chris B.",
+  title = 	 "Model-Checking Real-Time Control Programs ---
+                  Verifying {LEGO} Mindstorms Systems Using
+                  {UPPAAL}",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-53",
+  address = 	 iesd,
+  month = 	 dec,
+  note = 	 "9~pp. Appears in " # ieeeecrts00 # ", pages
+                  147--155",
+  abstract = 	 "In this paper, we present a method for
+                  automatic verification of real-time control
+                  programs running on LEGO\textsuperscript
+                  {\textcircled{\tiny R}} RCX\textsuperscript
+                  {\textsf{T$\!$M}} bricks using the verification
+                  tool {\sc Uppaal}. The control programs,
+                  consisting of a number of tasks running
+                  concurrently, are automatically translated into
+                  the timed automata model of {\sc Uppaal}. The
+                  fixed scheduling algorithm used by the
+                  LEGO\textsuperscript{\textcircled{\tiny R}}
+                  RCX\textsuperscript{\textsf{T$\!$M}} processor
+                  is modeled in {\sc Uppaal}, and supply of
+                  similar (sufficient) timed automata models for
+                  the environment allows analysis of the overall
+                  real-time system using the tools of {\sc
+                  Uppaal}. To illustrate our techniques we have
+                  constructed, modeled and verified a machine for
+                  sorting LEGO\textsuperscript{\textcircled{\tiny
+                  R}} bricks by color",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-52,
+  author = 	 "Henriksen, Jesper G. and Mukund, Madhavan and
+                  Narayan Kumar, K. and Thiagarajan, P. S.",
+  title = 	 "Towards a Theory of Regular {MSC} Languages",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-52",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "43~pp",
+  abstract = 	 "Message Sequence Charts (MSCs) are an
+                  attractive visual formalism widely used to
+                  capture system requirements during the early
+                  design stages in domains such as
+                  telecommunication software. It is fruitful to
+                  have mechanisms for specifying and reasoning
+                  about collections of MSCs so that errors can be
+                  detected even at the requirements level. We
+                  propose, accordingly, a notion of {\em
+                  regularity} for collections of MSCs and explore
+                  its basic properties. In particular, we provide
+                  an automata-theoretic characterization of
+                  regular MSC languages in terms of finite-state
+                  distributed automata called bounded
+                  message-passing automata. These automata
+                  consist of a set of sequential processes that
+                  communicate with each other by sending and
+                  receiving messages over bounded FIFO channels.
+                  We also provide a logical characterization in
+                  terms of a natural monadic second-order logic
+                  interpreted over MSCs.\bibpar
+                  A commonly used technique to generate a
+                  collection of MSCs is to use a Message Sequence
+                  Graph (MSG). We show that the class of
+                  languages arising from the so-called locally synchronized
+                  MSGs constitute a proper subclass of the
+                  languages which are regular in our sense. In
+                  fact, we characterize the locally synchronized MSG languages
+                  as the subclass of regular MSC languages that
+                  are {\em finitely generated}",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-51,
+  author =	 "Danvy, Olivier",
+  title =	 "Formalizing Implementation Strategies for
+                  First-Class Continuations",
+  institution =	 brics,
+  year =	 1999,
+  type =	 rs,
+  number =	 "RS-99-51",
+  address =	 daimi,
+  month =	 dec,
+  note =	 "16~pp. Appears in " # lncs1782 # "pp. 88--103",
+  abstract =	 "We present the first formalization of implementation
+                  strategies for first-class continuations. The
+                  formalization hinges on abstract machines for
+                  continuation-passing style (CPS) programs with a
+                  special treatment for the current continuation,
+                  accounting for the essence of first-class
+                  continuations. These abstract machines are proven
+                  equivalent to a standard, substitution-based
+                  abstract machine. The proof techniques work
+                  uniformly for various representations of
+                  continuations. As a byproduct, we also present a
+                  formal proof of the two folklore theorems that one
+                  continuation identifier is enough for second-class
+                  continuations and that second-class continuations
+                  are stackable.\bibpar A large body of work exists on
+                  implementing continuations, but it is predominantly
+                  empirical and implementation-oriented. In contrast,
+                  our formalization abstracts the essence of
+                  first-class continuations and provides a uniform
+                  setting for specifying and formalizing their
+                  representation",
+  linkhtmlabs =	 "",
+  linkdvi =	 "",
+  linkps =	 "",
+  linkpdf =	 ""
+}
+@techreport{BRICS-RS-99-50,
+  author =	 "Brodal, Gerth St{\o}lting and Venkatesh, Srinivasan",
+  title =	 "Improved Bounds for Dictionary Look-up with One
+                  Error",
+  institution =	 brics,
+  year =	 1999,
+  type =	 rs,
+  number =	 "RS-99-50",
+  address =	 daimi,
+  month =	 dec,
+  note =	 "5~pp. Appears in {\em Information Processing
+                  Letters} 75(1--2):57--59, 2000",
+  keywords =	 "Data Structures, Dictionaries, Hashing, Hamming
+                  Distance",
+  abstract =	 "Given a dictionary $S$ of $n$ binary strings each of
+                  length $m$, we consider the problem of designing a
+                  data structure for $S$ that supports
+                  $d$-\emph{queries}; given a binary query string $q$
+                  of length~$m$, a $d$-query reports if there exists a
+                  string in $S$ within Hamming distance~$d$ of~$q$. We
+                  construct a data structure for the case $d=1$, that
+                  requires space $O(n\log m)$ and has query time
+                  $O(1)$ in a cell~probe model with word size
+                  $m$. This generalizes and improves the previous
+                  bounds of Yao and Yao for the problem in the
+                  bit~probe model",
+  linkhtmlabs =	 "",
+  linkdvi =	 "",
+  linkps =	 "",
+  linkpdf =	 ""
+}
+
+@techreport{BRICS-RS-99-49,
+  author = 	 "Ageev, Alexander A. and Sviridenko, Maxim I.",
+  title = 	 "An Approximation Algorithm for Hypergraph Max
+                  $k$-Cut with Given Sizes of Parts",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-49",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "12~pp. Appears in " # lncs1879 # ", pages
+                  32--49",
+  abstract = 	 "In this paper we demonstrate that the pipage
+                  rounding technique can be applied to the
+                  Hypergraph Max $k$-Cut problem with given sizes
+                  of parts. We present a polynomial time
+                  approximation algorithm and prove that its
+                  performance guarantee is tight",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-48,
+  author = 	 "Pagh, Rasmus",
+  title = 	 "Faster Deterministic Dictionaries",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-48",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "14~pp. Appears in " # acmsoda00 # ", pages
+                  487--493. Journal version in {\em Journal of
+                  Algorithms}, 41(1):69--85, 2001, with the title
+                  {\em Deterministic Dictionaries}",
+  abstract = 	 "We consider static dictionaries over the
+                  universe $U=\{0,1\}^w$ on a unit-cost RAM with
+                  word size $w$. Construction of a static
+                  dictionary with linear space consumption and
+                  constant lookup time can be done in linear
+                  expected time by a randomized algorithm. In
+                  contrast, the best previous deterministic
+                  algorithm for constructing such a dictionary
+                  with $n$ elements runs in time $O(n^{1+\epsilon
+                  })$ for $\epsilon>0$. This paper narrows the
+                  gap between deterministic and randomized
+                  algorithms exponentially, from the factor of
+                  $n^\epsilon$ to an $O(\log n)$ factor. The
+                  algorithm is weakly non-uniform, i.e. requires
+                  certain precomputed constants dependent on $w$.
+                  A by-product of the result is a lookup time vs
+                  insertion time trade-off for dynamic
+                  dictionaries, which is optimal for a realistic
+                  class of deterministic hashing schemes.",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-47,
+  author = 	 "Miltersen, Peter Bro and Variyam,
+                  Vinodchandran N.",
+  title = 	 "Derandomizing {A}rthur-{M}erlin Games using
+                  Hitting Sets",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-47",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "21~pp. Appears in " # ieeefocs99 # ", pages
+                  71--80",
+  abstract = 	 "We prove that {\rm\bf AM} (and hence Graph
+                  Nonisomorphism) is in {\rm\bf NP} if for some
+                  $\epsilon>0$, some language in {\rm\bf NE}
+                  $\cap$ {\rm\bf coNE} requires nondeterministic
+                  circuits of size $2^{\epsilon n}$. This
+                  improves recent results of Arvind and
+                  K{\"o}bler and of Klivans and Van Melkebeek who
+                  proved the same conclusion, but under stronger
+                  hardness assumptions, namely, either the
+                  existence of a language in {\rm\bf NE} $\cap$
+                  {\rm\bf coNE} which cannot be {\em
+                  approximated} by nondeterministic circuits of
+                  size less than $2^{\epsilon n}$ or the
+                  existence of a language in {\rm\bf NE} $\cap$
+                  {\rm\bf coNE} which requires {\em oracle
+                  circuits} of size $2^{\epsilon n}$ with oracle
+                  gates for {\rm SAT} (satisfiability).\bibpar
+                  
+                  The previous results on derandomizing {\rm\bf
+                  AM} were based on pseudorandom generators. In
+                  contrast, our approach is based on a
+                  strengthening of Andreev, Clementi and Rolim's
+                  hitting set approach to derandomization. As a
+                  spin-off, we show that this approach is strong
+                  enough to give an easy (if the existence of
+                  explicit dispersers can be assumed known) proof
+                  of the following implication: For some
+                  $\epsilon>0$, if there is a language in {\bf E}
+                  which requires nondeterministic circuits of
+                  size $2^{\epsilon n}$, then {\rm\bf P}={\rm\bf
+                  BPP}. This differs from Impagliazzo and
+                  Wigderson's theorem ``only'' by replacing
+                  deterministic circuits with nondeterministic
+                  ones",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-46,
+  author = 	 "Miltersen, Peter Bro and Variyam,
+                  Vinodchandran N. and Watanabe, Osamu",
+  title = 	 "Super-Polynomial Versus Half-Exponential
+                  Circuit Size in the Exponential Hierarchy",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-46",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "14~pp. Appears in " # lncs1627 # ", pages
+                  210--220",
+  abstract = 	 "Lower bounds on circuit size were previously
+                  established for functions in $\Sigma_2^p$,
+                  ${\mbox{\rm ZPP}}^{\mbox{\rm\scriptsize NP}}$,
+                  ${{\Sigma^{\mbox{\rm\small exp}}_2}}$, ${{\mbox
+                  {\rm ZPEXP}}^{\mbox{\rm\scriptsize NP}}}$ and
+                  ${{\mbox{\rm MA}}_{\mbox{\rm\small exp}}}$. We
+                  investigate the general question: Given a time
+                  bound $f(n)$. What is the best circuit size
+                  lower bound that can be shown for the classes
+                  ${\mbox{{\rm MA-TIME}}}[f]$, ${\mbox{\rm
+                  ZP-TIME}}^ {\mbox{\rm\scriptsize NP}}[f],
+                  \ldots$ using the techniques currently known?
+                  For the classes ${{\mbox{\rm MA}}_{\mbox{\rm
+                  \small exp}}}$, ${{\mbox{\rm ZPEXP}}^{\mbox{\rm
+                  \scriptsize NP}}}$ and ${{\Sigma^{\mbox{\rm
+                  \small exp}}_2}}$, the answer we get is
+                  ``half-exponential''. Informally, a function
+                  $f$ is said to be half-exponential if $f$
+                  composed with itself is exponential",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-45,
+  author = 	 "Amtoft, Torben",
+  title = 	 "Partial Evaluation for Constraint-Based
+                  Program Analyses",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-45",
+  address = 	 daimi,
+  month = 	 dec,
+  note = 	 "13~pp",
+  abstract = 	 "We report on a case study in the application
+                  of partial evaluation, initiated by the desire
+                  to speed up a constraint-based algorithm for
+                  control-flow analysis. We designed and
+                  implemented a dedicated partial evaluator, able
+                  to specialize the analysis wrt.\ a given
+                  constraint graph and thus remove the
+                  interpretive overhead, and measured it with
+                  Feeley's Scheme benchmarks. Even though the
+                  gain turned out to be pretty limited, our
+                  investigation yielded valuable feed back in
+                  that it provided a better understanding of the
+                  analysis, leading us to (re)invent an
+                  incremental version. We believe this phenomenon
+                  to be a quite frequent spin-off from using
+                  partial evaluation, since the removal of
+                  interpretive overhead will make the flow of
+                  control more explicit and hence pinpoint the
+                  sources of inefficiency. Finally, we observed
+                  that partial evaluation in our case yields such
+                  regular, low-level specialized programs that it
+                  begs for runtime code generation",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-44,
+  author = 	 "Nestmann, Uwe and H{\"u}ttel, Hans and Kleist,
+                  Josva and Merro, Massimo",
+  title = 	 "Aliasing Models for Mobile Objects",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-44",
+  address = 	 iesd,
+  month = 	 dec,
+  note = 	 "ii+46~pp. Appears in {\em Information and
+                  Computation} 172:1--31, 2002. An extended
+                  abstract of this revision, entitled {\em
+                  Aliasing Models for Object Migration}, appeared
+                  as Distinguished Paper in " # lncs1685 # ",
+                  pages 1353--1368, which in turn is a revised
+                  part of another paper called {\em Migration =
+                  Cloning ; Aliasing} that appeared in " # fool6
+                  # " and as such supersedes the corresponding
+                  part of the earlier BRICS report RS-98-33",
+  abstract = 	 "In Obliq, a lexically scoped, distributed,
+                  object-oriented programming language, object
+                  migration was suggested as the creation of a
+                  copy of an object's state at the target site,
+                  followed by turning the object itself into an
+                  alias, also called {\em surrogate}, for the
+                  remote copy. We consider the creation of object
+                  surrogates as an abstraction of the
+                  above-mentioned style of migration. We
+                  introduce {\O}jeblik, a typed distribution-free
+                  subset of Obliq, and provide four different
+                  configuration-style semantics, which only
+                  differ in the respective {\em aliasing model}.
+                  We show that two of the semantics, one of which
+                  matches Obliq's implementation, render
+                  migration unsafe, while our new proposal allows
+                  for safe migration at least for a large class
+                  of program contexts. In addition, we propose a
+                  type system that allows a programmer to
+                  statically guarantee that programs belong to
+                  that class. Our work suggests a straightforward
+                  repair of Obliq's aliasing model",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-43,
+  author = 	 "Nestmann, Uwe",
+  title = 	 "What is a `Good' Encoding of Guarded Choice?",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-43",
+  address = 	 iesd,
+  month = 	 dec,
+  note = 	 "ii+34~pp. Appears in {\em Information and
+                  Computation}, 156:287--319, 2000. This revised
+                  report supersedes the earlier BRICS report
+                  RS-97-45",
+  abstract = 	 "We study two encodings of the {\em
+                  asynchronous $\pi$-calculus} with {\em
+                  input-guarded choice} into its choice-free
+                  fragment. One encoding is divergence-free, but
+                  refines the atomic commitment of choice into
+                  gradual commitment. The other preserves
+                  atomicity, but introduces divergence. The
+                  divergent encoding is fully abstract with
+                  respect to weak bisimulation, but the more
+                  natural divergence-free encoding is not.
+                  Instead, we show that it is fully abstract with
+                  respect to {\it coupled simulation}, a slightly
+                  coarser---but still coinductively
+                  defined---equivalence that does not enforce
+                  bisimilarity of internal branching decisions.
+                  The correctness proofs for the two choice
+                  encodings introduce a novel proof technique
+                  exploiting the properties of explicit {\em
+                  decodings} from translations to source terms.",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-42,
+  author = 	 "Nestmann, Uwe and Pierce, Benjamin C.",
+  title = 	 "Decoding Choice Encodings",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-42",
+  address = 	 iesd,
+  month = 	 dec,
+  note = 	 "ii+62~pp. Appears in {\em Journal of
+                  Information and Computation}, 163:1--59, 2000.
+                  An extended abstract appeared in " # lncs1119 #
+                  ", pages 179--194",
+  abstract = 	 "We study two encodings of the {\em
+                  asynchronous $\pi$-calculus} with {\em
+                  input-guarded choice} into its choice-free
+                  fragment. One encoding is divergence-free, but
+                  refines the atomic commitment of choice into
+                  gradual commitment. The other preserves
+                  atomicity, but introduces divergence. The
+                  divergent encoding is fully abstract with
+                  respect to weak bisimulation, but the more
+                  natural divergence-free encoding is not.
+                  Instead, we show that it is fully abstract with
+                  respect to {\it coupled simulation}, a slightly
+                  coarser---but still coinductively
+                  defined---equivalence that does not enforce
+                  bisimilarity of internal branching decisions.
+                  The correctness proofs for the two choice
+                  encodings introduce a novel proof technique
+                  exploiting the properties of explicit {\em
+                  decodings} from translations to source terms.
+                  ",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-41,
+  author = 	 "Bodentien, Nicky O. and Vestergaard, Jacob and
+                  Friis, Jakob and Kristoffersen, K{\aa}re J. and
+                  Larsen, Kim G.",
+  title = 	 "Verification of State/Event Systems by
+                  Quotienting",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-41",
+  address = 	 iesd,
+  month = 	 dec,
+  note = 	 "17~pp. Presented at {\em Nordic Workshop in
+                  Programming Theory}, Uppsala, Sweden, October
+                  6--8, 1999",
+  abstract = 	 "A rather new approach towards compositional
+                  verification of concurrent systems is the
+                  quotient technique, where components are
+                  gradually removed from the concurrent system
+                  while transforming the specification
+                  accordingly. When the intermediate
+                  specifications can be kept small, the state
+                  explosion problem is avoided and there are
+                  already promising experimental results for
+                  systems with an interleaving semantics,
+                  including real-time systems. This paper extends
+                  the quotienting approach to deal with a
+                  synchronous framework in the shape of
+                  state/event systems with acyclic dependencies.
+                  A state/event system is a concurrent system
+                  with a set of interdependent components
+                  operating synchronously according to stimuli
+                  provided by an environment. We introduce Left
+                  Restricting state/event systems as a key notion
+                  for state/event systems with acyclic
+                  dependencies. Two families of modal logics,
+                  $\mathcal{L}$ and $\mathcal{M}$, specifically
+                  designed for expressing reachability properties
+                  of dependency closed and not dependency closed
+                  subsystems are introduced. Two quotient
+                  constructions for moving components from
+                  dependency closed and not dependency closed
+                  subsystems into the specification are presented
+                  and their correctness are justified in a formal
+                  proof. Furthermore, heuristics for minimizing
+                  formulae are proposed and the techniques are
+                  demonstrated on a Duplo train example",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-40,
+  author = 	 "Grobauer, Bernd and Yang, Zhe",
+  title = 	 "The Second {F}utamura Projection for
+                  Type-Directed Partial Evaluation",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-40",
+  address = 	 daimi,
+  month = 	 nov,
+  note = 	 "44~pp. Extended version of an article
+                  appearing in " # acmpepm00 # ", pages 22--32. A
+                  revised and extended version appears in {\em
+                  Higher-Order and Symbolic Computation}
+                  14(2--3):173--219 (2001) and " # alsoasrs #
+                  "RS-00-44",
+  abstract = 	 "A generating extension of a program
+                  specializes it with respect to some specified
+                  part of the input. A generating extension of a
+                  program can be formed trivially by applying a
+                  partial evaluator to the program; the second
+                  Futamura projection describes the automatic
+                  generation of non-trivial generating extensions
+                  by applying a partial evaluator to itself with
+                  respect to the programs.
+                  
+                  We derive an ML implementation of the second
+                  Futamura projection for Type-Directed Partial
+                  Evaluation (TDPE). Due to the differences
+                  between `traditional', syntax-directed partial
+                  evaluation and TDPE, this derivation involves
+                  several conceptual and technical steps. These
+                  include a suitable formulation of the second
+                  Futamura projection and techniques for making
+                  TDPE amenable to self-application. In the
+                  context of the second Futamura projection, we
+                  also compare and relate TDPE with conventional
+                  offline partial evaluation.
+                  
+                  We demonstrate our technique with several
+                  examples, including compiler generation for
+                  Tiny, a prototypical imperative language.",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-39,
+  author = 	 "Rizzi, Romeo",
+  title = 	 "On the {S}teiner Tree $\frac
+                  {3}{2}$-Approximation for Quasi-Bipartite
+                  Graphs",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-39",
+  address = 	 daimi,
+  month = 	 nov,
+  note = 	 "6~pp",
+  keywords = 	 "{S}teiner tree, local search, approximation
+                  algorithm, bit scaling",
+  abstract = 	 "Let $G=(V,E)$ be an undirected simple graph
+                  and $w:E\mapsto{\rm I\!R}_+$ be a non-negative
+                  weighting of the edges of $G$. Assume $V$ is
+                  partitioned as $R\cup X$. A {\em Steiner tree}
+                  is any tree $T$ of $G$ such that every node in
+                  $R$ is incident with at least one edge of $T$.
+                  The {\em metric Steiner tree problem} asks for
+                  a Steiner tree of minimum weight, given that
+                  $w$ is a metric. When $X$ is a stable set of
+                  $G$, then $(G,R,X)$ is called {\em
+                  quasi-bipartite}. In a SODA~'99 paper,
+                  Rajagopalan and Vazirani introduced the notion
+                  of quasi-bipartiteness and gave a $(\frac
+                  {3}{2}+\epsilon)$ approximation algorithm for
+                  the metric Steiner tree problem, when $(G,R,X)$
+                  is quasi-bipartite. In this paper, we simplify
+                  and strengthen the result of Rajagopalan and
+                  Vazirani. We also show how classical bit
+                  scaling techniques can be adapted to the design
+                  of approximation algorithms",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-38,
+  author = 	 "Rizzi, Romeo",
+  title = 	 "Linear Time Recognition of $P_4$-Indifferent
+                  Graphs",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-38",
+  address = 	 daimi,
+  month = 	 nov,
+  note = 	 "11~pp. Appears in {\em Discrete Mathematics},
+                  239(1--3):161--169, 2001",
+  keywords = 	 "$P_4$-indifference, linear time, recognition
+                  modular decomposition",
+  abstract = 	 "A simple graph is $P_4${\em-indifferent} if it
+                  admits a total order $<$ on its nodes such that
+                  every chordless path with nodes $a,b,c,d$ and
+                  edges $ab,bc,cd$ has $a<b<c<d$ or $a>b>c>d$.
+                  $P_4$-indifferent graphs generalize indifferent
+                  graphs and are perfectly orderable. Recently,
+                  Ho{\`a}ng, Maffray and Noy gave a
+                  characterization of $P_4$-indifferent graphs in
+                  terms of forbidden induced subgraphs. We
+                  clarify their proof and describe a linear time
+                  algorithm to recognize $P_4$-indifferent
+                  graphs. When the input is a $P_4$-indifferent
+                  graph, then the algorithm computes an order $<$
+                  as above",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-37,
+  author = 	 "Jord{\'a}n, Tibor",
+  title = 	 "Constrained Edge-Splitting Problems",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-37",
+  address = 	 daimi,
+  month = 	 nov,
+  note = 	 "23~pp. A preliminary version with the title
+                  {\em Edge-Splitting Problems with Demands}
+                  appeared in " # lncs1610 # ", pages 273--288",
+  abstract = 	 "Splitting off two edges $su, sv$ in a graph
+                  $G$ means deleting $su,sv$ and adding a new
+                  edge $uv$. Let $G=(V+s,E)$ be
+                  $k$-edge-connected in $V$ ($k\geq 2$) and let
+                  $d(s)$ be even. Lov{\'a}sz proved that the
+                  edges incident to $s$ can be split off in pairs
+                  in a such a way that the resulting graph on
+                  vertex set $V$ is $k$-edge-connected. In this
+                  paper we investigate the existence of such
+                  complete splitting sequences when the set of
+                  split edges has to meet additional
+                  requirements. We prove structural properties of
+                  the set of those pairs $u,v$ of neighbours of
+                  $s$ for which splitting off $su,sv$ destroys
+                  $k$-edge-connectivity. This leads to a new
+                  method for solving problems of this
+                  type.\bibpar
+                  
+                  By applying this method we obtain a short proof
+                  for a recent result of Nagamochi and Eades on
+                  planarity-preserving complete splitting
+                  sequences and prove the following new results:
+                  let $G$ and $H$ be two graphs on the same set
+                  $V+s$ of vertices and suppose that their sets
+                  of edges incident to $s$ coincide. Let $G$
+                  ($H$) be $k$-edge-connected
+                  ($l$-edge-connected, respectively) in $V$ and
+                  let $d(s)$ be even. Then there exists a pair
+                  $su,sv$ which can be split off in both graphs
+                  preserving $k$-edge-connectivity
+                  ($l$-edge-connectivity, resp.) in $V$, provided
+                  $d(s)\geq 6$. If $k$ and $l$ are both even then
+                  such a pair always exists. Using these
+                  edge-splitting results and the polymatroid
+                  intersection theorem we give a polynomial
+                  algorithm for the problem of simultaneously
+                  augmenting the edge-connectivity of two graphs
+                  by adding a (common) set of new edges of
+                  (almost) minimum size",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-36,
+  author = 	 "Cattani, Gian Luca and Winskel, Glynn",
+  title = 	 "Presheaf Models for {\bf CCS}-like Languages",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-36",
+  address = 	 daimi,
+  month = 	 nov,
+  note = 	 "ii+46~pp",
+  abstract = 	 "The aim of this paper is to harness the
+                  mathematical machinery around presheaves for
+                  the purposes of process calculi. Joyal, Nielsen
+                  and Winskel proposed a general definition of
+                  bisimulation from open maps. Here we show that
+                  open-map bisimulations within a range of
+                  presheaf models are congruences for a general
+                  process language, in which {CCS} and related
+                  languages are easily encoded. The results are
+                  then transferred to traditional models for
+                  processes. By first establishing the congruence
+                  results for presheaf models, abstract, general
+                  proofs of congruence properties can be provided
+                  and the awkwardness caused through traditional
+                  models not always possessing the cartesian
+                  liftings, used in the break-down of process
+                  operations, are side-stepped. The abstract
+                  results are applied to show that hereditary
+                  history-preserving bisimulation is a congruence
+                  for {CCS}-like languages to which is added a
+                  refinement operator on event structures as
+                  proposed by van Glabbeek and Goltz",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-35,
+  author = 	 "Jord{\'a}n, Tibor and Szigeti, Zolt{\'a}n",
+  title = 	 "Detachments Preserving Local Edge-Connectivity
+                  of Graphs",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-35",
+  address = 	 daimi,
+  month = 	 nov,
+  note = 	 "16~pp",
+  abstract = 	 "Let $G=(V+s,E)$ be a graph and let ${\cal
+                  S}=(d_1,...,d_p)$ be a set of positive integers
+                  with $\sum d_j=d(s)$. An $\cal S$-detachment
+                  splits $s$ into a set of $p$ independent
+                  vertices $s_1,...,s_p$ with $d(s_j)=d_j$,
+                  $1\leq j\leq p$. Given a requirement function
+                  $r(u,v)$ on pairs of vertices of $V$, an $\cal
+                  S$-detachment is called $r$-admissible if the
+                  detached graph $G'$ satisfies $\lambda_
+                  {G'}(x,y)\geq r(x,y)$ for every pair $x,y\in
+                  V$. Here $\lambda_H(u,v)$ denotes the local
+                  edge-connectivity between $u$ and $v$ in graph
+                  $H$.\bibpar
+                  
+                  We prove that an $r$-admissible $\cal
+                  S$-detachment exists if and only if (a)
+                  $\lambda_G(x,y)\geq r(x,y)$, and (b) $\lambda_
+                  {G-s}(x,y)\geq r(x,y)-\sum\lfloor d_j/2 \rfloor
+                  $ hold for every $x,y\in V$.\bibpar
+                  
+                  The special case of this characterization when
+                  $r(x,y)=\lambda_G(x,y)$ for each pair in $V$
+                  was conjectured by B.~Fleiner. Our result is a
+                  common generalization of a theorem of W.~Mader
+                  on edge splittings preserving local
+                  edge-connectivity and a result of B.~Fleiner on
+                  detachments preserving global
+                  edge-connectivity. Other corollaries include
+                  previous results of L.~Lov{\'a}sz and
+                  C.~J.~St.~A. Nash-Williams on edge splittings
+                  and detachments, respectively. As a new
+                  application, we extend a theorem of A.~Frank on
+                  local edge-connectivity augmentation to the
+                  case when stars of given degrees are added",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-34,
+  author = 	 "Rodler, Flemming Friche",
+  title = 	 "Wavelet Based {3D} Compression for Very Large
+                  Volume Data Supporting Fast Random Access",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-34",
+  address = 	 daimi,
+  month = 	 oct,
+  note = 	 "36~pp. Extended version of paper appearing in
+                  " # ieeepg99 # ", pages 108--117",
+  abstract = 	 "We propose a wavelet based method for
+                  compressing volume\-tric data with little loss
+                  in quality. The method supports fast random
+                  access to individual voxels within the
+                  compressed volume. Such a method is important
+                  since storing and visualising very large
+                  volumes impose heavy demands on internal memory
+                  and external storage facilities making it
+                  accessible only to users with huge and
+                  expensive computers. This problem is not likely
+                  to become less in the future. Experimental
+                  results on the CT dataset of the Visible Human
+                  have shown that our method provides very high
+                  compression rates with fairly fast random
+                  access",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-33,
+  author = 	 "Aceto, Luca and {\'E}sik, Zolt{\'a}n and
+                  Ing{\'o}lfsd{\'o}ttir, Anna",
+  title = 	 "The Max-Plus Algebra of the Natural Numbers
+                  has no Finite Equational Basis",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-33",
+  address = 	 iesd,
+  month = 	 oct,
+  note = 	 "25~pp. A revised version of this paper appears
+                  {\em Theoretical Computer Science}
+                  293(1):169--188, 17 January 2003.",
+  keywords = 	 "Equational logic, varieties, complete
+                  axiomatisations, exponential time complexity",
+  abstract = 	 "This paper shows that the collection of
+                  identities which hold in the algebra {\bf N} of
+                  the natural numbers with constant zero, and
+                  binary operations of sum and maximum is not
+                  finitely based. Moreover, it is proven that,
+                  for every $n$, the equations in at most $n$
+                  variables that hold in {\bf N} do not form an
+                  equational basis. As a stepping stone in the
+                  proof of these facts, several results of
+                  independent interest are obtained. In
+                  particular, explicit descriptions of the free
+                  algebras in the variety generated by {\bf N}
+                  are offered. Such descriptions are based upon a
+                  geometric characterisation of the equations
+                  that hold in {\bf N}, which also yields that
+                  the equational theory of {\bf N} is decidable
+                  in exponential time",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-32,
+  author = 	 "Aceto, Luca and Laroussinie, Fran{\c c}ois",
+  title = 	 "Is your Model Checker on Time? --- On the
+                  Complexity of Model Checking for Timed Modal
+                  Logics",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-32",
+  address = 	 iesd,
+  month = 	 oct,
+  note = 	 "11~pp. Appears in " # lncs1672 # ", pages
+                  125--136",
+  abstract = 	 "This paper studies the structural complexity
+                  of model checking for (variations on) the
+                  specification formalisms used in the tools CMC
+                  and {\sc Uppaal}, and fragments of a timed
+                  alternation-free $\mu$-calculus. For each of
+                  the logics we study, we characterize the
+                  computational complexity of model checking, as
+                  well as its specification and program
+                  complexity, using timed automata as our system
+                  model",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-31,
+  author = 	 "Kohlenbach, Ulrich",
+  title = 	 "Foundational and Mathematical Uses of Higher
+                  Types",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-31",
+  address = 	 daimi,
+  month = 	 sep,
+  note = 	 "34~pp. A revised version appears in W.~Sieg et
+                  al. (eds.), {\em Reflections on the Foundations
+                  of Mathematics}. Essays in Honor of Solomon
+                  Feferman, Lecture Notes in Logic 15, A. K.
+                  Peters, Ltd., pp.\ 92--116, 2002.",
+  abstract = 	 "In this paper we develop mathematically strong
+                  systems of analysis in higher types which,
+                  nevertheless, are proof-theoretically weak,
+                  i.e.\
+                   conservative over elementary resp.
+                  primitive recursive arithmetic. These systems
+                  are based on non-collapsing hierarchies
+                  $(\Phi_n$-WKL$_+, \ \Psi_n$-WKL$_+)$ of
+                  principles which generalize (and for $n=0$
+                  coincide with) the so-called `weak' K{\"o}nig's
+                  lemma WKL (which has been studied extensively
+                  in the context of second order arithmetic) to
+                  logically more complex tree predicates. Whereas
+                  the second order context used in the program of
+                  reverse mathematics requires an encoding of
+                  higher analytical concepts like continuous
+                  functions $F:X\rightarrow Y$ between Polish
+                  spaces $X,Y$, the more flexible language of our
+                  systems allows to treat such objects directly.
+                  This is of relevance as the encoding of $F$
+                  used in reverse mathematics tacitly yields a
+                  constructively enriched notion of continuous
+                  functions which e.g. for $F:{\mathord{\rm
+                  I\mkern-3.1mu N}}^{{\mathord{\rm I\mkern-3.1mu
+                  N}}}\rightarrow{\mathord{\rm I\mkern-3.1mu N}}$
+                  can be seen (in our higher order context) to be
+                  equivalent to the existence of a continuous
+                  modulus of pointwise continuity. For the direct
+                  representation of $F$ the existence of such a
+                  modulus is independent even of full arithmetic
+                  in all finite types E-PA$^{\omega}$ plus
+                  quantifier-free choice, as we show using a
+                  priority construction due to L. Harrington. The
+                  usual WKL-based proofs of properties of $F$
+                  given in reverse mathematics make use of the
+                  enrichment provided by codes of $F$, and WKL
+                  does not seem to be sufficient to obtain
+                  similar results for the direct representation
+                  of $F$ in our setting. However, it turns out
+                  that $\Psi_1$-WKL$_+$ {\bf is} sufficient. \\
+                  Our conservation results for $(\Phi_n$-WKL$_+,
+                  \
+                   \Psi_n$-WKL$_+)$ are proved via a new
+                  elimination result for a strong non-standard
+                  principle of uniform $\Sigma^0_1$-boundedness
+                  which we introduced in 1996 and which implies
+                  the WKL-extensions studied in this paper",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-30,
+  author = 	 "Aceto, Luca and Fokkink, Willem Jan and
+                  Verhoef, Chris",
+  title = 	 "Structural Operational Semantics",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-30",
+  address = 	 iesd,
+  month = 	 sep,
+  note = 	 "128~pp. Appears in " # ehpa # ", pages
+                  197--292",
+  abstract = 	 "This paper offers an overview of the current
+                  state of the development of the theory of
+                  Structural Operational Semantics (SOS), with
+                  emphasis on its applications to process
+                  algebra. It focuses on five aspects of SOS,
+                  viz.~the meaning of Transition System
+                  Specifications (TSSs) with predicates and
+                  negative premises, conservative extension
+                  results for TSSs, congruence formats,
+                  many-sorted higher-order extensions and
+                  connections with denotational semantics",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-29,
+  author = 	 "Riis, S{\o}ren",
+  title = 	 "A Complexity Gap for Tree-Resolution",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-29",
+  address = 	 daimi,
+  month = 	 sep,
+  note = 	 "33~pp",
+  keywords = 	 "Logical aspects of Complexity, Propositional
+                  proof complexity, Resolution proofs",
+  abstract = 	 "It is shown that any sequence $\psi_n$ of
+                  tautologies which expresses the validity of a
+                  fixed combinatorial principle either is
+                  ``easy'' i.e. has polynomial size
+                  tree-resolution proofs or is ``difficult'' i.e
+                  requires exponential size tree-resolution
+                  proofs. It is shown that the class of
+                  tautologies which are hard (for
+                  tree-resolution) is identical to the class of
+                  tautologies which are based on combinatorial
+                  principles which are violated for infinite
+                  sets. Actually it is shown that the
+                  gap-phenomena is valid for tautologies based on
+                  infinite mathematical theories (i.e.\ not just
+                  based on a single proposition). \bibpar
+                  
+                  We clarify the link between translating
+                  combinatorial principles (or more general
+                  statements from predicate logic) and the recent
+                  idea of using the symmetrical group to generate
+                  problems of propositional logic. \bibpar
+                  
+                  Finally, we show that is undecidable whether a
+                  sequence $\psi_n$ (of the kind we consider) has
+                  polynomial size tree-resolution proofs or
+                  requires exponential size tree-resolution
+                  proofs. Also we show that the degree of the
+                  polynomial in the polynomial size (in case it
+                  exists) is non-recursive, but semi-decidable.",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-28,
+  author = 	 "Hildebrandt, Thomas Troels",
+  title = 	 "A Fully Abstract Presheaf Semantics of {SCCS}
+                  with Finite Delay",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-28",
+  address = 	 daimi,
+  month = 	 sep,
+  note = 	 "37~pp. Appears in " # entcsctcs99 # ", 25~pp",
+  abstract = 	 "We present a presheaf model for the
+                  observation of {\em infinite} as well as finite
+                  computations. We apply it to give a {\em
+                  denotational} semantics of SCCS with finite
+                  delay, in which the meanings of recursion are
+                  given by {\em final} coalgebras and meanings of
+                  finite delay by {\em initial} algebras of the
+                  process equations for delay. This can be viewed
+                  as a first step in representing {\em fairness}
+                  in presheaf semantics. We give a concrete
+                  representation of the presheaf model as a
+                  category of {\em generalised synchronisation
+                  trees} and show that it is coreflective in a
+                  category of {\em generalised transition
+                  systems}, which are a special case of the
+                  general transition systems of Hennessy and
+                  Stirling. The open map bisimulation is shown to
+                  coincide with the {\em extended bisimulation}
+                  of Hennessy and Stirling. Finally we formulate
+                  Milners operational semantics of SCCS with
+                  finite delay in terms of generalised transition
+                  systems and prove that the presheaf semantics
+                  is {\em fully abstract} with respect to
+                  extended bisimulation",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-27,
+  author = 	 "Danvy, Olivier and Schultz, Ulrik P.",
+  title = 	 "Lambda-Dropping: Transforming Recursive
+                  Equations into Programs with Block Structure",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-27",
+  address = 	 daimi,
+  month = 	 sep,
+  note = 	 "57~pp. Appears in {\em Theoretical Computer
+                  Science}, 248(1--2):243--287, November 2000.
+                  This revised report supersedes the earlier
+                  BRICS report RS-98-54",
+  abstract = 	 "Lambda-lifting a block-structured program
+                  transforms it into a set of recursive
+                  equations. We present the symmetric
+                  transformation: lambda-dropping.
+                  Lambda-dropping a set of recursive equations
+                  restores block structure and lexical
+                  scope.\bibpar
+                  
+                  For lack of block structure and lexical scope,
+                  recursive equations must carry around all the
+                  parameters that any of their callees might
+                  possibly need. Both lambda-lifting and
+                  lambda-dropping thus require one to compute
+                  Def/Use paths: 
+                  \begin{itemize}
+                  \item for lambda-lifting: each of the functions
+                    occurring in the path of a free variable is
+                    passed this variable as a parameter;
+                  
+                  \item for lambda-dropping: parameters which are
+                    used in the same scope as their definition do
+                    not need to be passed along in their path. 
+                  \end{itemize}
+                  
+                  A program whose blocks have no free variables
+                  is scope-insensitive. Its blocks are then free
+                  to float (for lambda-lifting) or to sink (for
+                  lambda-dropping) along the vertices of the
+                  scope tree. \bibpar
+                  
+                  Our primary application is partial evaluation.
+                  Indeed, many partial evaluators for procedural
+                  programs operate on recursive equations. To
+                  this end, they lambda-lift source programs in a
+                  pre-processing phase. But often, partial
+                  evaluators [automatically] produce residual
+                  recursive equations with dozens of parameters,
+                  which most compilers do not handle efficiently.
+                  We solve this critical problem by
+                  lambda-dropping residual programs in a
+                  post-processing phase, which significantly
+                  improves both their compile time and their run
+                  time. \bibpar
+                  
+                  Lambda-lifting has been presented as an
+                  intermediate transformation in compilers for
+                  functional languages. We study lambda-lifting
+                  and lambda-dropping per se, though
+                  lambda-dropping also has a use as an
+                  intermediate transformation in a compiler: we
+                  noticed that lambda-drop\-ping a program
+                  corresponds to transforming it into the
+                  functional representation of its optimal SSA
+                  form. This observation actually led us to
+                  substantially improve our PEPM~'97 presentation
+                  of lambda-dropping",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-26,
+  author = 	 "Henriksen, Jesper G.",
+  title = 	 "An Expressive Extension of {TLC}",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-26",
+  address = 	 daimi,
+  month = 	 sep,
+  note = 	 "20~pp. Appears in {\em International Journal
+                  of Foundations of Computer Science},
+                  13(3):341--360, 2002. Conference version in " #
+                  lncs1742 # ", pages 126--138",
+  abstract = 	 "A temporal logic of causality (TLC) was
+                  introduced by Alur, Penczek and Peled. It is
+                  basically a linear time temporal logic
+                  interpreted over Mazurkiewicz traces which
+                  allows quantification over causal chains.
+                  Through this device one can directly formulate
+                  causality properties of distributed systems. In
+                  this paper we consider an extension of TLC by
+                  strengthening the chain quantification
+                  operators. We show that our logic TLC$^*$ adds
+                  to the expressive power of TLC. We do so by
+                  defining an Ehrenfeucht-Fra{\"\i}ss{\'e} game
+                  to capture the expressive power of TLC. We then
+                  exhibit a property and by means of this game
+                  prove that the chosen property is not definable
+                  in TLC. We then show that the same property is
+                  definable in TLC$^*$. We prove in fact the
+                  stronger result that TLC$^*$ is expressively
+                  stronger than TLC exactly when the dependency
+                  relation associated with the underlying trace
+                  alphabet is not transitive.",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-25,
+  author = 	 "Brodal, Gerth St{\o}lting and Pedersen,
+                  Christian N. S.",
+  title = 	 "Finding Maximal Quasiperiodicities in
+                  Strings",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-25",
+  address = 	 daimi,
+  month = 	 sep,
+  note = 	 "20~pp. Appears in " # lncs1848 # ", pages
+                  397--411",
+  abstract = 	 "Apostolico and Ehrenfeucht defined the notion
+                  of a maximal quasiperiodic substring and gave
+                  an algorithm that finds all maximal
+                  quasiperiodic substrings in a string of
+                  length~$n$ in time $O(n \log^2 n)$. In this
+                  paper we give an algorithm that finds all
+                  maximal quasiperiodic substrings in a string of
+                  length~$n$ in time $O(n\log n)$ and
+                  space~$O(n)$. Our algorithm uses the suffix
+                  tree as the fundamental data structure combined
+                  with efficient methods for merging and
+                  performing multiple searches in search trees.
+                  Besides finding all maximal quasiperiodic
+                  substrings, our algorithm also marks the nodes
+                  in the suffix tree that have a superprimitive
+                  path-label",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-24,
+  author = 	 "Aceto, Luca and Fokkink, Willem Jan and
+                  Verhoef, Chris",
+  title = 	 "Conservative Extension in Structural
+                  Operational Semantics",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-24",
+  address = 	 iesd,
+  month = 	 sep,
+  note = 	 "23~pp. Appears in the {\em Bulletin of the
+                  European Association for Theoretical Computer
+                  Science}, 70:110--132, 1999",
+  abstract = 	 "Over and over again, process calculi such as
+                  CCS, CSP, and ACP have been extended with new
+                  features, and the Transition System
+                  Specifications (TSSs) that provide the
+                  operational semantics for these process
+                  algebras were extended with transition rules to
+                  describe these features. A question that arises
+                  naturally is whether or not the original and
+                  the extended TSS induce the same transitions in
+                  the original domain. Usually it is desirable
+                  that an extension is operationally
+                  conservative, meaning that the provable
+                  transitions for an original term are the same
+                  both in the original and in the extended TSS.
+                  This paper contains an exposition of existing
+                  conservative extension formats for Structural
+                  Operational Semantics, and their applications
+                  with respect to term rewriting systems and
+                  completeness of axiomatizations",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-23,
+  author = 	 "Danvy, Olivier and Dzafic, Belmina and
+                  Pfenning, Frank",
+  title = 	 "On proving syntactic properties of {CPS}
+                  programs",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-23",
+  address = 	 daimi,
+  month = 	 aug,
+  note = 	 "14~pp. Appears in " # entcshoots99 # ", pages
+                  19--31",
+  abstract = 	 "Higher-order program transformations raise new
+                  challenges for proving properties of their
+                  output, since they resist traditional,
+                  first-order proof techniques. In this work, we
+                  consider (1) the ``one-pass''
+                  continuation-passing style (CPS)
+                  transformation, which is second-order, and (2)
+                  the occurrences of parameters of continuations
+                  in its output. To this end, we specify the
+                  one-pass CPS transformation relationally and we
+                  use the proof technique of logical relations",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 "",
+}
+@techreport{BRICS-RS-99-22,
+  author = 	 "Aceto, Luca and {\'E}sik, Zolt{\'a}n and
+                  Ing{\'o}lfsd{\'o}ttir, Anna",
+  title = 	 "On the Two-Variable Fragment of the Equational
+                  Theory of the Max-Sum Algebra of the Natural
+                  Numbers",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-22",
+  address = 	 iesd,
+  month = 	 aug,
+  note = 	 "22~pp. Appears in " # lncs1770 # ", pages
+                  267--278",
+  abstract = 	 "This paper shows that the collection of
+                  identities in two variables which hold in the
+                  algebra {\bf N} of the natural numbers with
+                  constant zero, and binary operations of sum and
+                  maximum does not have a finite equational
+                  axiomatization. This gives an alternative proof
+                  of the non-existence of a finite basis for {\bf
+                  N}---a result previously obtained by the
+                  authors. As an application of the main theorem,
+                  it is shown that the language of Basic Process
+                  Algebra (over a singleton set of actions), with
+                  or without the empty process, has no finite
+                  equational axiomatization modulo trace
+                  equivalence",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-21,
+  author = 	 "Danvy, Olivier",
+  title = 	 "An Extensional Characterization of
+                  Lambda-Lifting and Lambda-Dropping",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-21",
+  address = 	 daimi,
+  month = 	 aug,
+  note = 	 "13~pp. Extended version of an article
+                  appearing in " # lncs1722 # ", pages 241--250.
+                  This report supersedes the earlier BRICS report
+                  RS-98-2",
+  abstract = 	 "Lambda-lifting and lambda-dropping
+                  respectively transform a block-structured
+                  functional program into recursive equations and
+                  vice versa. Lambda-lifting was developed in the
+                  early 80's, whereas lambda-dropping is more
+                  recent. Both are split into an analysis and a
+                  transformation. Published work, however, has
+                  only concentrated on the analysis parts. We
+                  focus here on the transformation parts and more
+                  precisely on their correctness, which appears
+                  never to have been proven. To this end, we
+                  define extensional versions of lambda-lifting
+                  and lambda-dropping and establish their
+                  correctness with respect to a least fixed-point
+                  semantics",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-20,
+  author = 	 "Kohlenbach, Ulrich",
+  title = 	 "A Note on {S}pector's Quantifier-Free Rule of
+                  Extensionality",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-20",
+  address = 	 daimi,
+  month = 	 aug,
+  note = 	 "5~pp. Appears in {\em Archive for Mathematical
+                  Logic}, 40:89--92, 2001",
+  abstract = 	 "In this note we show that the so-called weakly
+                  extensional arithmetic in all finite types,
+                  which is based on a quantifier-free rule of
+                  extensionality due to C. Spector and which is
+                  of significance in the context of G{\"o}del's
+                  functional interpretation, does not satisfy the
+                  deduction theorem for additional axioms. This
+                  holds already for $\Pi^0_1$-axioms. Previously,
+                  only the failure of the stronger deduction
+                  theorem for deductions from (possibly open)
+                  assumptions (with parameters kept fixed) was
+                  known.",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-19,
+  author = 	 "Jurdzi{\'n}ski, Marcin and Nielsen, Mogens",
+  title = 	 "Hereditary History Preserving Bisimilarity is
+                  Undecidable",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-19",
+  address = 	 daimi,
+  month = 	 jun,
+  note = 	 "18~pp. An extended abstract appears in " #
+                  lncs1770 # ", pages 358--369",
+  abstract = 	 "We show undecidability of hereditary history
+                  preserving bisimilarity for finite asynchronous
+                  transition systems by a reduction from the
+                  halting problem of deterministic 2-counter
+                  machines. To make the proof more transparent we
+                  introduce an intermediate problem of checking
+                  domino bisimilarity for origin constrained
+                  tiling systems. First we reduce the halting
+                  problem of deterministic 2-counter machines to
+                  origin constrained domino bisimilarity. Then we
+                  show how to model domino bisimulations as
+                  hereditary history preserving bisimulations for
+                  finite asynchronous transitions systems. We
+                  also argue that the undecidability result holds
+                  for finite 1-safe Petri nets, which can be seen
+                  as a proper subclass of finite asynchronous
+                  transition systems",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-18,
+  author = 	 "M{\"o}ller, M. Oliver and Rue{\ss}, Harald",
+  title = 	 "Solving Bit-Vector Equations of Fixed and
+                  Non-Fixed Size",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-18",
+  address = 	 daimi,
+  month = 	 jun,
+  note = 	 "18~pp. Revised version of an article appearing
+                  under the title {\em Solving Bit-Vector
+                  Equations\/} in " # lncs1522 # ", pages
+                  36--48",
+  abstract = 	 "This report is concerned with solving
+                  equations on fixed and non-fixed size
+                  bit-vector terms. We define an equational
+                  transformation system for solving equations on
+                  terms where all sizes of bit-vectors and
+                  extraction positions are known. This
+                  transformation system suggests a generalization
+                  for dealing with bit-vectors of unknown size
+                  and unknown extraction positions. Both solvers
+                  adhere to the principle of splitting
+                  bit-vectors only on demand, thereby making them
+                  quite effective in practice",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-17,
+  author = 	 "Filinski, Andrzej",
+  title = 	 "A Semantic Account of Type-Directed Partial
+                  Evaluation",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-17",
+  address = 	 daimi,
+  month = 	 jun,
+  note = 	 "23~pp. Appears in " # lncs1702 # ", pages
+                  378--395",
+  abstract = 	 "We formally characterize partial evaluation of
+                  functional programs as a normalization problem
+                  in an equational theory, and derive a
+                  type-based normalization-by-evaluation
+                  algorithm for computing normal forms in this
+                  setting. We then establish the correctness of
+                  this algorithm using a semantic argument based
+                  on Kripke logical relations. For simplicity,
+                  the results are stated for a non-strict, purely
+                  functional language; but the methods are
+                  directly applicable to stating and proving
+                  correctness of type-directed partial evaluation
+                  in ML-like languages as well",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-16,
+  author = 	 "Lyngs{\o}, Rune B. and Pedersen, Christian N.
+                  S.",
+  title = 	 "Protein Folding in the {2D HP} Model",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-16",
+  address = 	 daimi,
+  month = 	 jun,
+  note = 	 "15~pp. Appears in {\em Proceedings of the 1st
+                  Journ{\'e}es Ouvertes: Biologie, Informatique
+                  et Math{\'e}matiques (JOBIM 2000)}",
+  abstract = 	 "We study folding algorithms in the two
+                  dimensional Hydrophobic-Hydrophilic model (2D
+                  HP model) for protein structure formation. We
+                  consider three generalizations of the best
+                  known approximation algorithm. We show that two
+                  of the generalizations do not improve the worst
+                  case approximation ratio. The third
+                  generalization seems to be better, and the
+                  analysis of its approximation ratio leads to an
+                  interesting combinatorial problem",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-15,
+  author = 	 "Lyngs{\o}, Rune B. and Zuker, Michael and
+                  Pedersen, Christian N. S.",
+  title = 	 "An Improved Algorithm for {RNA} Secondary
+                  Structure Prediction",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-15",
+  address = 	 daimi,
+  month = 	 may,
+  note = 	 "24~pp. An alloy of two articles appearing in "
+                  # acmrecomb99 # ", pages 260--267, and {\em
+                  Bioinformatics}, 15(6):440--445, June 1999",
+  abstract = 	 "Though not as abundant in known biological
+                  processes as proteins, RNA molecules serve as
+                  more than mere intermediaries between DNA and
+                  proteins, e.g.~as catalytic molecules.
+                  Furthermore, RNA secondary structure prediction
+                  based on free energy rules for stacking and
+                  loop formation remains one of the few major
+                  breakthroughs in the field of structure
+                  prediction. We present a new method to evaluate
+                  all possible internal loops of size at most $k$
+                  in an RNA sequence, $s$, in time $O(k|s|^2)$;
+                  this is an improvement from the previously used
+                  method that uses time $O(k^2|s|^2)$. For
+                  unlimited loop size this improves the overall
+                  complexity of evaluating RNA secondary
+                  structures from $O(|s|^4)$ to $O(|s|^3)$ and
+                  the method applies equally well to finding the
+                  optimal structure and calculating the
+                  equilibrium partition function. We use our
+                  method to examine the soundness of setting $k =
+                  30$, a commonly used heuristic",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-14,
+  author = 	 "Fiore, Marcelo P. and Cattani, Gian Luca and
+                  Winskel, Glynn",
+  title = 	 "Weak Bisimulation and Open Maps",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-14",
+  address = 	 daimi,
+  month = 	 may,
+  note = 	 "22~pp. Appears in " # lics14 # ", pages
+                  67--76",
+  abstract = 	 "A general treatment of weak bisimulation and
+                  observation congruence on presheaf models is
+                  presented. It extends previous work on
+                  bisimulation from open maps and answers a
+                  fundamental question there. The consequences of
+                  the general theory are derived for two key
+                  models for concurrency, the interleaving model
+                  of synchronisation trees and the independence
+                  model of labelled event structures. Starting
+                  with a ``hiding'' functor from a category of
+                  paths to observable paths, it is shown how to
+                  derive a monad on the category of presheaves
+                  over the category of paths. The Kleisli
+                  category of the monad is shown to be equivalent
+                  to that of presheaves with weak morphisms,
+                  which roughly are only required to preserve
+                  observable paths. The monad is defined through
+                  an intermediary view of processes as bundles in
+                  {\bf Cat}. This view, which seems important in
+                  its own right, leads directly to a hiding
+                  operation on processes; when the hiding
+                  operation is translated back to presheaves
+                  through an adjunction it yields the monad. The
+                  monad is shown to automatically preserve
+                  open-map bisimulation, generalising the
+                  expectation that strongly bisimilar processes
+                  should be weakly bisimilar. However, two
+                  alternative general ways to define weak
+                  bisimulation and observation congruence (in the
+                  Kleisli category itself or in the presheaf
+                  category after application of the monad) do not
+                  coincide in general. However a necessary and
+                  sufficient condition for their equivalence is
+                  proved; from this it is sufficient to show a
+                  fill-in condition applies to category of paths
+                  with weak morphisms. The fill-in condition is
+                  shown to hold for the two traditional models,
+                  synchronisation trees and event structures",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-13,
+  author = 	 "Pagh, Rasmus",
+  title = 	 "Hash and Displace: Efficient Evaluation of
+                  Minimal Perfect Hash Functions",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-13",
+  address = 	 daimi,
+  month = 	 may,
+  note = 	 "11~pp. A short version appears in " # lncs1663
+                  # ", pages 49--54",
+  abstract = 	 "A new way of constructing (minimal) perfect
+                  hash functions is described. The technique
+                  considerably reduces the overhead associated
+                  with resolving buckets in two-level hashing
+                  schemes. Evaluating a hash function requires
+                  just one multiplication and a few additions
+                  apart from primitive bit operations. The number
+                  of accesses to memory is two, one of which is
+                  to a fixed location. This improves the probe
+                  performance of previous minimal perfect hashing
+                  schemes, and is shown to be optimal. The hash
+                  function description (``program'') for a set of
+                  size $n$ occupies $O(n)$ words, and can be
+                  constructed in expected $O(n)$ time",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-12,
+  author = 	 "Brodal, Gerth St{\o}lting and Lyngs{\o}, Rune
+                  B. and Pedersen, Christian N. S. and Stoye,
+                  Jens",
+  title = 	 "Finding Maximal Pairs with Bounded Gap",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-12",
+  address = 	 daimi,
+  month = 	 apr,
+  note = 	 "31~pp. Appears in " # lncs1645 # ", pages
+                  134--149. Journal version in {\em Journal of
+                  Discrete Algorithms}, 1:77--104, 2000",
+  abstract = 	 "A pair in a string is the occurrence of the
+                  same substring twice. A pair is maximal if the
+                  two occurrences of the substring cannot be
+                  extended to the left and right without making
+                  them different. The gap of a pair is the number
+                  of characters between the two occurrences of
+                  the substring. In this paper we present methods
+                  for finding all maximal pairs under various
+                  constraints on the gap. In a string of
+                  length~$n$ we can find all maximal pairs with
+                  gap in an upper and lower bounded interval in
+                  time $O(n \log n + z)$ where~$z$ is the number
+                  of reported pairs. If the upper bound is
+                  removed the time reduces to~$O(n + z)$. Since a
+                  tandem repeat is a pair where the gap is zero,
+                  our methods can be seen as a generalization of
+                  finding tandem repeats. The running time of our
+                  methods equals the running time of well known
+                  methods for finding tandem repeats",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-11,
+  author = 	 "Kohlenbach, Ulrich",
+  title = 	 "On the Uniform Weak {K}{\"o}nig's Lemma",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-11",
+  address = 	 daimi,
+  month = 	 mar,
+  note = 	 "13~pp. An extended version appears in {\em
+                  Annals of Pure and Applied Logic} (special
+                  issue in honor of A.~S. Troelstra, 2001) vol.
+                  114, pp. 103-116 (2002).",
+  abstract = 	 "The so-called weak K{\"o}nig's lemma WKL
+                  asserts the existence of an infinite path $b$
+                  in any infinite binary tree (given by a
+                  representing function $f$). Based on this
+                  principle one can formulate subsystems of
+                  higher-order arithmetic which allow to carry
+                  out very substantial parts of classical
+                  mathematics but are $\Pi^0_2$-conservative over
+                  primitive recursive arithmetic PRA (and even
+                  weaker fragments of arithmetic). In 1992 we
+                  established such conservation results relative
+                  to finite type extensions PRA$^{\omega}$ of PRA
+                  (together with a quantifier-free axiom of
+                  choice schema). In this setting one can
+                  consider also a uniform version UWKL of WKL
+                  which asserts the existence of a functional
+                  $\Phi$ which selects uniformly in a given
+                  infinite binary tree $f$ an infinite path $\Phi
+                  f$ of that tree. This uniform version of WKL is
+                  of interest in the context of explicit
+                  mathematics as developed by S. Feferman. The
+                  elimination process from 1992 actually can be
+                  used to eliminate even this uniform weak
+                  K{\"o}nig's lemma provided that PRA$^{\omega}$
+                  only has a quantifier-free rule of
+                  extensionality QF-ER instead of the full axioms
+                  $(E)$ of extensionality for all finite types.
+                  In this paper we show that in the presence of
+                  $(E)$, UWKL is much stronger than WKL: whereas
+                  WKL remains to be $\Pi^0_2$-conservative over
+                  PRA, PRA$^{\omega}+(E)+$UWKL contains (and is
+                  conservative over) full Peano arithmetic PA",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-10,
+  author = 	 "Riecke, Jon G. and Sandholm, Anders B.",
+  title = 	 "A Relational Account of Call-by-Value
+                  Sequentiality",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-10",
+  address = 	 daimi,
+  month = 	 mar,
+  note = 	 "51~pp. To appear in {\em Information and
+                  Computation}, LICS~'97 Special Issue. Extended
+                  version of an article appearing in " # lics12 #
+                  ", pages 258--267. This report supersedes the
+                  earlier BRICS report RS-97-41",
+  abstract = 	 "We construct a model for FPC, a purely
+                  functional, sequential, call-by-value language.
+                  The model is built from partial continuous
+                  functions, in the style of Plotkin, further
+                  constrained to be uniform with respect to a
+                  class of logical relations. We prove that the
+                  model is fully abstract",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-9,
+  author = 	 "Brabrand, Claus and M{\o}ller, Anders and
+                  Sandholm, Anders B. and Schwartzbach, Michael
+                  I.",
+  title = 	 "A Runtime System for Interactive Web
+                  Services",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-9",
+  address = 	 daimi,
+  month = 	 mar,
+  note = 	 "21~pp. Appears in " # www8 # ", pages 313--323
+                  and {\em Computer Networks}, 31:1391--1401,
+                  1999",
+  abstract = 	 "Interactive web services are increasingly
+                  replacing traditional static web pages.
+                  Producing web services seems to require a
+                  tremendous amount of laborious low-level coding
+                  due to the primitive nature of CGI programming.
+                  We present ideas for an improved runtime system
+                  for interactive web services built on top of
+                  CGI running on virtually every combination of
+                  browser and HTTP/CGI server. The runtime system
+                  has been implemented and used extensively in
+                  $<$bigwig$>$, a tool for producing interactive
+                  web services",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-8,
+  author = 	 "Havelund, Klaus and Larsen, Kim G. and Skou,
+                  Arne",
+  title = 	 "Formal Verification of a Power Controller
+                  Using the Real-Time Model Checker {\sc
+                  {U}ppaal}",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-8",
+  address = 	 iesd,
+  month = 	 mar,
+  note = 	 "23~pp. Appears in " # lncs1601 # ", pages
+                  277--298",
+  abstract = 	 "A real-time system for power-down control in
+                  audio/video components is modeled and verified
+                  using the real-time model checker {\sc Uppaal}.
+                  The system is supposed to reside in an
+                  audio/video component and control (read from
+                  and write to) links to neighbor audio/video
+                  components such as TV, VCR and remote--control.
+                  In particular, the system is responsible for
+                  the powering up and down of the component in
+                  between the arrival of data, and in order to do
+                  so in a safe way without loss of data, it is
+                  essential that no link interrupts are lost.
+                  Hence, a component system is a multitasking
+                  system with hard real-time requirements, and we
+                  present techniques for modeling time
+                  consumption in such a multitasked, prioritized
+                  system. The work has been carried out in a
+                  collaboration between Aalborg University and
+                  the audio/video company B\&O. By modeling the
+                  system, 3 design errors were identified and
+                  corrected, and the following verification
+                  confirmed the validity of the design but also
+                  revealed the necessity for an upper limit of
+                  the interrupt frequency. The resulting design
+                  has been implemented and it is going to be
+                  incorporated as part of a new product line",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-7,
+  author = 	 "Winskel, Glynn",
+  title = 	 "Event Structures as Presheaves---{T}wo
+                  Representation Theorems",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-7",
+  address = 	 daimi,
+  month = 	 mar,
+  note = 	 "16~pp. Appears in " # lncs1664 # ", pages
+                  541--556",
+  abstract = 	 "The category of event structures is known to
+                  embed fully and faithfully in the category of
+                  presheaves over pomsets. Here a
+                  characterisation of the presheaves represented
+                  by event structures is presented. The proof
+                  goes via a characterisation of the presheaves
+                  represented by event structures when the
+                  morphisms on event structures are ``strict'' in
+                  that they preserve the partial order of causal
+                  dependency",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-6,
+  author = 	 "Lyngs{\o}, Rune B. and Pedersen, Christian N.
+                  S. and Nielsen, Henrik",
+  title = 	 "Measures on Hidden {M}arkov Models",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-6",
+  address = 	 daimi,
+  month = 	 feb,
+  note = 	 "27~pp. Appears in " # isbm99 # " as {\em
+                  Metrics and similarity measures for hidden
+                  Markov models}",
+  abstract = 	 "Hidden Markov models were introduced in the
+                  beginning of the 1970's as a tool in speech
+                  recognition. During the last decade they have
+                  been found useful in addressing problems in
+                  computational biology such as characterising
+                  sequence families, gene finding, structure
+                  prediction and phylogenetic analysis. In this
+                  paper we propose several measures between
+                  hidden Markov models. We give an efficient
+                  algorithm that computes the measures for
+                  profile hidden Markov models and discuss how to
+                  extend the algorithm to other types of models.
+                  We present an experiment using the measures to
+                  compare hidden Markov models for three classes
+                  of signal peptides",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-5,
+  author = 	 "Bradfield, Julian C. and Stevens, Perdita",
+  title = 	 "Observational Mu-Calculus",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-5",
+  address = 	 daimi,
+  month = 	 feb,
+  note = 	 "18~pp",
+  abstract = 	 "We propose an extended modal mu-calculus to
+                  provide an `assembly language' for modal logics
+                  for real time, value-passing calculi, and other
+                  extended models of computation",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-4,
+  author = 	 "Fr{\"o}schle, Sibylle B. and Hildebrandt,
+                  Thomas Troels",
+  title = 	 "On Plain and Hereditary History-Preserving
+                  Bisimulation",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-4",
+  address = 	 daimi,
+  month = 	 feb,
+  note = 	 "21~pp. Appears in " # lncs1672 # ", pages
+                  354--365",
+  abstract = 	 "We investigate the difference between two
+                  well-known notions of independence
+                  bisimilarity, {\em history-preserving
+                  bisimulation} and {\em hereditary
+                  history-preserving bisimulation}. We
+                  characterise the difference between the two
+                  bisimulations in {\em trace-theoretical} terms,
+                  advocating the view that the first is (just) a
+                  bisimulation for {\em causality}, while the
+                  second is a bisimulation for {\em concurrency}.
+                  We explore the frontier zone between the two
+                  notions by defining a {\em hierarchy} of
+                  bounded backtracking bisimulations. Our goal is
+                  to provide a stepping stone for the solution to
+                  the intriguing open problem of whether
+                  hereditary history-preserving bisimulation is
+                  decidable or not. We prove that each of the
+                  bounded bisimulations is decidable. However, we
+                  also prove that the hierarchy is strict. This
+                  rules out the possibility that decidability of
+                  the general problem follows directly from the
+                  special case. Finally, we give a non trivial
+                  reduction solving the general problem for a
+                  restricted class of systems and give pointers
+                  towards a full answer",
+  linkhtmlabs =  "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+@techreport{BRICS-RS-99-3,
+  author = 	 "Miltersen, Peter Bro",
+  title = 	 "Two Notes on the Computational Complexity of
+                  One-Dimensional Sandpiles",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-3",
+  address = 	 daimi,
+  month = 	 feb,
+  note = 	 "8~pp",
+  abstract = 	 "We prove that the one-dimensional sandpile
+                  prediction problem is in $\mbox{\rm\bf AC}^1$.
+                  The best previously known upper bound on the
+                  $\mbox{\rm\bf AC}^i$-scale was $\mbox{\bf
+                  AC}^2$. We also prove that the problem is not
+                  in $\mbox{\rm\bf AC}^{1-\epsilon}$ for any
+                  constant $\epsilon> 0$",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-2,
+  author = 	 "Damg{\aa}rd, Ivan B.",
+  title = 	 "An Error in the Mixed Adversary Protocol by
+                  {F}itzi, {H}irt and {M}aurer",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-2",
+  address = 	 daimi,
+  month = 	 feb,
+  note = 	 "4~pp",
+  abstract = 	 "We point out an error in the protocol for
+                  mixed adversaries and zero error from the
+                  Crypto 98 paper by Fitzi, Hirt and Maurer. We
+                  show that the protocol only works under a
+                  stronger requirement on the adversary than the
+                  one claimed. Hence the bound on the adversary's
+                  corruption capability given there is not tight.
+                  Subsequent work has shown, however, a new bound
+                  which is indeed tight",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+@techreport{BRICS-RS-99-1,
+  author = 	 "Jurdzi{\'n}ski, Marcin and Nielsen, Mogens",
+  title = 	 "Hereditary History Preserving Simulation is
+                  Undecidable",
+  institution =  brics,
+  year = 	 1999,
+  type = 	 rs,
+  number = 	 "RS-99-1",
+  address = 	 daimi,
+  month = 	 jan,
+  note = 	 "15~pp",
+  abstract = 	 "We show undecidability of {\em hereditary
+                  history preserving simulation} for finite
+                  asynchronous transition systems by a reduction
+                  from the {\em halting problem} of deterministic
+                  Turing machines. To make the proof more
+                  transparent we introduce an intermediate
+                  problem of {\em deciding the winner} in {\em
+                  domino snake games}. First we reduce the
+                  halting problem of deterministic Turing
+                  machines to domino snake games. Then we show
+                  how to model a domino snake game by a {\em
+                  hereditary history simulation game} on a pair
+                  of finite {\em asynchronous transition
+                  systems}",
+  linkhtmlabs =  "",
+  linkdvi = 	 "",
+  linkps = 	 "",
+  linkpdf = 	 ""
+}
+
+</HTML>
+</pre>

@@ -1,0 +1,468 @@
+@article{PH:Speech:Ra2004,
+ author = "Rajesh P. N. Rao",
+ title = "Bayesian computation in recurrent neural circuits",
+ journal = "Neural Computation",
+ volume = "16",
+ number = "1",
+ year = "2004",
+ pages = "1--38",
+ publisher = "MIT Press",
+ address = "Cambridge, MA, USA",
+ pdf = "nc_bayes_reprint.pdf",
+ abstract = "A large number of human psychophysical results have been successfully 
+	explained in recent years using Bayesian models. However, the neural implementation 
+	of such models remains largely unclear. In this article, we show that a network 
+	architecture commonly used to model the cerebral cortex can implement Bayesian 
+	inference for an arbitrary hidden Markov model. We illustrate the approach using 
+	an orientation discrimination task and a visual motion detection task. In the case 
+	of orientation discrimination, we show that the model network can infer the posterior 
+	distribution over orientations and correctly estimate stimulus orientation in the 
+	presence of significant noise. In the case of motion detection, we show that the 
+	resulting model network exhibits direction selectivity and correctly computes the 
+	posterior probabilities over motion direction and position. When used to solve the 
+	well-known random dots motion discrimination task, the model generates responses that 
+	mimic the activities of evidence-accumulating neurons in cortical areas LIP and FEF. 
+	The framework we introduce posits a new interpretation of cortical activities in terms 
+	of log posterior probabilities of stimuli occurring in the natural world."
+}
+
+@incollection{PH:Speech:Ra2005,
+ author = "Rajesh P. N. Rao",
+ title = "Hierarchical Bayesian Inference in Networks of Spiking Neurons",
+ booktitle = "Advances in Neural Information Processing Systems 17",
+ editor = "Lawrence K. Saul and Yair Weiss and {L\'{e}on} Bottou",
+ publisher = "MIT Press",
+ address = "Cambridge, MA",
+ pages = "1113--1120",
+ year = "2005",
+ pdf = "rao_nips04.pdf",
+ abstract = "There is growing evidence from psychophysical and neurophysiological
+	studies that the brain utilizes Bayesian principles for inference and decision
+	making. An important open question is how Bayesian inference
+	for arbitrary graphical models can be implemented in networks of spiking
+	neurons. In this paper, we show that recurrent networks of noisy
+	integrate-and-fire neurons can perform approximate Bayesian inference
+	for dynamic and hierarchical graphical models. The membrane potential
+	dynamics of neurons is used to implement belief propagation in the log
+	domain. The spiking probability of a neuron is shown to approximate the
+	posterior probability of the preferred state encoded by the neuron, given
+	past inputs. We illustrate the model using two examples: (1) a motion detection
+	network in which the spiking probability of a direction-selective
+	neuron becomes proportional to the posterior probability of motion in
+	a preferred direction, and (2) a two-level hierarchical network that produces
+	attentional effects similar to those observed in visual cortical areas
+	V2 and V4. The hierarchical model offers a new Bayesian interpretation
+	of attentional modulation in V2 and V4."
+}
+
+@inproceedings{PH:Speech:KlScSc2001,
+  author = "Magdalena Klapper-Rybicka and Nicol N. Schraudolph and J{\"u}rgen Schmidhuber",
+  title = "Unsupervised Learning in {LSTM} Recurrent Neural Networks",
+  booktitle = "ICANN '01: Proceedings of the International Conference on Artificial Neural Networks",
+  year = "2001",
+  pages = "684--691",
+  publisher = "Springer-Verlag",
+  address = "London, UK",
+  pdf = "icann2001unsup.pdf",
+  abstract = "While much work has been done on unsupervised learning
+	in feedforward neural network architectures, its potential with (theoretically 
+	more powerful) recurrent networks and time-varying inputs has
+	rarely been explored. Here we train Long Short-Term Memory (LSTM)	
+	recurrent networks to maximize two information-theoretic objectives for
+	unsupervised learning: Binary Information Gain Optimization (BINGO)
+	and Nonparametric Entropy Optimization (NEO). LSTM learns to discriminate
+	different types of temporal sequences and group them according
+	to a variety of features."
+}
+ 
+@inproceedings{PH:Speech:GrBeSc2003,
+  author = "Alex Graves and N. Beringer and J{\"u}rgen Schmidhuber",
+  title = "A Comparison Between Spiking and Differentiable Recurrent Neural Networks on Spoken Digit Recognition",
+  booktitle = "The 23rd IASTED International Conference on modelling, identification, and control",
+  address = "Grindelwald",
+  year = "2003",
+  pdf = "grindelwald2004.pdf",
+  abstract = "In this paper we demonstrate that Long Short-Term Memory (LSTM) is a differentiable 
+	recurrent neural net (RNN) capable of robustly categorizing timewarped speech data. We measure 
+	its performance on a spoken digit identification task, where the data was spike-encoded in such 
+	a way that classifying the utterances became a         difficult challenge in non-linear timewarping. 
+	We find that LSTM gives greatly superior results to an SNN found in the literature, and conclude 
+	that the architecture has a place in domains that require the learning of large timewarped datasets, 
+	such as automatic speech recognition."
+}
+
+@article{PH:Speech:HoSc1996,
+  author = {Sepp Hochreiter and J. Schmidhuber},
+  title = {Bridging long time lags by weight guessing and Long Short-Term Memory},
+  booktitle = {Spatiotemporal models in biological and artificial systems},
+  publisher = {IOS Press},
+  address = {Amsterdam, Netherlands},
+  year = {1996},
+  editor = {Fernando L. Silva et al.},
+  pages = {65--72},
+  url = {http://citeseer.ist.psu.edu/hochreiter96bridging.html},
+  postscript = "sintra.ps",
+  abstract = "Numerous recent papers (including many NIPS papers) focus on standard
+	recurrent nets' inability to deal with long time lags between relevant input signals
+	and teacher signals. Rather sophisticated, alternative methods were proposed. We
+	first show: problems used to promote certain algorithms in numerous previous papers
+	can be solved more quickly by random weight guessing than by the proposed algorithms.
+	This does not mean that guessing is a good algorithm. It just casts doubt on
+	whether the other algorithms are, or whether the chosen problems are meaningful.
+	We then use long short term memory (LSTM), our own recent algorithm, to solve
+	hard problems that can neither be quickly solved by random weight guessing nor by
+	any other recurrent net algorithm we are aware of."	
+}
+
+@inproceedings{PH:Speech:GrEcBeSc2004,
+  author    = "Alex Graves and Doug Eck and Nicole Beringer and J{\"u}rgen Schmidhuber",
+  title     = "Biologically Plausible Speech Recognition with {LSTM} Neural Nets",
+  booktitle = "BioADIT",
+  year      = "2004",
+  pages     = "127--136",
+  pdf       = "bioadit2004.pdf",
+  abstract  = "Long Short-Term Memory (LSTM) recurrent neural networks (RNNs) are local in space 
+	and time and closely related to a biological model of memory in the prefrontal cortex. Not 
+	only are they more biologically plausible than previous artificial RNNs, they also outperformed 
+	them on many artificially generated sequential processing tasks." 
+}
+
+@article{PH:Speech:HoSc1997,
+  author = {Sepp Hochreiter and J{\"u}rgen Schmidhuber},
+  title = {Long Short-Term Memory},
+  journal = {Neural Computation},
+  volume = {9},
+  number = {8},
+  pages = {1735--1780},
+  year = {1997},
+  url = {http://citeseer.ist.psu.edu/article/hochreiter97long.html},
+  pdf = {lstm.pdf}, 
+  abstract = {Learning to store information over extended time intervals by recurrent backpropagation takes 
+	a very long time, mostly because of insufficient decaying error backflow. We briefly review 
+	Hochreiter's (1991) analysis of this problem, then address it by introducing a novel, efficient, 
+	gradient-based method called long short-term memory (LSTM). Truncating the gradient where this does 
+	not do harm, LSTM can learn to bridge minimal time lags in excess of 1000 discrete-time steps by 
+	enforcing constant error flow through constant error carousels within special units. Multiplicative 
+	gate units learn to open and close access to the constant error flow. LSTM is local in space and time; 
+	its computational complexity per time step and weight is O(1). Our experiments with artificial data 
+	involve local, distributed, real-valued, and noisy pattern representations. In comparisons with 
+	real-time recurrent learning, back propagation through time, recurrent cascade correlation, Elman 
+	nets, and neural sequence chunking, LSTM leads to many more successful runs, and learns much faster. 
+	LSTM also solves complex, artificial long-time-lag tasks that have never been solved by previous 
+	recurrent network algorithms.}
+}
+
+@incollection{PH:Speech:HoBeFrSc2001, 
+  author = {Sepp Hochreiter and Yoshua Bengio and Paolo Frasconi and J{\"u}rgen Schmidhuber}, 
+  title = {Gradient flow in recurrent nets: the difficulty of learning long-term dependencies},
+  year = {2001},
+  booktitle = {A Field Guide to Dynamical Recurrent Neural Networks},
+  editor = {Stefan C. Kremer and John F. Kolen}, 
+  publisher = {IEEE Press},
+  pdf = {gradientflow.pdf}
+}
+
+@inproceedings{PH:Speech:LeBe1995,
+  author = {Yann Lecun and Yoshua Bengio},
+  title = {Convolutional Networks for Images, Speech, and Time-Series},
+  booktitle = {The Handbook of Brain Theory and Neural Networks},
+  year = {1995},
+  editor = {Michael A. Arbib},
+  publisher = {MIT Press},
+  postscript = {handbook-convo.ps}
+}
+
+@inproceedings{PH:Speech:HiBe1996,
+  author = {Saha El Hihi and Yoshua Bengio},
+  title = {Hierarchical Recurrent Neural Networks for Long-Term Dependencies},
+  booktitle = {Advances in Neural Information Processing Systems 8},
+  editor    = {David S. Touretzky and Michael Mozer and Michael E. Hasselmo},
+  publisher = {MIT Press},
+  pages = {493--499},
+  year = {1996},
+  postscript = {hrnn-nips8.ps},
+  abstract = {We have already shown that extracting long-term dependencies from sequential
+	data is difficult, both for deterministic dynamical systems such
+	as recurrent networks, and probabilistic models such as hidden Markov
+	models (HMMs) or input/output hidden Markov models (IOHMMs). In
+	practice, to avoid this problem, researchers have used domain specific
+	a-priori knowledge to give meaning to the hidden or state variables representing
+	past context. In this paper, we propose to use a more general
+	type of a-priori knowledge, namely that the temporal dependencies are
+	structured hierarchically. This implies that long-term dependencies are
+	represented by variables with a long time scale. This principle is applied
+	to a recurrent network which includes delays and multiple time scales. Experiments
+	confirm the advantages of such structures. A similar approach is proposed 
+	for HMMs and IOHMMs.}
+}
+
+@article{PH:Speech:Be1993,
+  author    = {Yushua Bengio},
+  title     = {A Connectionist Approach to Speech Recognition},
+  journal   = {IJPRAI},
+  volume    = {7},
+  number    = {4},
+  year      = {1993},
+  pages     = {647--667},
+  postscript= {ijprai93.ps},
+  abstract  = {The task duscussed in this paper is that of learning to map input sequences
+	to output sequences. In particular, problems of phoneme recognition in continuous 
+	speech are considered, but most of the discussed techniques could be applied to other 
+	tasks, such as the recognition of handwritten characters. The systems considered in 
+	this paper are based on connectionist models, or artificial neural networks, sometimes
+	combined with statistical techniques for recognition of sequences of patterns,
+	stressing the integration of prior knowledge and learning. Different architectures
+	for sequence and speech recognition are reviewed, including recurrent networks as 
+	well as hybridsystems involving hidden Markov models.}
+}
+
+@article{PH:Speech:BeFr1996,
+  author = {Yoshua Bengio and Paolo Frasconi},
+  title = {Input-Output {HMM}s for Sequence Processing},
+  journal = {IEEE Transactions on Neural Networks},
+  volume = {7},
+  number = {5},
+  month = {September},
+  pages = {1231--1249},
+  year = {1996},
+  url = {http://citeseer.ist.psu.edu/bengio95inputoutput.html},
+  postscript = {iohmms.ps},
+  abstract = {We consider problems of sequence processing and propose a solution
+	based on a discrete state model in order to represent past context.
+	We introduce a recurrent connectionist architecture having a modular
+	structure that associates a subnetwork to each state. The model has a
+	statistical interpretation we call Input/Output Hidden Markov Model
+	(IOHMM). It can be trained by the EM or GEM algorithms, considering
+	state trajectories as missing data, which decouples temporal credit
+	assignment and actual parameter estimation. The model presents
+	similarities to hidden Markov models (HMMs), but allows us to map
+	input sequences to output sequences, using the same processing style
+	as recurrent neural networks. IOHMMs are trained using a more
+	discriminant learning paradigm than HMMs, while potentially taking
+	advantage of the EM algorithm. We demonstrate that IOHMMs are well
+	suited for solving grammatical inference problems on a benchmark
+	problem. Experimental results are presented for the seven Tomita
+	grammars, showing that these adaptive models can attain excellent 
+	generalization.}
+}
+
+@article{PH:Speech:BeDuViJa2003,
+  author    = {Yoshua Bengio and R{\'e}jean Ducharme and Pascal Vincent and Christian Janvin},
+  title     = {A Neural Probabilistic Language Model},
+  journal   = {Journal of Machine Learning Research},
+  volume    = {3},
+  year      = {2003},
+  pages     = {1137--1155},
+  url       = {http://www.jmlr.org/papers/v3/bengio03a.html},
+  pdf       = {bengio03a.pdf},
+  abstract  = {A goal of statistical language modeling is to learn the joint probability function of sequences of
+	words in a language. This is intrinsically difficult because of the curse of dimensionality: a word
+	sequence on which themodelwill be tested is likely to be different from all the word sequences seen
+	during training. Traditional but very successful approaches based on n-grams obtain generalization
+	by concatenating very short overlapping sequences seen in the training set. We propose to fight the
+	curse of dimensionality by learning a distributed representation for words which allows each
+	training sentence to inform the model about an exponential number of semantically neighboring
+	sentences. The model learns simultaneously (1) a distributed representation for each word along
+	with (2) the probability function for word sequences, expressed in terms of these representations.
+	Generalization is obtained because a sequence of words that has never been seen before gets high
+	probability if it is made of words that are similar (in the sense of having a nearby representation) to
+	words forming an already seen sentence. Training such large models (with millions of parameters)
+	within a reasonable time is itself a significant challenge. We report on experiments using neural
+	networks for the probability function, showing on two text corpora that the proposed approach
+	significantly improves on state-of-the-art n-gram models, and that the proposed approach allows to
+	take advantage of longer contexts.}
+}
+
+@inproceedings{PH:Speech:MoBe2005,
+  author = {Frederic Morin and Yoshua Bengio},
+  title = {Hierarchical Probabilistic Neural Network Language Model},
+  year = {2005},
+  booktitle = {Proceedings of the Tenth International Workshop on Artificial Intelligence and Statistics},
+  pdf = {hierarchical-nnlm-aistats05.pdf},
+  abstract = {In recent years, variants of a neural network architecture
+	for statistical language modeling have been proposed and successfully applied, e.g. in
+	the language modeling component of speech recognizers. The main advantage of these architectures
+	is that they learn an embedding for words (or other symbols) in a continuous space that
+	helps to smooth the language model and provide 	good generalization even when the number
+	of training examples is insufficient. However, these models are extremely slow in comparison
+	to the more commonly used n-gram models, both for training and recognition. As an alternative
+	to an importance sampling method proposed to speed-up training, we introduce a hierarchical
+	decomposition of the conditional probabilities that yields a speed-up of about 200 both
+	during training and recognition. The hierarchical decomposition is a binary hierarchical clustering
+	constrained by the prior knowledge extracted from the WordNet semantic hierarchy.}
+}
+
+@techreport{PH:Speech:BeBe2003,
+  author = {Yoshua Bengio and Samy Bengio},
+  title = {Training Asynchronous Input/Output Hidden {M}arkov Models},
+  year = {2003},
+  number = {1013},
+  institution = {Département d'Informatique et de Recherche Opérationnelle, Université de Montréal, Montréal (QC), Canada},
+  pdf = {bengio_1996_udem.pdf},
+  abstract = {In learning tasks in which input sequences are mapped to output sequences, it is often the case 
+	that the input and output sequences are not synchronous. For example, in speech recocgnition, 
+	acoustic sequences are longer than phoneme sequences. Input/Output Hidden Markov Models have already 
+	been proposed to represent the distribution of an output sequence given an input sequence of the same
+	length. We extend here this model to the case of asynchronous sequences, and show an Expectation-
+ 	Maximization algorithm for training such models.}
+}
+
+@inproceedings{PH:Speech:BeFrGoSo1993,
+  author = "Yoshua Bengio and Paolo Frasconi and Marco Gori and Giovanni Soda",
+  title = "Recurrent Neural Networks for Adaptive Temporal Processing",
+  booktitle = "Proceedings of the 6th Italian Workshop on Parallel Architectures and Neural Networks WIRN93",
+  publisher = "World Scientific Pub.",
+  address = "Vietri (Italy)",
+  pages = "85--117",
+  year = "1993",
+  url = "http://citeseer.ist.psu.edu/bengio93recurrent.html",
+  pdf = "bengio93recurrent.pdf",
+  abstract = "Compared to other existing approaches to deal with temporal data, recurrent networks
+	have generated interest mostly because of their capability of implementing adaptive long-term
+	memories. However, optimal training of parametric dynamical systems is found to be a very
+	difficult task. In this paper we focus on sequence processing tasks such as production and
+	classification. After reviewing some approaches proposed in the literature we describe the
+	difficulties that are encountered in training recurrent networks and alternatives that can be
+	pursued to circumvent these problems. In particular we consider alternative optimization
+	techniques that can be better suited to deal with long-term dependencies, and prior knowledge
+	injection techniques that may simplify the learning task in such situations. We finally
+	discuss the implications that achievements in recurrent networks research might have for the
+	technology of adaptive systems and artificial neural networks." 
+}
+
+@article{PH:Speech:TrGo2001,
+  author    = "Edmondo Trentin and Marco Gori",
+  title     = "A survey of hybrid {ANN}/{HMM} models for automatic speech recognition.",
+  journal   = "Neurocomputing",
+  volume    = "37",
+  number    = "1-4",
+  year      = "2001",
+  pages     = "91--126",
+  pdf       = "2001-Trentin-NC.pdf",
+  abstract  = "In spite of the advances accomplished throughout the last decades, automatic speech
+	recognition (ASR) is still a challenging and difficult task. In particular, recognition systems
+	based on hidden Markov models (HMMs) are effective under many circumstances, but do
+	suffer from some major limitations that limit applicability of ASR technology in real-world
+	environments. Attempts were made to overcome these limitations with the adoption of artificial
+	neural networks (ANN) as an alternative paradigm for ASR, but ANN were unsuccessful in
+	dealing with long time-sequences of speech signals. Between the end of the 1980s and the
+	beginning of the 1990s, some researchers began exploring a new research area, by combining
+	HMMs and ANNs within a single, hybrid architecture. The goal in hybrid systems for ASR is to
+	take advantage from the properties of both HMMs and ANNs, improving exibility and
+	recognition performance. A variety of different architectures and novel training algorithms have
+	been proposed in literature. This paper reviews a number of significant hybrid models for ASR,
+	putting together approaches and techniques from a highly specialistic and non-homogeneous
+	literature. Efforts concentrate on describing and referencing architectures and algorithms, their
+	advantages and limitations, as well as on categorizing them into broad classes. Early attempts
+	to emulate HMMs by ANNs are first described. Then we focus on ANNs to estimate posterior
+	probabilities of the states of an HMM and on global optimization, where a single, overall
+	training criterion is defined over the HMM and the ANNs. Connectionist vector quantization
+	for discrete HMMs, and other more recent approaches are also reviewed. It is pointed out that,
+	in addition to their theoretical interest, hybrid systems have been allowing for tangible
+	improvements in recognition performance over the standard HMMs in difficult and significant
+	benchmark tasks."
+}
+
+@article{PH:Speech:TrGo2003,
+  author = "Edmondo Trentin and Marci Gori",
+  title = "Robust Combination of Neural Networks and Hidden {M}arkov Models for Speech Recognition",
+  journal = "IEEE Trans. on Neural Networks",
+  year = "2003",
+  volume = "14",
+  number = "6",
+  pages = "1519--1531",
+  postscript = "HMM-ANN-2002.ps",
+  abstract = "Acoustic modeling in state-of-the-art speech recognition systems usually relies on hidden
+	Markov models (HMMs) with Gaussian emission densities. Hmms suffer from intrinsic limitations,
+	mainly due to their arbitraty parametric assumption. Artificial neural networks (ANNs) appear to
+	be a promising alternative in this respect, but they historically failed as a general solution to
+	the acoustic modeling problem. This paper introduces algorithms based on a gradient-ascent 
+	technique for global training of a hybrid ANN/HMM system, in which the ANN is trained for 
+	estimating the emission probabilities of the states of the HMM. The approach is related to the
+	major systems proposed by Bourlard & Morgan and by Bengio, with the aim of combining their
+	benefits within a unified framework and to overcome their limitations. Several viable solutions
+	to the ``divergence problem'' - that may arise when training is accomplished over the maximum-
+	likelihod criterion - are proposed. Experimental results in speaker-independent, continous speech
+	recognition over Italian digit-strings validate the novel hybrid fraework, allowing for improved
+	recognition performance over HMMs with mixtures of Gaussian components, as well as over Bourlard
+	and Morgan's paradigm. In particular, it is shown that the maximum a-posteriori version of the
+	algorithm yields a 46.34\% relative word error rate reduction with respect to standard HMMs."
+}
+
+@phdthesis{PH:Speech:Tr2003,
+  author = "Edmondo Trentin",
+  title = "Robust Combination of Neural Networks and Hidden {M}arkov Models for Speech Recognition",
+  school = "Universita' di Firenze",
+  year = "2001",
+  pdf = "TrentinPhD.pdf"
+}
+
+@article{PH:Speech:ReMoBoCoFr1993,
+  author = "Steve Renals and Nelson Morgan and Herv{\'e} Bourlard and Michael Cohen and Horacio Franco",
+  title = "Connectionist Probability Estimators in {HMM} Speech Recognition",
+  journal = "IEEE Transactions Speech and Audio Processing",
+  year = "1993",
+  url = "http://citeseer.ist.psu.edu/renals94connectionist.html",
+  pdf = "renals94connectionist.pdf",
+  abstract = "We are concerned with integrating connectionist networks into
+	a hidden Markovmodel (HMM) speech recognition system. This is achieved
+	through a statistical interpretation of connectionist networks as probability
+	estimators. We review the basis of HMM speech recognition and point 
+	out the possible benefits of incorporating connectionist networks. Issues
+	necessary to the construction of a connectionist HMM recognition system
+	are discussed, including choice of connectionist probability estimator. We
+	describe the performance of such a system, using a multi-layer perceptron
+	probability estimator, evaluated on the speaker-independent DARPA Resource
+	Management database. In conclusion, we show that a connectionist component 
+	improves a state-of-the-art HMM system."
+}
+
+
+@inproceedings{PH:Speech:BoWe88,
+  author    = {Herv{\'e} Bourlard and Christian Wellekens},
+  title     = {Links Between {M}arkov Models and Multilayer Perceptrons.},
+  booktitle = {NIPS},
+  year      = {1988},
+  pages     = {502-510},
+  pdf       = {bourlard_nips01.pdf},
+  abstract  = {Hidden Markov models are widely used for automatic speech recognition. 
+	They inherently incorporate the sequential character of the speech signal and are
+	statistically trained. Howeverm the a-priori choice of the model topology limits their
+	flexibility. Another drawback of these models is their weak discrimination power.
+	Multilayer perceptrons are now promising tools in the connectionist approach for
+	classification problems and have already been successfully tested on speech recognition
+	problems. However, the sequential nature of the speech signal remain difficult to handle 
+	in that kind of machine. In this paper, a discriminant hidden Markov model is defined 
+	and it is shown how a particular multilayer perceptron with contextual and extra
+	feedback input units can be considered as a general form of such Markov models.}
+}
+
+@mastersthesis{PH:Speech:Ze1998,
+  author = "Pablo Zegers",
+  title = "Speech Recognition Using Neural Networks",
+  year = "1998",
+  school = "The University of Arizona",
+  url = "http://citeseer.ist.psu.edu/zegers98speech.html",
+  pdf = "zegers98speech.pdf",
+  abstract = "Although speech recognition products are already available in the market at
+	present, their development is mainly based on statistical techniques which work
+	under very specific assumptions. The work presented in this thesis investigates the
+	feasibility of alternative approaches for solving the problem more efficiently. A
+	speech recognizer system comprised of two distinct blocks, a Feature Extractor and
+	a Recognizer, is presented. The Feature Extractor block uses a standard LPC
+	Cepstrum coder, which translates the incoming speech into a trajectory in the LPC
+	Cepstrum feature space, followed by a Self Organizing Map, which tailors the
+	outcome of the coder in order to produce optimal trajectory representations of
+	words in reduced dimension feature spaces. Designs of the Recognizer blocks based
+	on three different approaches are compared. The performance of Templates, Multi-
+	Layer Perceptrons, and Recurrent Neural Networks based recognizers is tested on a
+	small isolated speaker dependent word recognition problem. Experimental results
+	indicate that trajectories on such reduced dimension spaces can provide reliable
+	representations of spoken words, while reducing the training complexity and the
+	operation of the Recognizer. The comparison between the different approaches to
+	the design of the Recognizers conducted here gives a better understanding of the
+	problem and its possible solutions. A new learning procedure that optimizes the
+	usage of the training set is also presented. Optimal tailoring of trajectories, new 10
+	insights into the use of neural networks in this class of problems, and a new training
+	paradigm for designing learning systems are the main contributions of this work."
+}
