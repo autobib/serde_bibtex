@@ -1,77 +1,42 @@
+//! # Errors for serialization and deserialization.
+use std::result;
 use std::str::Utf8Error;
 
 #[derive(Debug, PartialEq)]
-pub enum TokenConversionError {
-    UnresolvedMacro(String),
-    InvalidUtf8(Utf8Error),
+pub struct Error {
+    // err: Box<ErrorImpl>,
+    code: ErrorCode,
 }
 
-impl std::fmt::Display for TokenConversionError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str("could not convert token: ")?;
-        match self {
-            TokenConversionError::UnresolvedMacro(s) => write!(f, "unresolved macro: {s}"),
-            TokenConversionError::InvalidUtf8(err) => err.fmt(f),
+pub type Result<T> = result::Result<T, Error>;
+
+#[derive(Debug, PartialEq)]
+struct ErrorImpl {
+    code: ErrorCode,
+    // position: usize,
+}
+
+impl Error {
+    pub(crate) fn syntax(code: ErrorCode) -> Self {
+        Self { code }
+    }
+
+    pub(crate) fn utf8(err: Utf8Error) -> Self {
+        Self {
+            code: ErrorCode::InvalidUtf8(err),
+        }
+    }
+
+    pub(crate) fn eof() -> Self {
+        Self {
+            code: ErrorCode::UnexpectedEof,
         }
     }
 }
 
-#[derive(Debug, PartialEq)]
-pub enum ReadError {
-    Eof,
-    ExpectedIdentifier,
-    Unbalanced,
-    InvalidUtf8(Utf8Error),
-}
-
-impl std::fmt::Display for ReadError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str("error while reading file: ")?;
-        match self {
-            ReadError::Eof => f.write_str("unexpected end of file"),
-            ReadError::ExpectedIdentifier => f.write_str("expected identifier"),
-            ReadError::Unbalanced => f.write_str("unbalanced curly brackets {}"),
-            ReadError::InvalidUtf8(err) => err.fmt(f),
-        }
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub enum Error {
-    Message(String),
-    UnresolvedMacro(String),
-    ReadError(ReadError),
-    InvalidStartOfEntry,
-    ExpectedFieldSep,
-    UnexpectedEof,
-    TokenConversion(TokenConversionError),
-    InvalidUtf8(Utf8Error),
-    ExpectedNextTokenOrEndOfField,
-    UnclosedBracket,
-    UnclosedQuote,
-    TooManyChars,
-    ExpectedEndOfEntry,
-    NoChars,
-}
-
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Error::Message(msg) => f.write_str(msg),
-            Error::InvalidUtf8(err) => err.fmt(f),
-            Error::ReadError(_err) => f.write_str("Read error"),
-            Error::InvalidStartOfEntry => f.write_str("TODO"),
-            Error::UnexpectedEof => f.write_str("TODO"),
-            Error::UnresolvedMacro(_) => f.write_str("TODO"),
-            Error::ExpectedNextTokenOrEndOfField => f.write_str("TODO"),
-            Error::TokenConversion(err) => err.fmt(f),
-            Error::TooManyChars => f.write_str("too many chars"),
-            Error::NoChars => f.write_str("expected char, got nothing"),
-            Error::ExpectedFieldSep => f.write_str("expected field separator '='"),
-            Error::UnclosedBracket => f.write_str("unclosed '{' in token"),
-            Error::UnclosedQuote => f.write_str("unclosed '\"' in token"),
-            Error::ExpectedEndOfEntry => f.write_str("expected end of entry"),
-        }
+impl From<Utf8Error> for Error {
+    fn from(err: Utf8Error) -> Self {
+        Self::utf8(err)
     }
 }
 
@@ -79,24 +44,55 @@ impl std::error::Error for Error {}
 
 impl serde::de::Error for Error {
     fn custom<T: std::fmt::Display>(msg: T) -> Self {
-        Self::Message(msg.to_string())
+        Self::syntax(ErrorCode::Message(msg.to_string()))
     }
 }
 
-impl From<ReadError> for Error {
-    fn from(err: ReadError) -> Self {
-        Self::ReadError(err)
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.code.fmt(f)
     }
 }
 
-impl From<Utf8Error> for Error {
-    fn from(err: Utf8Error) -> Self {
-        Self::InvalidUtf8(err)
-    }
+#[derive(Debug, PartialEq)]
+pub(crate) enum ErrorCode {
+    Message(String),
+    DisallowedChar(char),
+    IdentifierStartsWithDigit,
+    UnexpectedClosingBracket,
+    ExpectedNextTokenOrEndOfField,
+    UnterminatedTextToken,
+    InvalidStartOfEntry,
+    ExpectedEndOfEntry,
+    UnclosedBracket,
+    UnclosedQuote,
+    UnexpectedEof,
+    ExpectedFieldSep,
+    UnresolvedMacro(String),
+    InvalidUtf8(Utf8Error),
+    Empty,
 }
 
-impl From<TokenConversionError> for Error {
-    fn from(err: TokenConversionError) -> Self {
-        Self::TokenConversion(err)
+impl std::fmt::Display for ErrorCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::DisallowedChar(ch) => {
+                write!(f, "invalid char {:?}", ch)
+            }
+            Self::ExpectedFieldSep => f.write_str("expected field separator '='"),
+            Self::InvalidStartOfEntry => f.write_str("expected start of entry '{' or '('"),
+            Self::IdentifierStartsWithDigit => f.write_str("identifier starts with ASCII digit"),
+            Self::UnexpectedClosingBracket => f.write_str("unmatched closing bracket"),
+            Self::UnterminatedTextToken => f.write_str("unmatched opening bracket"),
+            Self::UnresolvedMacro(s) => write!(f, "unresolved macro: {s}"),
+            Self::InvalidUtf8(err) => err.fmt(f),
+            Self::Empty => f.write_str("identifier missing or length 0"),
+            Self::Message(msg) => f.write_str(msg),
+            Self::UnexpectedEof => f.write_str("TODO"),
+            Self::ExpectedNextTokenOrEndOfField => f.write_str("TODO"),
+            Self::UnclosedBracket => f.write_str("unclosed '{' in token"),
+            Self::UnclosedQuote => f.write_str("unclosed '\"' in token"),
+            Self::ExpectedEndOfEntry => f.write_str("expected end of entry"),
+        }
     }
 }

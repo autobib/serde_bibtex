@@ -5,46 +5,53 @@ mod str_impl;
 pub use slice_impl::SliceReader;
 pub use str_impl::StrReader;
 
-use crate::error::ReadError;
-use std::borrow::Cow;
+use crate::error::Error;
 use std::str::Utf8Error;
 
 #[derive(Debug)]
-pub struct UnicodeIdentifier<'r>(pub Cow<'r, str>);
-
-#[derive(Debug)]
-pub struct AsciiIdentifier<'r>(pub Cow<'r, str>);
+pub struct Identifier<S: AsRef<str>>(pub S);
 
 /// The core Text handling object.
 #[derive(Debug, Clone, PartialEq)]
-pub enum Text<'r> {
-    Str(Cow<'r, str>),
-    Raw(Cow<'r, [u8]>),
+pub enum Text<S: AsRef<str>, B: AsRef<[u8]>> {
+    Str(S),
+    Bytes(B),
 }
 
-impl<'r> Text<'r> {
-    pub fn into_cow_str(self) -> Result<Cow<'r, str>, Utf8Error> {
+impl<S, B> Text<S, B>
+where
+    S: AsRef<str>,
+    B: AsRef<[u8]>,
+{
+    pub fn own(&self) -> Text<String, Vec<u8>> {
         match self {
-            Self::Str(cow) => Ok(cow),
-            Self::Raw(Cow::Borrowed(bytes)) => Ok(Cow::Borrowed(std::str::from_utf8(bytes)?)),
-            Self::Raw(Cow::Owned(bytes)) => Ok(Cow::Owned(
-                String::from_utf8(bytes).map_err(|e| e.utf8_error())?,
-            )),
+            Text::Str(s) => Text::Str(s.as_ref().to_string()),
+            Text::Bytes(b) => Text::Bytes(b.as_ref().to_vec()),
+        }
+    }
+}
+
+impl<'r> Text<&'r str, &'r [u8]> {
+    pub fn into_str(self) -> Result<&'r str, Error> {
+        match self {
+            Self::Str(s) => Ok(s),
+            Self::Bytes(b) => Ok(std::str::from_utf8(b)?),
         }
     }
 
-    pub fn into_bytes(self) -> Cow<'r, [u8]> {
+    pub fn into_bytes(self) -> &'r [u8] {
         match self {
-            Self::Str(Cow::Borrowed(str)) => Cow::Borrowed(str.as_bytes()),
-            Self::Str(Cow::Owned(s)) => Cow::Owned(s.into()),
-            Self::Raw(bytes) => bytes,
+            Self::Str(s) => s.as_bytes(),
+            Self::Bytes(bytes) => bytes,
         }
     }
+}
 
+impl<S: AsRef<str>, B: AsRef<[u8]>> Text<S, B> {
     pub fn len(&self) -> usize {
         match self {
-            Self::Str(cow) => cow.len(),
-            Self::Raw(cow) => cow.len(),
+            Self::Str(s) => s.as_ref().len(),
+            Self::Bytes(b) => b.as_ref().len(),
         }
     }
 }
@@ -53,25 +60,25 @@ pub trait Read<'r> {
     /// Peek a single byte.
     fn peek(&self) -> Option<u8>;
 
-    /// Consume a single byte after peeking.
+    /// Discard a single byte. This is only valid after a previous .peek() returned a value!
     fn discard(&mut self);
 
-    /// Consume a comment.
+    /// Discard comments and whitespace.
     fn comment(&mut self);
 
-    /// Consume junk characters between entries
+    /// Discard junk characters between entries, and return true if another entry is found and
+    /// false otherwise.
     fn next_entry_or_eof(&mut self) -> bool;
 
-    /// Take a unicode identifier.
-    fn identifier_unicode(&mut self) -> Result<UnicodeIdentifier<'r>, ReadError>;
+    /// Parse a unicode identifier.
+    fn identifier(&mut self) -> Result<Identifier<&'r str>, Error>;
 
-    /// Take an ascii identifier.
-    fn identifier_ascii(&mut self) -> Result<AsciiIdentifier<'r>, ReadError>;
+    /// Parse a balanced text token.
+    fn balanced(&mut self) -> Result<Text<&'r str, &'r [u8]>, Error>;
 
-    fn balanced(&mut self) -> Result<Text<'r>, ReadError>;
+    /// Parse a quoted or bracketed text token.
+    fn protected(&mut self, until: u8) -> Result<Text<&'r str, &'r [u8]>, Error>;
 
-    fn protected(&mut self, until: u8) -> Result<Text<'r>, ReadError>;
-
-    /// Take a text number token.
-    fn number(&mut self) -> Result<Text<'r>, ReadError>;
+    /// Parse a text number token.
+    fn number(&mut self) -> Result<&'r str, Error>;
 }

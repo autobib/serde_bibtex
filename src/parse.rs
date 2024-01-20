@@ -1,19 +1,20 @@
 mod macros;
 mod read;
-mod token;
+pub mod token;
+mod validate;
 
-use crate::error::Error;
+use crate::error::{Error, ErrorCode};
 
 pub use macros::MacroDictionary;
-pub use read::{AsciiIdentifier, Read, SliceReader, StrReader, Text, UnicodeIdentifier};
+pub use read::{Identifier, Read, SliceReader, StrReader, Text};
 pub use token::{EntryKey, EntryType, FieldKey, Token, Variable};
 
 pub trait BibtexParse<'r>: Read<'r> {
     /// Read the entry type, returning None if EOF was reached.
-    fn entry_type(&mut self) -> Result<Option<EntryType<'r>>, Error> {
+    fn entry_type(&mut self) -> Result<Option<EntryType<&'r str>>, Error> {
         if self.next_entry_or_eof() {
             self.comment();
-            let id = self.identifier_unicode()?;
+            let id = self.identifier()?;
             Ok(Some(id.into()))
         } else {
             Ok(None)
@@ -42,14 +43,14 @@ pub trait BibtexParse<'r>: Read<'r> {
                 self.discard();
                 Ok(b')')
             }
-            _ => Err(Error::InvalidStartOfEntry),
+            _ => Err(Error::syntax(ErrorCode::InvalidStartOfEntry)),
         }
     }
 
     /// Read an entry key.
-    fn entry_key(&mut self) -> Result<EntryKey<'r>, Error> {
+    fn entry_key(&mut self) -> Result<EntryKey<&'r str>, Error> {
         self.comment();
-        Ok(self.identifier_unicode()?.into())
+        Ok(self.identifier()?.into())
     }
 
     /// Consume a comma separator optionally.
@@ -61,19 +62,21 @@ pub trait BibtexParse<'r>: Read<'r> {
     }
 
     /// Consume a variable
-    fn variable(&mut self) -> Result<Variable<'r>, Error> {
+    #[inline]
+    fn variable(&mut self) -> Result<Variable<&'r str>, Error> {
         self.comment();
-        let id = self.identifier_unicode()?;
+        let id = self.identifier()?;
         Ok(id.into())
     }
 
     /// Return macro definition, if any.
-    fn macro_variable_opt(&mut self) -> Result<Option<Variable<'r>>, Error> {
+    fn macro_variable_opt(&mut self) -> Result<Option<Variable<&'r str>>, Error> {
         self.comment();
         match self.peek() {
             Some(b'}' | b')') => Ok(None),
+            Some(b'0'..=b'9') => Err(Error::syntax(ErrorCode::IdentifierStartsWithDigit)),
             _ => {
-                let id = self.identifier_unicode()?;
+                let id = self.identifier()?;
                 Ok(Some(id.into()))
             }
         }
@@ -82,7 +85,7 @@ pub trait BibtexParse<'r>: Read<'r> {
     /// Ignore a field separator  `=`.
     fn field_sep(&mut self) -> Result<(), Error> {
         self.comment();
-        self.expect(b'=', Error::ExpectedFieldSep)?;
+        self.expect(b'=', Error::syntax(ErrorCode::ExpectedFieldSep))?;
         Ok(())
     }
 
@@ -95,12 +98,15 @@ pub trait BibtexParse<'r>: Read<'r> {
                 Ok(true)
             }
             Some(b'}' | b')' | b',') | None => Ok(false),
-            Some(_) => Err(Error::ExpectedNextTokenOrEndOfField),
+            Some(_) => Err(Error::syntax(ErrorCode::ExpectedNextTokenOrEndOfField)),
         }
     }
 
     /// Take a token without resolving abbreviations.
-    fn token(&mut self, is_first_token: &mut bool) -> Result<Option<Token<'r>>, Error> {
+    fn token(
+        &mut self,
+        is_first_token: &mut bool,
+    ) -> Result<Option<Token<&'r str, &'r [u8]>>, Error> {
         // first token is mandatory
         if *is_first_token {
             *is_first_token = false;
@@ -114,23 +120,23 @@ pub trait BibtexParse<'r>: Read<'r> {
             Some(b'{') => {
                 self.discard();
                 let result = self.balanced()?;
-                self.expect(b'}', Error::UnclosedBracket)?;
+                self.expect(b'}', Error::syntax(ErrorCode::UnclosedBracket))?;
                 Ok(Some(Token::Text(result)))
             }
             Some(b'"') => {
                 self.discard();
                 let result = self.protected(b'"')?;
-                self.expect(b'"', Error::UnclosedQuote)?;
+                self.expect(b'"', Error::syntax(ErrorCode::UnclosedQuote))?;
                 Ok(Some(Token::Text(result)))
             }
-            Some(b'0'..=b'9') => Ok(Some(Token::Text(self.number()?))),
-            Some(_) => Ok(Some(Token::Macro(self.identifier_unicode()?.into()))),
-            _ => Err(Error::UnexpectedEof),
+            Some(b'0'..=b'9') => Ok(Some(Token::Text(Text::Str(self.number()?)))),
+            Some(_) => Ok(Some(Token::Variable(self.identifier()?.into()))),
+            _ => Err(Error::eof()),
         }
     }
 
     /// Parse a comma and field key together to determine if there is another field.
-    fn field_or_terminal(&mut self) -> Result<Option<FieldKey<'r>>, Error> {
+    fn field_or_terminal(&mut self) -> Result<Option<FieldKey<&'r str>>, Error> {
         self.comment();
         match self.peek() {
             Some(b',') => {
@@ -138,7 +144,7 @@ pub trait BibtexParse<'r>: Read<'r> {
                 self.comment();
                 match self.peek() {
                     Some(b'}' | b')') => Ok(None),
-                    _ => Ok(Some(self.identifier_ascii()?.into())),
+                    _ => Ok(Some(self.identifier()?.into())),
                 }
             }
             _ => Ok(None),
@@ -146,7 +152,7 @@ pub trait BibtexParse<'r>: Read<'r> {
     }
 
     /// Parse bracketed text inside `@string` and `@preamble`.
-    fn comment_contents(&mut self) -> Result<Text<'r>, Error> {
+    fn comment_contents(&mut self) -> Result<Text<&'r str, &'r [u8]>, Error> {
         self.comment();
         let closing = self.initial()?;
         let result = match closing {
@@ -161,12 +167,12 @@ pub trait BibtexParse<'r>: Read<'r> {
     /// Consume a closing bracket `closing`.
     fn terminal(&mut self, closing: u8) -> Result<(), Error> {
         self.comment();
-        self.expect(closing, Error::ExpectedEndOfEntry)?;
+        self.expect(closing, Error::syntax(ErrorCode::ExpectedEndOfEntry))?;
         Ok(())
     }
 
     /// Read tokens until there are no more remaining in the buffer.
-    fn value_into(&mut self, scratch: &mut Vec<Token<'r>>) -> Result<(), Error> {
+    fn value_into(&mut self, scratch: &mut Vec<Token<&'r str, &'r [u8]>>) -> Result<(), Error> {
         scratch.clear();
         let mut is_first_token = true;
 
@@ -185,7 +191,7 @@ pub trait BibtexParse<'r>: Read<'r> {
     }
 
     /// Ignore a single entry.
-    fn ignore_entry(&mut self, chunk: EntryType<'r>) -> Result<(), Error> {
+    fn ignore_entry(&mut self, chunk: EntryType<&'r str>) -> Result<(), Error> {
         match chunk {
             EntryType::Preamble => self.ignore_preamble(),
             EntryType::Comment => self.ignore_comment(),
@@ -197,8 +203,8 @@ pub trait BibtexParse<'r>: Read<'r> {
     /// Ignore a single entry, but capture any macros.
     fn ignore_entry_captured(
         &mut self,
-        chunk: EntryType<'r>,
-        abbrevs: &mut MacroDictionary<'r>,
+        chunk: EntryType<&'r str>,
+        abbrevs: &mut MacroDictionary<&'r str, &'r [u8]>,
     ) -> Result<(), Error> {
         match chunk {
             EntryType::Preamble => self.ignore_preamble(),
@@ -233,7 +239,10 @@ pub trait BibtexParse<'r>: Read<'r> {
     }
 
     /// Ignore the contents of a macro definition, but capture into `abbrevs`.
-    fn ignore_macro_captured(&mut self, abbrevs: &mut MacroDictionary<'r>) -> Result<(), Error> {
+    fn ignore_macro_captured(
+        &mut self,
+        abbrevs: &mut MacroDictionary<&'r str, &'r [u8]>,
+    ) -> Result<(), Error> {
         let closing_bracket = self.initial()?;
         if let Some(identifier) = self.macro_variable_opt()? {
             let mut tokens = Vec::new();

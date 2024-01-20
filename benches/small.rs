@@ -3,18 +3,37 @@ use criterion::{criterion_group, criterion_main, Criterion};
 pub fn criterion_benchmark(c: &mut Criterion) {
     use serde::de::IgnoredAny;
     use serde::Deserialize;
-    use serde_bibtex::{SliceReader, StrReader};
+    use serde_bibtex::de::Deserializer;
+    use serde_bibtex::entry::{BorrowEntry, Entry};
 
-    let input_bytes = std::fs::read("assets/tugboat.bib").unwrap();
+    type OwnedBibliography = Vec<Entry>;
+    type RawBibliography<'r> = Vec<BorrowEntry<'r>>;
 
-    c.bench_function("tugboat ignored slice", |b| {
-        b.iter(|| IgnoredAny::deserialize(&mut SliceReader::new(&input_bytes).deserialize()))
-    });
-
+    let input_bytes = std::fs::read("assets/biber_test.bib").unwrap();
     let input_str = std::str::from_utf8(&input_bytes).unwrap();
 
-    c.bench_function("tugboat ignored str", |b| {
-        b.iter(|| IgnoredAny::deserialize(&mut StrReader::new(&input_str).deserialize()))
+    c.bench_function("biber ignored slice", |b| {
+        b.iter(|| IgnoredAny::deserialize(&mut Deserializer::from_slice(&input_bytes)))
+    });
+
+    c.bench_function("biber ignored str", |b| {
+        b.iter(|| IgnoredAny::deserialize(&mut Deserializer::from_str(&input_str)))
+    });
+
+    c.bench_function("biber owned slice", |b| {
+        b.iter(|| OwnedBibliography::deserialize(&mut Deserializer::from_slice(&input_bytes)))
+    });
+
+    c.bench_function("biber owned str", |b| {
+        b.iter(|| OwnedBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
+    });
+
+    c.bench_function("biber raw slice", |b| {
+        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_slice(&input_bytes)))
+    });
+
+    c.bench_function("biber raw str", |b| {
+        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
     });
 }
 

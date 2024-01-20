@@ -1,15 +1,18 @@
+use pest::Parser;
 use serde::de::IgnoredAny;
 use serde::Deserialize;
+use serde_bibtex::entry::{OwnedBibliography, RawBibliography};
+use serde_bibtex::syntax::{BibtexParser, Rule};
 use serde_bibtex::Error;
-use serde_bibtex::{SliceReader, StrReader};
+use serde_bibtex::{de::Deserializer, MacroDictionary};
 
 use std::collections::HashMap;
 
 // Anonymous field names and flexible receiver type
 #[derive(Debug, Deserialize, PartialEq)]
 enum Tok<'a> {
-    #[serde(rename = "Abbrev")]
-    A(&'a [u8]),
+    #[serde(rename = "Variable")]
+    V(&'a [u8]),
     #[serde(rename = "Text")]
     T(&'a [u8]),
 }
@@ -17,7 +20,7 @@ enum Tok<'a> {
 #[derive(Deserialize, Debug, PartialEq)]
 struct TestEntryMap<'a> {
     entry_type: &'a str,
-    citation_key: &'a str,
+    entry_key: &'a str,
     #[serde(borrow)]
     fields: HashMap<&'a str, Vec<Tok<'a>>>,
 }
@@ -25,24 +28,41 @@ struct TestEntryMap<'a> {
 #[derive(Deserialize, Debug, PartialEq)]
 enum TestEntry<'a> {
     #[serde(borrow)]
-    Entry(TestEntryMap<'a>),
+    Regular(TestEntryMap<'a>),
     #[serde(borrow)]
-    Abbreviation(Option<(&'a str, Vec<Tok<'a>>)>),
+    Macro(Option<(&'a str, Vec<Tok<'a>>)>),
     #[serde(borrow)]
     Comment(&'a str),
     #[serde(borrow)]
     Preamble(Vec<Tok<'a>>),
 }
 
+macro_rules! test_file_types {
+    ($fname:expr) => {
+        let input_bytes = std::fs::read($fname).unwrap();
+
+        let mut macros = MacroDictionary::<&str, &[u8]>::default();
+        macros.set_month_macros();
+
+        let mut de = Deserializer::from_slice_with_macros(&input_bytes, macros);
+        let data: Result<OwnedBibliography, Error> = OwnedBibliography::deserialize(&mut de);
+        assert!(data.is_ok(), "{:?}", data);
+
+        let mut de = Deserializer::from_slice(&input_bytes);
+        let data: Result<RawBibliography, Error> = RawBibliography::deserialize(&mut de);
+        assert!(data.is_ok(), "{:?}", data);
+    };
+}
+
 macro_rules! test_file_slice {
     ($fname:expr) => {
         let input_bytes = std::fs::read($fname).unwrap();
 
-        let mut de = SliceReader::new(&input_bytes).deserialize();
+        let mut de = Deserializer::from_slice(&input_bytes);
         let data: Result<IgnoredAny, Error> = IgnoredAny::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
 
-        let mut de = SliceReader::new(&input_bytes).deserialize();
+        let mut de = Deserializer::from_slice(&input_bytes);
         let data: Result<TestBib, Error> = TestBib::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
     };
@@ -53,13 +73,16 @@ macro_rules! test_file_str {
         let input_bytes = std::fs::read($fname).unwrap();
         let input_str = std::str::from_utf8(&input_bytes).unwrap();
 
-        let mut de = StrReader::new(&input_str).deserialize();
+        let mut de = Deserializer::from_str(&input_str);
         let data: Result<IgnoredAny, Error> = IgnoredAny::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
 
-        let mut de = StrReader::new(&input_str).deserialize();
+        let mut de = Deserializer::from_str(&input_str);
         let data: Result<TestBib, Error> = TestBib::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
+
+        let parsed = BibtexParser::parse(Rule::bib, input_str);
+        assert!(parsed.is_ok());
     };
 }
 
@@ -67,12 +90,14 @@ type TestBib<'a> = Vec<TestEntry<'a>>;
 
 #[test]
 fn test_syntax_tugboat() {
+    test_file_types!("assets/tugboat.bib");
     test_file_slice!("assets/tugboat.bib");
     test_file_str!("assets/tugboat.bib");
 }
 
 #[test]
 fn test_syntax_biber() {
+    test_file_types!("assets/biber_test.bib");
     test_file_slice!("assets/biber_test.bib");
     test_file_str!("assets/biber_test.bib");
 }

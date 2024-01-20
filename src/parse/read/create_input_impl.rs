@@ -1,78 +1,72 @@
-macro_rules! input_read_impl {
+macro_rules! read_impl {
     ($target:ty, $name:ident, $var:ident, $convert:expr) => {
-        use crate::de::Deserializer;
-
         #[derive(Debug)]
         pub struct $name<'r> {
             pub(crate) input: &'r $target,
+            pub(crate) pos: usize,
         }
 
         impl<'r> $name<'r> {
             pub fn new(input: &'r $target) -> Self {
-                Self { input }
+                Self { input, pos: 0 }
             }
 
-            /// Apply `parser` to `self.input`, updating `input` and returning `T`.
+            /// Apply `parser` to `self.input` and `self.pos`, updating `self.pos` and returning `O`.
+            #[inline]
             fn apply<O>(
                 &mut self,
-                mut parser: impl FnMut(&'r $target) -> Result<(&'r $target, O), ReadError>,
-            ) -> Result<O, ReadError> {
-                let (input, ret) = parser(self.input)?;
-                self.input = input;
+                mut parser: impl FnMut(&'r $target, usize) -> Result<(usize, O), Error>,
+            ) -> Result<O, Error> {
+                let (new, ret) = parser(self.input, self.pos)?;
+                self.pos = new;
                 Ok(ret)
-            }
-
-            pub fn deserialize(self) -> Deserializer<'r, Self> {
-                Deserializer::new(self)
             }
         }
 
         impl<'r> Read<'r> for $name<'r> {
             #[inline]
             fn peek(&self) -> Option<u8> {
-                let bytes = $convert(self.input);
-                bytes.first().copied()
+                if self.pos < self.input.len() {
+                    Some($convert(self.input)[self.pos])
+                } else {
+                    None
+                }
             }
 
             #[inline]
             fn discard(&mut self) {
-                self.input = &self.input[1..];
+                self.pos += 1
             }
 
             #[inline]
             fn next_entry_or_eof(&mut self) -> bool {
-                let (tail, res) = next_entry_or_eof(self.input);
-                self.input = tail;
+                let (new, res) = next_entry_or_eof(self.input, self.pos);
+                self.pos = new;
                 res
             }
 
             #[inline]
             fn comment(&mut self) {
-                self.input = comment(self.input)
+                self.pos = comment(self.input, self.pos)
             }
 
             #[inline]
-            fn identifier_unicode(&mut self) -> Result<UnicodeIdentifier<'r>, ReadError> {
-                self.apply(identifier_unicode)
+            fn identifier(&mut self) -> Result<Identifier<&'r str>, Error> {
+                self.apply(identifier)
             }
 
             #[inline]
-            fn identifier_ascii(&mut self) -> Result<AsciiIdentifier<'r>, ReadError> {
-                self.apply(identifier_ascii)
+            fn balanced(&mut self) -> Result<Text<&'r str, &'r [u8]>, Error> {
+                Ok(Text::$var(self.apply(balanced)?))
             }
 
             #[inline]
-            fn balanced(&mut self) -> Result<Text<'r>, ReadError> {
-                Ok(Text::$var(Cow::Borrowed(self.apply(balanced)?)))
+            fn protected(&mut self, until: u8) -> Result<Text<&'r str, &'r [u8]>, Error> {
+                Ok(Text::$var(self.apply(protected(until))?))
             }
 
             #[inline]
-            fn protected(&mut self, until: u8) -> Result<Text<'r>, ReadError> {
-                Ok(Text::$var(Cow::Borrowed(self.apply(protected(until))?)))
-            }
-
-            #[inline]
-            fn number(&mut self) -> Result<Text<'r>, ReadError> {
+            fn number(&mut self) -> Result<&'r str, Error> {
                 self.apply(number)
             }
         }
@@ -80,4 +74,4 @@ macro_rules! input_read_impl {
     };
 }
 
-pub(crate) use input_read_impl;
+pub(crate) use read_impl;

@@ -1,0 +1,47 @@
+// whitespace and comments
+ws = _{ (" " |  "\t" | "\n" | "\r" | "\x0C" )+ }
+tex_comment = _{ "%" ~ (!"\n" ~ ANY)* ~ "\n" }
+ign = _{ (tex_comment | ws)* }
+junk = _{ (tex_comment | !("@" | "%") ~ ANY)* }
+
+// identifiers
+identifier = _{ (!('\x00'..'\x20' | "{" | "}" | "(" | ")" | "," | "=" | "\\" | "#" | "%" | "\"" | "\x7f") ~ ANY)+}
+variable = @{ !ASCII_DIGIT ~ identifier }
+entry_type = @{ identifier }
+entry_key = @{ identifier }
+field_key = @{ identifier }
+
+// value tokens
+token_number = @{ ASCII_DIGIT+ }
+balanced = _{ "{" ~ balanced* ~ "}" | (!("{" | "}") ~ ANY) }
+token_curly = @{ balanced* }
+quoted = _{ "{" ~ balanced* ~ "}" | (!("{" | "}" | "\"") ~ ANY) }
+token_quoted = @{ quoted* }
+token = _{ token_number | "{" ~ token_curly ~ "}" | "\"" ~ token_quoted ~ "\"" | variable }
+value = { token ~ (ign ~ "#" ~ ign ~ token)* }
+
+// comment
+round = _{ "{" ~ balanced* ~ "}" | (!("{" | "}" | ")") ~ ANY) }
+token_round = @{ round* }
+comment_entry_type = _{ ^"comment" ~ ign }
+entry_comment = { comment_entry_type ~ ( "{" ~ token_curly ~ "}" | "(" ~ token_round ~ ")" ) }
+
+// preamble
+preamble_contents = _{ ign ~ value ~ ign }
+preamble_entry_type = _{ ^"preamble" ~ ign }
+entry_preamble = { preamble_entry_type ~ ( "{" ~ preamble_contents ~ "}" | "(" ~ preamble_contents ~ ")" ) }
+
+// macro
+macro_contents = _{ (ign ~ variable ~ ign ~ "=" ~ ign ~ value ~ ign ~ ","?)? ~ ign }
+macro_entry_type = _{ ^"string" ~ ign }
+entry_macro = { macro_entry_type ~ ("{" ~ macro_contents ~ "}" | "(" ~ macro_contents ~ ")") }
+
+// regular
+field = _{ ign ~ "," ~ ign ~ field_key ~ ign ~ "=" ~ ign ~ value }
+regular_entry_contents = _{ ign ~ entry_key ~ field* ~ ign ~ ","? ~ ign }
+entry_regular = { entry_type ~ ign ~ ("{" ~ regular_entry_contents ~ "}" | "(" ~ regular_entry_contents ~ ")") }
+
+
+// bibliography
+entry = { "@" ~ ign ~ (entry_comment | entry_preamble | entry_macro | entry_regular) }
+bib = _{ SOI ~ junk ~ (entry ~ junk)* ~ EOI }

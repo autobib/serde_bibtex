@@ -12,16 +12,34 @@ exclude = [
     "assets/*",
 ]
 
+[profile.bench]
+debug = true
+
 [dependencies]
-serde = { version = "1.0", features = ["derive"] }
+serde = "1.0"
 unicase = "2.7"
 memchr = "2.7"
+pest = {version = "2.7", optional = true}
+pest_derive = {version = "2.7", optional = true}
+
+[features]
+entry = ["serde/derive"]
+syntax = ["dep:pest", "dep:pest_derive"]
+all = ["entry", "syntax"]
 
 [dev-dependencies]
 criterion = { version = "0.4", features = ["html_reports"] }
+serde = { version = "1.0", features = ["derive"] }
+nom-bibtex = "0.5.0"
 proptest = "1.0.0"
 serde_bytes = "0.11"
+biblatex = "0.9"
+bibparser = "0.4.0"
 
 [[bench]]
 name = "small"
+harness = false
+
+[[bench]]
+name = "compare"
 harness = false
