@@ -6,19 +6,25 @@ Until this is stabilized, use at your own risk!
 A [Rust](https://www.rust-lang.org/) library providing a [serde](https://serde.rs/) interface for `.bib` file (de)serialization.
 The implementation is minimally opinionated and feature-rich for convenient downstream consumption by other libraries or binaries.
 
-## Deserializer
+For examples and a thorough documentation of features, visit the [docs](https://docs.rs/serde_bibtex/latest/serde_bibtex).
 
-### Flexible deserialization:
+## Deserializer
+Here are the main features:
+
+### Flexible
   - Structured: read into Rust types with automatic `@string` macro expansion and other convenience features.
   - Unstructured: do not expand macros or collect fields values to preserve the structure of the original bibtex.
   - Deserialize from bytes to defer UTF-8 conversion, or even pass-through raw bytes.
   - Error-tolerant `Iterator` API that allows skipping malformed entries.
-### Well-defined and explicit syntax:
-  - Tested against an independently implemented [pest grammar](/src/syntax/bibtex.pest).
+
+### Explicit and unambiguous syntax:
+  - Aims for compatibility with and tested against an independently implemented [pest grammar](/src/syntax/bibtex.pest).
   - Aim for compatibility with [biber](https://github.com/plk/biber) but without some of biber's [undocumented idiosyncracies](https://docs.rs/serde_bibtex/latest/serde_bibtex/syntax/index.html#differences-from-biber) or [unfixable parsing bugs](https://github.com/plk/biber/issues/456).
+
 ### Fast
-  - Low overhead manual parser implementation (see benchmarks).
-  - Optional zero-copy or owned deserialization.
+  - Low overhead manual parser implementation (see [benchmarks](#benchmarks)).
+  - Zero-copy deserialization.
+  - Selective capturing of contents (see [benchmarks](#benchmarks) for speed differences)
 
 
 ## Serializer

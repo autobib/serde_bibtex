@@ -41,17 +41,6 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("tugboat nom", |b| {
         b.iter(|| Bibtex::parse(&input_str).unwrap())
     });
-
-    // use std::error::Error;
-    // use bibparser::{BibEntry, Parser};
-    // use std::str::FromStr;
-
-    // c.bench_function("tugboat bibparser", |b| {
-    //     b.iter(|| {
-    //         let mut parser = Parser::from_str(input_str).unwrap();
-    //         let _res: Vec<Result<BibEntry, Box<dyn Error>>> = parser.iter().collect();
-    //     })
-    // });
 }
 
 criterion_group!(benches, criterion_benchmark);

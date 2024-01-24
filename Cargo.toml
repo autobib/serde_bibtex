@@ -34,7 +34,6 @@ nom-bibtex = "0.5.0"
 proptest = "1.0.0"
 serde_bytes = "0.11"
 biblatex = "0.9"
-bibparser = "0.4.0"
 
 [[bench]]
 name = "small"
