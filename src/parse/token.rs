@@ -3,7 +3,7 @@ use unicase::UniCase;
 
 use super::{Identifier, Text};
 
-use super::validate::{balanced, entry_key, entry_type, field_key, variable};
+use super::validate::{is_balanced, is_entry_key, is_entry_type, is_field_key, is_variable};
 use crate::error::{Error, ErrorCode, Result};
 
 /// Entry type, such as `article` in `@article{...`.
@@ -23,7 +23,7 @@ pub enum EntryType<S: AsRef<str>> {
 
 impl<S: AsRef<str>> EntryType<S> {
     pub(crate) fn new_unchecked(s: S) -> Self {
-        let uni = UniCase::new(s);
+        let uni = UniCase::unicode(s);
         if uni == UniCase::ascii("preamble") {
             Self::Preamble
         } else if uni == UniCase::ascii("comment") {
@@ -37,7 +37,7 @@ impl<S: AsRef<str>> EntryType<S> {
 
     /// Construct a new entry type, checking that the input satisfies the requirements.
     pub fn new(s: S) -> Result<Self> {
-        entry_type(s.as_ref())?;
+        is_entry_type(s.as_ref())?;
         Ok(Self::new_unchecked(s))
     }
 }
@@ -63,7 +63,7 @@ impl<S: AsRef<str>> Variable<S> {
 
     /// Construct a new variable, checking that the input satisfies the requirements.
     pub fn new(s: S) -> Result<Self> {
-        variable(s.as_ref())?;
+        is_variable(s.as_ref())?;
         Ok(Self(UniCase::new(s)))
     }
 
@@ -108,7 +108,7 @@ impl<S: AsRef<str>> EntryKey<S> {
 
     /// Construct a new entry key, checking that the input satisfies the requirements.
     pub fn new(s: S) -> Result<Self> {
-        entry_key(s.as_ref())?;
+        is_entry_key(s.as_ref())?;
         Ok(Self::new_unchecked(s))
     }
 }
@@ -127,7 +127,7 @@ impl<S: AsRef<str>> FieldKey<S> {
 
     /// Construct a new field key, checking that the input satisfies the requirements.
     pub fn new(s: S) -> Result<Self> {
-        field_key(s.as_ref())?;
+        is_field_key(s.as_ref())?;
         Ok(Self(UniCase::new(s)))
     }
 }
@@ -155,6 +155,7 @@ where
     B: AsRef<[u8]>,
 {
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn variable_unchecked(s: S) -> Self {
         Token::Variable(Variable::new_unchecked(s))
     }
@@ -171,13 +172,13 @@ where
 
     /// Construct a new text string variant.
     pub fn str(s: S) -> Result<Self> {
-        balanced(s.as_ref().as_bytes())?;
+        is_balanced(s.as_ref().as_bytes())?;
         Ok(Token::Text(Text::Str(s)))
     }
 
     /// Construct a new text bytes variant.
     pub fn bytes(b: B) -> Result<Self> {
-        balanced(b.as_ref())?;
+        is_balanced(b.as_ref())?;
         Ok(Token::Text(Text::Bytes(b)))
     }
 

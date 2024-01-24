@@ -37,7 +37,7 @@
 //! 1. An identifier is any UTF-8 character which is not ASCII, or a printable ASCII character
 //!    which is not one of the literal characters `{}(),=\#%"`.
 //!    ```ignore
-//!    identifier = { (!('\x00'..'\x20' | "{" | "}" | "(" | ")" | "," | "=" | "\\" | "#" | "%" | "\"" | "\x7f") ~ ANY)+}
+//!    identifier = _{ (!('\x00'..'\x20' | "{" | "}" | "(" | ")" | "," | "=" | "\\" | "#" | "%" | "\"" | "\x7f") ~ ANY)+}
 //!    ```
 //! 2. A variable is an identifier which can be used in macro expansions. The syntax is the same as
 //!    an identifier, except additionally it cannot begin with an ASCII digit.
@@ -153,14 +153,24 @@
 //!    unquoted number.
 //!
 //! ### Differences from bibtex
+//! 1. Bibtex does not support `%`-style comments.
+//! 2. Bibtex does not capture `@comment` strings: instead, upon reading an `@comment` entry, it
+//!    immediately resets and applies 'junk' parsing. For example
+//!    ```bib
+//!    @comment{@article}
+//!    ```
+//!    will result in a parse error, since the `@comment` is discarded, then `{` is discarded as a
+//!    junk character, then `@article` is parsed to begin a new entry, and `}` then results in an error.
+//! 3. Bibtex does not support unicode.
+//! 4. The only disallowed printable ASCII character in an entry key is `,`
 //!
 //! ## More flexible syntax?
-//! The syntax could intentionally be made more flexible. However, we do not want to promote
-//! proliferation of `.bib` files that are incompatible with other much more well-established
-//! tools.
+//! The syntax could intentionally be made more flexible while still accepting all files satisfying
+//! the current grammar. However, we do not want to promote proliferation of `.bib` files that are
+//! incompatible with other more well-established tools.
 use pest_derive::Parser;
 
-/// A simple derived pest parser.
+/// A simple automatically derived pest parser.
 #[derive(Parser)]
 #[grammar = "syntax/bibtex.pest"] // relative to src
 pub struct BibtexParser;

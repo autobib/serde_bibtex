@@ -6,7 +6,7 @@ use serde::de::{
 };
 use serde::forward_to_deserialize_any;
 
-use crate::error::Error;
+use crate::error::{Error, Result};
 use crate::naming::{MACRO_TOKEN_VARIANT_NAME, TEXT_TOKEN_VARIANT_NAME};
 use crate::parse::{BibtexParse, Text, Token};
 
@@ -30,7 +30,7 @@ impl<'a, 'r> KeyValueDeserializer<'a, 'r> {
     pub fn new_from_de<R: BibtexParse<'r>>(
         s: &'r str,
         de: &'a mut Deserializer<'r, R>,
-    ) -> Result<Self, Error> {
+    ) -> Result<Self> {
         de.scratch.clear();
         de.parser.value_into(&mut de.scratch)?;
         de.macros.resolve(&mut de.scratch);
@@ -41,7 +41,7 @@ impl<'a, 'r> KeyValueDeserializer<'a, 'r> {
 impl<'a, 'de: 'a> de::Deserializer<'de> for KeyValueDeserializer<'a, 'de> {
     type Error = Error;
 
-    fn deserialize_any<V>(mut self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(mut self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
     {
@@ -58,7 +58,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for KeyValueDeserializer<'a, 'de> {
 impl<'a, 'de: 'a> SeqAccess<'de> for KeyValueDeserializer<'a, 'de> {
     type Error = Error;
 
-    fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
+    fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>>
     where
         T: DeserializeSeed<'de>,
     {
@@ -81,11 +81,11 @@ pub struct UnitEnumDeserializer;
 impl<'de> VariantAccess<'de> for UnitEnumDeserializer {
     type Error = Error;
 
-    fn unit_variant(self) -> Result<(), Self::Error> {
+    fn unit_variant(self) -> Result<()> {
         Ok(())
     }
 
-    fn newtype_variant_seed<T>(self, _seed: T) -> Result<T::Value, Self::Error>
+    fn newtype_variant_seed<T>(self, _seed: T) -> Result<T::Value>
     where
         T: DeserializeSeed<'de>,
     {
@@ -95,7 +95,7 @@ impl<'de> VariantAccess<'de> for UnitEnumDeserializer {
         ))
     }
 
-    fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value, Self::Error>
+    fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -105,11 +105,7 @@ impl<'de> VariantAccess<'de> for UnitEnumDeserializer {
         ))
     }
 
-    fn struct_variant<V>(
-        self,
-        _fields: &'static [&'static str],
-        _visitor: V,
-    ) -> Result<V::Value, Self::Error>
+    fn struct_variant<V>(self, _fields: &'static [&'static str], _visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -135,7 +131,7 @@ impl<'de> de::Deserializer<'de> for WrappedBorrowStrDeserializer<'de> {
     type Error = Error;
 
     #[inline]
-    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -143,11 +139,7 @@ impl<'de> de::Deserializer<'de> for WrappedBorrowStrDeserializer<'de> {
     }
 
     #[inline]
-    fn deserialize_newtype_struct<V>(
-        self,
-        _name: &'static str,
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
+    fn deserialize_newtype_struct<V>(self, _name: &'static str, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -160,7 +152,7 @@ impl<'de> de::Deserializer<'de> for WrappedBorrowStrDeserializer<'de> {
         _name: &'static str,
         _variants: &'static [&'static str],
         visitor: V,
-    ) -> Result<V::Value, Self::Error>
+    ) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -189,7 +181,7 @@ impl<'de> de::Deserializer<'de> for TokenDeserializer<'de> {
     type Error = Error;
 
     #[inline]
-    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
     {
@@ -206,11 +198,11 @@ impl<'de> de::Deserializer<'de> for TokenDeserializer<'de> {
 impl<'de> VariantAccess<'de> for TokenDeserializer<'de> {
     type Error = Error;
 
-    fn unit_variant(self) -> Result<(), Self::Error> {
+    fn unit_variant(self) -> Result<()> {
         Ok(())
     }
 
-    fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value, Self::Error>
+    fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value>
     where
         T: DeserializeSeed<'de>,
     {
@@ -222,7 +214,7 @@ impl<'de> VariantAccess<'de> for TokenDeserializer<'de> {
         }
     }
 
-    fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value, Self::Error>
+    fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -232,11 +224,7 @@ impl<'de> VariantAccess<'de> for TokenDeserializer<'de> {
         ))
     }
 
-    fn struct_variant<V>(
-        self,
-        _fields: &'static [&'static str],
-        _visitor: V,
-    ) -> Result<V::Value, Self::Error>
+    fn struct_variant<V>(self, _fields: &'static [&'static str], _visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -251,7 +239,7 @@ impl<'de> de::EnumAccess<'de> for TokenDeserializer<'de> {
     type Error = Error;
     type Variant = Self;
 
-    fn variant_seed<T>(self, seed: T) -> Result<(T::Value, Self::Variant), Self::Error>
+    fn variant_seed<T>(self, seed: T) -> Result<(T::Value, Self::Variant)>
     where
         T: de::DeserializeSeed<'de>,
     {
@@ -265,7 +253,7 @@ impl<'de> de::EnumAccess<'de> for TokenDeserializer<'de> {
 
 macro_rules! as_cow_impl {
     ($fname:ident, $target:ty, $push:ident, $null:expr) => {
-        fn $fname(&mut self) -> Result<Cow<'r, $target>, Error> {
+        fn $fname(&mut self) -> Result<Cow<'r, $target>> {
             let mut init = loop {
                 match self.iter.next() {
                     Some(token) => {
@@ -302,7 +290,7 @@ impl<'a, 'r> ValueDeserializer<'a, 'r> {
     }
 
     /// Create a new value from the tokens after resolving macros.
-    pub(crate) fn try_from_de_resolved<R>(de: &'a mut Deserializer<'r, R>) -> Result<Self, Error>
+    pub(crate) fn try_from_de_resolved<R>(de: &'a mut Deserializer<'r, R>) -> Result<Self>
     where
         R: BibtexParse<'r>,
     {
@@ -321,7 +309,7 @@ impl<'a, 'r> ValueDeserializer<'a, 'r> {
 impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     type Error = Error;
 
-    fn deserialize_any<V>(mut self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(mut self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -331,7 +319,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
         }
     }
 
-    fn deserialize_bytes<V>(mut self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_bytes<V>(mut self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -342,7 +330,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     }
 
     #[inline]
-    fn deserialize_byte_buf<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_byte_buf<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -350,11 +338,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     }
 
     #[inline]
-    fn deserialize_newtype_struct<V>(
-        self,
-        _name: &'static str,
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
+    fn deserialize_newtype_struct<V>(self, _name: &'static str, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -362,7 +346,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     }
 
     #[inline]
-    fn deserialize_seq<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_seq<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -370,7 +354,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     }
 
     #[inline]
-    fn deserialize_tuple<V>(self, _len: usize, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_tuple<V>(self, _len: usize, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -383,7 +367,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
         _name: &'static str,
         _len: usize,
         visitor: V,
-    ) -> Result<V::Value, Self::Error>
+    ) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -396,7 +380,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
         _name: &'static str,
         _variants: &'static [&'static str],
         visitor: V,
-    ) -> Result<V::Value, Self::Error>
+    ) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -404,7 +388,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     }
 
     #[inline]
-    fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -412,7 +396,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     }
 
     #[inline]
-    fn deserialize_unit<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_unit<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -420,11 +404,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
     }
 
     #[inline]
-    fn deserialize_unit_struct<V>(
-        self,
-        _name: &'static str,
-        visitor: V,
-    ) -> Result<V::Value, Self::Error>
+    fn deserialize_unit_struct<V>(self, _name: &'static str, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -439,7 +419,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
 impl<'a, 'de: 'a> SeqAccess<'de> for ValueDeserializer<'a, 'de> {
     type Error = Error;
 
-    fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
+    fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>>
     where
         T: DeserializeSeed<'de>,
     {
@@ -454,7 +434,7 @@ impl<'a, 'de: 'a> EnumAccess<'de> for ValueDeserializer<'a, 'de> {
     type Error = Error;
     type Variant = UnitEnumDeserializer;
 
-    fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant), Self::Error>
+    fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant)>
     where
         V: DeserializeSeed<'de>,
     {
@@ -475,21 +455,21 @@ impl<'r> TextDeserializer<'r> {
 impl<'de> de::Deserializer<'de> for TextDeserializer<'de> {
     type Error = Error;
 
-    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
     {
         visitor.visit_borrowed_str(self.text.into_str()?)
     }
 
-    fn deserialize_bytes<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_bytes<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
         visitor.visit_borrowed_bytes(self.text.into_bytes())
     }
 
-    fn deserialize_byte_buf<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_byte_buf<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
@@ -722,7 +702,7 @@ mod tests {
                 let mut bib_de = Deserializer::new_with_macros(reader, abbrevs.clone());
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
 
-                let data: Result<Vec<Tok>, _> = Vec::deserialize(deserializer);
+                let data: Result<Vec<Tok>> = Vec::deserialize(deserializer);
                 assert_eq!(data, Ok($expected));
             };
         }

@@ -58,7 +58,7 @@ impl std::fmt::Display for Error {
 pub(crate) enum ErrorCode {
     Message(String),
     DisallowedChar(char),
-    IdentifierStartsWithDigit,
+    VariableStartsWithDigit,
     UnexpectedClosingBracket,
     ExpectedNextTokenOrEndOfField,
     UnterminatedTextToken,
@@ -81,7 +81,7 @@ impl std::fmt::Display for ErrorCode {
             }
             Self::ExpectedFieldSep => f.write_str("expected field separator '='"),
             Self::InvalidStartOfEntry => f.write_str("expected start of entry '{' or '('"),
-            Self::IdentifierStartsWithDigit => f.write_str("identifier starts with ASCII digit"),
+            Self::VariableStartsWithDigit => f.write_str("identifier starts with ASCII digit"),
             Self::UnexpectedClosingBracket => f.write_str("unmatched closing bracket"),
             Self::UnterminatedTextToken => f.write_str("unmatched opening bracket"),
             Self::UnresolvedMacro(s) => write!(f, "unresolved macro: {s}"),

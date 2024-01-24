@@ -18,6 +18,7 @@ pub struct Deserializer<'r, R> {
 
 impl<'r> Deserializer<'r, StrReader<'r>> {
     /// Construct a deserialier from a `&str`.
+    #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &'r str) -> Self {
         Self::new(StrReader::new(s))
     }
@@ -416,7 +417,7 @@ mod tests {
         assert_eq!(data, Ok(expected));
     }
 
-    macro_rules! assert_syntax {
+    macro_rules! syntax {
         ($input:expr, $expect:ident) => {
             let reader = StrReader::new($input);
             let mut bib_de = Deserializer::new(reader);
@@ -428,6 +429,11 @@ mod tests {
             let data: Result<TestBib> = TestBib::deserialize(&mut bib_de);
             assert!(data.$expect(), "{:?} : {:?}", data, bib_de.parser);
 
+            let reader = SliceReader::new($input.as_bytes());
+            let mut bib_de = Deserializer::new(reader);
+            let data: Result<TestBib> = TestBib::deserialize(&mut bib_de);
+            assert!(data.$expect(), "{:?} : {:?}", data, bib_de.parser);
+
             let parsed = BibtexParser::parse(Rule::bib, $input);
             assert!(parsed.$expect(), "{:?} : {:?}", data, parsed);
         };
@@ -435,53 +441,53 @@ mod tests {
 
     #[test]
     fn test_string_syntax() {
-        assert_syntax!(r"@string{k=v}", is_ok);
-        assert_syntax!(r"@sTring{k=v,}", is_ok);
+        syntax!(r"@string{k=v}", is_ok);
+        syntax!(r"@sTring{k=v,}", is_ok);
 
-        assert_syntax!(r"@string()", is_ok);
-        assert_syntax!(r"@string(,)", is_err);
-        assert_syntax!(r"@string{}", is_ok);
-        assert_syntax!(r"@string{,}", is_err);
-        assert_syntax!(r#"@string{1b={3}}"#, is_err);
-        assert_syntax!(r#"@string{@={3}}"#, is_ok);
+        syntax!(r"@string()", is_ok);
+        syntax!(r"@string(,)", is_err);
+        syntax!(r"@string{}", is_ok);
+        syntax!(r"@string{,}", is_err);
+        syntax!(r#"@string{1b={3}}"#, is_err);
+        syntax!(r#"@string{@={3}}"#, is_ok);
     }
 
     #[test]
     fn test_preamble_syntax() {
-        assert_syntax!(r"@preamble()", is_err);
-        assert_syntax!(r"@preamble{}", is_err);
-        assert_syntax!(r"@ pREamble {{any} # a #{allowed}}", is_ok);
-        assert_syntax!(r"@preamble({})", is_ok);
-        assert_syntax!(r"@preamble( {} # {} # {} )", is_ok);
+        syntax!(r"@preamble()", is_err);
+        syntax!(r"@preamble{}", is_err);
+        syntax!(r"@ pREamble {{any} # a #{allowed}}", is_ok);
+        syntax!(r"@preamble({})", is_ok);
+        syntax!(r"@preamble( {} # {} # {} )", is_ok);
 
-        assert_syntax!(r"@preamble(", is_err);
-        assert_syntax!(r"@preamble)", is_err);
-        assert_syntax!(r"@preamble({{})", is_err);
-        assert_syntax!(r"@preamble(})", is_err);
+        syntax!(r"@preamble(", is_err);
+        syntax!(r"@preamble)", is_err);
+        syntax!(r"@preamble({{})", is_err);
+        syntax!(r"@preamble(})", is_err);
     }
 
     #[test]
     fn test_comment_round_syntax() {
-        assert_syntax!(r"@comment(@anything#)", is_ok);
-        assert_syntax!(r"@comment({(}))", is_ok);
-        assert_syntax!(r"@comment({(})", is_ok);
-        assert_syntax!(r"@comment(})", is_err);
+        syntax!(r"@comment(@anything#)", is_ok);
+        syntax!(r"@comment({(}))", is_ok);
+        syntax!(r"@comment({(})", is_ok);
+        syntax!(r"@comment(})", is_err);
     }
 
     #[test]
     fn test_comment_syntax() {
-        assert_syntax!(r"@comment{{}}", is_ok);
-        assert_syntax!(r"@comment { @anything#}", is_ok);
-        assert_syntax!(r"@coMment {}", is_ok);
-        assert_syntax!("@\n CommEnt  { }", is_ok);
+        syntax!(r"@comment{{}}", is_ok);
+        syntax!(r"@comment { @anything#}", is_ok);
+        syntax!(r"@coMment {}", is_ok);
+        syntax!("@\n CommEnt  { }", is_ok);
 
-        assert_syntax!(r"@comment({)", is_err);
+        syntax!(r"@comment({)", is_err);
     }
 
     #[test]
     fn test_regular_entry_syntax() {
         // basic example
-        assert_syntax!(
+        syntax!(
             r#"@a{key:0,
               a= {A} # b,
               t= "T",
@@ -489,7 +495,7 @@ mod tests {
             is_ok
         );
 
-        assert_syntax!(
+        syntax!(
             r#"@article{1key,
                  @ = t # {, Part } # n,
                }"#,
@@ -497,7 +503,7 @@ mod tests {
         );
 
         // numbers and @ allowed in entry type
-        assert_syntax!(
+        syntax!(
             r#"@1art@icle{k,
                 title = t # {, Part } # n,
             }"#,
@@ -505,49 +511,49 @@ mod tests {
         );
 
         // whitespace and unicode allowed in potentially surprising places
-        assert_syntax!(
+        syntax!(
             r#"@   a🍄ticle {k🍄:0  ,
               author ={A🍄th}
                 #  
                 {or}
-                ,title =
+                ,1itle =
               "Tit🍄e" # 🍄
               }"#,
             is_ok
         );
 
         // no fields, trailing comma
-        assert_syntax!(r#"@a{k,}"#, is_ok);
+        syntax!(r#"@a{k,}"#, is_ok);
         // no fields, no trailing comma
-        assert_syntax!(r#"@a{k}"#, is_ok);
+        syntax!(r#"@a{k}"#, is_ok);
         // single field, trailing comma
-        assert_syntax!(r#"@a{k,t=v,}"#, is_ok);
+        syntax!(r#"@a{k,t=v,}"#, is_ok);
         // single field, no trailing comma
-        assert_syntax!(r#"@a{k,t=v}"#, is_ok);
+        syntax!(r#"@a{k,t=v}"#, is_ok);
         // identifiers can have weird chars, e.g. `@🍄`
-        assert_syntax!(r#"@ 1@🍄{2🍄@,t=v}"#, is_ok);
+        syntax!(r#"@ 1@🍄{2🍄@,t=v}"#, is_ok);
         // no @, so it is junk
-        assert_syntax!(r#"a{k,t=v}"#, is_ok);
+        syntax!(r#"a{k,t=v}"#, is_ok);
         // unicode in field keys
-        assert_syntax!(r"@article{k,auth🍄={v}}", is_ok);
+        syntax!(r"@article{k,auth🍄={v}}", is_ok);
 
         // err: multiple trailing comma
-        assert_syntax!(r#"@a{k,,}"#, is_err);
+        syntax!(r#"@a{k,,}"#, is_err);
         // err: missing field value
-        assert_syntax!(r#"@a{k,t=,}"#, is_err);
+        syntax!(r#"@a{k,t=,}"#, is_err);
         // err: missing citation key
-        assert_syntax!(r#"@a{,t=v}"#, is_err);
+        syntax!(r#"@a{,t=v}"#, is_err);
         // err: invalid char in citation key
-        assert_syntax!(r#"@a{t=b}"#, is_err);
-        assert_syntax!(r#"@a{t#b}"#, is_err);
-        assert_syntax!(r#"@a{t\b}"#, is_err);
+        syntax!(r#"@a{t=b}"#, is_err);
+        syntax!(r#"@a{t#b}"#, is_err);
+        syntax!(r#"@a{t\b}"#, is_err);
         // err: extra chars before start of entry
-        assert_syntax!(r#"@ @ @{k,t=v}"#, is_err);
+        syntax!(r#"@ @ @{k,t=v}"#, is_err);
 
         // opening and closing brackets must match
-        assert_syntax!("@a(k}", is_err);
-        assert_syntax!("@a{k)", is_err);
-        assert_syntax!("@a{k}", is_ok);
-        assert_syntax!("@a(k)", is_ok);
+        syntax!("@a(k}", is_err);
+        syntax!("@a{k)", is_err);
+        syntax!("@a{k}", is_ok);
+        syntax!("@a(k)", is_ok);
     }
 }

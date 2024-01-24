@@ -6,7 +6,6 @@ pub use slice_impl::SliceReader;
 pub use str_impl::StrReader;
 
 use crate::error::Error;
-use std::str::Utf8Error;
 
 #[derive(Debug)]
 pub struct Identifier<S: AsRef<str>>(pub S);

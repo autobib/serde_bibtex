@@ -2,8 +2,8 @@ use pest::Parser;
 use serde::de::IgnoredAny;
 use serde::Deserialize;
 use serde_bibtex::entry::{OwnedBibliography, RawBibliography};
+use serde_bibtex::error::Result;
 use serde_bibtex::syntax::{BibtexParser, Rule};
-use serde_bibtex::Error;
 use serde_bibtex::{de::Deserializer, MacroDictionary};
 
 use std::collections::HashMap;
@@ -45,11 +45,11 @@ macro_rules! test_file_types {
         macros.set_month_macros();
 
         let mut de = Deserializer::from_slice_with_macros(&input_bytes, macros);
-        let data: Result<OwnedBibliography, Error> = OwnedBibliography::deserialize(&mut de);
+        let data: Result<OwnedBibliography> = OwnedBibliography::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
 
         let mut de = Deserializer::from_slice(&input_bytes);
-        let data: Result<RawBibliography, Error> = RawBibliography::deserialize(&mut de);
+        let data: Result<RawBibliography> = RawBibliography::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
     };
 }
@@ -59,11 +59,11 @@ macro_rules! test_file_slice {
         let input_bytes = std::fs::read($fname).unwrap();
 
         let mut de = Deserializer::from_slice(&input_bytes);
-        let data: Result<IgnoredAny, Error> = IgnoredAny::deserialize(&mut de);
+        let data: Result<IgnoredAny> = IgnoredAny::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
 
         let mut de = Deserializer::from_slice(&input_bytes);
-        let data: Result<TestBib, Error> = TestBib::deserialize(&mut de);
+        let data: Result<TestBib> = TestBib::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
     };
 }
@@ -74,11 +74,11 @@ macro_rules! test_file_str {
         let input_str = std::str::from_utf8(&input_bytes).unwrap();
 
         let mut de = Deserializer::from_str(&input_str);
-        let data: Result<IgnoredAny, Error> = IgnoredAny::deserialize(&mut de);
+        let data: Result<IgnoredAny> = IgnoredAny::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
 
         let mut de = Deserializer::from_str(&input_str);
-        let data: Result<TestBib, Error> = TestBib::deserialize(&mut de);
+        let data: Result<TestBib> = TestBib::deserialize(&mut de);
         assert!(data.is_ok(), "{:?}", data);
 
         let parsed = BibtexParser::parse(Rule::bib, input_str);

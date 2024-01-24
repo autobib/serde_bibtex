@@ -1,12 +1,12 @@
 use crate::error::{Error, ErrorCode, Result};
 use memchr::memchr2_iter;
 
-// Lookup table for bytes which could appear in an entry key. This includes the
-// ascii printable characters with "{}(),= \t\n\\#%\"" removed, as well as bytes
-// that could appear in non-ascii UTF-8.
-//
-// Note that this table is insufficient for UTF-8 validation outside the ASCII range:
-// it is only used for short-circuited termination of parsing!
+/// Lookup table for bytes which could appear in an entry key. This includes the
+/// ascii printable characters with "{}(),= \t\n\\#%\"" removed, as well as bytes
+/// that could appear in non-ascii UTF-8.
+///
+/// Note that this table is insufficient for UTF-8 validation outside the ASCII range:
+/// it is only used for short-circuited termination of parsing!
 pub(super) static ENTRY_ALLOWED: [bool; 256] = {
     const PR: bool = false; // disallowed printable bytes
     const CT: bool = false; // non-printable ascii
@@ -43,11 +43,9 @@ fn find_invalid_identifier_char(input: &str) -> Option<char> {
         .map(|b| unsafe { char::from_u32_unchecked(*b as u32) })
 }
 
-pub fn variable(s: &str) -> Result<()> {
-    if s.len() == 0 {
+fn is_identifier(s: &str) -> Result<()> {
+    if s.is_empty() {
         Err(Error::syntax(ErrorCode::Empty))
-    } else if matches!(s.as_bytes()[0], b'0'..=b'9') {
-        Err(Error::syntax(ErrorCode::IdentifierStartsWithDigit))
     } else {
         find_invalid_identifier_char(s).map_or_else(
             || Ok(()),
@@ -56,37 +54,32 @@ pub fn variable(s: &str) -> Result<()> {
     }
 }
 
-#[inline]
-pub fn entry_type(s: &str) -> Result<()> {
-    variable(s)
-}
-
-#[inline]
-pub fn entry_key(s: &str) -> Result<()> {
-    variable(s)
-}
-
-fn find_invalid_ascii_char(input: &str) -> Option<char> {
-    input
-        .chars()
-        // check ascii first so `ch as usize` will not be out of bounds
-        .find(|&ch| !ch.is_ascii() || !ENTRY_ALLOWED[ch as usize])
-}
-
-pub fn field_key(s: &str) -> Result<()> {
-    if s.len() == 0 {
-        Err(Error::syntax(ErrorCode::Empty))
-    } else if matches!(s.as_bytes()[0], b'0'..=b'9') {
-        Err(Error::syntax(ErrorCode::IdentifierStartsWithDigit))
+pub fn is_variable(s: &str) -> Result<()> {
+    is_identifier(s)?;
+    // SAFETY: if is_identifer(s) does not fail, then s is non-empty
+    if s.as_bytes()[0].is_ascii_digit() {
+        Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
     } else {
-        find_invalid_ascii_char(s).map_or_else(
-            || Ok(()),
-            |ch| Err(Error::syntax(ErrorCode::DisallowedChar(ch))),
-        )
+        Ok(())
     }
 }
 
-pub fn balanced(input: &[u8]) -> Result<()> {
+#[inline]
+pub fn is_field_key(s: &str) -> Result<()> {
+    is_identifier(s)
+}
+
+#[inline]
+pub fn is_entry_type(s: &str) -> Result<()> {
+    is_identifier(s)
+}
+
+#[inline]
+pub fn is_entry_key(s: &str) -> Result<()> {
+    is_identifier(s)
+}
+
+pub fn is_balanced(input: &[u8]) -> Result<()> {
     let mut bracket_depth = 0;
 
     for pos in memchr2_iter(b'{', b'}', input) {
@@ -114,52 +107,49 @@ mod tests {
 
     #[test]
     fn test_variable() {
-        assert_eq!(variable("a123"), Ok(()));
+        assert_eq!(is_variable("a123"), Ok(()));
         assert_eq!(
-            variable("1234"),
-            Err(Error::syntax(ErrorCode::IdentifierStartsWithDigit))
+            is_variable("1234"),
+            Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
         );
         assert_eq!(
-            variable("a{"),
+            is_variable("a{"),
             Err(Error::syntax(ErrorCode::DisallowedChar('{')))
         );
         assert_eq!(
-            variable(" "),
+            is_variable(" "),
             Err(Error::syntax(ErrorCode::DisallowedChar(' ')))
         );
-        assert_eq!(variable(""), Err(Error::syntax(ErrorCode::Empty)));
+        assert_eq!(is_variable(""), Err(Error::syntax(ErrorCode::Empty)));
     }
 
     #[test]
     fn test_field_key() {
-        assert_eq!(variable("a123"), Ok(()));
+        assert_eq!(is_variable("a123"), Ok(()));
         assert_eq!(
-            variable("1234"),
-            Err(Error::syntax(ErrorCode::IdentifierStartsWithDigit))
+            is_variable("1234"),
+            Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
         );
         assert_eq!(
-            field_key("a)"),
+            is_field_key("a)"),
             Err(Error::syntax(ErrorCode::DisallowedChar(')')))
         );
-        assert_eq!(
-            field_key("🍄"),
-            Err(Error::syntax(ErrorCode::DisallowedChar('🍄')))
-        );
-        assert_eq!(field_key(""), Err(Error::syntax(ErrorCode::Empty)));
+        assert_eq!(is_field_key("🍄"), Ok(()));
+        assert_eq!(is_field_key(""), Err(Error::syntax(ErrorCode::Empty)));
     }
 
     #[test]
     fn test_balanced() {
-        assert_eq!(balanced(b"1234"), Ok(()));
-        assert_eq!(balanced(b""), Ok(()));
-        assert_eq!(balanced(b"{}"), Ok(()));
-        assert_eq!(balanced(b"{}{{}}"), Ok(()));
+        assert_eq!(is_balanced(b"1234"), Ok(()));
+        assert_eq!(is_balanced(b""), Ok(()));
+        assert_eq!(is_balanced(b"{}"), Ok(()));
+        assert_eq!(is_balanced(b"{}{{}}"), Ok(()));
         assert_eq!(
-            balanced(b"{"),
+            is_balanced(b"{"),
             Err(Error::syntax(ErrorCode::UnterminatedTextToken))
         );
         assert_eq!(
-            balanced(b"{}}"),
+            is_balanced(b"{}}"),
             Err(Error::syntax(ErrorCode::UnexpectedClosingBracket))
         );
     }

@@ -658,10 +658,10 @@
 //! ## Borrowing and byte deserialization
 //! Many fields can be safely borrowed since the `.bib` syntax ensures that the text will lie
 //! contiguously in the underlying input stream. However, when deserializing directly from a file,
-//! it is never possible to borrow. Therefore it is advised to use something like [`std::borrow::Cow`].
+//! it is never possible to borrow. Therefore it is recommended to use something like [`std::borrow::Cow`].
 //!
 //! Moreover, if you are deserializing from raw bytes and you are unsure that the encoding is in
-//! utf_8, certain fields can be flexibly deserialized directly as bytes.
+//! UTF-8, certain fields can be flexibly deserialized directly as bytes.
 //!
 //! The below example highlights a maximally flexible deserialization struct which will accept any
 //! input file that satisfies the `.bib` syntax used by this crate.
