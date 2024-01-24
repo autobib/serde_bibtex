@@ -5,12 +5,6 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     use serde::Deserialize;
     use serde_bibtex::entry::{BorrowEntry, Entry};
     use serde_bibtex::{de::Deserializer, MacroDictionary};
-    use std::error::Error;
-
-    use biblatex::{Bibliography, RawBibliography as RawBib};
-    use bibparser::{BibEntry, Parser};
-    use nom_bibtex::Bibtex;
-    use std::str::FromStr;
 
     type OwnedBibliography = Vec<Entry>;
     type RawBibliography<'r> = Vec<BorrowEntry<'r>>;
@@ -18,8 +12,12 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     let input_bytes = std::fs::read("assets/tugboat.bib").unwrap();
     let input_str = std::str::from_utf8(&input_bytes).unwrap();
 
-    c.bench_function("tugboat ignored slice", |b| {
-        b.iter(|| IgnoredAny::deserialize(&mut Deserializer::from_slice(&input_bytes)))
+    c.bench_function("tugboat ignored str", |b| {
+        b.iter(|| IgnoredAny::deserialize(&mut Deserializer::from_str(&input_str)))
+    });
+
+    c.bench_function("tugboat borrowed str", |b| {
+        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
     });
 
     c.bench_function("tugboat owned str", |b| {
@@ -32,32 +30,28 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         })
     });
 
-    c.bench_function("tugboat raw slice", |b| {
-        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_slice(&input_bytes)))
-    });
-
-    c.bench_function("tugboat raw str", |b| {
-        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
-    });
-
-    // c.bench_function("tugboat bibparser", |b| {
-    //     b.iter(|| {
-    //         let mut p = Parser::from_str(input_str).unwrap();
-    //         let _result: Vec<Result<BibEntry, Box<dyn Error>>> = p.iter().collect();
-    //     })
-    // });
+    use biblatex::RawBibliography as RawBib;
 
     c.bench_function("tugboat biblatex", |b| {
-        b.iter(|| Bibliography::parse(&input_str).unwrap())
-    });
-
-    c.bench_function("tugboat biblatex raw", |b| {
         b.iter(|| RawBib::parse(&input_str).unwrap())
     });
+
+    use nom_bibtex::Bibtex;
 
     c.bench_function("tugboat nom", |b| {
         b.iter(|| Bibtex::parse(&input_str).unwrap())
     });
+
+    // use std::error::Error;
+    // use bibparser::{BibEntry, Parser};
+    // use std::str::FromStr;
+
+    // c.bench_function("tugboat bibparser", |b| {
+    //     b.iter(|| {
+    //         let mut parser = Parser::from_str(input_str).unwrap();
+    //         let _res: Vec<Result<BibEntry, Box<dyn Error>>> = parser.iter().collect();
+    //     })
+    // });
 }
 
 criterion_group!(benches, criterion_benchmark);

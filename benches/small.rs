@@ -28,11 +28,11 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         b.iter(|| OwnedBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
     });
 
-    c.bench_function("biber raw slice", |b| {
+    c.bench_function("biber borrowed slice", |b| {
         b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_slice(&input_bytes)))
     });
 
-    c.bench_function("biber raw str", |b| {
+    c.bench_function("biber borrowed str", |b| {
         b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
     });
 }
