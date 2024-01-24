@@ -44,18 +44,18 @@ The bibliography file used is [`assets/tugboat.bib`](/assets/tugboat.bib), which
 It is a 2.6 MB 73,993-line `.bib` file.
 
 1. `ignored`: Deserialize using `serde::de::IgnoredAny` to parse the file but ignore the contents.
-2. `borrowed`: Deserialize into a fully borrowed struct which captures all data in the file but do not expand macros automatically or collapse field values.
+2. `borrowed`: Deserialize into a fully borrowed struct which captures all data in the file but does not expand macros or collapse field values.
 3. `biblatex`: Parse using `biblatex::RawBibliography::parse` (most similar to `borrowed`).
 4. `owned`: Parse into a fully owned Rust type with macro expansion and field value collapsing.
 5. `nom-bibtex`: Parse using `nom-bibtex::Bibtex::parse` (most similar to `owned`).
 
-| benchmark  | factor | runtime                         | 
-|------------|--------|---------------------------------|
-| ignored    | 1x     | [3.3923 ms 3.3987 ms 3.4058 ms] |
-| borrowed   | 3.8x   | [12.932 ms 12.962 ms 12.992 ms] |
-| biblatex   | 4.8x   | [16.184 ms 16.224 ms 16.266 ms] |
-| owned      | 6.4x   | [21.455 ms 21.690 ms 21.935 ms] |
-| nom-bibtex | 21x    | [71.607 ms 71.912 ms 72.343 ms] |
+| benchmark  | factor | runtime                           | 
+|------------|--------|-----------------------------------|
+| ignored    | 0.18x  | `[3.3923 ms 3.3987 ms 3.4058 ms]` |
+| borrowed   | 1.0x   | `[12.932 ms 12.962 ms 12.992 ms]` |
+| biblatex   | 1.3x   | `[16.184 ms 16.224 ms 16.266 ms]` |
+| owned      | 1.7x   | `[21.455 ms 21.690 ms 21.935 ms]` |
+| nom-bibtex | 5.5x   | `[71.607 ms 71.912 ms 72.343 ms]` |
 
 ## Safety
 This crate uses some `unsafe` for string conversions when we can guarantee for other reasons that a string slice is at a valid codepoint.
