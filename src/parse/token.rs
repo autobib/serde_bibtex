@@ -1,4 +1,4 @@
-//! Internal representations of parsed data.
+//! Fundamental components of a bibliography.
 use unicase::UniCase;
 
 use super::{Identifier, Text};
