@@ -953,8 +953,9 @@ mod tests {
         struct OptionFields<'a> {
             author: &'a str,
             title: &'a str,
-            year: Option<u32>,
+            year: Option<&'a str>,
         }
+
         let reader = StrReader::new(", author = {Alex Rutar}, title = {A nice title}}");
         let mut bib_de = Deserializer::new(reader);
         let deserializer = FieldDeserializer::new(&mut bib_de);
@@ -964,6 +965,19 @@ mod tests {
                 author: "Alex Rutar",
                 title: "A nice title",
                 year: None
+            }),
+            OptionFields::deserialize(deserializer)
+        );
+
+        let reader = StrReader::new(", author = {AR}, title = {T}, year = 2023}");
+        let mut bib_de = Deserializer::new(reader);
+        let deserializer = FieldDeserializer::new(&mut bib_de);
+
+        assert_eq!(
+            Ok(OptionFields {
+                author: "AR",
+                title: "T",
+                year: Some("2023"),
             }),
             OptionFields::deserialize(deserializer)
         );

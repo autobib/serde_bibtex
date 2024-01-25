@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 
 use serde::de::{
-    self, value::BorrowedStrDeserializer, DeserializeSeed, EnumAccess, SeqAccess, Unexpected,
-    VariantAccess, Visitor,
+    self, value::BorrowedStrDeserializer, value::StringDeserializer, DeserializeSeed, EnumAccess,
+    SeqAccess, Unexpected, VariantAccess, Visitor,
 };
 use serde::forward_to_deserialize_any;
 
@@ -319,6 +319,16 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
         }
     }
 
+    fn deserialize_option<V>(mut self, visitor: V) -> Result<V::Value>
+    where
+        V: Visitor<'de>,
+    {
+        match self.as_cow_str()? {
+            Cow::Borrowed(s) => visitor.visit_some(BorrowedStrDeserializer::new(s)),
+            Cow::Owned(s) => visitor.visit_some(StringDeserializer::new(s)),
+        }
+    }
+
     fn deserialize_bytes<V>(mut self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
@@ -413,7 +423,7 @@ impl<'a, 'de: 'a> de::Deserializer<'de> for ValueDeserializer<'a, 'de> {
 
     forward_to_deserialize_any!(
         bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char
-        map struct str string identifier option);
+        map struct str string identifier);
 }
 
 impl<'a, 'de: 'a> SeqAccess<'de> for ValueDeserializer<'a, 'de> {

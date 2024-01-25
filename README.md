@@ -54,16 +54,18 @@ The bibliography file used is [`assets/tugboat.bib`](/assets/tugboat.bib), which
 It is a 2.64 MB 73,993-line `.bib` file.
 
 1. `ignore`: Deserialize using `serde::de::IgnoredAny` to parse the file but ignore the contents.
-2. `borrow`: Deserialize into a fully borrowed Rust type which captures all data in the file but does not expand macros or collapse field values.
-3. `biblatex`: Parse using `biblatex::RawBibliography::parse` (most similar to `borrow`).
-4. `copy`: Deserialize into an owned Rust type with macro expansion, field value collapsing, and case-insensitive comparison where appropriate.
-5. `nom-bibtex`: Parse using `nom-bibtex::Bibtex::parse` (most similar to `copy`).
+2. `struct`: Deserialize using a struct with entries capturing every field present in `assets/tugboat.bib` (15 fields total), expanding macros and collapsing field values.
+3. `borrow`: Deserialize into a fully borrowed Rust type which captures all data in the file but does not expand macros or collapse field values.
+4. `biblatex`: Parse using `biblatex::RawBibliography::parse` (most similar to `borrow`).
+5. `copy`: Deserialize into an owned Rust type with macro expansion, field value collapsing, and case-insensitive comparison where appropriate.
+6. `nom-bibtex`: Parse using `nom-bibtex::Bibtex::parse` (most similar to `copy`).
 
 The benchmarks were performed on an Intel(R) Core(TM) i7-9750H CPU @ 2.60 GHz (2019 MacBook Pro).
 
 | benchmark  | factor | runtime                           | throughput |
 |------------|--------|-----------------------------------|------------|
 | ignore     | 0.18x  | `[3.3923 ms 3.3987 ms 3.4058 ms]` | 660 MB/s   |
+| struct     | 0.67x  | `[8.5496 ms 8.7481 ms 8.9924 ms]` | 300 MB/s   |
 | borrow     | 1.0x   | `[12.932 ms 12.962 ms 12.992 ms]` | 200 MB/s   |
 | biblatex   | 1.3x   | `[16.184 ms 16.224 ms 16.266 ms]` | 160 MB/s   |
 | copy       | 1.7x   | `[21.455 ms 21.690 ms 21.935 ms]` | 120 MB/s   |
