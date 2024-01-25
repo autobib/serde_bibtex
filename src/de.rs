@@ -55,7 +55,7 @@
 //!     Regular,
 //! }
 //!
-//! let input = br#"
+//! let input = r#"
 //!     @string{t = {Title}}
 //!
 //!     @preamble{{preamble}}
@@ -71,7 +71,7 @@
 //!
 //! type Bibliography = Vec<Entry>;
 //!
-//! let mut de = Deserializer::from_slice(input);
+//! let mut de = Deserializer::from_str(input);
 //!
 //! assert_eq!(
 //!     Bibliography::deserialize(&mut de),
@@ -96,7 +96,7 @@
 //! #     Regular,
 //! # }
 //! #
-//! # let input = br#"
+//! # let input = r#"
 //! #     @string{t = {Title}}
 //! #
 //! #     @preamble{{preamble}}
@@ -110,7 +110,7 @@
 //! #     @comment{Comment}
 //! # "#;
 //! #
-//! # let mut de = Deserializer::from_slice(input);
+//! # let mut de = Deserializer::from_str(input);
 //! #
 //! let expected = vec![Entry::Macro, Entry::Preamble, Entry::Regular, Entry::Comment];
 //!
@@ -148,11 +148,12 @@
 //! # use serde::Deserialize;
 //! # use serde_bibtex::de::Deserializer;
 //! #
-//! # let input = br#"
+//! # let input = r#"
 //! #     @article{key,
 //! #       author = {One, Author},
 //! #       year = 2012,
-//! #     }"#;
+//! #     }
+//! # "#;
 //! use std::collections::BTreeMap;
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
@@ -172,7 +173,7 @@
 //!
 //! type Bibliography = Vec<Entry>;
 //!
-//! let mut de = Deserializer::from_slice(input);
+//! let mut de = Deserializer::from_str(input);
 //!
 //! let mut expected_fields = BTreeMap::new();
 //! expected_fields.insert("author".into(), "One, Author".into());
@@ -226,7 +227,7 @@
 //!     Regular((String, String, Vec<(String, String)>)),
 //! }
 //! # use serde_bibtex::de::Deserializer;
-//! # let input = br#"
+//! # let input = r#"
 //! #     @article{key,
 //! #       title = {Title},
 //! #     }
@@ -234,7 +235,7 @@
 //! #
 //! # type Bibliography = Vec<Entry>;
 //! #
-//! # let mut de = Deserializer::from_slice(input);
+//! # let mut de = Deserializer::from_str(input);
 //! #
 //! # assert_eq!(
 //! #     Bibliography::deserialize(&mut de),
@@ -263,7 +264,7 @@
 //!     Regular(CitationKeyOnly),
 //! }
 //! # use serde_bibtex::de::Deserializer;
-//! # let input = br#"
+//! # let input = r#"
 //! #     @article{key,
 //! #       title = {Title},
 //! #     }
@@ -271,7 +272,7 @@
 //! #
 //! # type Bibliography = Vec<Entry>;
 //! #
-//! # let mut de = Deserializer::from_slice(input);
+//! # let mut de = Deserializer::from_str(input);
 //! #
 //! # assert_eq!(
 //! #     Bibliography::deserialize(&mut de),
@@ -344,9 +345,9 @@
 //!
 //! type Bibliography = Vec<Entry>;
 //!
-//! let input = br#"@string{key = {Value } # 1234}"#;
+//! let input = r#"@string{key = {Value } # 1234}"#;
 //!
-//! let mut de = Deserializer::from_slice(input);
+//! let mut de = Deserializer::from_str(input);
 //! assert_eq!(
 //!     Ok(vec![Entry::Macro(Rule("key".into(), "Value 1234".into()))]),
 //!     Bibliography::deserialize(&mut de)
@@ -368,9 +369,9 @@
 //! #
 //! # type Bibliography = Vec<Entry>;
 //! #
-//! # let input = br#"@string{key = {Value } # 1234}"#;
+//! # let input = r#"@string{key = {Value } # 1234}"#;
 //! #
-//! # let mut de = Deserializer::from_slice(input);
+//! # let mut de = Deserializer::from_str(input);
 //! # assert_eq!(
 //! #     Ok(vec![Entry::Macro(Some(("key".into(), "Value 1234".into())))]),
 //! #     Bibliography::deserialize(&mut de)
@@ -410,14 +411,14 @@
 //!
 //! type Bibliography = Vec<Entry>;
 //!
-//! let input = br#"
+//! let input = r#"
 //!     @string{t = {Title}}
 //!     @article{key,
 //!       title = {A } # t,
 //!     }
 //! "#;
 //!
-//! let mut de = Deserializer::from_slice(input);
+//! let mut de = Deserializer::from_str(input);
 //!
 //! let mut expected_fields = BTreeMap::new();
 //! expected_fields.insert("title".into(), "A Title".into());
@@ -464,7 +465,7 @@
 //!
 //! type Bibliography = Vec<Entry>;
 //!
-//! let input = br#"
+//! let input = r#"
 //!     @string{apr = {Nonsense}}
 //!     @article{key,
 //!       month = apr,
@@ -475,7 +476,7 @@
 //! let mut macro_dict = MacroDictionary::<&str, &[u8]>::default();
 //! macro_dict.set_month_macros();
 //!
-//! let mut de = Deserializer::from_slice_with_macros(input, macro_dict);
+//! let mut de = Deserializer::from_str_with_macros(input, macro_dict);
 //!
 //! let mut expected_fields = BTreeMap::new();
 //! expected_fields.insert("month".into(), "4".into());
@@ -508,7 +509,7 @@
 //! #
 //! # type Bibliography = Vec<Entry>;
 //! #
-//! # let input = br#"
+//! # let input = r#"
 //! #     @string{apr = {Nonsense}}
 //! #     @article{key,
 //! #       month = apr,
@@ -528,7 +529,7 @@
 //! let mut macro_dict = MacroDictionary::default();
 //! macro_dict.set_month_macros();
 //!
-//! let mut de = Deserializer::from_slice_with_macros(input, macro_dict);
+//! let mut de = Deserializer::from_str_with_macros(input, macro_dict);
 //!
 //! let mut expected_fields = BTreeMap::new();
 //! expected_fields.insert("month".into(), "Nonsense".into());
@@ -599,10 +600,10 @@
 //! }
 //!
 //! // var is undefined
-//! let input = br#"@preamble{{text} # var}"#;
+//! let input = r#"@preamble{{text} # var}"#;
 //!
 //! // need explicit type annotation since it cannot be inferred from the error
-//! let mut de_iter = Deserializer::from_slice(input).into_iter::<Entry>();
+//! let mut de_iter = Deserializer::from_str(input).into_iter::<Entry>();
 //! assert!(matches!(
 //!     de_iter.next(),
 //!     Some(Err(_)),
@@ -630,12 +631,12 @@
 //! }
 //!
 //! // `var0` is defined using indefined macros
-//! let input = br#"
+//! let input = r#"
 //!     @string{var0 = var1 # 01234 # var2}
 //!     @preamble{{text} # var0}
-//!     "#;
+//! "#;
 //!
-//! let mut de_iter = Deserializer::from_slice(input).into_iter::<Entry>();
+//! let mut de_iter = Deserializer::from_str(input).into_iter::<Entry>();
 //! assert_eq!(
 //!     de_iter.next(),
 //!     Some(Ok(Entry::Macro)),

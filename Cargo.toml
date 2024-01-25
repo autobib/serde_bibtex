@@ -42,3 +42,7 @@ harness = false
 [[bench]]
 name = "compare"
 harness = false
+
+[[bench]]
+name = "utf8_conversion"
+harness = false
