@@ -9,7 +9,7 @@ The implementation is minimally opinionated and feature-rich for convenient down
 For examples and a thorough documentation of features, visit the [docs](https://docs.rs/serde_bibtex/latest/serde_bibtex).
 
 ## Deserializer
-Here are the main features:
+Here are the main features.
 
 ### Flexible
   - Structured: read into Rust types with automatic `@string` macro expansion and other convenience features.
@@ -17,7 +17,7 @@ Here are the main features:
   - Deserialize from bytes to defer UTF-8 conversion, or even pass-through raw bytes.
   - Error-tolerant `Iterator` API that allows skipping malformed entries.
 
-### Explicit and unambiguous syntax:
+### Explicit and unambiguous syntax
   - Aims for compatibility with and tested against an independently implemented [pest grammar](/src/syntax/bibtex.pest).
   - Aim for compatibility with [biber](https://github.com/plk/biber) but without some of biber's [undocumented idiosyncracies](https://docs.rs/serde_bibtex/latest/serde_bibtex/syntax/index.html#differences-from-biber) or [unfixable parsing bugs](https://github.com/plk/biber/issues/456).
 

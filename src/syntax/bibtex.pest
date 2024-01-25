@@ -41,7 +41,6 @@ field = _{ ign ~ "," ~ ign ~ field_key ~ ign ~ "=" ~ ign ~ value }
 regular_entry_contents = _{ ign ~ entry_key ~ field* ~ ign ~ ","? ~ ign }
 entry_regular = { entry_type ~ ign ~ ("{" ~ regular_entry_contents ~ "}" | "(" ~ regular_entry_contents ~ ")") }
 
-
 // bibliography
 entry = { "@" ~ ign ~ (entry_comment | entry_preamble | entry_macro | entry_regular) }
 bib = _{ SOI ~ junk ~ (entry ~ junk)* ~ EOI }

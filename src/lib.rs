@@ -50,13 +50,13 @@
 //! "#;
 //!
 //! let de = Deserializer::from_slice(input);
-//!
 //! let mut entry_iter = de.into_iter_entry();
 //!
-//! let mut expected_fields = BTreeMap::new();
-//! expected_fields.insert("title".into(), "Title".into());
-//! expected_fields.insert("author".into(), "One, Author".into());
-//! expected_fields.insert("year".into(), "2024".into());
+//! let expected_fields = BTreeMap::from([
+//!     ("title".into(), "Title".into()),
+//!     ("author".into(), "One, Author".into()),
+//!     ("year".into(), "2024".into()),
+//! ]);
 //!
 //! assert_eq!(
 //!     entry_iter.next(),
