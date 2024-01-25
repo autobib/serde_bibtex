@@ -12,6 +12,9 @@ exclude = [
     "assets/*",
 ]
 
+[package.metadata.docs.rs]
+all-features = true
+
 [profile.bench]
 debug = true
 
