@@ -8,7 +8,7 @@ use super::slice_impl;
 use super::Read;
 use super::{Identifier, Text};
 use crate::error::{Error, ErrorCode};
-use crate::parse::validate::ENTRY_ALLOWED;
+use crate::parse::validate::IDENTIFIER_ALLOWED;
 use std::str::from_utf8_unchecked;
 
 use crate::parse::BibtexParse;
@@ -27,7 +27,7 @@ pub fn comment(input: &str, pos: usize) -> usize {
 pub fn identifier(input: &str, start: usize) -> Result<(usize, Identifier<&str>), Error> {
     let mut end = start;
 
-    while end < input.len() && ENTRY_ALLOWED[input.as_bytes()[end] as usize] {
+    while end < input.len() && IDENTIFIER_ALLOWED[input.as_bytes()[end] as usize] {
         end += 1
     }
 

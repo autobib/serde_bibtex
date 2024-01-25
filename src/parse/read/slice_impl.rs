@@ -7,7 +7,7 @@ use memchr::{memchr2_iter, memchr3_iter};
 use std::str::{from_utf8, from_utf8_unchecked};
 
 use crate::error::{Error, ErrorCode};
-use crate::parse::{validate::ENTRY_ALLOWED, BibtexParse};
+use crate::parse::{validate::IDENTIFIER_ALLOWED, BibtexParse};
 
 /// Ignore junk characters between entries.
 ///
@@ -66,7 +66,7 @@ pub fn comment(input: &[u8], mut pos: usize) -> usize {
 pub fn identifier(input: &[u8], start: usize) -> Result<(usize, Identifier<&str>), Error> {
     let mut end = start;
 
-    while end < input.len() && ENTRY_ALLOWED[input[end] as usize] {
+    while end < input.len() && IDENTIFIER_ALLOWED[input[end] as usize] {
         end += 1
     }
 
