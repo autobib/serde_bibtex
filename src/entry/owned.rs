@@ -1,7 +1,7 @@
 use serde::de::{Deserializer, MapAccess, Visitor};
 use serde::Deserialize;
 use std::fmt;
-use unicase::{Ascii, UniCase};
+use unicase::UniCase;
 
 use std::collections::BTreeMap;
 
@@ -14,7 +14,7 @@ pub enum Entry {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Fields(pub BTreeMap<Ascii<String>, String>);
+pub struct Fields(pub BTreeMap<UniCase<String>, String>);
 
 #[derive(Deserialize, Debug, PartialEq)]
 pub struct RegularEntry {
@@ -40,7 +40,7 @@ impl<'de> Visitor<'de> for FieldsVisitor {
         let mut map = BTreeMap::default();
 
         while let Some((key, value)) = access.next_entry()? {
-            map.insert(Ascii::new(key), value);
+            map.insert(UniCase::new(key), value);
         }
 
         Ok(Fields(map))

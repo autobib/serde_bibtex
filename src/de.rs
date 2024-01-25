@@ -175,9 +175,10 @@
 //!
 //! let mut de = Deserializer::from_str(input);
 //!
-//! let mut expected_fields = BTreeMap::new();
-//! expected_fields.insert("author".into(), "One, Author".into());
-//! expected_fields.insert("year".into(), "2012".into());
+//! let mut expected_fields = BTreeMap::from([
+//!     ("author".into(), "One, Author".into()),
+//!     ("year".into(), "2012".into()),
+//! ]);
 //!
 //! assert_eq!(
 //!     Bibliography::deserialize(&mut de),
@@ -420,8 +421,9 @@
 //!
 //! let mut de = Deserializer::from_str(input);
 //!
-//! let mut expected_fields = BTreeMap::new();
-//! expected_fields.insert("title".into(), "A Title".into());
+//! let mut expected_fields = BTreeMap::from([
+//!     ("title".into(), "A Title".into()),
+//! ]);
 //!
 //! assert_eq!(
 //!     Bibliography::deserialize(&mut de),
@@ -478,8 +480,9 @@
 //!
 //! let mut de = Deserializer::from_str_with_macros(input, macro_dict);
 //!
-//! let mut expected_fields = BTreeMap::new();
-//! expected_fields.insert("month".into(), "4".into());
+//! let mut expected_fields = BTreeMap::from([
+//!     ("month".into(), "4".into()),
+//! ]);
 //!
 //! assert_eq!(
 //!     Bibliography::deserialize(&mut de),
@@ -531,8 +534,9 @@
 //!
 //! let mut de = Deserializer::from_str_with_macros(input, macro_dict);
 //!
-//! let mut expected_fields = BTreeMap::new();
-//! expected_fields.insert("month".into(), "Nonsense".into());
+//! let mut expected_fields = BTreeMap::from([
+//!     ("month".into(), "Nonsense".into()),
+//! ]);
 //!
 //! assert_eq!(
 //!     Bibliography::deserialize(&mut de),
