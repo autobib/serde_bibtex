@@ -36,16 +36,16 @@ TODO: not yet implemented
 
 
 ## Comparison with other crates
-### [biblatex](https://github.com/typst/biblatex)
+### [typst/biblatex](https://github.com/typst/biblatex)
 We do not attempt to interpret the contents of the entries in the `.bib` file and instead defer interpretation for downstream consumption.
 On the other hand, [biblatex](https://github.com/typst/biblatex) is intended to support [typst](https://github.com/typst/typst), which requires interpreting the contents of the fields (for example, parsing of `$math$` in field values).
 In this sense, we might consider our implementation closer to the `biblatex::RawBibliography` entrypoint, but with the substantial extra flexibility of reading into any type implementing an appropriate `Deserialize`.
 
-### [nom-bibtex](https://github.com/charlesvdv/nom-bibtex)
+### [charlesvdv/nom-bibtex](https://github.com/charlesvdv/nom-bibtex)
 The functionality in this crate essentially supercedes [nom-bibtex](https://github.com/charlesvdv/nom-bibtex).
 The only feature of `nom-bibtex` that we do not support is the capturing of comments not explicitly contained in a `@comment` entry.
 
-### [bibparser](https://github.com/typho/bibparser)
+### [typho/bibparser](https://github.com/typho/bibparser)
 The functionality in this crate essentially supercedes [bibparser](https://github.com/typho/bibparser).
 
 ## Benchmarks
@@ -54,9 +54,9 @@ The bibliography file used is [`assets/tugboat.bib`](/assets/tugboat.bib), which
 It is a 2.64 MB 73,993-line `.bib` file.
 
 1. `ignored`: Deserialize using `serde::de::IgnoredAny` to parse the file but ignore the contents.
-2. `borrowed`: Deserialize into a fully borrowed struct which captures all data in the file but does not expand macros or collapse field values.
+2. `borrowed`: Deserialize into a fully borrowed Rust type which captures all data in the file but does not expand macros or collapse field values.
 3. `biblatex`: Parse using `biblatex::RawBibliography::parse` (most similar to `borrowed`).
-4. `owned`: Parse into a fully owned Rust type with macro expansion and field value collapsing.
+4. `owned`: Deserialize into an owned Rust type with macro expansion, field value collapsing, and case-insensitive comparison where appropriate.
 5. `nom-bibtex`: Parse using `nom-bibtex::Bibtex::parse` (most similar to `owned`).
 
 The benchmarks were performed on a 2019 16 inch MacBook Pro with a 2.6 GHz 6-Core Intel Core i7 processor.
@@ -68,6 +68,8 @@ The benchmarks were performed on a 2019 16 inch MacBook Pro with a 2.6 GHz 6-Cor
 | biblatex   | 1.3x   | `[16.184 ms 16.224 ms 16.266 ms]` |
 | owned      | 1.7x   | `[21.455 ms 21.690 ms 21.935 ms]` |
 | nom-bibtex | 5.5x   | `[71.607 ms 71.912 ms 72.343 ms]` |
+
+The [bibparser](https://github.com/typho/bibparser) crate is not included in this benchmark as it is unable to parse the input file.
 
 ## Safety
 This crate uses some `unsafe` for string conversions when we can guarantee for other reasons that a string slice is at a valid codepoint.
