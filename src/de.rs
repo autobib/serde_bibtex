@@ -551,7 +551,7 @@
 //! );
 //! ```
 //! If you wish to prevent automatic macro capturing, but do not care about the actual values of
-//! the macro, use `serde::IgnoredAny`.
+//! the macro, use `serde::de::IgnoredAny`.
 //! ```
 //! use serde::{de::IgnoredAny, Deserialize};
 //!

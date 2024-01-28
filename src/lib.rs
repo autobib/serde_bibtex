@@ -41,7 +41,7 @@
 //!     fields: BTreeMap<String, String>
 //! }
 //!
-//! let input = br#"
+//! let input = r#"
 //!     @string{t = {Title}}
 //!     @article{key,
 //!       title = t,
@@ -50,7 +50,7 @@
 //!     }
 //! "#;
 //!
-//! let de = Deserializer::from_slice(input);
+//! let de = Deserializer::from_str(input);
 //! let mut entry_iter = de.into_iter_entry();
 //!
 //! let expected_fields = BTreeMap::from([
