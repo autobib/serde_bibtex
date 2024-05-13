@@ -4,17 +4,10 @@ use std::str::Utf8Error;
 
 #[derive(Debug, PartialEq)]
 pub struct Error {
-    // err: Box<ErrorImpl>,
     code: ErrorCode,
 }
 
 pub type Result<T> = result::Result<T, Error>;
-
-#[derive(Debug, PartialEq)]
-struct ErrorImpl {
-    code: ErrorCode,
-    // position: usize,
-}
 
 impl Error {
     pub(crate) fn syntax(code: ErrorCode) -> Self {
