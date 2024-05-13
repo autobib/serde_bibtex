@@ -9,7 +9,16 @@ use crate::{SliceReader, StrReader};
 
 use super::entry::{EntryDeserializer, RegularEntryDeserializer};
 
-/// The top level `.bib` deserializer.
+/// The core `.bib` deserializer.
+///
+/// Construct using one of the following methods:
+/// - [`Deserializer::from_str`]
+/// - [`Deserializer::from_str_with_macros`]
+/// - [`Deserializer::from_slice`]
+/// - [`Deserializer::from_slice_with_macros`]
+///
+/// The type parameter `R` is the input type from which you are deserializing. If you construct a
+/// [`Deserializer`] using one of the above methods, the type will be inferred automatically.
 pub struct Deserializer<'r, R> {
     pub(crate) parser: R,
     pub(crate) macros: MacroDictionary<&'r str, &'r [u8]>,
@@ -75,8 +84,10 @@ where
     }
 
     /// Deserialize individual entries in an iterator, ignoring all entries which are not regular entries.
-    pub fn into_iter_entry<D: de::Deserialize<'r>>(self) -> DeserializeEntriesIter<'r, R, D> {
-        DeserializeEntriesIter {
+    pub fn into_iter_regular_entry<D: de::Deserialize<'r>>(
+        self,
+    ) -> DeserializeRegularEntryIter<'r, R, D> {
+        DeserializeRegularEntryIter {
             de: self,
             _output: PhantomData,
         }
@@ -152,6 +163,12 @@ where
     }
 }
 
+/// Deserialize `.bib` input and iterate over entries.
+///
+/// The recommended way to construct this struct is to use the [`Deserializer::into_iter`] method.
+///
+/// To only iterate regular entries, see [`DeserializeRegularEntryIter`].
+/// To deserialize into an arbitrary wrapper type, see [`Deserializer`].
 pub struct DeserializeIter<'r, R, D>
 where
     R: BibtexParse<'r>,
@@ -177,7 +194,16 @@ where
     }
 }
 
-pub struct DeserializeEntriesIter<'r, R, D>
+/// Deserialize `.bib` input and iterate over all regular entries.
+///
+/// The recommended way to construct this struct is to use the
+/// [`Deserializer::into_iter_regular_entry`] method.
+///
+/// To also iterate over preamble, comment, or macro entries, see [`DeserializeIter`].
+/// To deserialize into an arbitrary wrapper type, see [`Deserializer`].
+///
+/// Macros are automatically captured and expanded, when possible.
+pub struct DeserializeRegularEntryIter<'r, R, D>
 where
     R: BibtexParse<'r>,
     D: de::Deserialize<'r>,
@@ -186,7 +212,7 @@ where
     _output: PhantomData<D>,
 }
 
-impl<'de, R, D> Iterator for DeserializeEntriesIter<'de, R, D>
+impl<'de, R, D> Iterator for DeserializeRegularEntryIter<'de, R, D>
 where
     R: BibtexParse<'de>,
     D: de::Deserialize<'de>,

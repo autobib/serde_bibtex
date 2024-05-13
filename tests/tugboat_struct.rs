@@ -52,7 +52,7 @@ struct TugboatEntry<'r> {
 #[test]
 fn test_tugboat_struct() {
     let input_bytes = std::fs::read("assets/tugboat.bib").unwrap();
-    let de_iter = Deserializer::from_slice(&input_bytes).into_iter_entry::<TugboatEntry>();
+    let de_iter = Deserializer::from_slice(&input_bytes).into_iter_regular_entry::<TugboatEntry>();
     for res in de_iter {
         assert!(res.is_ok(), "{:?}", res)
     }

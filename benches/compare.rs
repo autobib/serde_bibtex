@@ -71,7 +71,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
 
     c.bench_function("tugboat struct str", |b| {
         b.iter(|| {
-            let de_iter = Deserializer::from_str(&input_str).into_iter_entry();
+            let de_iter = Deserializer::from_str(&input_str).into_iter_regular_entry();
             let _result: Vec<Result<TugboatEntry>> = de_iter.collect();
         })
     });

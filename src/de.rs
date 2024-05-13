@@ -634,7 +634,7 @@
 //!     Regular,
 //! }
 //!
-//! // `var0` is defined using indefined macros
+//! // `var0` is defined using undefined macros
 //! let input = r#"
 //!     @string{var0 = var1 # 01234 # var2}
 //!     @preamble{{text} # var0}
@@ -685,7 +685,9 @@
 //!
 //! #[derive(Deserialize, Debug, PartialEq)]
 //! struct Contents<'a> {
+//!     #[serde(borrow)]
 //!     entry_type: Cow<'a, str>, // the syntax requires these are valid utf_8
+//!     #[serde(borrow)]
 //!     entry_key: Cow<'a, str>,
 //!     #[serde(borrow)]
 //!     fields: HashMap<Cow<'a, str>, Vec<Token<'a>>>,
@@ -707,7 +709,7 @@ mod bibliography;
 mod entry;
 mod value;
 
-pub use bibliography::{DeserializeEntriesIter, DeserializeIter, Deserializer};
+pub use bibliography::{DeserializeIter, DeserializeRegularEntryIter, Deserializer};
 
 use crate::error::Result;
 use crate::parse::{SliceReader, StrReader};
@@ -854,7 +856,7 @@ mod tests {
         let reader = StrReader::new(input);
         for (expected, received) in zip(
             expected.into_iter(),
-            Deserializer::new(reader).into_iter_entry(),
+            Deserializer::new(reader).into_iter_regular_entry(),
         ) {
             assert_eq!(Ok(expected), received);
         }

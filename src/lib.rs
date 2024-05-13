@@ -26,7 +26,7 @@
 //! The most convenient entrypoint is to construct a
 //! [`Deserializer`](de/struct.Deserializer.)
 //! and use the API provided by
-//! [`into_iter_entry`](de/struct.Deserializer.html#method.into_iter_entry).
+//! [`into_iter_regular_entry`](de/struct.Deserializer.html#method.into_iter_regular_entry).
 //! For more complex deserialization use-cases, and a full description of available deserialization
 //! features, see the documentation for the [de module](de).
 //! ```
@@ -51,7 +51,7 @@
 //! "#;
 //!
 //! let de = Deserializer::from_str(input);
-//! let mut entry_iter = de.into_iter_entry();
+//! let mut entry_iter = de.into_iter_regular_entry();
 //!
 //! let expected_fields = BTreeMap::from([
 //!     ("title".into(), "Title".into()),
