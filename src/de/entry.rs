@@ -82,6 +82,21 @@ where
         }
     }
 
+    fn struct_variant<V>(self, _fields: &'static [&'static str], visitor: V) -> Result<V::Value>
+    where
+        V: de::Visitor<'de>,
+    {
+        match self.entry_type {
+            EntryType::Regular(entry_type) => {
+                visitor.visit_map(EntryAccess::new(&mut *self.de, entry_type.into_inner()))
+            }
+            _ => Err(de::Error::invalid_type(
+                Unexpected::StructVariant,
+                &"non-regular entry as struct variant",
+            )),
+        }
+    }
+
     fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -89,16 +104,6 @@ where
         Err(de::Error::invalid_type(
             Unexpected::TupleVariant,
             &"entry as tuple variant",
-        ))
-    }
-
-    fn struct_variant<V>(self, _fields: &'static [&'static str], _visitor: V) -> Result<V::Value>
-    where
-        V: de::Visitor<'de>,
-    {
-        Err(de::Error::invalid_type(
-            Unexpected::StructVariant,
-            &"entry as struct variant",
         ))
     }
 }

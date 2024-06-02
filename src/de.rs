@@ -157,18 +157,15 @@
 //! use std::collections::BTreeMap;
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
-//! struct Contents {
-//!     entry_type: String,
-//!     entry_key: String,
-//!     fields: BTreeMap<String, String>,
-//! }
-//!
-//! #[derive(Debug, PartialEq, Deserialize)]
 //! enum Entry {
 //!     Macro,
 //!     Preamble,
 //!     Comment,
-//!     Regular(Contents),
+//!     Regular {
+//!         entry_type: String,
+//!         entry_key: String,
+//!         fields: BTreeMap<String, String>,
+//!     }
 //! }
 //!
 //! type Bibliography = Vec<Entry>;
@@ -182,14 +179,15 @@
 //!
 //! assert_eq!(
 //!     Bibliography::deserialize(&mut de),
-//!     Ok(vec![Entry::Regular(Contents {
+//!     Ok(vec![Entry::Regular {
 //!        entry_type: "article".into(),
 //!        entry_key: "key".into(),
 //!        fields: expected_fields,
-//!     })])
+//!     }])
 //! );
 //! ```
-//! It is also possible to explicitly state which field keys you wish to capture, for instance
+//! It is also possible to explicitly state which field keys you wish to capture. Let's also use an
+//! explicit `Contents` variant.
 //! ```
 //! # use serde::Deserialize;
 //! #[derive(Debug, PartialEq, Deserialize)]
@@ -737,6 +735,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+
     use std::borrow::Cow;
     use std::iter::zip;
 
@@ -744,6 +743,17 @@ mod tests {
     enum TestEntry<'a> {
         #[serde(borrow)]
         Regular(TestRegularEntry<'a>),
+        Macro,
+        Comment,
+        Preamble,
+    }
+
+    #[derive(Deserialize, Debug, PartialEq)]
+    enum TestEntryNewtype {
+        Regular {
+            entry_type: String,
+            entry_key: String,
+        },
         Macro,
         Comment,
         Preamble,
@@ -763,6 +773,33 @@ mod tests {
         author: Cow<'a, str>,
         #[serde(borrow)]
         title: Cow<'a, str>,
+    }
+
+    #[test]
+    fn test_regular_entry_newtype() {
+        let input = r#"
+        @article{key,
+           author = {One, Author} # { and } # {Two, Author},
+           title = {Title},
+           year = 2024,
+        }
+
+        @string(k={val})
+        "#;
+
+        let expected = vec![
+            TestEntryNewtype::Regular {
+                entry_type: "article".into(),
+                entry_key: "key".into(),
+            },
+            TestEntryNewtype::Macro,
+        ];
+
+        let reader = StrReader::new(input);
+        for (expected, received) in zip(expected.into_iter(), Deserializer::new(reader).into_iter())
+        {
+            assert_eq!(Ok(expected), received);
+        }
     }
 
     #[test]
