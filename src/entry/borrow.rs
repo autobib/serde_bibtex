@@ -1,22 +1,19 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
-pub enum BorrowToken<'a> {
+pub enum Token<'a> {
     Variable(&'a [u8]),
     Text(&'a [u8]),
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
-pub struct BorrowRegularEntry<'a> {
-    pub entry_type: &'a str,
-    pub entry_key: &'a str,
-    pub fields: Vec<(&'a str, Vec<BorrowToken<'a>>)>,
-}
-
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum BorrowEntry<'a> {
-    Regular(BorrowRegularEntry<'a>),
-    Macro(Option<(&'a str, Vec<BorrowToken<'a>>)>),
+    Regular {
+        entry_type: &'a str,
+        entry_key: &'a str,
+        fields: Vec<(&'a str, Vec<Token<'a>>)>,
+    },
+    Macro(Option<(&'a str, Vec<Token<'a>>)>),
     Comment(&'a [u8]),
-    Preamble(Vec<BorrowToken<'a>>),
+    Preamble(Vec<Token<'a>>),
 }

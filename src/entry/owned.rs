@@ -7,7 +7,12 @@ use std::collections::BTreeMap;
 
 #[derive(Deserialize, Debug, PartialEq)]
 pub enum Entry {
-    Regular(RegularEntry),
+    Regular {
+        entry_type: String,
+        #[serde(deserialize_with = "deserialize_unicase")]
+        entry_key: UniCase<String>,
+        fields: Fields,
+    },
     Macro,
     Comment,
     Preamble,
@@ -15,14 +20,6 @@ pub enum Entry {
 
 #[derive(Debug, PartialEq)]
 pub struct Fields(pub BTreeMap<UniCase<String>, String>);
-
-#[derive(Deserialize, Debug, PartialEq)]
-pub struct RegularEntry {
-    pub entry_type: String,
-    #[serde(deserialize_with = "deserialize_unicase")]
-    pub entry_key: UniCase<String>,
-    pub fields: Fields,
-}
 
 struct FieldsVisitor;
 
