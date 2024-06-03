@@ -88,7 +88,11 @@ where
     {
         match self.entry_type {
             EntryType::Regular(entry_type) => {
-                visitor.visit_map(EntryAccess::new(&mut *self.de, entry_type.into_inner()))
+                <RegularEntryDeserializer<R> as serde::Deserializer>::deserialize_any(
+                    RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
+                    visitor,
+                )
+                // visitor.visit_map(EntryAccess::new(&mut *self.de, entry_type.into_inner()))
             }
             _ => Err(de::Error::invalid_type(
                 Unexpected::StructVariant,
@@ -97,14 +101,34 @@ where
         }
     }
 
-    fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value>
+    fn tuple_variant<V>(self, len: usize, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
     {
-        Err(de::Error::invalid_type(
-            Unexpected::TupleVariant,
-            &"entry as tuple variant",
-        ))
+        match self.entry_type {
+            EntryType::Regular(name) => {
+                if len == 3 {
+                    visitor.visit_seq(EntryAccess::new(&mut *self.de, name.into_inner()))
+                } else {
+                    Err(de::Error::invalid_type(
+                        Unexpected::Seq,
+                        &"entry can only be deserialized as a tuple of length 3",
+                    ))
+                }
+            }
+            EntryType::Macro => <MacroRuleDeserializer<R> as serde::Deserializer>::deserialize_any(
+                MacroRuleDeserializer::new(&mut *self.de),
+                visitor,
+            ),
+            EntryType::Preamble => Err(de::Error::invalid_type(
+                Unexpected::TupleVariant,
+                &"preamble as tuple variant",
+            )),
+            EntryType::Comment => Err(de::Error::invalid_type(
+                Unexpected::TupleVariant,
+                &"comment as tuple variant",
+            )),
+        }
     }
 }
 
@@ -250,6 +274,7 @@ where
 {
     type Error = Error;
 
+    #[inline]
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,

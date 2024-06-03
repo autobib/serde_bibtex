@@ -223,7 +223,7 @@
 //!     Macro,
 //!     Preamble,
 //!     Comment,
-//!     Regular((String, String, Vec<(String, String)>)),
+//!     Regular(String, String, Vec<(String, String)>),
 //! }
 //! # use serde_bibtex::de::Deserializer;
 //! # let input = r#"
@@ -238,11 +238,11 @@
 //! #
 //! # assert_eq!(
 //! #     Bibliography::deserialize(&mut de),
-//! #     Ok(vec![Entry::Regular((
+//! #     Ok(vec![Entry::Regular(
 //! #         "article".into(),
 //! #         "key".into(),
 //! #         vec![("title".into(), "Title".into())]
-//! #     ))])
+//! #     )])
 //! # )
 //! ```
 //! Of course, it is also possible to explicitly ignore some parts of the entry. For example, if you only wish
@@ -457,7 +457,7 @@
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
 //! enum Entry {
-//!     Macro((String, String)),
+//!     Macro(String, String),
 //!     Comment(String),
 //!     Preamble(String),
 //!     Regular(Contents),
@@ -486,7 +486,7 @@
 //!     Bibliography::deserialize(&mut de),
 //!     Ok(vec![
 //!         // the 'apr' macro defined in input is captured here
-//!         Entry::Macro(("apr".into(), "Nonsense".into())),
+//!         Entry::Macro("apr".into(), "Nonsense".into()),
 //!         // and the 'apr' macro defined by `set_month_macros` is
 //!         // expanded here
 //!         Entry::Regular(Contents {
@@ -754,7 +754,15 @@ mod tests {
             entry_type: String,
             entry_key: String,
         },
-        Macro,
+        Macro(String, String),
+        Comment,
+        Preamble,
+    }
+
+    #[derive(Deserialize, Debug, PartialEq)]
+    enum TestEntryNewtypeTuple {
+        Regular(String, String, Vec<(String, String)>),
+        Macro(String, String),
         Comment,
         Preamble,
     }
@@ -792,7 +800,37 @@ mod tests {
                 entry_type: "article".into(),
                 entry_key: "key".into(),
             },
-            TestEntryNewtype::Macro,
+            TestEntryNewtype::Macro("k".into(), "val".into()),
+        ];
+
+        let reader = StrReader::new(input);
+        for (expected, received) in zip(expected.into_iter(), Deserializer::new(reader).into_iter())
+        {
+            assert_eq!(Ok(expected), received);
+        }
+    }
+
+    #[test]
+    fn test_entry_newtype_tuple() {
+        let input = r#"
+        @article{key,
+           title = {Title},
+           year = 2024,
+        }
+
+        @string(k={val})
+        "#;
+
+        let expected = vec![
+            TestEntryNewtypeTuple::Regular(
+                "article".into(),
+                "key".into(),
+                vec![
+                    ("title".into(), "Title".into()),
+                    ("year".into(), "2024".into()),
+                ],
+            ),
+            TestEntryNewtypeTuple::Macro("k".into(), "val".into()),
         ];
 
         let reader = StrReader::new(input);
