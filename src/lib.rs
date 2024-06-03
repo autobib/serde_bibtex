@@ -35,7 +35,7 @@
 //! use std::collections::BTreeMap;
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
-//! struct Contents {
+//! struct Record {
 //!     entry_type: String,
 //!     entry_key: String,
 //!     fields: BTreeMap<String, String>
@@ -61,7 +61,7 @@
 //!
 //! assert_eq!(
 //!     entry_iter.next(),
-//!     Some(Ok(Contents {
+//!     Some(Ok(Record {
 //!         entry_type: "article".into(),
 //!         entry_key: "key".into(),
 //!         fields: expected_fields

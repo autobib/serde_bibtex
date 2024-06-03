@@ -1,6 +1,9 @@
 //! # Errors for serialization and deserialization.
+use std::io::Error as IoError;
 use std::result;
 use std::str::Utf8Error;
+
+use serde::ser::Error as SeError;
 
 #[derive(Debug, PartialEq)]
 pub struct Error {
@@ -20,10 +23,24 @@ impl Error {
         }
     }
 
+    pub(crate) fn io(err: IoError) -> Self {
+        Self {
+            code: ErrorCode::Io(err.to_string()),
+        }
+    }
+
     pub(crate) fn eof() -> Self {
         Self {
             code: ErrorCode::UnexpectedEof,
         }
+    }
+
+    pub(crate) fn only_seq() -> Self {
+        Self::custom("bibliography must be a sequence")
+    }
+
+    pub(crate) fn only_enum() -> Self {
+        Self::custom("entry must be an enum")
     }
 }
 
@@ -33,9 +50,21 @@ impl From<Utf8Error> for Error {
     }
 }
 
+impl From<IoError> for Error {
+    fn from(err: IoError) -> Self {
+        Self::io(err)
+    }
+}
+
 impl std::error::Error for Error {}
 
 impl serde::de::Error for Error {
+    fn custom<T: std::fmt::Display>(msg: T) -> Self {
+        Self::syntax(ErrorCode::Message(msg.to_string()))
+    }
+}
+
+impl SeError for Error {
     fn custom<T: std::fmt::Display>(msg: T) -> Self {
         Self::syntax(ErrorCode::Message(msg.to_string()))
     }
@@ -63,6 +92,7 @@ pub(crate) enum ErrorCode {
     ExpectedFieldSep,
     UnresolvedMacro(String),
     InvalidUtf8(Utf8Error),
+    Io(String),
     Empty,
 }
 
@@ -86,6 +116,7 @@ impl std::fmt::Display for ErrorCode {
             Self::UnclosedBracket => f.write_str("unclosed '{' in token"),
             Self::UnclosedQuote => f.write_str("unclosed '\"' in token"),
             Self::ExpectedEndOfEntry => f.write_str("expected end of entry"),
+            Self::Io(err) => write!(f, "IO error: {err}"),
         }
     }
 }

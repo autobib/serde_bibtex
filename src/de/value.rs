@@ -548,7 +548,7 @@ mod tests {
 
     #[test]
     fn test_value_cow() {
-        assert_de!("{a} # { b}", Cow::Borrowed("a b").to_owned(), Cow);
+        assert_de!("{a} # { b}", Cow::Borrowed("a b"), Cow);
         assert_de!("{a}", Cow::Borrowed("a"), Cow);
     }
 
