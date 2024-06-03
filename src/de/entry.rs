@@ -87,13 +87,10 @@ where
         V: de::Visitor<'de>,
     {
         match self.entry_type {
-            EntryType::Regular(entry_type) => {
-                <RegularEntryDeserializer<R> as serde::Deserializer>::deserialize_any(
-                    RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
-                    visitor,
-                )
-                // visitor.visit_map(EntryAccess::new(&mut *self.de, entry_type.into_inner()))
-            }
+            EntryType::Regular(entry_type) => de::Deserializer::deserialize_map(
+                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
+                visitor,
+            ),
             _ => Err(de::Error::invalid_type(
                 Unexpected::StructVariant,
                 &"non-regular entry as struct variant",
@@ -106,18 +103,14 @@ where
         V: de::Visitor<'de>,
     {
         match self.entry_type {
-            EntryType::Regular(name) => {
-                if len == 3 {
-                    visitor.visit_seq(EntryAccess::new(&mut *self.de, name.into_inner()))
-                } else {
-                    Err(de::Error::invalid_type(
-                        Unexpected::Seq,
-                        &"entry can only be deserialized as a tuple of length 3",
-                    ))
-                }
-            }
-            EntryType::Macro => <MacroRuleDeserializer<R> as serde::Deserializer>::deserialize_any(
+            EntryType::Regular(entry_type) => de::Deserializer::deserialize_tuple(
+                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
+                len,
+                visitor,
+            ),
+            EntryType::Macro => de::Deserializer::deserialize_tuple(
                 MacroRuleDeserializer::new(&mut *self.de),
+                len,
                 visitor,
             ),
             EntryType::Preamble => Err(de::Error::invalid_type(
