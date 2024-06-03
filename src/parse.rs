@@ -1,7 +1,6 @@
 mod macros;
 mod read;
 pub mod token;
-mod validate;
 
 use crate::error::{Error, ErrorCode, Result};
 

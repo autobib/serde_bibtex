@@ -7,7 +7,7 @@ use memchr::memchr2_iter;
 ///
 /// Note that this table is insufficient for UTF-8 validation outside the ASCII range:
 /// it is only used for short-circuited termination of parsing!
-pub(super) static IDENTIFIER_ALLOWED: [bool; 256] = {
+pub(crate) static IDENTIFIER_ALLOWED: [bool; 256] = {
     const PR: bool = false; // disallowed printable bytes
     const CT: bool = false; // non-printable ascii
     const __: bool = true; // permitted bytes

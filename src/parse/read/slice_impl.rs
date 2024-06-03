@@ -7,7 +7,8 @@ use memchr::{memchr2_iter, memchr3_iter};
 use std::str::{from_utf8, from_utf8_unchecked};
 
 use crate::error::{Error, ErrorCode};
-use crate::parse::{validate::IDENTIFIER_ALLOWED, BibtexParse};
+use crate::parse::BibtexParse;
+use crate::validate::IDENTIFIER_ALLOWED;
 
 /// Ignore junk characters between entries.
 ///

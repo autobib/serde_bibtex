@@ -3,8 +3,8 @@ use unicase::UniCase;
 
 use super::{Identifier, Text};
 
-use super::validate::{is_balanced, is_entry_key, is_entry_type, is_field_key, is_variable};
 use crate::error::{Error, ErrorCode, Result};
+use crate::validate::{is_balanced, is_entry_key, is_entry_type, is_field_key, is_variable};
 
 /// Entry type, such as `article` in `@article{...`.
 /// 1. Case-insensitive.

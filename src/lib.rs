@@ -71,6 +71,7 @@
 pub mod de;
 pub mod error;
 pub mod ser;
+pub mod validate;
 
 #[cfg(feature = "entry")]
 pub mod entry;

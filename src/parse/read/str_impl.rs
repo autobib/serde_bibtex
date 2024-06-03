@@ -8,7 +8,7 @@ use super::slice_impl;
 use super::Read;
 use super::{Identifier, Text};
 use crate::error::{Error, ErrorCode};
-use crate::parse::validate::IDENTIFIER_ALLOWED;
+use crate::validate::IDENTIFIER_ALLOWED;
 use std::str::from_utf8_unchecked;
 
 use crate::parse::BibtexParse;
