@@ -4,7 +4,9 @@ use unicase::UniCase;
 use super::{Identifier, Text};
 
 use crate::error::{Error, ErrorCode, Result};
-use crate::validate::{is_balanced, is_entry_key, is_entry_type, is_field_key, is_variable};
+use crate::validate::{
+    check_balanced, check_entry_key, check_entry_type, check_field_key, check_variable,
+};
 
 /// Entry type, such as `article` in `@article{...`.
 /// 1. Case-insensitive.
@@ -37,7 +39,7 @@ impl<S: AsRef<str>> EntryType<S> {
 
     /// Construct a new entry type, checking that the input satisfies the requirements.
     pub fn new(s: S) -> Result<Self> {
-        is_entry_type(s.as_ref())?;
+        check_entry_type(s.as_ref())?;
         Ok(Self::new_unchecked(s))
     }
 }
@@ -63,7 +65,7 @@ impl<S: AsRef<str>> Variable<S> {
 
     /// Construct a new variable, checking that the input satisfies the requirements.
     pub fn new(s: S) -> Result<Self> {
-        is_variable(s.as_ref())?;
+        check_variable(s.as_ref())?;
         Ok(Self(UniCase::new(s)))
     }
 
@@ -108,7 +110,7 @@ impl<S: AsRef<str>> EntryKey<S> {
 
     /// Construct a new entry key, checking that the input satisfies the requirements.
     pub fn new(s: S) -> Result<Self> {
-        is_entry_key(s.as_ref())?;
+        check_entry_key(s.as_ref())?;
         Ok(Self::new_unchecked(s))
     }
 }
@@ -127,7 +129,7 @@ impl<S: AsRef<str>> FieldKey<S> {
 
     /// Construct a new field key, checking that the input satisfies the requirements.
     pub fn new(s: S) -> Result<Self> {
-        is_field_key(s.as_ref())?;
+        check_field_key(s.as_ref())?;
         Ok(Self(UniCase::new(s)))
     }
 }
@@ -172,13 +174,13 @@ where
 
     /// Construct a new text string variant.
     pub fn str(s: S) -> Result<Self> {
-        is_balanced(s.as_ref().as_bytes())?;
+        check_balanced(s.as_ref().as_bytes())?;
         Ok(Token::Text(Text::Str(s)))
     }
 
     /// Construct a new text bytes variant.
     pub fn bytes(b: B) -> Result<Self> {
-        is_balanced(b.as_ref())?;
+        check_balanced(b.as_ref())?;
         Ok(Token::Text(Text::Bytes(b)))
     }
 

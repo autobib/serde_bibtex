@@ -43,7 +43,7 @@ fn find_invalid_identifier_char(input: &str) -> Option<char> {
         .map(|b| unsafe { char::from_u32_unchecked(*b as u32) })
 }
 
-fn is_identifier(s: &str) -> Result<()> {
+fn check_identifier(s: &str) -> Result<()> {
     if s.is_empty() {
         Err(Error::syntax(ErrorCode::Empty))
     } else {
@@ -54,8 +54,8 @@ fn is_identifier(s: &str) -> Result<()> {
     }
 }
 
-pub fn is_variable(s: &str) -> Result<()> {
-    is_identifier(s)?;
+pub(crate) fn check_variable(s: &str) -> Result<()> {
+    check_identifier(s)?;
     // SAFETY: if is_identifer(s) does not fail, then s is non-empty
     if s.as_bytes()[0].is_ascii_digit() {
         Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
@@ -65,21 +65,41 @@ pub fn is_variable(s: &str) -> Result<()> {
 }
 
 #[inline]
-pub fn is_field_key(s: &str) -> Result<()> {
-    is_identifier(s)
+pub fn is_variable(s: &str) -> bool {
+    check_variable(s).is_ok()
 }
 
 #[inline]
-pub fn is_entry_type(s: &str) -> Result<()> {
-    is_identifier(s)
+pub(crate) fn check_field_key(s: &str) -> Result<()> {
+    check_identifier(s)
 }
 
 #[inline]
-pub fn is_entry_key(s: &str) -> Result<()> {
-    is_identifier(s)
+pub fn is_field_key(s: &str) -> bool {
+    check_field_key(s).is_ok()
 }
 
-pub fn is_balanced(input: &[u8]) -> Result<()> {
+#[inline]
+pub(crate) fn check_entry_type(s: &str) -> Result<()> {
+    check_identifier(s)
+}
+
+#[inline]
+pub fn is_entry_type(s: &str) -> bool {
+    check_entry_type(s).is_ok()
+}
+
+#[inline]
+pub(crate) fn check_entry_key(s: &str) -> Result<()> {
+    check_identifier(s)
+}
+
+#[inline]
+pub fn is_entry_key(s: &str) -> bool {
+    check_entry_key(s).is_ok()
+}
+
+pub(crate) fn check_balanced(input: &[u8]) -> Result<()> {
     let mut bracket_depth = 0;
 
     for pos in memchr2_iter(b'{', b'}', input) {
@@ -101,55 +121,60 @@ pub fn is_balanced(input: &[u8]) -> Result<()> {
     }
 }
 
+#[inline]
+pub fn is_balanced(input: &[u8]) -> bool {
+    check_balanced(input).is_ok()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_variable() {
-        assert_eq!(is_variable("a123"), Ok(()));
+        assert_eq!(check_variable("a123"), Ok(()));
         assert_eq!(
-            is_variable("1234"),
+            check_variable("1234"),
             Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
         );
         assert_eq!(
-            is_variable("a{"),
+            check_variable("a{"),
             Err(Error::syntax(ErrorCode::DisallowedChar('{')))
         );
         assert_eq!(
-            is_variable(" "),
+            check_variable(" "),
             Err(Error::syntax(ErrorCode::DisallowedChar(' ')))
         );
-        assert_eq!(is_variable(""), Err(Error::syntax(ErrorCode::Empty)));
+        assert_eq!(check_variable(""), Err(Error::syntax(ErrorCode::Empty)));
     }
 
     #[test]
     fn test_field_key() {
-        assert_eq!(is_variable("a123"), Ok(()));
+        assert_eq!(check_variable("a123"), Ok(()));
         assert_eq!(
-            is_variable("1234"),
+            check_variable("1234"),
             Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
         );
         assert_eq!(
-            is_field_key("a)"),
+            check_field_key("a)"),
             Err(Error::syntax(ErrorCode::DisallowedChar(')')))
         );
-        assert_eq!(is_field_key("🍄"), Ok(()));
-        assert_eq!(is_field_key(""), Err(Error::syntax(ErrorCode::Empty)));
+        assert_eq!(check_field_key("🍄"), Ok(()));
+        assert_eq!(check_field_key(""), Err(Error::syntax(ErrorCode::Empty)));
     }
 
     #[test]
     fn test_balanced() {
-        assert_eq!(is_balanced(b"1234"), Ok(()));
-        assert_eq!(is_balanced(b""), Ok(()));
-        assert_eq!(is_balanced(b"{}"), Ok(()));
-        assert_eq!(is_balanced(b"{}{{}}"), Ok(()));
+        assert_eq!(check_balanced(b"1234"), Ok(()));
+        assert_eq!(check_balanced(b""), Ok(()));
+        assert_eq!(check_balanced(b"{}"), Ok(()));
+        assert_eq!(check_balanced(b"{}{{}}"), Ok(()));
         assert_eq!(
-            is_balanced(b"{"),
+            check_balanced(b"{"),
             Err(Error::syntax(ErrorCode::UnterminatedTextToken))
         );
         assert_eq!(
-            is_balanced(b"{}}"),
+            check_balanced(b"{}}"),
             Err(Error::syntax(ErrorCode::UnexpectedClosingBracket))
         );
     }
