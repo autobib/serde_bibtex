@@ -34,6 +34,7 @@ where
 {
     type Error = Error;
 
+    #[inline]
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -41,10 +42,85 @@ where
         visitor.visit_enum(self)
     }
 
+    #[inline]
+    fn deserialize_newtype_struct<V>(self, _name: &'static str, visitor: V) -> Result<V::Value>
+    where
+        V: de::Visitor<'de>,
+    {
+        visitor.visit_newtype_struct(self)
+    }
+
     forward_to_deserialize_any! {
         bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
-        bytes byte_buf option unit unit_struct newtype_struct seq tuple
-        tuple_struct map struct enum identifier ignored_any
+        bytes byte_buf option unit unit_struct seq enum identifier ignored_any
+    }
+
+    /// Map deserialization is assumed to be of a regular entry.
+    fn deserialize_map<V>(self, visitor: V) -> std::result::Result<V::Value, Self::Error>
+    where
+        V: de::Visitor<'de>,
+    {
+        match self.entry_type {
+            EntryType::Regular(entry_type) => de::Deserializer::deserialize_map(
+                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
+                visitor,
+            ),
+            _ => Err(de::Error::invalid_type(
+                Unexpected::StructVariant,
+                &"non-regular entry as struct variant",
+            )),
+        }
+    }
+
+    fn deserialize_struct<V>(
+        self,
+        _name: &'static str,
+        _fields: &'static [&'static str],
+        visitor: V,
+    ) -> Result<V::Value>
+    where
+        V: de::Visitor<'de>,
+    {
+        self.deserialize_map(visitor)
+    }
+
+    /// Tuple deserialization is assumed to be a regular entry, and must be of length 3.
+    fn deserialize_tuple<V>(
+        self,
+        len: usize,
+        visitor: V,
+    ) -> std::result::Result<V::Value, Self::Error>
+    where
+        V: de::Visitor<'de>,
+    {
+        match (self.entry_type, len) {
+            (EntryType::Regular(entry_type), 3) => de::Deserializer::deserialize_tuple(
+                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
+                3,
+                visitor,
+            ),
+            (EntryType::Regular(_), _) => Err(de::Error::invalid_type(
+                Unexpected::TupleVariant,
+                &"regular entry as tuple of length not 3",
+            )),
+            _ => Err(de::Error::invalid_type(
+                Unexpected::TupleVariant,
+                &"non-regular entry as tuple variant",
+            )),
+        }
+    }
+
+    #[inline]
+    fn deserialize_tuple_struct<V>(
+        self,
+        _name: &'static str,
+        len: usize,
+        visitor: V,
+    ) -> std::result::Result<V::Value, Self::Error>
+    where
+        V: de::Visitor<'de>,
+    {
+        self.deserialize_tuple(len, visitor)
     }
 }
 
@@ -86,38 +162,37 @@ where
     where
         V: de::Visitor<'de>,
     {
-        match self.entry_type {
-            EntryType::Regular(entry_type) => de::Deserializer::deserialize_map(
-                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
-                visitor,
-            ),
-            _ => Err(de::Error::invalid_type(
-                Unexpected::StructVariant,
-                &"non-regular entry as struct variant",
-            )),
-        }
+        de::Deserializer::deserialize_map(self, visitor)
     }
 
     fn tuple_variant<V>(self, len: usize, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
     {
-        match self.entry_type {
-            EntryType::Regular(entry_type) => de::Deserializer::deserialize_tuple(
+        match (self.entry_type, len) {
+            (EntryType::Regular(entry_type), 3) => de::Deserializer::deserialize_tuple(
                 RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
                 len,
                 visitor,
             ),
-            EntryType::Macro => de::Deserializer::deserialize_tuple(
+            (EntryType::Macro, 2) => de::Deserializer::deserialize_tuple(
                 MacroRuleDeserializer::new(&mut *self.de),
                 len,
                 visitor,
             ),
-            EntryType::Preamble => Err(de::Error::invalid_type(
+            (EntryType::Regular(_), _) => Err(de::Error::invalid_type(
+                Unexpected::TupleVariant,
+                &"regular entry as tuple of length not 3",
+            )),
+            (EntryType::Macro, _) => Err(de::Error::invalid_type(
+                Unexpected::TupleVariant,
+                &"macro as tuple of length not 2",
+            )),
+            (EntryType::Preamble, _) => Err(de::Error::invalid_type(
                 Unexpected::TupleVariant,
                 &"preamble as tuple variant",
             )),
-            EntryType::Comment => Err(de::Error::invalid_type(
+            (EntryType::Comment, _) => Err(de::Error::invalid_type(
                 Unexpected::TupleVariant,
                 &"comment as tuple variant",
             )),
@@ -285,6 +360,7 @@ where
         ))
     }
 
+    #[inline]
     fn deserialize_tuple<V>(self, len: usize, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -647,6 +723,9 @@ mod tests {
     }
 
     #[derive(Deserialize, Debug, PartialEq, Eq)]
+    struct TestEntryTuple(String, String, HashMap<String, String>);
+
+    #[derive(Deserialize, Debug, PartialEq, Eq)]
     struct TestFields<'a> {
         #[serde(borrow)]
         author: Cow<'a, str>,
@@ -670,6 +749,53 @@ mod tests {
         entry_key: &'a str,
         #[serde(borrow)]
         fields: HashMap<&'a str, Vec<Tok<'a>>>,
+    }
+
+    #[test]
+    fn test_regular_entry_struct() {
+        let reader = StrReader::new(
+            r#"
+            {k,
+              author = {Author},
+              title = {Title},
+              year = 2012,
+            }"#,
+        );
+        let mut bib_de = Deserializer::new(reader);
+        let deserializer =
+            EntryDeserializer::new(&mut bib_de, EntryType::Regular("article".into()));
+
+        let data: TestEntryStruct = TestEntryStruct::deserialize(deserializer).unwrap();
+
+        let expected_data = TestEntryStruct {
+            entry_type: TestEntryType::Article,
+            entry_key: "k",
+            fields: TestFields {
+                author: "Author".into(),
+                title: "Title".into(),
+                year: "2012".into(),
+            },
+        };
+        assert_eq!(data, expected_data);
+    }
+
+    #[test]
+    fn test_regular_entry_tuple() {
+        let reader = StrReader::new(
+            r#"
+            {k,author = {Author}}"#,
+        );
+        let mut bib_de = Deserializer::new(reader);
+        let deserializer =
+            EntryDeserializer::new(&mut bib_de, EntryType::Regular("article".into()));
+
+        let data: TestEntryTuple = TestEntryTuple::deserialize(deserializer).unwrap();
+
+        let mut fields = HashMap::new();
+        fields.insert("author".into(), "Author".into());
+
+        let expected_data = TestEntryTuple("article".into(), "k".into(), fields);
+        assert_eq!(data, expected_data);
     }
 
     #[test]

@@ -15,6 +15,7 @@
 //!   - [Manual capturing](#manual-capturing)
 //! - [Deserializing values](#deserializing-values)
 //! - [Borrowing and bytes](#borrowing-and-byte-deserialization)
+//! - [Only deserializing regular entries](#only-deserializing-regular-entries)
 //!
 //! ## Deserializing a bibliography
 //! A `.bib` file is a sequence of entries, each of which is declared by an identifier immediately
@@ -386,7 +387,7 @@
 //! ### Automatic expansion and capturing
 //! If the `Macro` variant of your `Entry` struct is a unit variant, then macros are
 //! automatically captured by the [`Deserializer`] during deserialization. Any captured macros are used to
-//! expand macros in subsequent values.
+//! expand macros in subsequent values if macro expansion is required.
 //!
 //! In order to collect the captured macros after deserialization, use the
 //! [`finish`](struct.Deserializer.html#method.finish) method.
@@ -702,6 +703,78 @@
 //!     #[serde(borrow)]
 //!     Preamble(Vec<Token<'a>>),
 //! }
+//! ```
+//! ## Only deserializing regular entries
+//! In many cases, one is only interested in deserializing regular entries.
+//! As a convenience, we provide the [`Deserializer::into_iter_regular_entry`] method.
+//! ```
+//! use std::{collections::BTreeMap, fmt, str::FromStr};
+//!
+//! use serde::Deserialize;
+//! use serde_bibtex::de::Deserializer;
+//!
+//! #[derive(Debug, PartialEq, Deserialize)]
+//! struct Contents {
+//!     entry_type: String,
+//!     entry_key: String,
+//!     fields: BTreeMap<String, String>,
+//! }
+//!
+//! let input = r#"
+//!     @comment{ignored}
+//!     @article{key,
+//!       author = {One, Author},
+//!       year = 2012,
+//!     }
+//! "#;
+//!
+//! assert!(matches!(
+//!     Deserializer::from_str(input).into_iter_regular_entry().next(),
+//!     Some(Ok(Contents { .. })),
+//! ))
+//! ```
+//! If you are confident that the bibliography consists only of regular entries, you can
+//! deserialize a regular Bibliography directly as a sequence of regular entry structs. However,
+//! the presence of any non-regular entry will cause an error immediately.
+//!
+//! Of course, you can just ignore errors if they occur.
+//!
+//! Note that:
+//! 1. Macro expansion will not occurr.
+//! 2. It is not possible to capture any other entries in this way.
+//! 3. Skipping errors could result in strange issues
+//! ```
+//! use std::{collections::BTreeMap, fmt, str::FromStr};
+//!
+//! use serde::Deserialize;
+//! use serde_bibtex::de::Deserializer;
+//!
+//! #[derive(Debug, PartialEq, Deserialize)]
+//! struct Contents {
+//!     entry_type: String,
+//!     entry_key: String,
+//!     fields: BTreeMap<String, String>,
+//! }
+//!
+//! let input = r#"
+//!     @comment{ignored}
+//!     @article{key,
+//!       author = {One, Author},
+//!       year = 2012,
+//!     }
+//! "#;
+//!
+//! let mut de_iter = Deserializer::from_str(input).into_iter();
+//!
+//! assert!(matches!(
+//!     de_iter.next(),
+//!     Some(Err(_)),
+//! ));
+//!
+//! assert!(matches!(
+//!     de_iter.next(),
+//!     Some(Ok(Contents { .. })),
+//! ));
 //! ```
 mod bibliography;
 mod entry;
