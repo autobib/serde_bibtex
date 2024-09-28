@@ -64,20 +64,20 @@ fn main() {
     match args.get(1) {
         Some(arg) => match arg.as_str() {
             "ignore" => {
-                let _ = IgnoredAny::deserialize(&mut Deserializer::from_str(&input_str));
+                let _ = IgnoredAny::deserialize(&mut Deserializer::from_str(input_str));
             }
             "borrow" => {
-                let _ = RawBibliography::deserialize(&mut Deserializer::from_str(&input_str));
+                let _ = RawBibliography::deserialize(&mut Deserializer::from_str(input_str));
             }
             "struct" => {
-                let de_iter = Deserializer::from_str(&input_str).into_iter_regular_entry();
+                let de_iter = Deserializer::from_str(input_str).into_iter_regular_entry();
                 let _result: Vec<Result<TugboatEntry>> = de_iter.collect();
             }
             "copy" => {
                 let mut macros = MacroDictionary::default();
                 macros.set_month_macros();
                 let _ = OwnedBibliography::deserialize(&mut Deserializer::from_str_with_macros(
-                    &input_str, macros,
+                    input_str, macros,
                 ));
             }
             other => eprintln!(

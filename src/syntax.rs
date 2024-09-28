@@ -62,7 +62,7 @@
 //!    token_curly = @{ balanced* }
 //!    ```
 //! 3. A quoted token is a sequence of characters delimited by `"` such that the brackets `{}`
-//! are balanced. The closing `"` must not be captured within any brackets `{}`.
+//!    are balanced. The closing `"` must not be captured within any brackets `{}`.
 //!    ```ignore
 //!    quoted = _{ "{" ~ balanced* ~ "}" | (!("{" | "}" | "\"") ~ ANY) }
 //!    token_quoted = @{ quoted* }

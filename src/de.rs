@@ -564,15 +564,19 @@
 //! ```
 //! ## Deserializing values
 //! *Values* can appear in three possible locations:
+//!
 //! 1. Inside macro entries: `@string{key = <value>}`.
 //! 2. Inside preamble entries: `@preamble{<value>}`.
 //! 3. Inside field values: `@article{key, title = <value>}`.
+//!
 //! A *value* is a sequence of *tokens* with length at least 1, delimited by `#`.
 //! There are four possible tokens:
+//!
 //! 1. Bracketed text: `{text}`.
 //! 2. Quoted text: `"text"`.
 //! 3. Numbers: `01234`.
 //! 4. Variables: `var`.
+//!
 //! For instance, the following is a value:
 //! ```bib
 //! {text} # "text" # 01234 # var

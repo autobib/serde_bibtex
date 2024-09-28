@@ -14,7 +14,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("tugboat ignored str-convert", |b| {
         b.iter(|| {
             let input_str = std::str::from_utf8(&input_bytes).unwrap();
-            IgnoredAny::deserialize(&mut Deserializer::from_str(&input_str))
+            IgnoredAny::deserialize(&mut Deserializer::from_str(input_str))
         })
     });
 
@@ -25,7 +25,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("tugboat borrowed str-convert", |b| {
         b.iter(|| {
             let input_str = std::str::from_utf8(&input_bytes).unwrap();
-            RawBibliography::deserialize(&mut Deserializer::from_str(&input_str))
+            RawBibliography::deserialize(&mut Deserializer::from_str(input_str))
         })
     });
 
@@ -39,7 +39,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
             macros.set_month_macros();
             let input_str = std::str::from_utf8(&input_bytes).unwrap();
             OwnedBibliography::deserialize(&mut Deserializer::from_str_with_macros(
-                &input_str, macros,
+                input_str, macros,
             ))
         })
     });

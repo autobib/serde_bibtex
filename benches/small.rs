@@ -17,7 +17,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     });
 
     c.bench_function("biber ignored str", |b| {
-        b.iter(|| IgnoredAny::deserialize(&mut Deserializer::from_str(&input_str)))
+        b.iter(|| IgnoredAny::deserialize(&mut Deserializer::from_str(input_str)))
     });
 
     c.bench_function("biber owned slice", |b| {
@@ -25,7 +25,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     });
 
     c.bench_function("biber owned str", |b| {
-        b.iter(|| OwnedBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
+        b.iter(|| OwnedBibliography::deserialize(&mut Deserializer::from_str(input_str)))
     });
 
     c.bench_function("biber borrowed slice", |b| {
@@ -33,7 +33,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     });
 
     c.bench_function("biber borrowed str", |b| {
-        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
+        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_str(input_str)))
     });
 }
 

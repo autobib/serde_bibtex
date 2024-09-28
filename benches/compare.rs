@@ -62,16 +62,16 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     let input_str = std::str::from_utf8(&input_bytes).unwrap();
 
     c.bench_function("tugboat ignore str", |b| {
-        b.iter(|| IgnoredAny::deserialize(&mut Deserializer::from_str(&input_str)))
+        b.iter(|| IgnoredAny::deserialize(&mut Deserializer::from_str(input_str)))
     });
 
     c.bench_function("tugboat borrow str", |b| {
-        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_str(&input_str)))
+        b.iter(|| RawBibliography::deserialize(&mut Deserializer::from_str(input_str)))
     });
 
     c.bench_function("tugboat struct str", |b| {
         b.iter(|| {
-            let de_iter = Deserializer::from_str(&input_str).into_iter_regular_entry();
+            let de_iter = Deserializer::from_str(input_str).into_iter_regular_entry();
             let _result: Vec<Result<TugboatEntry>> = de_iter.collect();
         })
     });
@@ -81,7 +81,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
             let mut macros = MacroDictionary::default();
             macros.set_month_macros();
             OwnedBibliography::deserialize(&mut Deserializer::from_str_with_macros(
-                &input_str, macros,
+                input_str, macros,
             ))
         })
     });
@@ -89,13 +89,13 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     use biblatex::RawBibliography as RawBib;
 
     c.bench_function("tugboat biblatex", |b| {
-        b.iter(|| RawBib::parse(&input_str).unwrap())
+        b.iter(|| RawBib::parse(input_str).unwrap())
     });
 
     use nom_bibtex::Bibtex;
 
     c.bench_function("tugboat nom", |b| {
-        b.iter(|| Bibtex::parse(&input_str).unwrap())
+        b.iter(|| Bibtex::parse(input_str).unwrap())
     });
 }
 
