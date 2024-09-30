@@ -188,7 +188,7 @@
 //! );
 //! ```
 //! It is also possible to explicitly state which field keys you wish to capture. Let's also use an
-//! explicit `Contents` variant.
+//! explicit `Record` variant.
 //! ```
 //! # use serde::Deserialize;
 //! #[derive(Debug, PartialEq, Deserialize)]
@@ -199,7 +199,7 @@
 //! }
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
-//! struct Contents {
+//! struct Record {
 //!     entry_type: String,
 //!     entry_key: String,
 //!     fields: Fields
@@ -210,7 +210,7 @@
 //!     Macro,
 //!     Preamble,
 //!     Comment,
-//!     Regular(Contents),
+//!     Regular(Record),
 //! }
 //! ```
 //! In the above example, optional fields are set as `None` if not present, and fields which are not present
@@ -397,7 +397,7 @@
 //! use std::collections::BTreeMap;
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
-//! struct Contents {
+//! struct Record {
 //!     fields: BTreeMap<String, String>
 //! }
 //!
@@ -406,7 +406,7 @@
 //!     Macro,
 //!     Comment(String),
 //!     Preamble(String),
-//!     Regular(Contents),
+//!     Regular(Record),
 //! }
 //!
 //! type Bibliography = Vec<Entry>;
@@ -428,7 +428,7 @@
 //!     Bibliography::deserialize(&mut de),
 //!     Ok(vec![
 //!         Entry::Macro,
-//!         Entry::Regular(Contents {
+//!         Entry::Regular(Record {
 //!             fields: expected_fields
 //!         })
 //!     ]),
@@ -452,7 +452,7 @@
 //! use std::collections::BTreeMap;
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
-//! struct Contents {
+//! struct Record {
 //!     fields: BTreeMap<String, String>
 //! }
 //!
@@ -461,7 +461,7 @@
 //!     Macro(String, String),
 //!     Comment(String),
 //!     Preamble(String),
-//!     Regular(Contents),
+//!     Regular(Record),
 //! }
 //!
 //! type Bibliography = Vec<Entry>;
@@ -490,7 +490,7 @@
 //!         Entry::Macro("apr".into(), "Nonsense".into()),
 //!         // and the 'apr' macro defined by `set_month_macros` is
 //!         // expanded here
-//!         Entry::Regular(Contents {
+//!         Entry::Regular(Record {
 //!             fields: expected_fields
 //!         })
 //!     ]),
@@ -504,7 +504,7 @@
 //! # use std::collections::BTreeMap;
 //! #
 //! # #[derive(Debug, PartialEq, Deserialize)]
-//! # struct Contents {
+//! # struct Record {
 //! #     fields: BTreeMap<String, String>
 //! # }
 //! #
@@ -517,14 +517,14 @@
 //! #       month = apr,
 //! #     }
 //! # "#;
-//! // definition of Contents, Bibliography, input as in the previous example
+//! // definition of Record, Bibliography, input as in the previous example
 //! #[derive(Debug, PartialEq, Deserialize)]
 //! enum Entry {
 //!     // do not capture macro
 //!     Macro,
 //!     Comment(String),
 //!     Preamble(String),
-//!     Regular(Contents),
+//!     Regular(Record),
 //! }
 //!
 //! // Set 'month name' macros, e.g. @string{apr = {4}}
@@ -543,7 +543,7 @@
 //!         Entry::Macro,
 //!         // the 'apr' macro defined in the input overwrites
 //!         // the previously set macro
-//!         Entry::Regular(Contents {
+//!         Entry::Regular(Record {
 //!             fields: expected_fields
 //!         })
 //!     ]),
@@ -687,7 +687,7 @@
 //! }
 //!
 //! #[derive(Deserialize, Debug, PartialEq)]
-//! struct Contents<'a> {
+//! struct Record<'a> {
 //!     #[serde(borrow)]
 //!     entry_type: Cow<'a, str>, // the syntax requires these are valid utf_8
 //!     #[serde(borrow)]
@@ -699,7 +699,7 @@
 //! #[derive(Deserialize, Debug, PartialEq)]
 //! enum TestEntry<'a> {
 //!     #[serde(borrow)]
-//!     Regular(Contents<'a>),
+//!     Regular(Record<'a>),
 //!     #[serde(borrow)]
 //!     Macro(Option<(Cow<'a, str>, Vec<Token<'a>>)>),
 //!     #[serde(borrow)]
@@ -718,7 +718,7 @@
 //! use serde_bibtex::de::Deserializer;
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
-//! struct Contents {
+//! struct Record {
 //!     entry_type: String,
 //!     entry_key: String,
 //!     fields: BTreeMap<String, String>,
@@ -734,7 +734,7 @@
 //!
 //! assert!(matches!(
 //!     Deserializer::from_str(input).into_iter_regular_entry().next(),
-//!     Some(Ok(Contents { .. })),
+//!     Some(Ok(Record { .. })),
 //! ))
 //! ```
 //! If you are confident that the bibliography consists only of regular entries, you can
@@ -754,7 +754,7 @@
 //! use serde_bibtex::de::Deserializer;
 //!
 //! #[derive(Debug, PartialEq, Deserialize)]
-//! struct Contents {
+//! struct Record {
 //!     entry_type: String,
 //!     entry_key: String,
 //!     fields: BTreeMap<String, String>,
@@ -777,7 +777,7 @@
 //!
 //! assert!(matches!(
 //!     de_iter.next(),
-//!     Some(Ok(Contents { .. })),
+//!     Some(Ok(Record { .. })),
 //! ));
 //! ```
 mod bibliography;
