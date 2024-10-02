@@ -3,7 +3,7 @@
 //! crate. For other grammars, see for example the [btparse
 //! documentation](https://metacpan.org/dist/Text-BibTeX/view/btparse/doc/btparse.pod).
 //! For an informal description of the `.bib` grammar, visit the documentation for the [de
-//! module](de).
+//! module](crate::de).
 //!
 //! Generally speaking, we attempt to align with the grammar accepted by
 //! [biber](https://en.wikipedia.org/wiki/Biber_(LaTeX)), extended to handle ASCII-compatible
@@ -168,6 +168,9 @@
 //! The syntax could intentionally be made more flexible while still accepting all files satisfying
 //! the current grammar. However, we do not want to promote proliferation of `.bib` files that are
 //! incompatible with other more well-established tools.
+
+#![allow(missing_docs)]
+
 use pest_derive::Parser;
 
 /// A simple automatically derived pest parser.

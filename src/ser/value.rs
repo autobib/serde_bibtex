@@ -75,13 +75,13 @@ where
     }
 }
 
-pub struct TokenListSerializer<'a, W, F> {
+pub(crate) struct TokenListSerializer<'a, W, F> {
     ser: &'a mut Serializer<W, F>,
     first: bool,
 }
 
 impl<'a, W, F> TokenListSerializer<'a, W, F> {
-    pub fn new(ser: &'a mut Serializer<W, F>) -> Self {
+    pub(crate) fn new(ser: &'a mut Serializer<W, F>) -> Self {
         Self { ser, first: true }
     }
 }
@@ -200,7 +200,7 @@ serialize_as_bytes!(EntryTypeSerializer, {
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
         self.ser
             .formatter
-            .write_entry_type(&mut self.ser.writer, value)
+            .write_regular_entry_type(&mut self.ser.writer, value)
             .map_err(Error::io)?;
         self.ser
             .formatter

@@ -1,3 +1,5 @@
+//! # Example struct deserializartion
+//! An example deserialization of the `assets/tugboat.bib` database
 use serde::de::IgnoredAny;
 use serde::Deserialize;
 

@@ -14,6 +14,7 @@ exclude = [
 
 [package.metadata.docs.rs]
 all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
 
 [profile.bench]
 debug = true
@@ -49,3 +50,9 @@ harness = false
 [[bench]]
 name = "utf8_conversion"
 harness = false
+
+[[example]]
+name = "custom_formatter"
+
+[[example]]
+name = "tugboat"

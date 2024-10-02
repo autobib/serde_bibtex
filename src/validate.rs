@@ -1,3 +1,5 @@
+//! # Validation methods
+//! This crate exposes some methods to aid validation of BibTeX-type strings.
 use crate::error::{Error, ErrorCode, Result};
 use memchr::memchr2_iter;
 
@@ -64,6 +66,7 @@ pub(crate) fn check_variable(s: &str) -> Result<()> {
     }
 }
 
+/// Check if a given string is valid as a variable.
 #[inline]
 pub fn is_variable(s: &str) -> bool {
     check_variable(s).is_ok()
@@ -74,6 +77,7 @@ pub(crate) fn check_field_key(s: &str) -> Result<()> {
     check_identifier(s)
 }
 
+/// Check if a given string is valid as a field key.
 #[inline]
 pub fn is_field_key(s: &str) -> bool {
     check_field_key(s).is_ok()
@@ -84,9 +88,23 @@ pub(crate) fn check_entry_type(s: &str) -> Result<()> {
     check_identifier(s)
 }
 
+/// Check if a given string is valid as an entry type.
 #[inline]
 pub fn is_entry_type(s: &str) -> bool {
     check_entry_type(s).is_ok()
+}
+
+/// Check if a given string is valid as a regular entry type.
+#[inline]
+pub fn is_regular_entry_type(s: &str) -> bool {
+    if s.eq_ignore_ascii_case("string")
+        || s.eq_ignore_ascii_case("comment")
+        || s.eq_ignore_ascii_case("preamble")
+    {
+        false
+    } else {
+        is_entry_type(s)
+    }
 }
 
 #[inline]
@@ -94,6 +112,7 @@ pub(crate) fn check_entry_key(s: &str) -> Result<()> {
     check_identifier(s)
 }
 
+/// Check if a given string is valid as an entry key.
 #[inline]
 pub fn is_entry_key(s: &str) -> bool {
     check_entry_key(s).is_ok()
@@ -121,6 +140,7 @@ pub(crate) fn check_balanced(input: &[u8]) -> Result<()> {
     }
 }
 
+/// Check if a given string has balanced `{}` brackets.
 #[inline]
 pub fn is_balanced(input: &[u8]) -> bool {
     check_balanced(input).is_ok()

@@ -142,7 +142,7 @@ where
             CVN => {
                 self.ser
                     .formatter
-                    .write_entry_type(&mut self.ser.writer, "comment")
+                    .write_comment_entry_type(&mut self.ser.writer)
                     .map_err(Error::io)?;
                 self.ser
                     .formatter
@@ -155,7 +155,7 @@ where
             PVN => {
                 self.ser
                     .formatter
-                    .write_entry_type(&mut self.ser.writer, "preamble")?;
+                    .write_preamble_entry_type(&mut self.ser.writer)?;
                 self.ser.formatter.write_body_start(&mut self.ser.writer)?;
                 value.serialize(ValueSerializer::new(&mut *self.ser))?;
                 self.ser.formatter.write_body_end(&mut self.ser.writer)?;
@@ -316,12 +316,12 @@ macro_rules! regular_entry_serializer_impl {
 regular_entry_serializer_impl!(SerializeStruct);
 regular_entry_serializer_impl!(SerializeStructVariant);
 
-pub enum TupleEntryVariant {
+pub(crate) enum TupleEntryVariant {
     Regular,
     Macro,
 }
 
-pub struct RegularOrMacroEntrySerializer<'a, W, F> {
+pub(crate) struct RegularOrMacroEntrySerializer<'a, W, F> {
     ser: &'a mut Serializer<W, F>,
     variant: TupleEntryVariant,
     index: usize,
@@ -329,7 +329,7 @@ pub struct RegularOrMacroEntrySerializer<'a, W, F> {
 
 impl<'a, W, F> RegularOrMacroEntrySerializer<'a, W, F> {
     #[inline]
-    pub fn new(ser: &'a mut Serializer<W, F>, variant: TupleEntryVariant) -> Self {
+    pub(crate) fn new(ser: &'a mut Serializer<W, F>, variant: TupleEntryVariant) -> Self {
         Self {
             ser,
             variant,
@@ -366,7 +366,7 @@ where
             (TupleEntryVariant::Macro, 1) => {
                 self.ser
                     .formatter
-                    .write_entry_type(&mut self.ser.writer, "macro")
+                    .write_macro_entry_type(&mut self.ser.writer)
                     .map_err(Error::io)?;
                 self.ser
                     .formatter
@@ -487,7 +487,7 @@ macro_rules! macro_tuple_serializer_impl {
                     1 => {
                         self.ser
                             .formatter
-                            .write_entry_type(&mut self.ser.writer, "macro")
+                            .write_macro_entry_type(&mut self.ser.writer)
                             .map_err(Error::io)?;
                         self.ser
                             .formatter

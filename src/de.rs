@@ -1,7 +1,8 @@
 //! # Deserializer implementation
 //! This section contains a full description, with examples, of the [`Deserializer`] interface
 //! provided by this crate. It also provides an informal description of the `.bib` grammar accepted
-//! by this crate. For a formal description and an explicit grammar, visit the [syntax](syntax/index.html)
+//! by this crate. For a formal description and an explicit grammar, visit the
+//! [syntax](crate::syntax)
 //! module.
 //!
 //! Jump to:
@@ -786,32 +787,12 @@ mod value;
 
 pub use bibliography::{DeserializeIter, DeserializeRegularEntryIter, Deserializer};
 
-use crate::error::Result;
-use crate::parse::{SliceReader, StrReader};
-
-use serde::Deserialize;
-
-pub fn from_str<'r, D>(s: &'r str) -> Result<D>
-where
-    D: Deserialize<'r>,
-{
-    let reader = StrReader::new(s);
-    let mut deserializer = Deserializer::new(reader);
-    D::deserialize(&mut deserializer)
-}
-
-pub fn from_bytes<'r, D>(s: &'r [u8]) -> Result<D>
-where
-    D: Deserialize<'r>,
-{
-    let reader = SliceReader::new(s);
-    let mut deserializer = Deserializer::new(reader);
-    D::deserialize(&mut deserializer)
-}
-
 #[cfg(test)]
 mod tests {
-    use super::*;
+
+    use crate::{de::Deserializer, parse::StrReader};
+
+    use serde::Deserialize;
 
     use std::borrow::Cow;
     use std::iter::zip;

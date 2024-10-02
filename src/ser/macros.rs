@@ -250,12 +250,12 @@ macro_rules! serialize_err {
 /// A macro to defer serialization to an implementation for bytes
 macro_rules! serialize_as_bytes {
     ($name:ident, {$($str_impl:tt)*}) => {
-        pub struct $name<'a, W, F> {
+        pub(crate) struct $name<'a, W, F> {
             ser: &'a mut Serializer<W, F>,
         }
 
         impl<'a, W, F> $name<'a, W, F> {
-            pub fn new(ser: &'a mut Serializer<W, F>) -> Self {
+            pub(crate) fn new(ser: &'a mut Serializer<W, F>) -> Self {
                 Self { ser }
             }
         }
@@ -339,27 +339,27 @@ macro_rules! serialize_trait_impl {
 
 macro_rules! ser_wrapper {
     ($name:ident) => {
-        pub struct $name<'a, W, F> {
+        pub(crate) struct $name<'a, W, F> {
             ser: &'a mut Serializer<W, F>,
         }
 
         impl<'a, W, F> $name<'a, W, F> {
             #[inline]
-            pub fn new(ser: &'a mut Serializer<W, F>) -> Self {
+            pub(crate) fn new(ser: &'a mut Serializer<W, F>) -> Self {
                 Self { ser }
             }
         }
     };
 
     ($name:ident, index) => {
-        pub struct $name<'a, W, F> {
+        pub(crate) struct $name<'a, W, F> {
             ser: &'a mut Serializer<W, F>,
             index: usize,
         }
 
         impl<'a, W, F> $name<'a, W, F> {
             #[inline]
-            pub fn new(ser: &'a mut Serializer<W, F>) -> Self {
+            pub(crate) fn new(ser: &'a mut Serializer<W, F>) -> Self {
                 Self { ser, index: 0 }
             }
         }

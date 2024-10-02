@@ -5,16 +5,24 @@ use unicase::UniCase;
 
 use std::collections::BTreeMap;
 
+/// An owned entry, which only captures regular entries.
 #[derive(Deserialize, Debug, PartialEq)]
 pub enum Entry {
+    /// A regular entry.
     Regular {
+        /// The entry type
         entry_type: String,
+        /// The entry key
         #[serde(deserialize_with = "deserialize_unicase")]
         entry_key: UniCase<String>,
+        /// The fields
         fields: Fields,
     },
+    /// A macro entry, which is skipped.
     Macro,
+    /// A comment entry, which is skipped.
     Comment,
+    /// A preamble entry, which is skipped.
     Preamble,
 }
 
