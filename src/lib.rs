@@ -1,5 +1,9 @@
 //! # Serde BibTex
 //!
+//! <div class="warning">This crate is under active development and the public API may change substantially on every minor version change.
+//! The (de)serialization API is relatively stable, but some of the publicly-exposed internal state, particularly concerning error handling, may change or be removed in the future.
+//! Until this is stabilized, use at your own risk!</div>
+//!
 //! The `.bib` format is a common format for storing bibliographic data originally popularized by
 //! the [BibTex](https://en.wikipedia.org/wiki/BibTeX) bibliography management software.
 //! ```bib
