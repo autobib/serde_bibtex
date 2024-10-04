@@ -144,12 +144,7 @@ where
                     .formatter
                     .write_comment_entry_type(&mut self.ser.writer)
                     .map_err(Error::io)?;
-                self.ser
-                    .formatter
-                    .write_body_start(&mut self.ser.writer)
-                    .map_err(Error::io)?;
                 value.serialize(TextTokenSerializer::new(&mut *self.ser))?;
-                self.ser.formatter.write_body_end(&mut self.ser.writer)?;
                 Ok(false)
             }
             PVN => {

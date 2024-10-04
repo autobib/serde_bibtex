@@ -55,7 +55,7 @@
 //! ];
 //!
 //! let output = to_string(&bibliography).unwrap();
-//! // @comment{{A comment}}
+//! // @comment{A comment}
 //! //
 //! // @article{FirstLast2023,
 //! //   author = {Last, First},
@@ -63,7 +63,7 @@
 //! // }
 //! # assert_eq!(
 //! #     output,
-//! #     "@comment{{A comment}}\n\n@article{FirstLast2023,\n  author = {Last, First},\n  year = {2023},\n}\n"
+//! #     "@comment{A comment}\n\n@article{FirstLast2023,\n  author = {Last, First},\n  year = {2023},\n}\n"
 //! # );
 //! ```
 //! There are a few supported variants.
@@ -157,8 +157,8 @@
 //! ### Serializing values
 //! To serialize unexpanded variables directly into the output, expanded value serialization is
 //! supported.
-//! A value is a list of `Token`, where a `Token` has two special variant names: `Text` and
-//! `Variable'.
+//! A value is a list of `Token`, where a `Token` is an enum with two special variant names: `Text` and
+//! `Variable`.
 //! Values can appear anywhere that they are supported in the syntax: in field values, in
 //! the preamble, and in macro values.
 //! ```
@@ -200,7 +200,6 @@
 //! fields.insert("month".to_owned(), vec![Token::Variable("apr".to_owned())]);
 //!
 //! let bibliography = vec![
-//!     Entry::Macro("apr".to_owned(), vec![Token::Text("04".to_owned())]),
 //!     Entry::Macro("and".to_owned(), vec![Token::Text(" and ".to_owned())]),
 //!     Entry::Regular(Record {
 //!         entry_type: "article".to_owned(),
@@ -209,8 +208,6 @@
 //!     }),
 //! ];
 //! let output = to_string(&bibliography).unwrap();
-//! // @string{apr = {04}}
-//! //
 //! // @string{and = { and }}
 //! //
 //! // @article{OneTwo,
@@ -219,7 +216,7 @@
 //! // }
 //! # assert_eq!(
 //! #     output,
-//! #     "@string{apr = {04}}\n\n@string{and = { and }}\n\n@article{OneTwo,\n  author = {Author One} # and # {Author Two},\n  month = apr,\n}\n"
+//! #     "@string{and = { and }}\n\n@article{OneTwo,\n  author = {Author One} # and # {Author Two},\n  month = apr,\n}\n"
 //! # );
 //! ```
 //!
@@ -514,7 +511,7 @@ mod tests {
         ];
 
         let out = to_string(&bib).unwrap();
-        assert_eq!(out, "@string{apr = {04}}\n\n@comment{{}}\n");
+        assert_eq!(out, "@string{apr = {04}}\n\n@comment{}\n");
     }
 
     #[test]
