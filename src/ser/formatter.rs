@@ -4,6 +4,155 @@ use crate::validate::{
     is_balanced, is_entry_key, is_field_key, is_regular_entry_type, is_variable,
 };
 
+pub(crate) struct FormatBuffer<F> {
+    formatter: F,
+    entry_key: Vec<u8>,
+    entry_type: Vec<u8>,
+    fields: Vec<u8>,
+}
+
+/// A wrapper struct for a [`Formatter`] which writes to an internal buffer. This struct is needed
+/// in order to support out-of-order serialization of struct fields.
+impl<F> FormatBuffer<F> {
+    pub fn new(formatter: F) -> Self {
+        Self {
+            formatter,
+            entry_key: Vec::with_capacity(16),
+            entry_type: Vec::with_capacity(16),
+            fields: Vec::with_capacity(128),
+        }
+    }
+
+    /// Write the contents of the buffers in order
+    pub fn write<W>(&mut self, writer: &mut W) -> io::Result<()>
+    where
+        W: ?Sized + io::Write,
+    {
+        writer.write_all(&self.entry_type)?;
+        self.entry_type.clear();
+        writer.write_all(&self.entry_key)?;
+        self.entry_key.clear();
+        writer.write_all(&self.fields)?;
+        self.fields.clear();
+        Ok(())
+    }
+}
+
+impl<F: Formatter> FormatBuffer<F> {
+    /// The separator between consecutive entries.
+    #[inline]
+    pub fn write_entry_separator<W>(&mut self, writer: &mut W) -> io::Result<()>
+    where
+        W: ?Sized + io::Write,
+    {
+        self.formatter.write_entry_separator(writer)
+    }
+
+    /// Write the entry type, including the `@` symbol.
+    #[inline]
+    pub fn write_regular_entry_type(&mut self, entry_type: &str) -> io::Result<()> {
+        self.formatter
+            .write_regular_entry_type(&mut self.entry_type, entry_type)
+    }
+
+    /// Write the macro entry type, including the `@` symbol.
+    #[inline]
+    pub fn write_macro_entry_type(&mut self) -> io::Result<()> {
+        self.formatter.write_macro_entry_type(&mut self.entry_type)
+    }
+
+    /// Write the comment entry type, including the `@` symbol.
+    #[inline]
+    pub fn write_comment_entry_type(&mut self) -> io::Result<()> {
+        self.formatter
+            .write_comment_entry_type(&mut self.entry_type)
+    }
+
+    /// Write the preamble entry type, including the `@` symbol.
+    #[inline]
+    pub fn write_preamble_entry_type(&mut self) -> io::Result<()> {
+        self.formatter
+            .write_preamble_entry_type(&mut self.entry_type)
+    }
+
+    /// Write the body start character, typically `{`.
+    #[inline]
+    pub fn write_body_start(&mut self) -> io::Result<()> {
+        self.formatter.write_body_start(&mut self.entry_type)
+    }
+
+    /// Write an entry key.
+    #[inline]
+    pub fn write_entry_key(&mut self, key: &str) -> io::Result<()> {
+        self.formatter.write_entry_key(&mut self.entry_key, key)
+    }
+
+    /// Write the terminator for an entry key, often `,\n`.
+    #[inline]
+    pub fn write_entry_key_end(&mut self) -> io::Result<()> {
+        self.formatter.write_entry_key_end(&mut self.entry_key)
+    }
+
+    /// Write the start of a field, such as indentation `  `.
+    #[inline]
+    pub fn write_field_start(&mut self) -> io::Result<()> {
+        self.formatter.write_field_start(&mut self.fields)
+    }
+
+    /// Write a field key.
+    #[inline]
+    pub fn write_field_key(&mut self, key: &str) -> io::Result<()> {
+        self.formatter.write_field_key(&mut self.fields, key)
+    }
+
+    /// Write a field separator, such as ` = `.
+    #[inline]
+    pub fn write_field_separator(&mut self) -> io::Result<()> {
+        self.formatter.write_field_separator(&mut self.fields)
+    }
+
+    /// Write a token separator, such as ` # `.
+    #[inline]
+    pub fn write_token_separator(&mut self) -> io::Result<()> {
+        self.formatter.write_token_separator(&mut self.fields)
+    }
+
+    /// Write a bracketed token `{text}`.
+    #[inline]
+    pub fn write_bracketed_token(&mut self, token: &str) -> io::Result<()> {
+        self.formatter
+            .write_bracketed_token(&mut self.fields, token)
+    }
+
+    /// Write a variable token `text`.
+    #[inline]
+    pub fn write_variable_token(&mut self, variable: &str) -> io::Result<()> {
+        self.formatter
+            .write_variable_token(&mut self.fields, variable)
+    }
+
+    /// Write the terminator for a field, often `,\n`.
+    #[inline]
+    pub fn write_field_end(&mut self) -> io::Result<()> {
+        self.formatter.write_field_end(&mut self.fields)
+    }
+
+    /// Write the terminator for the body, often `}`.
+    #[inline]
+    pub fn write_body_end(&mut self) -> io::Result<()> {
+        self.formatter.write_body_end(&mut self.fields)
+    }
+
+    /// Write the terminator for the bibliography, such as a newline.
+    #[inline]
+    pub fn write_bibliography_end<W>(&mut self, writer: &mut W) -> io::Result<()>
+    where
+        W: ?Sized + io::Write,
+    {
+        self.formatter.write_bibliography_end(writer)
+    }
+}
+
 /// A formatter which outputs with normal whitespace and guarantees valid BibTeX.
 pub struct PrettyFormatter {}
 

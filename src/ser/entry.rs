@@ -141,19 +141,17 @@ where
             MVN => value.serialize(MacroRuleSerializer::new(&mut *self.ser)),
             CVN => {
                 self.ser
-                    .formatter
-                    .write_comment_entry_type(&mut self.ser.writer)
+                    .buffer
+                    .write_comment_entry_type()
                     .map_err(Error::io)?;
                 value.serialize(TextTokenSerializer::new(&mut *self.ser))?;
                 Ok(false)
             }
             PVN => {
-                self.ser
-                    .formatter
-                    .write_preamble_entry_type(&mut self.ser.writer)?;
-                self.ser.formatter.write_body_start(&mut self.ser.writer)?;
+                self.ser.buffer.write_preamble_entry_type()?;
+                self.ser.buffer.write_body_start()?;
                 value.serialize(ValueSerializer::new(&mut *self.ser))?;
-                self.ser.formatter.write_body_end(&mut self.ser.writer)?;
+                self.ser.buffer.write_body_end()?;
                 Ok(false)
             }
             _ => Err(Error::custom(format!("Invalid variant name `{variant}`"))),
@@ -282,7 +280,15 @@ macro_rules! regular_entry_tuple_serializer_impl {
 regular_entry_tuple_serializer_impl!(serialize_field, SerializeTupleStruct);
 regular_entry_tuple_serializer_impl!(serialize_element, SerializeTuple);
 
-ser_wrapper!(RegularEntryStructSerializer);
+pub(crate) struct RegularEntryStructSerializer<'a, W, F> {
+    ser: &'a mut Serializer<W, F>,
+}
+impl<'a, W, F> RegularEntryStructSerializer<'a, W, F> {
+    #[inline]
+    pub(crate) fn new(ser: &'a mut Serializer<W, F>) -> Self {
+        Self { ser }
+    }
+}
 
 macro_rules! regular_entry_serializer_impl {
     ($trait:ident) => {
@@ -360,25 +366,16 @@ where
             (TupleEntryVariant::Regular, _) => unreachable!(),
             (TupleEntryVariant::Macro, 1) => {
                 self.ser
-                    .formatter
-                    .write_macro_entry_type(&mut self.ser.writer)
+                    .buffer
+                    .write_macro_entry_type()
                     .map_err(Error::io)?;
-                self.ser
-                    .formatter
-                    .write_body_start(&mut self.ser.writer)
-                    .map_err(Error::io)?;
+                self.ser.buffer.write_body_start().map_err(Error::io)?;
                 value.serialize(VariableTokenSerializer::new(&mut *self.ser))
             }
             (TupleEntryVariant::Macro, 2) => {
-                self.ser
-                    .formatter
-                    .write_field_separator(&mut self.ser.writer)
-                    .map_err(Error::io)?;
+                self.ser.buffer.write_field_separator().map_err(Error::io)?;
                 value.serialize(ValueSerializer::new(&mut *self.ser))?;
-                self.ser
-                    .formatter
-                    .write_body_end(&mut self.ser.writer)
-                    .map_err(Error::io)
+                self.ser.buffer.write_body_end().map_err(Error::io)
             }
             (TupleEntryVariant::Macro, _) => unreachable!(),
         }
@@ -481,25 +478,16 @@ macro_rules! macro_tuple_serializer_impl {
                 match self.index {
                     1 => {
                         self.ser
-                            .formatter
-                            .write_macro_entry_type(&mut self.ser.writer)
+                            .buffer
+                            .write_macro_entry_type()
                             .map_err(Error::io)?;
-                        self.ser
-                            .formatter
-                            .write_body_start(&mut self.ser.writer)
-                            .map_err(Error::io)?;
+                        self.ser.buffer.write_body_start().map_err(Error::io)?;
                         value.serialize(VariableTokenSerializer::new(&mut *self.ser))
                     }
                     2 => {
-                        self.ser
-                            .formatter
-                            .write_field_separator(&mut self.ser.writer)
-                            .map_err(Error::io)?;
+                        self.ser.buffer.write_field_separator().map_err(Error::io)?;
                         value.serialize(ValueSerializer::new(&mut *self.ser))?;
-                        self.ser
-                            .formatter
-                            .write_body_end(&mut self.ser.writer)
-                            .map_err(Error::io)
+                        self.ser.buffer.write_body_end().map_err(Error::io)
                     }
                     _ => unreachable!(),
                 }
@@ -609,20 +597,18 @@ where
     where
         T: ?Sized + ser::Serialize,
     {
-        self.ser.formatter.write_field_start(&mut self.ser.writer)?;
+        self.ser.buffer.write_field_start()?;
         key.serialize(FieldKeySerializer::new(&mut *self.ser))?;
-        self.ser
-            .formatter
-            .write_field_separator(&mut self.ser.writer)?;
+        self.ser.buffer.write_field_separator()?;
         value.serialize(ValueSerializer::new(&mut *self.ser))?;
-        self.ser.formatter.write_field_end(&mut self.ser.writer)?;
+        self.ser.buffer.write_field_end()?;
 
         Self::Ok::default();
         Ok(())
     }
     #[inline]
     fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
-        self.ser.formatter.write_body_end(&mut self.ser.writer)?;
+        self.ser.buffer.write_body_end()?;
         Self::Ok::default();
         Ok(())
     }
@@ -640,7 +626,7 @@ where
     where
         T: ?Sized + ser::Serialize,
     {
-        self.ser.formatter.write_field_start(&mut self.ser.writer)?;
+        self.ser.buffer.write_field_start()?;
         key.serialize(FieldKeySerializer::new(&mut *self.ser))
     }
 
@@ -648,18 +634,16 @@ where
     where
         T: ?Sized + ser::Serialize,
     {
-        self.ser
-            .formatter
-            .write_field_separator(&mut self.ser.writer)?;
+        self.ser.buffer.write_field_separator()?;
         value.serialize(ValueSerializer::new(&mut *self.ser))?;
-        self.ser.formatter.write_field_end(&mut self.ser.writer)?;
+        self.ser.buffer.write_field_end()?;
         Self::Ok::default();
         Ok(())
     }
 
     #[inline]
     fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
-        self.ser.formatter.write_body_end(&mut self.ser.writer)?;
+        self.ser.buffer.write_body_end()?;
         Self::Ok::default();
         Ok(())
     }
@@ -685,7 +669,7 @@ macro_rules! entry_fields_serializer_impl {
 
             #[inline]
             fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
-                self.ser.formatter.write_body_end(&mut self.ser.writer)?;
+                self.ser.buffer.write_body_end()?;
                 Ok(Self::Ok::default())
             }
         }
@@ -772,15 +756,13 @@ macro_rules! key_value_tuple_serializer_impl {
                 self.index += 1;
                 match self.index {
                     1 => {
-                        self.ser.formatter.write_field_start(&mut self.ser.writer)?;
+                        self.ser.buffer.write_field_start()?;
                         value.serialize(FieldKeySerializer::new(&mut *self.ser))
                     }
                     2 => {
-                        self.ser
-                            .formatter
-                            .write_field_separator(&mut self.ser.writer)?;
+                        self.ser.buffer.write_field_separator()?;
                         value.serialize(ValueSerializer::new(&mut *self.ser))?;
-                        self.ser.formatter.write_field_end(&mut self.ser.writer)?;
+                        self.ser.buffer.write_field_end()?;
                         Ok(Self::Ok::default())
                     }
                     _ => unreachable!(),

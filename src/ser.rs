@@ -249,19 +249,22 @@ use std::io;
 use serde::ser;
 
 pub use self::formatter::{CompactFormatter, Formatter, PrettyFormatter, ValidatingFormatter};
-use self::{entry::EntrySerializer, macros::serialize_err};
+use self::{entry::EntrySerializer, formatter::FormatBuffer, macros::serialize_err};
 use crate::error::{Error, Result};
 
 /// The main serializer, when you already have a [`std::io::Write`] and a [`Formatter`].
 pub struct Serializer<W, F = PrettyFormatter> {
     writer: W,
-    formatter: F,
+    buffer: FormatBuffer<F>,
 }
 
 impl<W, F> Serializer<W, F> {
     /// Create a new [`Serializer`] with the provided writer and [`Formatter`].
     pub fn new_with_formatter(writer: W, formatter: F) -> Self {
-        Self { writer, formatter }
+        Self {
+            writer,
+            buffer: FormatBuffer::new(formatter),
+        }
     }
 
     /// Recover the interval writer.
@@ -393,17 +396,18 @@ macro_rules! bibliography_serializer_impl {
                     self.skip_newline = false;
                 } else {
                     self.ser
-                        .formatter
+                        .buffer
                         .write_entry_separator(&mut self.ser.writer)?;
                 }
                 self.skip_newline = value.serialize(EntrySerializer::new(&mut *self.ser))?;
+                self.ser.buffer.write(&mut self.ser.writer)?;
                 Ok(())
             }
 
             #[inline]
             fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
                 self.ser
-                    .formatter
+                    .buffer
                     .write_bibliography_end(&mut self.ser.writer)?;
                 Ok(())
             }
@@ -424,8 +428,8 @@ mod tests {
 
     #[derive(Serialize)]
     struct Record {
-        entry_type: &'static str,
         entry_key: &'static str,
+        entry_type: &'static str,
         fields: Vec<(&'static str, &'static str)>,
     }
 

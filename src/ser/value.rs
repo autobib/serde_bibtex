@@ -98,9 +98,7 @@ macro_rules! token_list_serializer_impl {
                 if self.first {
                     self.first = false;
                 } else {
-                    self.ser
-                        .formatter
-                        .write_token_separator(&mut self.ser.writer)?;
+                    self.ser.buffer.write_token_separator()?;
                 }
                 value.serialize(TokenSerializer::new(&mut *self.ser))
             }
@@ -170,55 +168,39 @@ where
 
 serialize_as_bytes!(TextTokenSerializer, {
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
-        self.ser
-            .formatter
-            .write_bracketed_token(&mut self.ser.writer, value)
-            .map_err(Error::io)
+        self.ser.buffer.write_bracketed_token(value)?;
+        Ok(())
     }
 });
 
 serialize_as_bytes!(FieldKeySerializer, {
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
-        self.ser
-            .formatter
-            .write_field_key(&mut self.ser.writer, value)
-            .map_err(Error::io)
+        self.ser.buffer.write_field_key(value)?;
+        Ok(())
     }
 });
 
 serialize_as_bytes!(VariableTokenSerializer, {
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
-        self.ser
-            .formatter
-            .write_variable_token(&mut self.ser.writer, value)
-            .map_err(Error::io)
+        self.ser.buffer.write_variable_token(value)?;
+        Ok(())
     }
 });
 
 serialize_as_bytes!(EntryTypeSerializer, {
     /// Serialize the entry type, and also write the body start
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
-        self.ser
-            .formatter
-            .write_regular_entry_type(&mut self.ser.writer, value)
-            .map_err(Error::io)?;
-        self.ser
-            .formatter
-            .write_body_start(&mut self.ser.writer)
-            .map_err(Error::io)
+        self.ser.buffer.write_regular_entry_type(value)?;
+        self.ser.buffer.write_body_start()?;
+        Ok(())
     }
 });
 
 serialize_as_bytes!(EntryKeySerializer, {
     /// Serialize the entry type, and also the trailing comma
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
-        self.ser
-            .formatter
-            .write_entry_key(&mut self.ser.writer, value)
-            .map_err(Error::io)?;
-        self.ser
-            .formatter
-            .write_entry_key_end(&mut self.ser.writer)
-            .map_err(Error::io)
+        self.ser.buffer.write_entry_key(value)?;
+        self.ser.buffer.write_entry_key_end()?;
+        Ok(())
     }
 });
