@@ -282,19 +282,33 @@ regular_entry_tuple_serializer_impl!(serialize_element, SerializeTuple);
 
 pub(crate) struct RegularEntryStructSerializer<'a, W, F> {
     ser: &'a mut Serializer<W, F>,
+    wrote_entry_type: bool,
+    wrote_entry_key: bool,
+    wrote_fields: bool,
 }
 impl<'a, W, F> RegularEntryStructSerializer<'a, W, F> {
     #[inline]
     pub(crate) fn new(ser: &'a mut Serializer<W, F>) -> Self {
-        Self { ser }
+        Self {
+            ser,
+            wrote_entry_type: false,
+            wrote_entry_key: false,
+            wrote_fields: false,
+        }
     }
 }
 
 macro_rules! regular_entry_serializer_impl {
     ($trait:ident) => {
-        serialize_trait_impl!(RegularEntryStructSerializer, $trait, {
+        impl<'a, W, F> ser::$trait for RegularEntryStructSerializer<'a, W, F>
+        where
+            W: io::Write,
+            F: Formatter,
+        {
+            type Error = Error;
             type Ok = bool;
 
+            #[inline]
             fn serialize_field<T>(
                 &mut self,
                 key: &'static str,
@@ -304,13 +318,47 @@ macro_rules! regular_entry_serializer_impl {
                 T: ?Sized + ser::Serialize,
             {
                 match key {
-                    ENTRY_TYPE_NAME => value.serialize(EntryTypeSerializer::new(&mut *self.ser)),
-                    ENTRY_KEY_NAME => value.serialize(EntryKeySerializer::new(&mut *self.ser)),
-                    FIELDS_NAME => value.serialize(EntryFieldsSerializer::new(&mut *self.ser)),
+                    ENTRY_TYPE_NAME => {
+                        if self.wrote_entry_type {
+                            Err(Error::custom("Duplicate entry type"))
+                        } else {
+                            self.wrote_entry_type = true;
+                            value.serialize(EntryTypeSerializer::new(&mut *self.ser))
+                        }
+                    }
+                    ENTRY_KEY_NAME => {
+                        if self.wrote_entry_key {
+                            Err(Error::custom("Duplicate entry key"))
+                        } else {
+                            self.wrote_entry_key = true;
+                            value.serialize(EntryKeySerializer::new(&mut *self.ser))
+                        }
+                    }
+                    FIELDS_NAME => {
+                        if self.wrote_fields {
+                            Err(Error::custom("Duplicate fields"))
+                        } else {
+                            self.wrote_fields = true;
+                            value.serialize(EntryFieldsSerializer::new(&mut *self.ser))
+                        }
+                    }
                     var => Err(Error::custom(format!("Unexpected struct field {var}"))),
                 }
             }
-        });
+
+            #[inline]
+            fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
+                if !self.wrote_entry_type {
+                    Err(Error::custom("Missing entry type"))
+                } else if !self.wrote_entry_key {
+                    Err(Error::custom("Missing entry key"))
+                } else if !self.wrote_fields {
+                    Err(Error::custom("Missing fields"))
+                } else {
+                    Ok(false)
+                }
+            }
+        }
     };
 }
 
