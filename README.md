@@ -3,7 +3,7 @@
 
 # WARNING
 This crate is under active development and the public API may change substantially on every minor version change.
-The deserialization API is relatively stable, but serialization is not yet implemented and some of the publicly-exposed internal state may change.
+The (de)serialization API is relatively stable, but some of the publicly-exposed internal state may change, particularly concerning the handling of errors.
 Until this is stabilized, use at your own risk!
 
 # Serde bibtex
@@ -14,25 +14,39 @@ For examples and a thorough documentation of features, visit the [docs](https://
 
 ## Deserializer
 Here are the main features.
+See the [deserializer docs](https://docs.rs/serde_bibtex/latest/serde_bibtex/de/index.html) for more detail.
 
 ### Flexible
-  - Structured: read into Rust types with automatic `@string` macro expansion and other convenience features.
-  - Unstructured: do not expand macros or collect fields values to preserve the structure of the original bibtex.
-  - Deserialize from bytes to defer UTF-8 conversion, or even pass-through raw bytes.
-  - Error-tolerant `Iterator` API that allows skipping malformed entries.
+- Structured: read into Rust types with automatic `@string` macro expansion and other convenience features.
+- Unstructured: do not expand macros or collect fields values to preserve the structure of the original bibtex.
+- Deserialize from bytes to defer UTF-8 conversion, or even pass-through raw bytes.
+- Error-tolerant `Iterator` API that allows skipping malformed entries.
 
 ### Explicit and unambiguous syntax
-  - Aims for compatibility with and tested against an independently implemented [pest grammar](/src/syntax/bibtex.pest).
-  - Aim for compatibility with [biber](https://github.com/plk/biber) but without some of biber's [undocumented idiosyncracies](https://docs.rs/serde_bibtex/latest/serde_bibtex/syntax/index.html#differences-from-biber) or [unfixable parsing bugs](https://github.com/plk/biber/issues/456).
+- Aims for compatibility with and tested against an independently implemented [pest grammar](/src/syntax/bibtex.pest).
+- Aim for compatibility with [biber](https://github.com/plk/biber) but without some of biber's [undocumented idiosyncracies](https://docs.rs/serde_bibtex/latest/serde_bibtex/syntax/index.html#differences-from-biber) or [unfixable parsing bugs](https://github.com/plk/biber/issues/456).
 
 ### Fast
-  - Low overhead manual parser implementation (see [benchmarks](#benchmarks)).
-  - Zero-copy deserialization.
-  - Selective capturing of contents (see [benchmarks](#benchmarks) for speed differences)
+- Low overhead manual parser implementation (see [benchmarks](#benchmarks)).
+- Zero-copy deserialization.
+- Selective capturing of contents (see [benchmarks](#benchmarks) for speed differences)
 
 
 ## Serializer
-TODO: not yet implemented
+Here are the main features.
+See the [serializer docs](https://docs.rs/serde_bibtex/latest/serde_bibtex/ser/index.html) for more detail.
+
+### Flexible
+- Flexibly serialize many types which are vaguely structured like BibTeX entries.
+- Sufficiently general to generate any valid BibTeX bibliography (up to syntactic equivalence), including all entry types such as `@string` macros, and out-putting unexpanded macros.
+- Implementable `Formatter` trait which allows total customization of generated BibTeX.
+
+### Opinionated
+- Default `Formatter` implementations serialize in a standardized format to guarantee unambiguous parsing even by other tools.
+- Compact formatter when serializing for consumption by non-humans.
+
+### Robust
+- Validate during serialization to guarantee generation of valid BibTeX.
 
 
 ## Comparison with other crates
@@ -61,15 +75,16 @@ It is a 2.64 MB 73,993-line `.bib` file.
 6. `nom-bibtex`: Parse using `nom-bibtex::Bibtex::parse` (most similar to `copy`).
 
 The benchmarks were performed on an Intel(R) Core(TM) i7-9750H CPU @ 2.60 GHz (2019 MacBook Pro).
+The speedup factor is relative to `biblatex`.
 
 | benchmark  | factor | runtime                           | throughput |
 |------------|--------|-----------------------------------|------------|
-| ignore     | 0.18x  | `[3.3923 ms 3.3987 ms 3.4058 ms]` | 660 MB/s   |
-| struct     | 0.67x  | `[8.5496 ms 8.7481 ms 8.9924 ms]` | 300 MB/s   |
-| borrow     | 1.0x   | `[12.932 ms 12.962 ms 12.992 ms]` | 200 MB/s   |
-| biblatex   | 1.3x   | `[16.184 ms 16.224 ms 16.266 ms]` | 160 MB/s   |
-| copy       | 1.7x   | `[21.455 ms 21.690 ms 21.935 ms]` | 120 MB/s   |
-| nom-bibtex | 5.5x   | `[71.607 ms 71.912 ms 72.343 ms]` | 40 MB/s    |
+| ignore     | 4.8x   | `[3.3923 ms 3.3987 ms 3.4058 ms]` | 660 MB/s   |
+| struct     | 1.9x   | `[8.5496 ms 8.7481 ms 8.9924 ms]` | 300 MB/s   |
+| borrow     | 1.3x   | `[12.932 ms 12.962 ms 12.992 ms]` | 200 MB/s   |
+| biblatex   | 1.0x   | `[16.184 ms 16.224 ms 16.266 ms]` | 160 MB/s   |
+| copy       | 0.75x  | `[21.455 ms 21.690 ms 21.935 ms]` | 120 MB/s   |
+| nom-bibtex | 0.23x  | `[71.607 ms 71.912 ms 72.343 ms]` | 40 MB/s    |
 
 The [bibparser](https://github.com/typho/bibparser) crate is not included in this benchmark as it is unable to parse the input file.
 
