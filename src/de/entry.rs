@@ -10,7 +10,8 @@ use crate::{
         COMMENT_ENTRY_VARIANT_NAME, ENTRY_KEY_NAME, ENTRY_TYPE_NAME, FIELDS_NAME,
         MACRO_ENTRY_VARIANT_NAME, PREAMBLE_ENTRY_VARIANT_NAME, REGULAR_ENTRY_VARIANT_NAME,
     },
-    parse::{BibtexParse, EntryType},
+    parse::BibtexParse,
+    token::EntryType,
 };
 
 use super::{
@@ -538,7 +539,7 @@ where
         self.step_position();
         match self.pos {
             EntryPosition::EntryType => seed
-                .deserialize(WrappedBorrowStrDeserializer::new(self.name)) // TODO: avoid clone
+                .deserialize(WrappedBorrowStrDeserializer::new(self.name))
                 .map(Some),
             EntryPosition::CitationKey => {
                 self.closing_bracket = self.de.parser.initial()?;

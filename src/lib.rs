@@ -127,7 +127,7 @@ pub mod ser;
 #[cfg(feature = "syntax")]
 #[cfg_attr(docsrs, doc(cfg(feature = "syntax")))]
 pub mod syntax;
-pub mod validate;
+pub mod token;
 
 use std::io;
 
@@ -136,7 +136,7 @@ use serde::{Deserialize, Serialize};
 use crate::{de::Deserializer, ser::Serializer};
 pub use crate::{
     error::{Error, Result},
-    parse::token,
+    // parse::token,
     parse::{MacroDictionary, SliceReader, StrReader},
 };
 

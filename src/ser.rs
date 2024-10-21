@@ -144,7 +144,7 @@
 //! let bib = vec![("article", ",", [("author", "Author"), ("year", "2023")])];
 //! assert!(to_string(&bib).is_err());
 //! ```
-//! If you explicitly do not want to validate output, you can use (for instance) the [`to_string_unchecked`](crate::to_string_unchecked) function. Note that this could result in invalid BibTeX. You can check validity of the types using functions in the [validate](crate::validate) module directly.
+//! If you explicitly do not want to validate output, you can use (for instance) the [`to_string_unchecked`](crate::to_string_unchecked) function. Note that this could result in invalid BibTeX. You can check validity of the types using functions in the [token](crate::token) module directly.
 //! ```
 //! use serde_bibtex::to_string_unchecked;
 //! // multiple syntax errors: whitespace in entry type, invalid characters in entry key, empty
@@ -233,7 +233,7 @@
 //!
 //! In order to also verify that the output is valid, the wrapper struct [`ValidatingFormatter`]
 //! adds a validation step to any type which implements [`Formatter`]. If you wish to check
-//! validity in your own code, see the [validate](crate::validate) module.
+//! validity in your own code, see the [token](crate::token) module.
 //!
 //! There are convenience entry points for built-in formatters; see for instance the
 //! [`to_string`](crate::to_string) method, with variants [`to_string_unchecked`](crate::to_string)

@@ -1,7 +1,12 @@
 //! # Validation methods
-//! This crate exposes some methods to aid validation of BibTeX-type strings.
-use crate::error::{Error, ErrorCode, Result};
+//! This module exposes some methods to aid validation of BibTeX-type strings.
+
+// use crate::error::{Error, ErrorCode, Result};
 use memchr::memchr2_iter;
+
+use super::TokenError;
+
+// pub struct TokenError
 
 /// Lookup table for bytes which could appear in an entry key. This includes the
 /// ascii printable characters with "{}(),= \t\n\\#%\"" removed, as well as bytes
@@ -45,22 +50,20 @@ fn find_invalid_identifier_char(input: &str) -> Option<char> {
         .map(|b| unsafe { char::from_u32_unchecked(*b as u32) })
 }
 
-fn check_identifier(s: &str) -> Result<()> {
+fn check_identifier(s: &str) -> Result<(), TokenError> {
     if s.is_empty() {
-        Err(Error::syntax(ErrorCode::Empty))
+        Err(TokenError::Empty)
     } else {
-        find_invalid_identifier_char(s).map_or_else(
-            || Ok(()),
-            |ch| Err(Error::syntax(ErrorCode::DisallowedChar(ch))),
-        )
+        find_invalid_identifier_char(s)
+            .map_or_else(|| Ok(()), |ch| Err(TokenError::InvalidChar(ch)))
     }
 }
 
-pub(crate) fn check_variable(s: &str) -> Result<()> {
+pub fn check_variable(s: &str) -> Result<(), TokenError> {
     check_identifier(s)?;
     // SAFETY: if is_identifer(s) does not fail, then s is non-empty
     if s.as_bytes()[0].is_ascii_digit() {
-        Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
+        Err(TokenError::StartsWithDigit)
     } else {
         Ok(())
     }
@@ -73,7 +76,7 @@ pub fn is_variable(s: &str) -> bool {
 }
 
 #[inline]
-pub(crate) fn check_field_key(s: &str) -> Result<()> {
+pub fn check_field_key(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
 }
 
@@ -84,7 +87,7 @@ pub fn is_field_key(s: &str) -> bool {
 }
 
 #[inline]
-pub(crate) fn check_entry_type(s: &str) -> Result<()> {
+pub fn check_entry_type(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
 }
 
@@ -108,7 +111,7 @@ pub fn is_regular_entry_type(s: &str) -> bool {
 }
 
 #[inline]
-pub(crate) fn check_entry_key(s: &str) -> Result<()> {
+pub fn check_entry_key(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
 }
 
@@ -118,7 +121,7 @@ pub fn is_entry_key(s: &str) -> bool {
     check_entry_key(s).is_ok()
 }
 
-pub(crate) fn check_balanced(input: &[u8]) -> Result<()> {
+pub fn check_balanced(input: &[u8]) -> Result<(), TokenError> {
     let mut bracket_depth = 0;
 
     for pos in memchr2_iter(b'{', b'}', input) {
@@ -127,7 +130,7 @@ pub(crate) fn check_balanced(input: &[u8]) -> Result<()> {
         } else {
             // too many closing brackets
             if bracket_depth == 0 {
-                return Err(Error::syntax(ErrorCode::UnexpectedClosingBracket));
+                return Err(TokenError::ExtraClosingBracket);
             }
             bracket_depth -= 1;
         }
@@ -136,7 +139,7 @@ pub(crate) fn check_balanced(input: &[u8]) -> Result<()> {
     if bracket_depth == 0 {
         Ok(())
     } else {
-        Err(Error::syntax(ErrorCode::UnterminatedTextToken))
+        Err(TokenError::ExtraOpeningBracket)
     }
 }
 
@@ -153,34 +156,19 @@ mod tests {
     #[test]
     fn test_variable() {
         assert_eq!(check_variable("a123"), Ok(()));
-        assert_eq!(
-            check_variable("1234"),
-            Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
-        );
-        assert_eq!(
-            check_variable("a{"),
-            Err(Error::syntax(ErrorCode::DisallowedChar('{')))
-        );
-        assert_eq!(
-            check_variable(" "),
-            Err(Error::syntax(ErrorCode::DisallowedChar(' ')))
-        );
-        assert_eq!(check_variable(""), Err(Error::syntax(ErrorCode::Empty)));
+        assert_eq!(check_variable("1234"), Err(TokenError::StartsWithDigit));
+        assert_eq!(check_variable("a{"), Err(TokenError::InvalidChar('{')));
+        assert_eq!(check_variable(" "), Err(TokenError::InvalidChar(' ')));
+        assert_eq!(check_variable(""), Err(TokenError::Empty));
     }
 
     #[test]
     fn test_field_key() {
         assert_eq!(check_variable("a123"), Ok(()));
-        assert_eq!(
-            check_variable("1234"),
-            Err(Error::syntax(ErrorCode::VariableStartsWithDigit))
-        );
-        assert_eq!(
-            check_field_key("a)"),
-            Err(Error::syntax(ErrorCode::DisallowedChar(')')))
-        );
+        assert_eq!(check_variable("1234"), Err(TokenError::StartsWithDigit));
+        assert_eq!(check_field_key("a)"), Err(TokenError::InvalidChar(')')));
         assert_eq!(check_field_key("🍄"), Ok(()));
-        assert_eq!(check_field_key(""), Err(Error::syntax(ErrorCode::Empty)));
+        assert_eq!(check_field_key(""), Err(TokenError::Empty));
     }
 
     #[test]
@@ -189,13 +177,7 @@ mod tests {
         assert_eq!(check_balanced(b""), Ok(()));
         assert_eq!(check_balanced(b"{}"), Ok(()));
         assert_eq!(check_balanced(b"{}{{}}"), Ok(()));
-        assert_eq!(
-            check_balanced(b"{"),
-            Err(Error::syntax(ErrorCode::UnterminatedTextToken))
-        );
-        assert_eq!(
-            check_balanced(b"{}}"),
-            Err(Error::syntax(ErrorCode::UnexpectedClosingBracket))
-        );
+        assert_eq!(check_balanced(b"{"), Err(TokenError::ExtraOpeningBracket));
+        assert_eq!(check_balanced(b"{}}"), Err(TokenError::ExtraClosingBracket));
     }
 }

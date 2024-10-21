@@ -1,12 +1,11 @@
 mod macros;
 mod read;
-pub mod token;
 
 use crate::error::{Error, ErrorCode, Result};
 
+use crate::token::{EntryKey, EntryType, FieldKey, Text, Token, Variable};
 pub use macros::MacroDictionary;
-pub use read::{Identifier, Read, SliceReader, StrReader, Text};
-pub use token::{EntryKey, EntryType, FieldKey, Token, Variable};
+pub use read::{Read, SliceReader, StrReader};
 
 pub trait BibtexParse<'r>: Read<'r> {
     /// Read the entry type, returning None if EOF was reached.

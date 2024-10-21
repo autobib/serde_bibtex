@@ -6,54 +6,7 @@ pub use slice_impl::SliceReader;
 pub use str_impl::StrReader;
 
 use crate::error::Error;
-
-#[derive(Debug)]
-pub struct Identifier<S: AsRef<str>>(pub S);
-
-/// The core Text handling object.
-#[derive(Debug, Clone, PartialEq)]
-pub enum Text<S: AsRef<str>, B: AsRef<[u8]>> {
-    Str(S),
-    Bytes(B),
-}
-
-impl<S, B> Text<S, B>
-where
-    S: AsRef<str>,
-    B: AsRef<[u8]>,
-{
-    pub fn own(&self) -> Text<String, Vec<u8>> {
-        match self {
-            Text::Str(s) => Text::Str(s.as_ref().to_string()),
-            Text::Bytes(b) => Text::Bytes(b.as_ref().to_vec()),
-        }
-    }
-}
-
-impl<'r> Text<&'r str, &'r [u8]> {
-    pub fn into_str(self) -> Result<&'r str, Error> {
-        match self {
-            Self::Str(s) => Ok(s),
-            Self::Bytes(b) => Ok(std::str::from_utf8(b)?),
-        }
-    }
-
-    pub fn into_bytes(self) -> &'r [u8] {
-        match self {
-            Self::Str(s) => s.as_bytes(),
-            Self::Bytes(bytes) => bytes,
-        }
-    }
-}
-
-impl<S: AsRef<str>, B: AsRef<[u8]>> Text<S, B> {
-    pub fn len(&self) -> usize {
-        match self {
-            Self::Str(s) => s.as_ref().len(),
-            Self::Bytes(b) => b.as_ref().len(),
-        }
-    }
-}
+use crate::token::{Identifier, Text};
 
 pub trait Read<'r> {
     /// Peek a single byte.

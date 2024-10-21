@@ -6,9 +6,12 @@ use serde::de::{
 };
 use serde::forward_to_deserialize_any;
 
-use crate::error::{Error, Result};
-use crate::naming::{MACRO_TOKEN_VARIANT_NAME, TEXT_TOKEN_VARIANT_NAME};
-use crate::parse::{BibtexParse, Text, Token};
+use crate::{
+    error::{Error, Result},
+    naming::{MACRO_TOKEN_VARIANT_NAME, TEXT_TOKEN_VARIANT_NAME},
+    parse::BibtexParse,
+    token::{Text, Token},
+};
 
 use super::Deserializer;
 
@@ -499,7 +502,7 @@ mod tests {
     use crate::de::Deserializer;
     use crate::parse::MacroDictionary;
     use crate::parse::StrReader;
-    use crate::parse::Variable;
+    use crate::token::Variable;
     use serde::Deserialize;
 
     #[derive(Debug, Deserialize, PartialEq)]

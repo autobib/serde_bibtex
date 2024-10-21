@@ -6,9 +6,11 @@ use super::{Identifier, Text};
 use memchr::{memchr2_iter, memchr3_iter};
 use std::str::{from_utf8, from_utf8_unchecked};
 
-use crate::error::{Error, ErrorCode};
-use crate::parse::BibtexParse;
-use crate::validate::IDENTIFIER_ALLOWED;
+use crate::{
+    error::{Error, ErrorCode},
+    parse::BibtexParse,
+    token::IDENTIFIER_ALLOWED,
+};
 
 /// Ignore junk characters between entries.
 ///

@@ -3,9 +3,12 @@ use std::marker::PhantomData;
 use serde::de::{self, DeserializeSeed, SeqAccess};
 use serde::forward_to_deserialize_any;
 
-use crate::error::{Error, Result};
-use crate::parse::{BibtexParse, EntryType, MacroDictionary, Token};
-use crate::{SliceReader, StrReader};
+use crate::{
+    error::{Error, Result},
+    parse::{BibtexParse, MacroDictionary},
+    token::{EntryType, Token},
+    SliceReader, StrReader,
+};
 
 use super::entry::{EntryDeserializer, RegularEntryDeserializer};
 
@@ -254,10 +257,13 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::parse::{StrReader, Variable};
-    use crate::syntax::{BibtexParser, Rule};
-    use pest::Parser;
+    use crate::{
+        parse::StrReader,
+        syntax::{BibtexParser, Rule},
+        token::Variable,
+    };
 
+    use pest::Parser;
     use serde::de::IgnoredAny;
     use serde::Deserialize;
 

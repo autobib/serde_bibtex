@@ -5,6 +5,8 @@ use std::str::Utf8Error;
 
 use serde::ser::Error as SeError;
 
+use crate::token::ConversionError;
+
 #[derive(Debug, PartialEq)]
 pub struct Error {
     code: ErrorCode,
@@ -44,9 +46,22 @@ impl Error {
     }
 }
 
+impl From<ConversionError> for Error {
+    fn from(value: ConversionError) -> Self {
+        match value {
+            ConversionError::UnresolvedMacro(s) => Self {
+                code: ErrorCode::UnresolvedMacro(s),
+            },
+            ConversionError::InvalidUtf8(err) => Self::utf8(err),
+        }
+    }
+}
+
 impl From<Utf8Error> for Error {
     fn from(err: Utf8Error) -> Self {
-        Self::utf8(err)
+        Self {
+            code: ErrorCode::InvalidUtf8(err),
+        }
     }
 }
 
@@ -79,18 +94,17 @@ impl std::fmt::Display for Error {
 #[derive(Debug, PartialEq)]
 pub(crate) enum ErrorCode {
     Message(String),
-    DisallowedChar(char),
     VariableStartsWithDigit,
     UnexpectedClosingBracket,
     ExpectedNextTokenOrEndOfField,
     UnterminatedTextToken,
     InvalidStartOfEntry,
     ExpectedEndOfEntry,
+    UnresolvedMacro(String),
     UnclosedBracket,
     UnclosedQuote,
     UnexpectedEof,
     ExpectedFieldSep,
-    UnresolvedMacro(String),
     InvalidUtf8(Utf8Error),
     Io(String),
     Empty,
@@ -99,24 +113,23 @@ pub(crate) enum ErrorCode {
 impl std::fmt::Display for ErrorCode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::DisallowedChar(ch) => {
-                write!(f, "invalid char {:?}", ch)
-            }
             Self::ExpectedFieldSep => f.write_str("expected field separator '='"),
             Self::InvalidStartOfEntry => f.write_str("expected start of entry '{' or '('"),
             Self::VariableStartsWithDigit => f.write_str("identifier starts with ASCII digit"),
             Self::UnexpectedClosingBracket => f.write_str("unmatched closing bracket"),
             Self::UnterminatedTextToken => f.write_str("unmatched opening bracket"),
-            Self::UnresolvedMacro(s) => write!(f, "unresolved macro: {s}"),
             Self::InvalidUtf8(err) => err.fmt(f),
             Self::Empty => f.write_str("identifier missing or length 0"),
             Self::Message(msg) => f.write_str(msg),
-            Self::UnexpectedEof => f.write_str("TODO"),
-            Self::ExpectedNextTokenOrEndOfField => f.write_str("TODO"),
+            Self::UnexpectedEof => f.write_str("unexpected end of input"),
+            Self::ExpectedNextTokenOrEndOfField => {
+                f.write_str("expected another token or a field terminator")
+            }
             Self::UnclosedBracket => f.write_str("unclosed '{' in token"),
             Self::UnclosedQuote => f.write_str("unclosed '\"' in token"),
             Self::ExpectedEndOfEntry => f.write_str("expected end of entry"),
             Self::Io(err) => write!(f, "IO error: {err}"),
+            Self::UnresolvedMacro(s) => write!(f, "expected text, got unresolved macro {s}"),
         }
     }
 }

@@ -1,8 +1,6 @@
 use std::io;
 
-use crate::validate::{
-    is_balanced, is_entry_key, is_field_key, is_regular_entry_type, is_variable,
-};
+use crate::token::{is_balanced, is_entry_key, is_field_key, is_regular_entry_type, is_variable};
 
 pub(crate) struct FormatBuffer<F> {
     formatter: F,
