@@ -69,12 +69,6 @@ impl<S: AsRef<str>> Variable<S> {
         Ok(Self(UniCase::new(s)))
     }
 
-    /// Convert to an owned `String` variant.
-    pub fn own(&self) -> Variable<String> {
-        let Variable(s) = self;
-        Variable::new_unchecked(s.as_ref().to_string())
-    }
-
     /// Return the inner type.
     pub fn into_inner(self) -> S {
         self.0.into_inner()
