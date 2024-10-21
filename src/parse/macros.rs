@@ -36,9 +36,9 @@ where
     ///
     /// Note that this clones the underlying values even if they are already owned.
     pub fn own(&self) -> MacroDictionary<String, Vec<u8>> {
-        let new_map = HashMap::from_iter(self.map.iter().map(|(Variable(key), val)| {
+        let new_map = HashMap::from_iter(self.map.iter().map(|(variable, val)| {
             (
-                Variable::new_unchecked(key.as_ref().to_string()),
+                Variable::new_unchecked(variable.as_ref().to_string()),
                 val.iter().map(|t| Token::<S, B>::own(t)).collect(),
             )
         }));

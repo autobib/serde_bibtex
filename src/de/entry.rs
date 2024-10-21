@@ -273,7 +273,7 @@ where
         let var = self.de.parser.variable()?;
         self.de.parser.field_sep()?;
         let val = visitor.visit_seq(KeyValueDeserializer::new_from_de(
-            var.0.into_inner(),
+            var.into_inner(),
             &mut *self.de,
         )?);
         self.de.parser.comma_opt();
@@ -291,7 +291,7 @@ where
             Some(var) => {
                 self.de.parser.field_sep()?;
                 let val = visitor.visit_some(KeyValueDeserializer::new_from_de(
-                    var.0.into_inner(),
+                    var.into_inner(),
                     &mut *self.de,
                 )?);
                 self.de.parser.comma_opt();
@@ -510,7 +510,7 @@ where
             EntryPosition::CitationKey => {
                 self.closing_bracket = self.de.parser.initial()?;
                 seed.deserialize(WrappedBorrowStrDeserializer::new(
-                    self.de.parser.entry_key()?.0,
+                    self.de.parser.entry_key()?.into_inner(),
                 ))
             }
             EntryPosition::Fields => {
@@ -543,7 +543,7 @@ where
             EntryPosition::CitationKey => {
                 self.closing_bracket = self.de.parser.initial()?;
                 seed.deserialize(WrappedBorrowStrDeserializer::new(
-                    self.de.parser.entry_key()?.0,
+                    self.de.parser.entry_key()?.into_inner(),
                 ))
                 .map(Some)
             }
@@ -660,7 +660,7 @@ where
     {
         match self.de.parser.field_or_terminal()? {
             Some(var) => seed
-                .deserialize(WrappedBorrowStrDeserializer::new(var.0.into_inner()))
+                .deserialize(WrappedBorrowStrDeserializer::new(var.into_inner()))
                 .map(Some),
             None => Ok(None),
         }
@@ -691,7 +691,7 @@ where
         };
         self.de.parser.field_sep()?;
         seed.deserialize(KeyValueDeserializer::new_from_de(
-            field_key.0.into_inner(),
+            field_key.into_inner(),
             &mut *self.de,
         )?)
         .map(Some)

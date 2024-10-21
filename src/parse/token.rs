@@ -55,7 +55,7 @@ impl<S: AsRef<str>> From<Identifier<S>> for EntryType<S> {
 /// 2. Does not contain a char in `"{}(),=\\#%\""`.
 /// 3. Does not begin with an ASCII digit.
 #[derive(Debug, Clone, Eq, Hash, PartialEq)]
-pub struct Variable<S: AsRef<str>>(pub UniCase<S>);
+pub struct Variable<S: AsRef<str>>(UniCase<S>);
 
 impl<S: AsRef<str>> Variable<S> {
     #[inline]
@@ -73,6 +73,11 @@ impl<S: AsRef<str>> Variable<S> {
     pub fn own(&self) -> Variable<String> {
         let Variable(s) = self;
         Variable::new_unchecked(s.as_ref().to_string())
+    }
+
+    /// Return the inner type.
+    pub fn into_inner(self) -> S {
+        self.0.into_inner()
     }
 }
 
@@ -93,7 +98,7 @@ impl<S: AsRef<str>> From<Identifier<S>> for Variable<S> {
 /// 1. Case-sensitive.
 /// 2. Does not contain a char in `"{}(),=\\#%\""`.
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub struct EntryKey<S: AsRef<str>>(pub S);
+pub struct EntryKey<S: AsRef<str>>(S);
 
 impl<S: AsRef<str>> From<Identifier<S>> for EntryKey<S> {
     fn from(id: Identifier<S>) -> Self {
@@ -113,13 +118,24 @@ impl<S: AsRef<str>> EntryKey<S> {
         check_entry_key(s.as_ref())?;
         Ok(Self::new_unchecked(s))
     }
+
+    /// Return the inner type.
+    pub fn into_inner(self) -> S {
+        self.0
+    }
+}
+
+impl<S: AsRef<str>> AsRef<str> for EntryKey<S> {
+    fn as_ref(&self) -> &str {
+        self.0.as_ref()
+    }
 }
 
 /// Field key, such as `key` in `... key = {value}, ...`.
 /// 1. Case-insensitive.
 /// 2. Does not contain a char in `"{}(),=\\#%\""`.
 #[derive(Debug, Clone, PartialEq)]
-pub struct FieldKey<S: AsRef<str>>(pub UniCase<S>);
+pub struct FieldKey<S: AsRef<str>>(UniCase<S>);
 
 impl<S: AsRef<str>> FieldKey<S> {
     #[inline]
@@ -131,6 +147,17 @@ impl<S: AsRef<str>> FieldKey<S> {
     pub fn new(s: S) -> Result<Self> {
         check_field_key(s.as_ref())?;
         Ok(Self(UniCase::new(s)))
+    }
+
+    /// Return the inner type.
+    pub fn into_inner(self) -> S {
+        self.0.into_inner()
+    }
+}
+
+impl<S: AsRef<str>> AsRef<str> for FieldKey<S> {
+    fn as_ref(&self) -> &str {
+        self.0.as_ref()
     }
 }
 

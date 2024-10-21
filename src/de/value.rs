@@ -208,7 +208,7 @@ impl<'de> VariantAccess<'de> for TokenDeserializer<'de> {
     {
         match self.value {
             Token::Variable(var) => {
-                seed.deserialize(WrappedBorrowStrDeserializer::new(var.0.into_inner()))
+                seed.deserialize(WrappedBorrowStrDeserializer::new(var.into_inner()))
             }
             Token::Text(text) => seed.deserialize(TextDeserializer::new(text)),
         }
