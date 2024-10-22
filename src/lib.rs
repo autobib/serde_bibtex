@@ -113,7 +113,7 @@
 //! ## Validation of types
 //!
 //! If you only wish to check for certain syntax errors independent of serialization and
-//! deserialization, see the [validate module](validate).
+//! deserialization, see the relevant methods in the [token module](token).
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
@@ -137,8 +137,7 @@ use serde::{Deserialize, Serialize};
 use crate::{de::Deserializer, ser::Serializer};
 pub use crate::{
     error::{Error, Result},
-    // parse::token,
-    parse::{MacroDictionary, SliceReader, StrReader},
+    parse::{MacroDictionary, Read, SliceReader, StrReader},
 };
 
 /// Deserialize an instance of type `D` from string of BibTeX.
@@ -161,7 +160,7 @@ where
     D::deserialize(&mut deserializer)
 }
 
-/// Serialize the given data structure as BibTeX into the I/O stream.
+/// Serialize as BibTeX into the I/O stream.
 #[inline]
 pub fn to_writer<W, T>(writer: W, value: &T) -> Result<()>
 where
@@ -172,7 +171,7 @@ where
     value.serialize(&mut ser)
 }
 
-/// Serialize the given data structure as BibTeX into the I/O stream without checking that the
+/// Serialize as BibTeX into the I/O stream without checking that the
 /// output is valid BibTex.
 #[inline]
 pub fn to_writer_unchecked<W, T>(writer: W, value: &T) -> Result<()>
@@ -184,7 +183,7 @@ where
     value.serialize(&mut ser)
 }
 
-/// Serialize the given data structure as BibTeX into the I/O stream with no extra whitespace.
+/// Serialize as BibTeX into the I/O stream with no extra whitespace.
 #[inline]
 pub fn to_writer_compact<W, T>(writer: W, value: &T) -> Result<()>
 where
@@ -195,7 +194,7 @@ where
     value.serialize(&mut ser)
 }
 
-/// Serialize the given data structure as BibTeX into a byte vector.
+/// Serialize as BibTeX into a byte vector.
 #[inline]
 pub fn to_vec<T>(value: &T) -> Result<Vec<u8>>
 where
@@ -206,7 +205,7 @@ where
     Ok(writer)
 }
 
-/// Serialize the given data structure as BibTeX into a byte vector without checking that the
+/// Serialize as BibTeX into a byte vector without checking that the
 /// output is valid BibTeX.
 #[inline]
 pub fn to_vec_unchecked<T>(value: &T) -> Result<Vec<u8>>
@@ -218,7 +217,7 @@ where
     Ok(writer)
 }
 
-/// Serialize the given data structure as BibTeX into a byte vector with no extra whitespace.
+/// Serialize as BibTeX into a byte vector with no extra whitespace.
 #[inline]
 pub fn to_vec_compact<T>(value: &T) -> Result<Vec<u8>>
 where
@@ -229,7 +228,7 @@ where
     Ok(writer)
 }
 
-/// Serialize the given data structure as BibTeX into a string.
+/// Serialize as BibTeX into a string.
 #[inline]
 pub fn to_string<T>(value: &T) -> Result<String>
 where

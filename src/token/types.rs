@@ -2,14 +2,36 @@
 use unicase::UniCase;
 
 use super::{
-    check_balanced, check_entry_key, check_entry_type, check_field_key, check_variable,
-    ConversionError, TokenParseError,
+    check_balanced, check_entry_key, check_entry_type, check_field_key, check_identifier,
+    check_variable, ConversionError, TokenParseError,
 };
 
+/// An unspecialized identifier, which could be an [`EntryKey`], [`EntryType`], [`FieldKey`], or
+/// [`Variable`].
 #[derive(Debug)]
-pub struct Identifier<S: AsRef<str>>(pub S);
+pub struct Identifier<S: AsRef<str>>(pub(crate) S);
 
-/// The core Text handling object.
+impl<S: AsRef<str>> Identifier<S> {
+    #[inline]
+    pub(crate) fn new_unchecked(s: S) -> Self {
+        Self(s)
+    }
+
+    /// Construct a new variable, checking that the input satisfies the requirements.
+    pub fn new(input: S) -> Result<Self, TokenParseError<S>> {
+        match check_identifier(input.as_ref()) {
+            Ok(()) => Ok(Self::new_unchecked(input)),
+            Err(error) => Err(TokenParseError { input, error }),
+        }
+    }
+
+    /// Return the inner type.
+    pub fn into_inner(self) -> S {
+        self.0
+    }
+}
+
+/// A representation of text which could either be a string, or raw bytes.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Text<S: AsRef<str>, B: AsRef<[u8]>> {
     Str(S),
@@ -44,24 +66,6 @@ impl<'r> Text<&'r str, &'r [u8]> {
         match self {
             Self::Str(s) => s.as_bytes(),
             Self::Bytes(bytes) => bytes,
-        }
-    }
-}
-
-impl<S: AsRef<str>, B: AsRef<[u8]>> Text<S, B> {
-    /// Check if the token is empty.
-    pub fn is_empty(&self) -> bool {
-        match self {
-            Self::Str(s) => s.as_ref().is_empty(),
-            Self::Bytes(b) => b.as_ref().is_empty(),
-        }
-    }
-
-    /// How many bytes does the token consist of?
-    pub fn len(&self) -> usize {
-        match self {
-            Self::Str(s) => s.as_ref().len(),
-            Self::Bytes(b) => b.as_ref().len(),
         }
     }
 }

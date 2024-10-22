@@ -4,7 +4,7 @@ use serde::de::IgnoredAny;
 use serde::Deserialize;
 
 use serde_bibtex::entry::{BorrowEntry, Entry};
-use serde_bibtex::error::Result;
+use serde_bibtex::Result;
 use serde_bibtex::{de::Deserializer, MacroDictionary};
 
 use std::borrow::Cow;

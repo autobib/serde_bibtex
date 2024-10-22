@@ -50,7 +50,8 @@ fn find_invalid_identifier_char(input: &str) -> Option<char> {
         .map(|b| unsafe { char::from_u32_unchecked(*b as u32) })
 }
 
-fn check_identifier(s: &str) -> Result<(), TokenError> {
+/// Check if a given string is as an identifer, returning an error if not.
+pub fn check_identifier(s: &str) -> Result<(), TokenError> {
     if s.is_empty() {
         Err(TokenError::Empty)
     } else {
@@ -59,6 +60,7 @@ fn check_identifier(s: &str) -> Result<(), TokenError> {
     }
 }
 
+/// Check if a given string is valid as a variable, returning an error if not.
 pub fn check_variable(s: &str) -> Result<(), TokenError> {
     check_identifier(s)?;
     // SAFETY: if is_identifer(s) does not fail, then s is non-empty
@@ -75,6 +77,13 @@ pub fn is_variable(s: &str) -> bool {
     check_variable(s).is_ok()
 }
 
+/// Check if a given string is valid as an identifier.
+#[inline]
+pub fn is_identifier(s: &str) -> bool {
+    check_identifier(s).is_ok()
+}
+
+/// Check if a given string is valid as an identifier, returning an error if not.
 #[inline]
 pub fn check_field_key(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
@@ -86,6 +95,7 @@ pub fn is_field_key(s: &str) -> bool {
     check_field_key(s).is_ok()
 }
 
+/// Check if a given string is valid as an entry type, returning an error if not.
 #[inline]
 pub fn check_entry_type(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
@@ -110,6 +120,7 @@ pub fn is_regular_entry_type(s: &str) -> bool {
     }
 }
 
+/// Check if a given string is valid as an entry key, returning an error if not.
 #[inline]
 pub fn check_entry_key(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
@@ -121,6 +132,7 @@ pub fn is_entry_key(s: &str) -> bool {
     check_entry_key(s).is_ok()
 }
 
+/// Check if the given input has balanced `{}` brackets, returning the appropriate error if not.
 pub fn check_balanced(input: &[u8]) -> Result<(), TokenError> {
     let mut bracket_depth = 0;
 

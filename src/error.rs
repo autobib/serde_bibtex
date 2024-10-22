@@ -5,19 +5,28 @@ use std::str::Utf8Error;
 
 use crate::token::ConversionError;
 
+/// The error category of a given [`bibtex::Error`](Error).
 #[derive(Debug, PartialEq)]
 pub enum Category {
+    /// Error while handling IO.
     Io,
+    /// Syntax error during deserialization.
     Syntax,
+    /// Data error, such as unexpanded macros or invalid serialization format.
     Data,
+    /// Unexpected end of input.
     Eof,
 }
 
+/// The main error type as used by [`de::Deserializer`](crate::de::Deserializer) and
+/// [`ser::Serializer`](crate::ser::Serializer).
 #[derive(Debug)]
 pub struct Error {
+    /// The underlying error type.
     pub(crate) code: ErrorCode,
 }
 
+/// Alias for a [`Result`](std::result::Result) with the error type [`bibtex::Error`](crate::error::Error).
 pub type Result<T> = result::Result<T, Error>;
 
 impl Error {

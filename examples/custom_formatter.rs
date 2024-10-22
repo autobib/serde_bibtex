@@ -52,6 +52,11 @@ fn main() -> Result<(), Error> {
     let mut ser = Serializer::new_with_formatter(&mut stdout, formatter);
 
     bibliography.serialize(&mut ser)?;
+    // > writes to stdout:
+    // @article{key,
+    //   author = {Author},
+    //   year = {2023},
+    // }
 
     Ok(())
 }

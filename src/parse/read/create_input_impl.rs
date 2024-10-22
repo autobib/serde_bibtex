@@ -7,6 +7,7 @@ macro_rules! read_impl {
         }
 
         impl<'r> $name<'r> {
+            /// Create a new reader from the provided input buffer.
             pub fn new(input: &'r $target) -> Self {
                 Self { input, pos: 0 }
             }

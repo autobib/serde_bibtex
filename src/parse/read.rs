@@ -8,6 +8,9 @@ pub use str_impl::StrReader;
 use crate::error::Error;
 use crate::token::{Identifier, Text};
 
+/// A trait to represent a type which can be parsed as BibTeX.
+///
+/// This trait is implemented by [`SliceReader`] and [`StrReader`].
 pub trait Read<'r> {
     /// Peek a single byte.
     fn peek(&self) -> Option<u8>;

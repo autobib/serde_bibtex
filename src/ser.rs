@@ -9,6 +9,7 @@
 //!   - [Checking output validity](#checking-output-validity)
 //!   - [Serializing values](#serializing-values)
 //! - [Serialization variants](#serialization-variants)
+//! - [Serialization reference table](#serialization-reference-table)
 //!
 //! ## Serializing a bibliography
 //!
@@ -239,6 +240,11 @@
 //! [`to_string`](crate::to_string) method, with variants [`to_string_unchecked`](crate::to_string)
 //! and [`to_string_compact`](crate::to_string_compact)
 //! You can also provide your own implementation of [`Formatter`] for even greater customization of the output.
+//!
+//! ## Serialization reference table
+//! This section describes the allowed input data formats which support serialization into the
+//! various bibliography components. The naming convention for the components is as described in
+//! the [syntax](crate::syntax) module.
 mod entry;
 mod formatter;
 mod macros;
