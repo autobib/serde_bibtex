@@ -514,11 +514,13 @@ mod tests {
     }
 
     macro_rules! assert_de {
-        ($input:expr, $expected:expr, $target:tt) => {
+        ($input:expr, $expected:expr, $($target:tt)+) => {
             let reader = StrReader::new($input);
             let mut bib_de = Deserializer::new(reader);
             let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
-            assert_eq!(Ok($expected), $target::deserialize(deserializer));
+            let data: Result<$($target)+> = $($target)+::deserialize(deserializer);
+            assert!(data.is_ok());
+            assert_eq!(data.unwrap(), $expected);
         };
     }
 
@@ -533,7 +535,7 @@ mod tests {
 
     #[test]
     fn test_value_string() {
-        assert_de!("  {a} # { b}", "a b".to_string(), String);
+        assert_de!("  {a} # { b}", "a b", String);
         assert_de!(" {a}", "a".to_string(), String);
     }
 
@@ -542,7 +544,7 @@ mod tests {
         assert_de!(
             " {1} # a # {3}",
             vec![Tok::T("1"), Tok::V("a"), Tok::T("3")],
-            Vec
+            Vec::<Tok>
         );
 
         type DoubleToken<'a> = (Tok<'a>, Tok<'a>);
@@ -551,8 +553,8 @@ mod tests {
 
     #[test]
     fn test_value_cow() {
-        assert_de!("{a} # { b}", Cow::Borrowed("a b"), Cow);
-        assert_de!("{a}", Cow::Borrowed("a"), Cow);
+        assert_de!("{a} # { b}", Cow::Borrowed("a b"), Cow::<str>);
+        assert_de!("{a}", Cow::Borrowed("a"), Cow::<str>);
     }
 
     #[test]
@@ -568,13 +570,11 @@ mod tests {
         let reader = StrReader::new("{a} # { b} # C");
         let mut bib_de = Deserializer::new(reader);
         let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
+        let data: Result<Vec<TokBytes>> = Vec::<TokBytes>::deserialize(deserializer);
+        assert!(data.is_ok());
         assert_eq!(
-            Ok(vec![
-                TokBytes::T(b"a"),
-                TokBytes::T(b" b"),
-                TokBytes::V("C")
-            ]),
-            Vec::<TokBytes>::deserialize(deserializer)
+            vec![TokBytes::T(b"a"), TokBytes::T(b" b"), TokBytes::V("C")],
+            data.unwrap()
         );
 
         let reader = StrReader::new("{u} # {v}");
@@ -642,9 +642,9 @@ mod tests {
         }
 
         let de = TokenDeserializer::new(Token::variable_unchecked("key"));
-        assert_eq!(ShortToken::deserialize(de), Ok(ShortToken::V("key".into())));
+        assert!(matches!(ShortToken::deserialize(de), Ok(ShortToken::V(_))));
         let de = TokenDeserializer::new(Token::str_unchecked("val"));
-        assert_eq!(ShortToken::deserialize(de), Ok(ShortToken::T("val".into())));
+        assert!(matches!(ShortToken::deserialize(de), Ok(ShortToken::T(_))));
 
         // Essentially the same enum as Token
         #[derive(Debug, Deserialize, PartialEq)]
@@ -660,7 +660,7 @@ mod tests {
         }
 
         let de = TokenDeserializer::new(Token::variable_unchecked("key"));
-        assert_eq!(ReToken::deserialize(de), Ok(ReToken::V(I("key"))));
+        assert!(matches!(ReToken::deserialize(de), Ok(ReToken::V(I("key")))));
 
         let de = TokenDeserializer::new(Token::str_unchecked("key"));
         let data = ReToken::deserialize(de).unwrap();
@@ -695,7 +695,8 @@ mod tests {
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
                 let data = String::deserialize(deserializer);
                 let expected = $expected.to_string();
-                assert_eq!(data, Ok(expected));
+                assert!(data.is_ok());
+                assert_eq!(data.unwrap(), expected);
             };
         }
 
@@ -716,7 +717,8 @@ mod tests {
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
 
                 let data: Result<Vec<Tok>> = Vec::deserialize(deserializer);
-                assert_eq!(data, Ok($expected));
+                assert!(data.is_ok());
+                assert_eq!(data.unwrap(), $expected);
             };
         }
 
@@ -799,8 +801,8 @@ mod tests {
                 let deserializer = ValueDeserializer::try_from_de_resolved(&mut bib_de).unwrap();
                 let data = Val::deserialize(deserializer);
                 let expected = Val($expected.into());
-                assert_eq!(data, Ok(expected));
                 assert!(matches!(data, Ok(Val($cow))));
+                assert_eq!(data.unwrap(), expected);
             };
         }
 

@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::fmt;
 use std::str::Utf8Error;
 
@@ -19,7 +20,7 @@ pub enum TokenError {
 /// An error which results when converting between text and variable tokens.
 pub enum ConversionError {
     /// Expected a text token; got macro.
-    UnresolvedMacro(String),
+    UnexpandedMacro(String),
     /// Text contains invalid bytes.
     InvalidUtf8(Utf8Error),
 }
@@ -45,6 +46,8 @@ impl fmt::Display for TokenError {
         }
     }
 }
+
+impl Error for TokenError {}
 
 /// Errors which result while attempting to construct a token type from an input.
 #[derive(Debug, PartialEq)]

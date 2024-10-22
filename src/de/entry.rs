@@ -833,7 +833,7 @@ mod tests {
             let reader = StrReader::new($input);
             let mut bib_de = Deserializer::new(reader);
             let deserializer = RegularEntryDeserializer::new(&mut bib_de, $identifier);
-            assert_eq!(Ok($expected), $target::deserialize(deserializer));
+            assert_eq!($expected, $target::deserialize(deserializer).unwrap());
         };
     }
 
@@ -1087,12 +1087,12 @@ mod tests {
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         assert_eq!(
-            Ok(MyFields {
+            MyFields {
                 author: "Alex Rutar",
                 title: "A nice title",
                 year: "2012".to_string()
-            }),
-            MyFields::deserialize(deserializer)
+            },
+            MyFields::deserialize(deserializer).unwrap()
         );
     }
 
@@ -1111,12 +1111,12 @@ mod tests {
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         assert_eq!(
-            Ok(OptionFields {
+            OptionFields {
                 author: "Alex Rutar",
                 title: "A nice title",
                 year: None
-            }),
-            OptionFields::deserialize(deserializer)
+            },
+            OptionFields::deserialize(deserializer).unwrap()
         );
 
         let reader = StrReader::new(", author = {AR}, title = {T}, year = 2023}");
@@ -1124,12 +1124,12 @@ mod tests {
         let deserializer = FieldDeserializer::new(&mut bib_de);
 
         assert_eq!(
-            Ok(OptionFields {
+            OptionFields {
                 author: "AR",
                 title: "T",
                 year: Some("2023"),
-            }),
-            OptionFields::deserialize(deserializer)
+            },
+            OptionFields::deserialize(deserializer).unwrap()
         );
     }
 }

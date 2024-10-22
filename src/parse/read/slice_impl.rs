@@ -186,39 +186,53 @@ mod tests {
 
     #[test]
     fn test_protected() {
-        assert_eq!(protected(b'"')(b"cap\"rest", 0), Ok((3, &b"cap"[..])));
-        assert_eq!(protected(b'"')(b"cap\"rest", 1), Ok((3, &b"ap"[..])));
-        assert_eq!(protected(b'"')(b"a{\"}\"rest", 0), Ok((4, &b"a{\"}"[..])));
-        assert_eq!(
+        assert!(matches!(protected(b'"')(b"cap\"rest", 0), Ok((3, b"cap"))));
+        assert!(matches!(protected(b'"')(b"cap\"rest", 1), Ok((3, b"ap"))));
+        assert!(matches!(
+            protected(b'"')(b"a{\"}\"rest", 0),
+            Ok((4, b"a{\"}"))
+        ));
+        assert!(matches!(
             protected(b'"')(b"a{{\"} \"}\"rest", 0),
-            Ok((8, &b"a{{\"} \"}"[..]))
-        );
+            Ok((8, b"a{{\"} \"}"))
+        ));
         // did not find unprotected
-        assert_eq!(
+        assert!(matches!(
             protected(b'"')(b"{\"", 0),
-            Err(Error::syntax(ErrorCode::UnterminatedTextToken))
-        );
+            Err(Error {
+                code: ErrorCode::UnterminatedTextToken
+            })
+        ));
         // unexpected closing
-        assert_eq!(
+        assert!(matches!(
             protected(b'"')(b"}\"", 0),
-            Err(Error::syntax(ErrorCode::UnexpectedClosingBracket))
-        );
+            Err(Error {
+                code: ErrorCode::UnexpectedClosingBracket
+            })
+        ));
     }
 
     #[test]
     fn test_balanced() {
-        assert_eq!(balanced(b"url}abc", 0), Ok((3, &b"url"[..])));
-        assert_eq!(balanced("u{}rl}🍄c".as_bytes(), 0), Ok((5, &b"u{}rl"[..])));
-        assert_eq!(balanced(b"u{{}}rl}abc", 1), Ok((7, &b"{{}}rl"[..])));
+        assert!(matches!(balanced(b"url}abc", 0), Ok((3, b"url"))));
+        assert!(matches!(
+            balanced("u{}rl}🍄c".as_bytes(), 0),
+            Ok((5, b"u{}rl"))
+        ));
+        assert!(matches!(balanced(b"u{{}}rl}abc", 1), Ok((7, b"{{}}rl"))));
 
-        assert_eq!(
+        assert!(matches!(
             balanced(b"none", 0),
-            Err(Error::syntax(ErrorCode::UnterminatedTextToken))
-        );
-        assert_eq!(
+            Err(Error {
+                code: ErrorCode::UnterminatedTextToken
+            })
+        ));
+        assert!(matches!(
             balanced(b"{no}e", 0),
-            Err(Error::syntax(ErrorCode::UnterminatedTextToken))
-        );
+            Err(Error {
+                code: ErrorCode::UnterminatedTextToken
+            })
+        ));
     }
 
     use proptest::prelude::*;

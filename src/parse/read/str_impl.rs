@@ -82,23 +82,30 @@ mod tests {
 
     #[test]
     fn test_protected() {
-        assert_eq!(protected(b'"')("🍄\"🍄rest", 0), Ok((4, "🍄")));
-        assert_eq!(protected(b'"')("🍄{\"}\"🍄est", 0), Ok((7, "🍄{\"}")));
+        assert!(matches!(protected(b'"')("🍄\"🍄rest", 0), Ok((4, "🍄"))));
+        assert!(matches!(
+            protected(b'"')("🍄{\"}\"🍄est", 0),
+            Ok((7, "🍄{\"}"))
+        ));
     }
 
     #[test]
     fn test_balanced() {
-        assert_eq!(balanced("url}🍄bc", 0), Ok((3, "url")));
-        assert_eq!(balanced("u{}r🍄}🍄c", 0), Ok((8, "u{}r🍄")));
+        assert!(matches!(balanced("url}🍄bc", 0), Ok((3, "url"))));
+        assert!(matches!(balanced("u{}r🍄}🍄c", 0), Ok((8, "u{}r🍄"))));
 
-        assert_eq!(
+        assert!(matches!(
             balanced("none", 2),
-            Err(Error::syntax(ErrorCode::UnterminatedTextToken))
-        );
-        assert_eq!(
+            Err(Error {
+                code: ErrorCode::UnterminatedTextToken
+            })
+        ));
+        assert!(matches!(
             balanced("{n🍄}e", 0),
-            Err(Error::syntax(ErrorCode::UnterminatedTextToken))
-        );
+            Err(Error {
+                code: ErrorCode::UnterminatedTextToken
+            })
+        ));
     }
 
     use proptest::prelude::*;

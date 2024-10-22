@@ -76,13 +76,13 @@
 //! let mut de = Deserializer::from_str(input);
 //!
 //! assert_eq!(
-//!     Bibliography::deserialize(&mut de),
-//!     Ok(vec![
+//!     Bibliography::deserialize(&mut de).unwrap(),
+//!     vec![
 //!         Entry::Macro,
 //!         Entry::Preamble,
 //!         Entry::Regular,
 //!         Entry::Comment,
-//!     ])
+//!     ]
 //! )
 //! ```
 //! Instead of deserializing the whole bibliography into a `Vec`, we can also iterate:
@@ -116,8 +116,8 @@
 //! #
 //! let expected = vec![Entry::Macro, Entry::Preamble, Entry::Regular, Entry::Comment];
 //!
-//! for (entry, expect) in std::iter::zip(de.into_iter(), expected.into_iter()) {
-//!     assert_eq!(entry, Ok(expect));
+//! for (entry, expect) in std::iter::zip(de.into_iter::<Entry>(), expected.into_iter()) {
+//!     assert_eq!(entry.unwrap(), expect);
 //! }
 //! ```
 //! In order to capture the contents of the individual entries, we must add contents to the enum
@@ -180,12 +180,12 @@
 //! ]);
 //!
 //! assert_eq!(
-//!     Bibliography::deserialize(&mut de),
-//!     Ok(vec![Entry::Regular {
+//!     Bibliography::deserialize(&mut de).unwrap(),
+//!     vec![Entry::Regular {
 //!        entry_type: "article".into(),
 //!        entry_key: "key".into(),
 //!        fields: expected_fields,
-//!     }])
+//!     }]
 //! );
 //! ```
 //! It is also possible to explicitly state which field keys you wish to capture. Let's also use an
@@ -239,12 +239,12 @@
 //! # let mut de = Deserializer::from_str(input);
 //! #
 //! # assert_eq!(
-//! #     Bibliography::deserialize(&mut de),
-//! #     Ok(vec![Entry::Regular(
+//! #     Bibliography::deserialize(&mut de).unwrap(),
+//! #     vec![Entry::Regular(
 //! #         "article".into(),
 //! #         "key".into(),
 //! #         vec![("title".into(), "Title".into())]
-//! #     )])
+//! #     )]
 //! # )
 //! ```
 //! Of course, it is also possible to explicitly ignore some parts of the entry. For example, if you only wish
@@ -276,10 +276,10 @@
 //! # let mut de = Deserializer::from_str(input);
 //! #
 //! # assert_eq!(
-//! #     Bibliography::deserialize(&mut de),
-//! #     Ok(vec![Entry::Regular(CitationKeyOnly {
+//! #     Bibliography::deserialize(&mut de).unwrap(),
+//! #     vec![Entry::Regular(CitationKeyOnly {
 //! #         citation_key: "key".into(),
-//! #     })])
+//! #     })]
 //! # )
 //! ```
 //! This is not possible when deserializing a regular entry as a tuple.
@@ -350,8 +350,8 @@
 //!
 //! let mut de = Deserializer::from_str(input);
 //! assert_eq!(
-//!     Ok(vec![Entry::Macro(Rule("key".into(), "Value 1234".into()))]),
-//!     Bibliography::deserialize(&mut de)
+//!     Bibliography::deserialize(&mut de).unwrap(),
+//!     vec![Entry::Macro(Rule("key".into(), "Value 1234".into()))]
 //! )
 //! ```
 //! Since macro entries can also be empty, for instance `@string{}`, one may alternatively
@@ -374,8 +374,8 @@
 //! #
 //! # let mut de = Deserializer::from_str(input);
 //! # assert_eq!(
-//! #     Ok(vec![Entry::Macro(Some(("key".into(), "Value 1234".into())))]),
-//! #     Bibliography::deserialize(&mut de)
+//! #     Bibliography::deserialize(&mut de).unwrap(),
+//! #     vec![Entry::Macro(Some(("key".into(), "Value 1234".into())))]
 //! # )
 //! ```
 //!
@@ -426,13 +426,13 @@
 //! ]);
 //!
 //! assert_eq!(
-//!     Bibliography::deserialize(&mut de),
-//!     Ok(vec![
+//!     Bibliography::deserialize(&mut de).unwrap(),
+//!     vec![
 //!         Entry::Macro,
 //!         Entry::Regular(Record {
 //!             fields: expected_fields
 //!         })
-//!     ]),
+//!     ],
 //! );
 //!
 //! use serde_bibtex::token::Variable;
@@ -485,8 +485,8 @@
 //! ]);
 //!
 //! assert_eq!(
-//!     Bibliography::deserialize(&mut de),
-//!     Ok(vec![
+//!     Bibliography::deserialize(&mut de).unwrap(),
+//!     vec![
 //!         // the 'apr' macro defined in input is captured here
 //!         Entry::Macro("apr".into(), "Nonsense".into()),
 //!         // and the 'apr' macro defined by `set_month_macros` is
@@ -494,7 +494,7 @@
 //!         Entry::Regular(Record {
 //!             fields: expected_fields
 //!         })
-//!     ]),
+//!     ],
 //! );
 //! ```
 //! In contrast, if we do not capture the macros in the above example, the macro defined in the
@@ -539,15 +539,15 @@
 //! ]);
 //!
 //! assert_eq!(
-//!     Bibliography::deserialize(&mut de),
-//!     Ok(vec![
+//!     Bibliography::deserialize(&mut de).unwrap(),
+//!     vec![
 //!         Entry::Macro,
 //!         // the 'apr' macro defined in the input overwrites
 //!         // the previously set macro
 //!         Entry::Regular(Record {
 //!             fields: expected_fields
 //!         })
-//!     ]),
+//!     ],
 //! );
 //! ```
 //! If you wish to prevent automatic macro capturing, but do not care about the actual values of
@@ -645,21 +645,20 @@
 //! "#;
 //!
 //! let mut de_iter = Deserializer::from_str(input).into_iter::<Entry>();
-//! assert_eq!(
-//!     de_iter.next(),
-//!     Some(Ok(Entry::Macro)),
-//! );
-//! assert_eq!(
-//!     de_iter.next(),
-//!     Some(Ok(Entry::Preamble(vec![
+//! let expected = vec![
+//!     Entry::Macro,
+//!     Entry::Preamble(vec![
 //!         Token::Text("text".into()),
 //!         // var0 was defined, and therefore expanded,
 //!         // but var1 and var2 are still undefined
 //!         Token::Variable("var1".into()),
 //!         Token::Text("01234".into()),
 //!         Token::Variable("var2".into()),
-//!     ]))),
-//! );
+//!     ]),
+//! ].into_iter();
+//! for (entry, expect) in std::iter::zip(de_iter, expected) {
+//!     assert_eq!(entry.unwrap(), expect);
+//! }
 //! ```
 //! Internally, the [`token::Token`](token/enum.Token.html) enum is used to hold `@string` macro definitions. This helps to
 //! automatically tolerate undefined macros when the value of that macro is not required.
@@ -864,7 +863,8 @@ mod tests {
         let reader = StrReader::new(input);
         for (expected, received) in zip(expected.into_iter(), Deserializer::new(reader).into_iter())
         {
-            assert_eq!(Ok(expected), received);
+            assert!(received.is_ok());
+            assert_eq!(expected, received.unwrap());
         }
     }
 
@@ -894,7 +894,8 @@ mod tests {
         let reader = StrReader::new(input);
         for (expected, received) in zip(expected.into_iter(), Deserializer::new(reader).into_iter())
         {
-            assert_eq!(Ok(expected), received);
+            assert!(received.is_ok());
+            assert_eq!(expected, received.unwrap());
         }
     }
 
@@ -945,7 +946,8 @@ mod tests {
         let reader = StrReader::new(input);
         for (expected, received) in zip(expected.into_iter(), Deserializer::new(reader).into_iter())
         {
-            assert_eq!(Ok(expected), received);
+            assert!(received.is_ok());
+            assert_eq!(expected, received.unwrap());
         }
     }
 
@@ -991,7 +993,8 @@ mod tests {
             expected.into_iter(),
             Deserializer::new(reader).into_iter_regular_entry(),
         ) {
-            assert_eq!(Ok(expected), received);
+            assert!(received.is_ok());
+            assert_eq!(expected, received.unwrap());
         }
     }
 }

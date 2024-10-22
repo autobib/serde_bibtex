@@ -291,7 +291,7 @@ impl<'r> TryFrom<Token<&'r str, &'r [u8]>> for &'r str {
     fn try_from(token: Token<&'r str, &'r [u8]>) -> Result<Self, Self::Error> {
         match token {
             Token::Variable(Variable(s)) => {
-                Err(ConversionError::UnresolvedMacro(s.as_ref().to_owned()))
+                Err(ConversionError::UnexpandedMacro(s.as_ref().to_owned()))
             }
             Token::Text(text) => Ok(text.into_str()?),
         }
@@ -303,7 +303,7 @@ impl<'r> TryFrom<Token<&'r str, &'r [u8]>> for &'r [u8] {
     fn try_from(token: Token<&'r str, &'r [u8]>) -> Result<Self, Self::Error> {
         match token {
             Token::Variable(Variable(s)) => {
-                Err(ConversionError::UnresolvedMacro(s.as_ref().to_string()))
+                Err(ConversionError::UnexpandedMacro(s.as_ref().to_string()))
             }
             Token::Text(text) => Ok(text.into_bytes()),
         }
@@ -315,7 +315,7 @@ impl<S: AsRef<str>, B: AsRef<[u8]>> TryFrom<Token<S, B>> for Text<S, B> {
     fn try_from(token: Token<S, B>) -> Result<Self, Self::Error> {
         match token {
             Token::Variable(Variable(s)) => {
-                Err(ConversionError::UnresolvedMacro(s.as_ref().to_string()))
+                Err(ConversionError::UnexpandedMacro(s.as_ref().to_string()))
             }
             Token::Text(text) => Ok(text),
         }

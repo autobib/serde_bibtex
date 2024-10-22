@@ -1,5 +1,5 @@
 //! # Errors for serialization and deserialization.
-use std::io::Error as IoError;
+use std::io;
 use std::result;
 use std::str::Utf8Error;
 
@@ -8,49 +8,83 @@ use serde::ser::Error as SeError;
 use crate::token::ConversionError;
 
 #[derive(Debug, PartialEq)]
+pub enum Category {
+    Io,
+    Syntax,
+    Data,
+    Eof,
+}
+
+#[derive(Debug)]
 pub struct Error {
-    code: ErrorCode,
+    pub(crate) code: ErrorCode,
 }
 
 pub type Result<T> = result::Result<T, Error>;
 
 impl Error {
+    pub fn classify(&self) -> Category {
+        match &self.code {
+            ErrorCode::Message(_) => todo!(),
+            ErrorCode::VariableStartsWithDigit
+            | ErrorCode::UnexpectedClosingBracket
+            | ErrorCode::ExpectedNextTokenOrEndOfField
+            | ErrorCode::UnterminatedTextToken
+            | ErrorCode::InvalidStartOfEntry
+            | ErrorCode::ExpectedFieldSep
+            | ErrorCode::Empty
+            | ErrorCode::ExpectedEndOfEntry => Category::Syntax,
+            ErrorCode::UnclosedQuote | ErrorCode::UnexpectedEof | ErrorCode::UnclosedBracket => {
+                Category::Eof
+            }
+            ErrorCode::InvalidUtf8(_) | ErrorCode::UnexpandedMacro(_) => Category::Data,
+            ErrorCode::Io(_) => Category::Io,
+        }
+    }
+
+    #[inline]
     pub(crate) fn syntax(code: ErrorCode) -> Self {
         Self { code }
     }
 
+    #[inline]
     pub(crate) fn utf8(err: Utf8Error) -> Self {
         Self {
             code: ErrorCode::InvalidUtf8(err),
         }
     }
 
-    pub(crate) fn io(err: IoError) -> Self {
+    #[inline]
+    pub(crate) fn io(err: io::Error) -> Self {
         Self {
-            code: ErrorCode::Io(err.to_string()),
+            code: ErrorCode::Io(err),
         }
     }
 
+    #[inline]
     pub(crate) fn eof() -> Self {
         Self {
             code: ErrorCode::UnexpectedEof,
         }
     }
 
+    #[inline]
     pub(crate) fn only_seq() -> Self {
         Self::custom("bibliography must be a sequence")
     }
 
-    pub(crate) fn only_enum() -> Self {
-        Self::custom("entry must be an enum")
+    #[inline]
+    pub(crate) fn only_enum_or_struct() -> Self {
+        Self::custom("entry must be a struct or enum")
     }
 }
 
 impl From<ConversionError> for Error {
+    #[inline]
     fn from(value: ConversionError) -> Self {
         match value {
-            ConversionError::UnresolvedMacro(s) => Self {
-                code: ErrorCode::UnresolvedMacro(s),
+            ConversionError::UnexpandedMacro(s) => Self {
+                code: ErrorCode::UnexpandedMacro(s),
             },
             ConversionError::InvalidUtf8(err) => Self::utf8(err),
         }
@@ -58,6 +92,7 @@ impl From<ConversionError> for Error {
 }
 
 impl From<Utf8Error> for Error {
+    #[inline]
     fn from(err: Utf8Error) -> Self {
         Self {
             code: ErrorCode::InvalidUtf8(err),
@@ -65,8 +100,8 @@ impl From<Utf8Error> for Error {
     }
 }
 
-impl From<IoError> for Error {
-    fn from(err: IoError) -> Self {
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Self {
         Self::io(err)
     }
 }
@@ -91,7 +126,7 @@ impl std::fmt::Display for Error {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub(crate) enum ErrorCode {
     Message(String),
     VariableStartsWithDigit,
@@ -100,13 +135,13 @@ pub(crate) enum ErrorCode {
     UnterminatedTextToken,
     InvalidStartOfEntry,
     ExpectedEndOfEntry,
-    UnresolvedMacro(String),
+    UnexpandedMacro(String),
     UnclosedBracket,
     UnclosedQuote,
     UnexpectedEof,
     ExpectedFieldSep,
     InvalidUtf8(Utf8Error),
-    Io(String),
+    Io(io::Error),
     Empty,
 }
 
@@ -129,7 +164,7 @@ impl std::fmt::Display for ErrorCode {
             Self::UnclosedQuote => f.write_str("unclosed '\"' in token"),
             Self::ExpectedEndOfEntry => f.write_str("expected end of entry"),
             Self::Io(err) => write!(f, "IO error: {err}"),
-            Self::UnresolvedMacro(s) => write!(f, "expected text, got unresolved macro {s}"),
+            Self::UnexpandedMacro(s) => write!(f, "expected text, got unresolved macro {s}"),
         }
     }
 }

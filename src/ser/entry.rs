@@ -33,7 +33,7 @@ where
     type SerializeStructVariant = RegularEntryStructSerializer<'a, W, F>;
 
     serialize_err!(
-        only_enum,
+        only_enum_or_struct,
         i8,
         i16,
         i32,

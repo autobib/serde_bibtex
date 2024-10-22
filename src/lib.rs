@@ -53,22 +53,23 @@
 //! "#;
 //!
 //! let de = Deserializer::from_str(input);
-//! let mut entry_iter = de.into_iter_regular_entry();
+//! let mut entry_iter = de.into_iter_regular_entry::<Record>();
 //!
 //! let expected_fields = BTreeMap::from([
 //!     ("title".into(), "Title".into()),
 //!     ("author".into(), "One, Author".into()),
 //!     ("year".into(), "2024".into()),
 //! ]);
+//! let expected = Record {
+//!     entry_type: "article".into(),
+//!     entry_key: "key".into(),
+//!     fields: expected_fields
+//! };
 //!
-//! assert_eq!(
+//! assert!(matches!(
 //!     entry_iter.next(),
-//!     Some(Ok(Record {
-//!         entry_type: "article".into(),
-//!         entry_key: "key".into(),
-//!         fields: expected_fields
-//!     }))
-//! );
+//!     Some(Ok(record)) if record == expected,
+//! ));
 //! ```
 //!
 //! ## Basic Serialization

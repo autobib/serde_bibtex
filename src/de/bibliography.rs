@@ -359,7 +359,8 @@ mod tests {
             BareEntry::Regular,
             BareEntry::Comment,
         ];
-        assert_eq!(data, Ok(expected));
+        assert!(data.is_ok());
+        assert_eq!(data.unwrap(), expected);
     }
 
     #[test]
@@ -384,7 +385,8 @@ mod tests {
 
         let data: Result<CommentOnlyBib> = CommentOnlyBib::deserialize(&mut bib_de);
         let expected = vec![OnlyComment::Comment(b"com")];
-        assert_eq!(data, Ok(expected));
+        assert!(data.is_ok());
+        assert_eq!(data.unwrap(), expected);
     }
 
     #[test]
@@ -446,7 +448,8 @@ mod tests {
                 fields,
             }),
         ];
-        assert_eq!(data, Ok(expected));
+        assert!(data.is_ok());
+        assert_eq!(data.unwrap(), expected);
     }
 
     macro_rules! syntax {
