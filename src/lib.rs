@@ -110,10 +110,23 @@
 //! ```
 //!
 //!
-//! ## Validation of types
+//! ## Representation and validation of types
 //!
-//! If you only wish to check for certain syntax errors independent of serialization and
-//! deserialization, see the relevant methods in the [token module](token).
+//! The [`token`] module contains a variety of types which can be used to represent components of a
+//! BibTeX bibliography in your own code. This module also contains a variety of methods for
+//! checking if some given input satisfies the requirements of a certain BibTeX component.
+//! ```
+//! use serde_bibtex::token::{check_variable, is_variable, TokenError, Variable};
+//!
+//! // `var` is a valid variable name
+//! assert!(Variable::new("var").is_ok());
+//!
+//! // A variable cannot contain a character in `{}(),=\#%"`
+//! assert_eq!(check_variable("var{"), Err(TokenError::InvalidChar('{')));
+//!
+//! // A variable cannot be empty
+//! assert!(!is_variable(""));
+//! ```
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
 

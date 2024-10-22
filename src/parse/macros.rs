@@ -2,6 +2,10 @@ use std::collections::HashMap;
 
 use super::{Token, Variable};
 
+/// A dictionary used to expand uncaptured macros during deserialization.
+///
+/// See the [macro expansion and capturing](de/index.html#manual-capturing) section
+/// for more details on how to use a macro dictionary during deserialization.
 #[derive(Debug, Clone)]
 pub struct MacroDictionary<S: AsRef<str>, B: AsRef<[u8]>> {
     map: HashMap<Variable<S>, Vec<Token<S, B>>>,
@@ -15,6 +19,7 @@ impl<S: AsRef<str>, B: AsRef<[u8]>> Default for MacroDictionary<S, B> {
 }
 
 impl<S: AsRef<str>, B: AsRef<[u8]>> MacroDictionary<S, B> {
+    /// Construct a new macro dictionary from the provided lookup table.
     pub fn new(map: HashMap<Variable<S>, Vec<Token<S, B>>>) -> Self {
         Self {
             map,
@@ -22,6 +27,7 @@ impl<S: AsRef<str>, B: AsRef<[u8]>> MacroDictionary<S, B> {
         }
     }
 
+    /// Recover the internal lookup table.
     pub fn into_inner(self) -> HashMap<Variable<S>, Vec<Token<S, B>>> {
         self.map
     }
@@ -103,6 +109,9 @@ where
     B: AsRef<[u8]> + Clone,
 {
     /// Insert a new identifier and associated tokens.
+    ///
+    /// Note that any variables in the inserted tokens are automatically resolved using existing
+    /// variables in the dictionary.
     pub fn insert(&mut self, identifier: Variable<S>, mut tokens: Vec<Token<S, B>>) {
         self.resolve(&mut tokens);
         self.insert_raw_tokens(identifier, tokens);
