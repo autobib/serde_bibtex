@@ -1,6 +1,6 @@
 use std::io;
 
-use serde::ser::{self, Error as _};
+use serde::ser;
 
 use super::macros::{ser_wrapper, serialize_as_bytes, serialize_err, serialize_trait_impl};
 use super::{Formatter, Serializer};
@@ -19,7 +19,7 @@ where
     type Ok = ();
 
     serialize_err!(
-        only_seq,
+        "value",
         i8,
         i16,
         i32,
@@ -120,7 +120,7 @@ where
     type Ok = ();
 
     serialize_err!(
-        only_seq,
+        "value token",
         i8,
         i16,
         i32,
@@ -161,33 +161,33 @@ where
         match variant {
             MTVN => value.serialize(VariableTokenSerializer::new(&mut *self.ser)),
             TTVN => value.serialize(TextTokenSerializer::new(&mut *self.ser)),
-            var => Err(Error::custom(format!("Invalid token variant '{var}'"))),
+            var => Err(Error::ser(format!("invalid token variant '{var}'"))),
         }
     }
 }
 
-serialize_as_bytes!(TextTokenSerializer, {
+serialize_as_bytes!("text token", TextTokenSerializer, {
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
         self.ser.buffer.write_bracketed_token(value)?;
         Ok(())
     }
 });
 
-serialize_as_bytes!(FieldKeySerializer, {
+serialize_as_bytes!("field key", FieldKeySerializer, {
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
         self.ser.buffer.write_field_key(value)?;
         Ok(())
     }
 });
 
-serialize_as_bytes!(VariableTokenSerializer, {
+serialize_as_bytes!("variable token", VariableTokenSerializer, {
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
         self.ser.buffer.write_variable_token(value)?;
         Ok(())
     }
 });
 
-serialize_as_bytes!(EntryTypeSerializer, {
+serialize_as_bytes!("entry type", EntryTypeSerializer, {
     /// Serialize the entry type, and also write the body start
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
         self.ser.buffer.write_regular_entry_type(value)?;
@@ -196,7 +196,7 @@ serialize_as_bytes!(EntryTypeSerializer, {
     }
 });
 
-serialize_as_bytes!(EntryKeySerializer, {
+serialize_as_bytes!("entry key", EntryKeySerializer, {
     /// Serialize the entry type, and also the trailing comma
     fn serialize_str(self, value: &str) -> Result<Self::Ok> {
         self.ser.buffer.write_entry_key(value)?;

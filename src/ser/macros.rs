@@ -1,128 +1,152 @@
 macro_rules! serialize_err_helper {
-    ($err:ident, bool) => {
+    ($err:expr, bool) => {
+        #[inline]
         fn serialize_bool(self, _v: bool) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as bool").to_string()))
         }
     };
 
     ($err:tt, i8) => {
+        #[inline]
         fn serialize_i8(self, _v: i8) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as i8").to_string()))
         }
     };
 
     ($err:tt, i16) => {
+        #[inline]
         fn serialize_i16(self, _v: i16) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as i16").to_string()))
         }
     };
 
     ($err:tt, i32) => {
+        #[inline]
         fn serialize_i32(self, _v: i32) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as i32").to_string()))
         }
     };
 
     ($err:tt, i64) => {
+        #[inline]
         fn serialize_i64(self, _v: i64) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as i64").to_string()))
         }
     };
 
     ($err:tt, u8) => {
+        #[inline]
         fn serialize_u8(self, _v: u8) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as u8").to_string()))
         }
     };
 
     ($err:tt, u16) => {
+        #[inline]
         fn serialize_u16(self, _v: u16) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as u16").to_string()))
         }
     };
 
     ($err:tt, u32) => {
+        #[inline]
         fn serialize_u32(self, _v: u32) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as 32").to_string()))
         }
     };
 
     ($err:tt, u64) => {
+        #[inline]
         fn serialize_u64(self, _v: u64) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as u64").to_string()))
         }
     };
 
     ($err:tt, f32) => {
+        #[inline]
         fn serialize_f32(self, _v: f32) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as f32").to_string()))
         }
     };
 
     ($err:tt, f64) => {
+        #[inline]
         fn serialize_f64(self, _v: f64) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as f64").to_string()))
         }
     };
 
     ($err:tt, char) => {
+        #[inline]
         fn serialize_char(self, _v: char) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as char").to_string()))
         }
     };
 
     ($err:tt, str) => {
+        #[inline]
         fn serialize_str(self, _v: &str) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as str").to_string()))
         }
     };
 
     ($err:tt, bytes) => {
+        #[inline]
         fn serialize_bytes(self, _v: &[u8]) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as bytes").to_string()))
         }
     };
 
     ($err:tt, option) => {
+        #[inline]
         fn serialize_none(self) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as option").to_string()))
         }
 
+        #[inline]
         fn serialize_some<T>(self, _v: &T) -> std::result::Result<Self::Ok, Self::Error>
         where
             T: ?Sized + ser::Serialize,
         {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as option").to_string()))
         }
     };
 
     ($err:tt, unit) => {
+        #[inline]
         fn serialize_unit(self) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as unit").to_string()))
         }
     };
 
     ($err:tt, unit_struct) => {
+        #[inline]
         fn serialize_unit_struct(
             self,
             _name: &'static str,
         ) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(
+                concat!($err, " as unit struct").to_string(),
+            ))
         }
     };
 
     ($err:tt, unit_variant) => {
+        #[inline]
         fn serialize_unit_variant(
             self,
             _name: &'static str,
             _variant_index: u32,
             _variant: &'static str,
         ) -> std::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(
+                concat!($err, " as unit variant").to_string(),
+            ))
         }
     };
 
     ($err:tt, newtype_variant) => {
+        #[inline]
         fn serialize_newtype_variant<T>(
             self,
             _name: &'static str,
@@ -133,47 +157,55 @@ macro_rules! serialize_err_helper {
         where
             T: ?Sized + ser::Serialize,
         {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(
+                concat!($err, " as newtype variant").to_string(),
+            ))
         }
     };
 
     ($err:tt, seq) => {
         type SerializeSeq = serde::ser::Impossible<Self::Ok, Self::Error>;
 
+        #[inline]
         fn serialize_seq(
             self,
             _len: Option<usize>,
         ) -> std::result::Result<Self::SerializeSeq, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as sequence").to_string()))
         }
     };
 
     ($err:tt, tuple) => {
         type SerializeTuple = serde::ser::Impossible<Self::Ok, Self::Error>;
 
+        #[inline]
         fn serialize_tuple(
             self,
             _len: usize,
         ) -> std::result::Result<Self::SerializeTuple, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as tuple").to_string()))
         }
     };
 
     ($err:tt, tuple_struct) => {
         type SerializeTupleStruct = serde::ser::Impossible<Self::Ok, Self::Error>;
 
+        #[inline]
         fn serialize_tuple_struct(
             self,
             _name: &'static str,
             _len: usize,
         ) -> std::result::Result<Self::SerializeTupleStruct, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(
+                concat!($err, " as tuple struct").to_string(),
+            ))
         }
     };
 
     ($err:tt, tuple_variant) => {
         type SerializeTupleVariant = serde::ser::Impossible<Self::Ok, Self::Error>;
 
+        #[inline]
         fn serialize_tuple_variant(
             self,
             _name: &'static str,
@@ -181,36 +213,41 @@ macro_rules! serialize_err_helper {
             _variant: &'static str,
             _len: usize,
         ) -> std::result::Result<Self::SerializeTupleVariant, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(
+                concat!($err, " as tuple variant").to_string(),
+            ))
         }
     };
 
     ($err:tt, map) => {
         type SerializeMap = serde::ser::Impossible<Self::Ok, Self::Error>;
 
+        #[inline]
         fn serialize_map(
             self,
             _len: Option<usize>,
         ) -> std::result::Result<Self::SerializeMap, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as map").to_string()))
         }
     };
 
     ($err:tt, struct) => {
         type SerializeStruct = serde::ser::Impossible<Self::Ok, Self::Error>;
 
+        #[inline]
         fn serialize_struct(
             self,
             _name: &'static str,
             _len: usize,
         ) -> std::result::Result<Self::SerializeStruct, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(concat!($err, " as struct").to_string()))
         }
     };
 
     ($err:tt, struct_variant) => {
         type SerializeStructVariant = serde::ser::Impossible<Self::Ok, Self::Error>;
 
+        #[inline]
         fn serialize_struct_variant(
             self,
             _name: &'static str,
@@ -218,30 +255,33 @@ macro_rules! serialize_err_helper {
             _variant: &'static str,
             _len: usize,
         ) -> std::result::Result<Self::SerializeStructVariant, Self::Error> {
-            Err(Self::Error::$err())
+            Err(Self::Error::ser(
+                concat!($err, " as struct variant").to_string(),
+            ))
         }
     };
 }
 
 macro_rules! serialize_err {
-    ($err:ident) => {};
-    ($err:ident, $e:tt) => {
+    ($err:expr) => {};
+    ($err:expr, $e:tt) => {
         type Error = Error;
 
+        #[inline]
         fn serialize_newtype_struct<T>(
             self,
             _name: &'static str,
-            _value: &T,
+            value: &T,
         ) -> std::result::Result<Self::Ok, Self::Error>
         where
             T: ?Sized + ser::Serialize,
         {
-            Err(Self::Error::$err())
+            value.serialize(self)
         }
 
         crate::ser::macros::serialize_err_helper!($err, $e);
     };
-    ($err:ident, $e:tt, $($es:tt),+) => {
+    ($err:expr, $e:tt, $($es:tt),+) => {
         crate::ser::macros::serialize_err_helper!($err, $e);
         serialize_err!($err, $($es),*);
     };
@@ -249,7 +289,7 @@ macro_rules! serialize_err {
 
 /// A macro to defer serialization to an implementation for bytes
 macro_rules! serialize_as_bytes {
-    ($name:ident, {$($str_impl:tt)*}) => {
+    ($err:expr, $name:ident, {$($str_impl:tt)*}) => {
         pub(crate) struct $name<'a, W, F> {
             ser: &'a mut Serializer<W, F>,
         }
@@ -268,7 +308,7 @@ macro_rules! serialize_as_bytes {
             type Ok = ();
 
             serialize_err!(
-                only_seq,
+                $err,
                 i8,
                 i16,
                 i32,

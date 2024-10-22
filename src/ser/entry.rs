@@ -33,7 +33,7 @@ where
     type SerializeStructVariant = RegularEntryStructSerializer<'a, W, F>;
 
     serialize_err!(
-        only_enum_or_struct,
+        "entry",
         i8,
         i16,
         i32,
@@ -188,7 +188,7 @@ where
     type Ok = bool;
 
     serialize_err!(
-        only_seq,
+        "regular entry",
         i8,
         i16,
         i32,
@@ -444,7 +444,7 @@ where
     type Ok = bool;
 
     serialize_err!(
-        only_seq,
+        "macro entry",
         i8,
         i16,
         i32,
@@ -557,7 +557,7 @@ where
     type Ok = ();
 
     serialize_err!(
-        only_seq,
+        "regular entry fields",
         i8,
         i16,
         i32,
@@ -738,7 +738,7 @@ where
     type Ok = ();
 
     serialize_err!(
-        only_seq,
+        "field key-value pair",
         i8,
         i16,
         i32,

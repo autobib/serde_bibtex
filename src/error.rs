@@ -3,8 +3,6 @@ use std::io;
 use std::result;
 use std::str::Utf8Error;
 
-use serde::ser::Error as SeError;
-
 use crate::token::ConversionError;
 
 #[derive(Debug, PartialEq)]
@@ -25,8 +23,8 @@ pub type Result<T> = result::Result<T, Error>;
 impl Error {
     pub fn classify(&self) -> Category {
         match &self.code {
-            ErrorCode::Message(_) => todo!(),
-            ErrorCode::VariableStartsWithDigit
+            ErrorCode::Message(_)
+            | ErrorCode::VariableStartsWithDigit
             | ErrorCode::UnexpectedClosingBracket
             | ErrorCode::ExpectedNextTokenOrEndOfField
             | ErrorCode::UnterminatedTextToken
@@ -37,7 +35,9 @@ impl Error {
             ErrorCode::UnclosedQuote | ErrorCode::UnexpectedEof | ErrorCode::UnclosedBracket => {
                 Category::Eof
             }
-            ErrorCode::InvalidUtf8(_) | ErrorCode::UnexpandedMacro(_) => Category::Data,
+            ErrorCode::InvalidUtf8(_)
+            | ErrorCode::UnexpandedMacro(_)
+            | ErrorCode::InvalidSerializationFormat(_) => Category::Data,
             ErrorCode::Io(_) => Category::Io,
         }
     }
@@ -55,6 +55,13 @@ impl Error {
     }
 
     #[inline]
+    pub(crate) fn ser(msg: String) -> Self {
+        Self {
+            code: ErrorCode::InvalidSerializationFormat(msg),
+        }
+    }
+
+    #[inline]
     pub(crate) fn io(err: io::Error) -> Self {
         Self {
             code: ErrorCode::Io(err),
@@ -66,16 +73,6 @@ impl Error {
         Self {
             code: ErrorCode::UnexpectedEof,
         }
-    }
-
-    #[inline]
-    pub(crate) fn only_seq() -> Self {
-        Self::custom("bibliography must be a sequence")
-    }
-
-    #[inline]
-    pub(crate) fn only_enum_or_struct() -> Self {
-        Self::custom("entry must be a struct or enum")
     }
 }
 
@@ -114,7 +111,7 @@ impl serde::de::Error for Error {
     }
 }
 
-impl SeError for Error {
+impl serde::ser::Error for Error {
     fn custom<T: std::fmt::Display>(msg: T) -> Self {
         Self::syntax(ErrorCode::Message(msg.to_string()))
     }
@@ -132,6 +129,7 @@ pub(crate) enum ErrorCode {
     VariableStartsWithDigit,
     UnexpectedClosingBracket,
     ExpectedNextTokenOrEndOfField,
+    InvalidSerializationFormat(String),
     UnterminatedTextToken,
     InvalidStartOfEntry,
     ExpectedEndOfEntry,
@@ -165,6 +163,9 @@ impl std::fmt::Display for ErrorCode {
             Self::ExpectedEndOfEntry => f.write_str("expected end of entry"),
             Self::Io(err) => write!(f, "IO error: {err}"),
             Self::UnexpandedMacro(s) => write!(f, "expected text, got unresolved macro {s}"),
+            Self::InvalidSerializationFormat(msg) => {
+                write!(f, "invalid serialization format: {msg}")
+            }
         }
     }
 }

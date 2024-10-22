@@ -332,7 +332,7 @@ where
     type SerializeTupleStruct = BibliographySerializer<'a, W, F>;
 
     serialize_err!(
-        only_seq,
+        "bibliography",
         i8,
         i16,
         i32,
