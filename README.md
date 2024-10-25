@@ -41,7 +41,7 @@ See the [serializer docs](https://docs.rs/serde_bibtex/latest/serde_bibtex/ser/i
 - Sufficiently general to generate any valid BibTeX bibliography (up to syntactic equivalence), including all entry types such as `@string` macros, and out-putting unexpanded macros.
 - Implementable `Formatter` trait which allows total customization of generated BibTeX.
 
-### Opinionated
+### Convenient defaults
 - Default `Formatter` implementations serialize in a standardized format to guarantee unambiguous parsing even by other tools.
 - Compact formatter when serializing for consumption by non-humans.
 
