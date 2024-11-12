@@ -6,8 +6,6 @@ use memchr::memchr2_iter;
 
 use super::TokenError;
 
-// pub struct TokenError
-
 /// Lookup table for bytes which could appear in an entry key. This includes the
 /// ascii printable characters with "{}(),= \t\n\\#%\"" removed, as well as bytes
 /// that could appear in non-ascii UTF-8.
@@ -168,6 +166,7 @@ mod tests {
     #[test]
     fn test_variable() {
         assert_eq!(check_variable("a123"), Ok(()));
+        assert_eq!(check_variable("a1 23"), Err(TokenError::InvalidChar(' ')));
         assert_eq!(check_variable("1234"), Err(TokenError::StartsWithDigit));
         assert_eq!(check_variable("a{"), Err(TokenError::InvalidChar('{')));
         assert_eq!(check_variable(" "), Err(TokenError::InvalidChar(' ')));
