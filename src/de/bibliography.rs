@@ -166,11 +166,10 @@ where
     }
 }
 
-/// Deserialize `.bib` input and iterate over entries.
+/// A lazy iterator over BibTeX entries.
 ///
 /// The recommended way to construct this struct is to use the [`Deserializer::into_iter`] method.
-///
-/// To only iterate regular entries, see [`DeserializeRegularEntryIter`].
+/// To only iterate over regular entries, see [`DeserializeRegularEntryIter`].
 /// To deserialize into an arbitrary wrapper type, see [`Deserializer`].
 pub struct DeserializeIter<'r, R, D>
 where
@@ -197,15 +196,14 @@ where
     }
 }
 
-/// Deserialize `.bib` input and iterate over all regular entries.
+/// A lazy iterator over BibTeX regular entries.
+///
+/// Note that macros are automatically captured and expanded, when possible.
 ///
 /// The recommended way to construct this struct is to use the
 /// [`Deserializer::into_iter_regular_entry`] method.
-///
 /// To also iterate over preamble, comment, or macro entries, see [`DeserializeIter`].
 /// To deserialize into an arbitrary wrapper type, see [`Deserializer`].
-///
-/// Macros are automatically captured and expanded, when possible.
 pub struct DeserializeRegularEntryIter<'r, R, D>
 where
     R: BibtexParse<'r>,

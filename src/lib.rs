@@ -73,10 +73,10 @@
 //! ```
 //!
 //! ## Basic Serialization
-//! The most convenient entrypoint is use one of the convenience methods, such as [`to_string`] or [`to_writer`], or one of the 'compact' or 'unchecked' variants.
-//! Since BibTeX is a relatively rigid output format, your types must be in a relatively rigid
-//! format. For examples, and for a detailed description of the conventions used for serialization,
-//! see the [ser module](ser).
+//! The most convenient entrypoint is to use one of the convenience methods, such as [`to_string`]
+//! or [`to_writer`], or one of the 'compact' or 'unchecked' variants. Since BibTeX is a relatively
+//! rigid output format, your types must be in a relatively rigid format. For examples, and for a
+//! detailed description of the conventions used for serialization, see the [ser module](ser).
 //! ```
 //! use std::collections::BTreeMap;
 //! use serde::Serialize;

@@ -12,7 +12,7 @@
 //! of the differences with other bibtex-compatible programs.
 //!
 //! ## Structure of a bibliography
-//! ### Whitespace, comments, and junk characters.
+//! ### Whitespace and comments
 //! 1. Whitespace is defined as any ASCII char accepted by the
 //!    [`is_ascii_whitespace`](https://doc.rust-lang.org/std/primitive.u8.html#method.is_ascii_whitespace)
 //!    method.
@@ -27,10 +27,6 @@
 //!    sequence of whitespace and TeX comments.
 //!    ```ignore
 //!    ign = _{ (tex_comment | ws)* }
-//!    ```
-//! 4. Junk characters are any characters which are either commented or are not `@`.
-//!    ```ignore
-//!    junk = _{ (tex_comment | !("@" | "%") ~ ANY)* }
 //!    ```
 //!
 //! ### Identifiers
@@ -131,7 +127,11 @@
 //!    ```ignore
 //!    entry = { "@" ~ ign ~ (entry_comment | entry_preamble | entry_macro | entry_regular) }
 //!    ```
-//! 2. A bibliography is a possibly empty list of entries, separated by junk characters.
+//! 2. Junk characters are any characters which are either commented or are not `@`.
+//!    ```ignore
+//!    junk = _{ (tex_comment | !("@" | "%") ~ ANY)* }
+//!    ```
+//! 3. A bibliography is a possibly empty list of entries, separated by junk characters.
 //!    ```ignore
 //!    bib = _{ SOI ~ junk ~ (entry ~ junk)* ~ EOI }
 //!    ```
@@ -140,17 +140,16 @@
 //! ## Grammar comparisons
 //!
 //! ### Differences from biber
-//! 1. A field key is permitted to start with an ASCII digit.
-//! 2. We do not skip chars following `\` and `'`. When biber encounters one of these characters,
+//! 1. We do not skip chars following `\` and `'`. When biber encounters one of these characters,
 //!    it consumes the following character and counts it as whitespace. For instance, biber
 //!    considers `@ '%article` to be equivalent to `@article`, since the `%` character is ignored since
 //!    it follows `'` and does not begin a comment.
-//! 4. We treat `comment` entries delimited by `()` in the same way as quoted text fields. This is
+//! 2. We treat `comment` entries delimited by `()` in the same way as quoted text fields. This is
 //!    more flexible than biber, which considers a closing `)` to terminate the comment field,
 //!    regardless of the current depth of `{}` brackets.
-//! 5. A field key allowed to start with digit. The only place we do not permit digits is at the
-//!    beginning of a variable, so that a variable can be unambiguously distinguished from an
-//!    unquoted number.
+//! 3. A field key is permitted to start with an ASCII digit. The only place we do not permit digits
+//!    is at the beginning of a variable, so that a variable can be unambiguously distinguished from
+//!    an unquoted number.
 //!
 //! ### Differences from bibtex
 //! 1. Bibtex does not support `%`-style comments.
