@@ -5,7 +5,7 @@ use std::str::Utf8Error;
 
 use crate::token::ConversionError;
 
-/// The error category of a given [`bibtex::Error`](Error).
+/// The error category of an [`Error`].
 #[derive(Debug, PartialEq)]
 pub enum Category {
     /// Error while handling IO.
@@ -26,10 +26,11 @@ pub struct Error {
     pub(crate) code: ErrorCode,
 }
 
-/// Alias for a [`Result`](std::result::Result) with the error type [`bibtex::Error`](crate::error::Error).
+/// An alias for a [`Result`](std::result::Result) with error type [`serde_bibtex::Error`](Error).
 pub type Result<T> = result::Result<T, Error>;
 
 impl Error {
+    /// Categorize the type of the error.
     pub fn classify(&self) -> Category {
         match &self.code {
             ErrorCode::Message(_)

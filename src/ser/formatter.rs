@@ -151,13 +151,27 @@ impl<F: Formatter> FormatBuffer<F> {
     }
 }
 
-/// A formatter which outputs with normal whitespace and guarantees valid BibTeX.
+/// A formatter which outputs with normal whitespace and does not check for valid BibTeX.
 pub struct PrettyFormatter {}
 
 impl Formatter for PrettyFormatter {}
 
-/// A formatter which outputs with no excess whitespace and and does not check for valid BibTeX.
+impl PrettyFormatter {
+    /// Return a formatter with the same output, except that also validates the generated BibTeX.
+    pub fn validate(self) -> ValidatingFormatter<PrettyFormatter> {
+        ValidatingFormatter::new(self)
+    }
+}
+
+/// A formatter which outputs with no excess whitespace and does not check for valid BibTeX.
 pub struct CompactFormatter {}
+
+impl CompactFormatter {
+    /// Return a formatter with the same output, except that also validates the generated BibTeX.
+    pub fn validate(self) -> ValidatingFormatter<CompactFormatter> {
+        ValidatingFormatter::new(self)
+    }
+}
 
 impl Formatter for CompactFormatter {
     #[inline]
@@ -217,11 +231,11 @@ impl Formatter for CompactFormatter {
     }
 }
 
-/// A wrapper struct to convert an arbitrary formatter into one which also performs validation.
+/// A wrapper to convert an arbitrary formatter into one which also performs validation.
 pub struct ValidatingFormatter<F>(F);
 
 impl<F> ValidatingFormatter<F> {
-    /// Create a new ValidatingFormatter
+    /// Create a `ValidatingFormatter` by wrapping another formatter.
     pub fn new(formatter: F) -> Self {
         Self(formatter)
     }
