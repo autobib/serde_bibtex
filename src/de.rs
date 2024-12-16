@@ -192,21 +192,21 @@
 //! explicit `Record` variant.
 //! ```
 //! # use serde::Deserialize;
-//! #[derive(Debug, PartialEq, Deserialize)]
+//! #[derive(Deserialize)]
 //! struct Fields {
 //!     title: String,
 //!     year: Option<String>,
 //!     author: Option<String>,
 //! }
 //!
-//! #[derive(Debug, PartialEq, Deserialize)]
+//! #[derive(Deserialize)]
 //! struct Record {
 //!     entry_type: String,
 //!     entry_key: String,
 //!     fields: Fields
 //! }
 //!
-//! #[derive(Debug, PartialEq, Deserialize)]
+//! #[derive(Deserialize)]
 //! enum Entry {
 //!     Macro,
 //!     Preamble,
@@ -660,7 +660,7 @@
 //!     assert_eq!(entry.unwrap(), expect);
 //! }
 //! ```
-//! Internally, the [`token::Token`](token/enum.Token.html) enum is used to hold `@string` macro definitions. This helps to
+//! Internally, a [`Token`](crate::token::Token) is used to hold `@string` macro definitions. This helps to
 //! automatically tolerate undefined macros when the value of that macro is not required.
 //!
 //! ## Borrowing and byte deserialization
@@ -737,16 +737,15 @@
 //!     Some(Ok(Record { .. })),
 //! ))
 //! ```
-//! If you are confident that the bibliography consists only of regular entries, you can
-//! deserialize a regular Bibliography directly as a sequence of regular entry structs. However,
-//! the presence of any non-regular entry will cause an error immediately.
-//!
-//! Of course, you can just ignore errors if they occur.
+//! If you are confident that the bibliography consists only of regular entries, or if the presence
+//! of any other entry type is an error, you can deserialize a regular Bibliography directly as a
+//! sequence of regular entry structs. The presence of any non-regular entry will result in an error
+//! immediately.
 //!
 //! Note that:
 //! 1. Macro expansion will not occurr.
 //! 2. It is not possible to capture any other entries in this way.
-//! 3. Skipping errors could result in strange issues
+//! 3. Continuing to iterate after observing an error can result in malformed data.
 //! ```
 //! use std::{collections::BTreeMap, fmt, str::FromStr};
 //!

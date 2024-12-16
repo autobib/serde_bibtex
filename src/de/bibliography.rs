@@ -76,7 +76,10 @@ where
         }
     }
 
-    /// Deserialize individual entries in an iterator.
+    /// Returns an iterator over the entries in the underlying BibTeX data.
+    ///
+    /// Note that a [`Deserializer`] does not implement [`IntoIterator`] because of lifetime
+    /// restrictions.
     #[allow(clippy::should_implement_trait)]
     pub fn into_iter<D: de::Deserialize<'r>>(self) -> DeserializeIter<'r, R, D> {
         // We cannot implement Iterator since the Item is not known in advance.
@@ -86,7 +89,8 @@ where
         }
     }
 
-    /// Deserialize individual entries in an iterator, ignoring all entries which are not regular entries.
+    /// Returns an iterator over the regular entries of the underlying BibTeX data, ignoring
+    /// entries which are not regular entries but automatically capturing and expanding macros.
     pub fn into_iter_regular_entry<D: de::Deserialize<'r>>(
         self,
     ) -> DeserializeRegularEntryIter<'r, R, D> {
