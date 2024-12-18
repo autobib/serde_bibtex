@@ -36,7 +36,7 @@ impl fmt::Display for TokenError {
         match self {
             TokenError::Empty => f.write_str("identifier must be non-empty"),
             TokenError::InvalidChar(ch) => {
-                write!(f, "identifier contains invalid character '{ch:?}'")
+                write!(f, "identifier contains invalid character {ch:?}")
             }
             TokenError::StartsWithDigit => f.write_str("variable cannot start with digit"),
             TokenError::ExtraClosingBracket => f.write_str("text token has extra closing bracket"),
