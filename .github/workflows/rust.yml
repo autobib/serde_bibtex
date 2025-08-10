@@ -1,0 +1,42 @@
+name: Rust
+
+on:
+  pull_request:
+  push:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+  RUSTDOCFLAGS: -D warnings
+  RUST_BACKTRACE: 1
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+    - uses: Swatinem/rust-cache@v2
+    - name: Build test binaries
+      run: cargo test --no-run --all-features
+    - name: Run tests
+      run: cargo test --no-fail-fast --all-features
+
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy, rustfmt
+    - uses: Swatinem/rust-cache@v2
+    - name: Build docs
+      run: cargo doc --no-deps --all-features
+    - name: Run Clippy lints
+      run: cargo clippy --all-features
+    - name: Check formatting
+      run: cargo fmt --check
