@@ -4,10 +4,10 @@ use serde::de::{self, DeserializeSeed, SeqAccess};
 use serde::forward_to_deserialize_any;
 
 use crate::{
+    SliceReader, StrReader,
     error::{Error, Result},
     parse::{BibtexParse, MacroDictionary},
     token::{EntryType, Token},
-    SliceReader, StrReader,
 };
 
 use super::entry::{EntryDeserializer, RegularEntryDeserializer};
@@ -246,7 +246,7 @@ where
                         return Some(D::deserialize(RegularEntryDeserializer::new(
                             &mut self.de,
                             entry_type.into_inner(),
-                        )))
+                        )));
                     }
                 },
                 Ok(None) => return None,
@@ -266,8 +266,8 @@ mod tests {
     };
 
     use pest::Parser;
-    use serde::de::IgnoredAny;
     use serde::Deserialize;
+    use serde::de::IgnoredAny;
 
     use std::collections::HashMap;
 

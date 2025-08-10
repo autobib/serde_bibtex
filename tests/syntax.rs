@@ -1,11 +1,11 @@
 use pest::Parser;
-use serde::de::IgnoredAny;
 use serde::Deserialize;
+use serde::de::IgnoredAny;
 use serde_bibtex::{
+    Result,
     entry::{OwnedBibliography, RawBibliography},
     syntax::{BibtexParser, Rule},
-    Result,
-    {de::Deserializer, MacroDictionary},
+    {MacroDictionary, de::Deserializer},
 };
 
 use std::collections::HashMap;

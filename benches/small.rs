@@ -1,8 +1,8 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 
 pub fn criterion_benchmark(c: &mut Criterion) {
-    use serde::de::IgnoredAny;
     use serde::Deserialize;
+    use serde::de::IgnoredAny;
     use serde_bibtex::de::Deserializer;
     use serde_bibtex::entry::{BorrowEntry, Entry};
 

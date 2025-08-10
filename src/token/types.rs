@@ -2,8 +2,8 @@
 use unicase::UniCase;
 
 use super::{
-    check_balanced, check_entry_key, check_entry_type, check_field_key, check_identifier,
-    check_variable, ConversionError, TokenParseError,
+    ConversionError, TokenParseError, check_balanced, check_entry_key, check_entry_type,
+    check_field_key, check_identifier, check_variable,
 };
 
 /// An unspecialized identifier, which could be an [`EntryKey`], [`EntryType`], [`FieldKey`], or

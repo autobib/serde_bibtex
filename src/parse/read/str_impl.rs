@@ -4,8 +4,8 @@
 //! This module uses unsafe for string conversions. The unsafe are valid since all of the string slicing
 //! performed in `super::slice_impl` is adjacent to ascii codepoints, so the resulting slices are valid
 //! str if they began as valid str.
-use super::slice_impl;
 use super::Read;
+use super::slice_impl;
 use super::{Identifier, Text};
 use crate::error::{Error, ErrorCode};
 use crate::token::IDENTIFIER_ALLOWED;

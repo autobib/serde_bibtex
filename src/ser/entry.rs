@@ -3,12 +3,12 @@ use std::io;
 use serde::ser::{self, Error as _, Serialize as _};
 
 use super::{
+    Formatter, Serializer,
     macros::{ser_wrapper, serialize_err, serialize_trait_impl},
     value::{
         EntryKeySerializer, EntryTypeSerializer, FieldKeySerializer, TextTokenSerializer,
         ValueSerializer, VariableTokenSerializer,
     },
-    Formatter, Serializer,
 };
 use crate::error::{Error, Result};
 use crate::naming::{
