@@ -1,11 +1,11 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 
 pub fn criterion_benchmark(c: &mut Criterion) {
-    use serde::de::IgnoredAny;
     use serde::Deserialize;
+    use serde::de::IgnoredAny;
     use serde_bibtex::entry::{BorrowEntry, Entry};
     use serde_bibtex::error::Result;
-    use serde_bibtex::{de::Deserializer, MacroDictionary};
+    use serde_bibtex::{MacroDictionary, de::Deserializer};
 
     use std::borrow::Cow;
 

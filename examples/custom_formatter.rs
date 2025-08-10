@@ -6,9 +6,8 @@ use std::io;
 
 use serde::{Deserialize, Serialize};
 use serde_bibtex::{
-    from_str,
+    Error, from_str,
     ser::{Formatter, Serializer, ValidatingFormatter},
-    Error,
 };
 
 /// An implementation of [`Formatter`] which converts the entry type to lowercase when it is

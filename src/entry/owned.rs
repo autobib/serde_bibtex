@@ -1,5 +1,5 @@
-use serde::de::{Deserializer, MapAccess, Visitor};
 use serde::Deserialize;
+use serde::de::{Deserializer, MapAccess, Visitor};
 use std::fmt;
 use unicase::UniCase;
 

@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 
 use serde::de::{
-    self, value::BorrowedStrDeserializer, value::StringDeserializer, DeserializeSeed, EnumAccess,
-    SeqAccess, Unexpected, VariantAccess, Visitor,
+    self, DeserializeSeed, EnumAccess, SeqAccess, Unexpected, VariantAccess, Visitor,
+    value::BorrowedStrDeserializer, value::StringDeserializer,
 };
 use serde::forward_to_deserialize_any;
 

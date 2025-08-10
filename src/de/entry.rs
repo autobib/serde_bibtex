@@ -1,6 +1,6 @@
 use serde::de::{
-    self, value::BorrowedStrDeserializer, DeserializeSeed, EnumAccess, MapAccess, SeqAccess,
-    Unexpected, VariantAccess,
+    self, DeserializeSeed, EnumAccess, MapAccess, SeqAccess, Unexpected, VariantAccess,
+    value::BorrowedStrDeserializer,
 };
 use serde::forward_to_deserialize_any;
 
@@ -15,10 +15,10 @@ use crate::{
 };
 
 use super::{
+    Deserializer,
     value::{
         KeyValueDeserializer, TextDeserializer, ValueDeserializer, WrappedBorrowStrDeserializer,
     },
-    Deserializer,
 };
 
 pub struct EntryDeserializer<'a, 'r, R>

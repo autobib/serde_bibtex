@@ -1,11 +1,11 @@
 //! # Example struct deserializartion
 //! An example deserialization of the `assets/tugboat.bib` database
-use serde::de::IgnoredAny;
 use serde::Deserialize;
+use serde::de::IgnoredAny;
 
-use serde_bibtex::entry::{BorrowEntry, Entry};
 use serde_bibtex::Result;
-use serde_bibtex::{de::Deserializer, MacroDictionary};
+use serde_bibtex::entry::{BorrowEntry, Entry};
+use serde_bibtex::{MacroDictionary, de::Deserializer};
 
 use std::borrow::Cow;
 
