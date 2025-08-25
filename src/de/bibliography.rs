@@ -107,7 +107,7 @@ where
     }
 }
 
-impl<'a, 'de: 'a, R> de::Deserializer<'de> for &'a mut Deserializer<'de, R>
+impl<'a, 'de, R> de::Deserializer<'de> for &'a mut Deserializer<'de, R>
 where
     R: BibtexParse<'de>,
 {
@@ -151,7 +151,7 @@ where
     }
 }
 
-impl<'a, 'de: 'a, R> SeqAccess<'de> for &'a mut Deserializer<'de, R>
+impl<'a, 'de, R> SeqAccess<'de> for &'a mut Deserializer<'de, R>
 where
     R: BibtexParse<'de>,
 {
