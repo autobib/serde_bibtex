@@ -34,7 +34,9 @@ impl<S: AsRef<str>> Identifier<S> {
 /// A representation of text which could either be a string, or raw bytes.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Text<S: AsRef<str>, B: AsRef<[u8]>> {
+    /// Text as a string.
     Str(S),
+    /// Text as bytes.
     Bytes(B),
 }
 

@@ -100,6 +100,28 @@ pub trait BibtexParse<'r>: Read<'r> {
         }
     }
 
+    /// Take a single token.
+    fn single_token(&mut self) -> Result<Token<&'r str, &'r [u8]>> {
+        self.comment();
+        match self.peek() {
+            Some(b'{') => {
+                self.discard();
+                let result = self.balanced()?;
+                self.expect(b'}', Error::syntax(ErrorCode::UnclosedBracket))?;
+                Ok(Token::Text(result))
+            }
+            Some(b'"') => {
+                self.discard();
+                let result = self.protected(b'"')?;
+                self.expect(b'"', Error::syntax(ErrorCode::UnclosedQuote))?;
+                Ok(Token::Text(result))
+            }
+            Some(b'0'..=b'9') => Ok(Token::Text(Text::Str(self.number()?))),
+            Some(_) => Ok(Token::Variable(self.identifier()?.into())),
+            _ => Err(Error::eof()),
+        }
+    }
+
     /// Take a token without resolving abbreviations.
     fn token(&mut self, is_first_token: &mut bool) -> Result<Option<Token<&'r str, &'r [u8]>>> {
         // first token is mandatory
@@ -110,24 +132,7 @@ pub trait BibtexParse<'r>: Read<'r> {
             return Ok(None);
         }
 
-        self.comment();
-        match self.peek() {
-            Some(b'{') => {
-                self.discard();
-                let result = self.balanced()?;
-                self.expect(b'}', Error::syntax(ErrorCode::UnclosedBracket))?;
-                Ok(Some(Token::Text(result)))
-            }
-            Some(b'"') => {
-                self.discard();
-                let result = self.protected(b'"')?;
-                self.expect(b'"', Error::syntax(ErrorCode::UnclosedQuote))?;
-                Ok(Some(Token::Text(result)))
-            }
-            Some(b'0'..=b'9') => Ok(Some(Token::Text(Text::Str(self.number()?)))),
-            Some(_) => Ok(Some(Token::Variable(self.identifier()?.into()))),
-            _ => Err(Error::eof()),
-        }
+        self.single_token().map(Some)
     }
 
     /// Parse a comma and field key together to determine if there is another field.

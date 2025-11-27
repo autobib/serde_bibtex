@@ -1,7 +1,14 @@
 macro_rules! read_impl {
-    ($target:ty, $name:ident, $var:ident, $convert:expr) => {
-        #[derive(Debug)]
-        pub struct $name<'r> {
+    (
+        $(#[$outer:meta])*
+        $vis:vis struct $name:ident<'r>(&'r $target:ty);
+
+        $var:ident;
+
+        $convert:expr;
+    ) => {
+        $(#[$outer])*
+        $vis struct $name<'r> {
             pub(crate) input: &'r $target,
             pub(crate) pos: usize,
         }

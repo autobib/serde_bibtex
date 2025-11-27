@@ -40,6 +40,7 @@ impl Error {
             | ErrorCode::UnterminatedTextToken
             | ErrorCode::InvalidStartOfEntry
             | ErrorCode::ExpectedFieldSep
+            | ErrorCode::ExpectedTextToken
             | ErrorCode::Empty
             | ErrorCode::ExpectedEndOfEntry => Category::Syntax,
             ErrorCode::UnclosedQuote | ErrorCode::UnexpectedEof | ErrorCode::UnclosedBracket => {
@@ -147,6 +148,7 @@ pub(crate) enum ErrorCode {
     UnclosedBracket,
     UnclosedQuote,
     UnexpectedEof,
+    ExpectedTextToken,
     ExpectedFieldSep,
     InvalidUtf8(Utf8Error),
     Io(io::Error),
@@ -172,6 +174,10 @@ impl std::fmt::Display for ErrorCode {
             Self::UnclosedQuote => f.write_str("unclosed '\"' in token"),
             Self::ExpectedEndOfEntry => f.write_str("expected end of entry"),
             Self::Io(err) => write!(f, "IO error: {err}"),
+            Self::ExpectedTextToken => write!(
+                f,
+                "expected text-token but recevied a token which is not text"
+            ),
             Self::UnexpandedMacro(s) => write!(f, "expected text, got unresolved macro {s}"),
             Self::InvalidSerializationFormat(msg) => {
                 write!(f, "invalid serialization format: {msg}")

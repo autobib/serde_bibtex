@@ -151,7 +151,18 @@ pub fn protected(until: u8) -> impl FnMut(&[u8], usize) -> Result<(usize, &[u8])
     }
 }
 
-super::create_input_impl::read_impl!([u8], SliceReader, Bytes, std::convert::identity);
+super::create_input_impl::read_impl!(
+    /// A reader that can parse BibTeX from a slice.
+    ///
+    /// If you have a string, you should use a [`StrReader`](crate::StrReader) to skip some UTF-8
+    /// checks.
+    #[derive(Debug, Clone)]
+    pub struct SliceReader<'r>(&'r [u8]);
+
+    Bytes;
+
+    std::convert::identity;
+);
 
 #[cfg(test)]
 mod tests {
