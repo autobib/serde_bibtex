@@ -8,7 +8,9 @@ use super::Read;
 use super::slice_impl;
 use super::{Identifier, Text};
 use crate::error::{Error, ErrorCode};
+use crate::token::FieldKey;
 use crate::token::IDENTIFIER_ALLOWED;
+use crate::token::Token;
 use std::str::from_utf8_unchecked;
 
 use crate::parse::BibtexParse;
@@ -58,7 +60,44 @@ pub fn protected(until: u8) -> impl FnMut(&str, usize) -> Result<(usize, &str), 
     }
 }
 
-super::create_input_impl::read_impl!(str, StrReader, Str, str::as_bytes);
+super::create_input_impl::read_impl!(
+    /// A reader that can parse BibTeX from a string slice.
+    ///
+    /// This the same as a [`SliceReader`](crate::SliceReader), but is able to skip some
+    /// UTF-8 checks.
+    ///
+    /// This struct also exposes a few internal parsing methods.
+    #[derive(Debug, Clone)]
+    pub struct StrReader<'r>(&'r str);
+
+    Str;
+
+    str::as_bytes;
+);
+
+impl<'r> StrReader<'r> {
+    /// Read a field key.
+    pub fn read_field_key(&mut self) -> crate::error::Result<FieldKey<&'r str>> {
+        self.comment();
+        self.identifier().map(Into::into)
+    }
+
+    /// Skip a field separator `=`.
+    pub fn skip_field_sep(&mut self) -> crate::error::Result<()> {
+        self.field_sep()
+    }
+
+    /// Read a single text token, which is one of `{text}`, `"text"`, or `01234`.
+    pub fn read_text_token(&mut self) -> crate::error::Result<&'r str> {
+        self.comment();
+        match self.single_token()? {
+            Token::Text(Text::Bytes(_)) | Token::Variable(_) => Err(crate::error::Error::syntax(
+                crate::error::ErrorCode::ExpectedTextToken,
+            )),
+            Token::Text(Text::Str(text)) => Ok(text),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
