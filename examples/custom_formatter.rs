@@ -13,9 +13,7 @@ use serde_bibtex::{
 /// An implementation of [`Formatter`] which converts the entry type to lowercase when it is
 /// written.
 #[derive(Default)]
-struct NormalizingFormatter {
-    buffer: String,
-}
+struct NormalizingFormatter;
 
 impl Formatter for NormalizingFormatter {
     #[inline]
@@ -23,9 +21,8 @@ impl Formatter for NormalizingFormatter {
     where
         W: ?Sized + io::Write,
     {
-        self.buffer = entry_type.to_lowercase();
         writer.write_all(b"@")?;
-        writer.write_all(self.buffer.as_bytes())
+        writer.write_all(entry_type.to_lowercase().as_bytes())
     }
 }
 

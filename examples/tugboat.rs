@@ -59,33 +59,34 @@ fn main() {
     type OwnedBibliography = Vec<Entry>;
     type RawBibliography<'r> = Vec<BorrowEntry<'r>>;
 
-    let input_bytes = std::fs::read("assets/tugboat.bib").unwrap();
-    let input_str = std::str::from_utf8(&input_bytes).unwrap();
+    let input = std::fs::read("assets/tugboat.bib").unwrap();
     let args: Vec<String> = std::env::args().collect();
 
     match args.get(1) {
         Some(arg) => match arg.as_str() {
             "ignore" => {
-                let _ = IgnoredAny::deserialize(&mut Deserializer::from_str(input_str));
+                let _ = IgnoredAny::deserialize(&mut Deserializer::from_slice(&input));
             }
             "borrow" => {
-                let _ = RawBibliography::deserialize(&mut Deserializer::from_str(input_str));
+                let _ = RawBibliography::deserialize(&mut Deserializer::from_slice(&input));
             }
             "struct" => {
-                let de_iter = Deserializer::from_str(input_str).into_iter_regular_entry();
-                let _result: Vec<Result<TugboatEntry>> = de_iter.collect();
+                let de_iter = Deserializer::from_slice(&input).into_iter_regular_entry();
+                let _result: Result<Vec<TugboatEntry>> = de_iter.collect();
             }
             "copy" => {
                 let mut macros = MacroDictionary::default();
                 macros.set_month_macros();
-                let _ = OwnedBibliography::deserialize(&mut Deserializer::from_str_with_macros(
-                    input_str, macros,
+                let _ = OwnedBibliography::deserialize(&mut Deserializer::from_slice_with_macros(
+                    &input, macros,
                 ));
             }
             other => eprintln!(
-                "Invalid argument '{other}': provide argument 'ignore' 'borrow' struct' 'copy'"
+                "Invalid argument '{other}', must be one of: ignore, borrow, struct, copy"
             ),
         },
-        None => eprintln!("Error: provide argument 'ignore' 'borrow' struct' 'copy'"),
+        None => eprintln!(
+            "Error: provide argument one of the following arguments: ignore, borrow, struct, copy"
+        ),
     }
 }

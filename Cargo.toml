@@ -56,3 +56,4 @@ name = "custom_formatter"
 
 [[example]]
 name = "tugboat"
+required-features = ["entry"]

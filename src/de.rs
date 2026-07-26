@@ -563,6 +563,8 @@
 //!     Regular,
 //! }
 //! ```
+//! To recover the captured macros after deserialization is complete, use [`Deserializer::finish`].
+//!
 //! ## Deserializing values
 //! *Values* can appear in three possible locations:
 //!
