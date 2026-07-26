@@ -15,22 +15,15 @@ use crate::{
 /// Ignore junk characters between entries.
 ///
 /// Returns (updated_pos, true) if an entry was found; otherwise (input.len(), false) if hit EOF.
-pub fn next_entry_or_eof(input: &[u8], mut pos: usize) -> (usize, bool) {
-    while pos < input.len() {
-        pos += 1;
-        match input[pos - 1] {
-            b'@' => return (pos, true),
-            b'%' => {
-                while pos < input.len() && input[pos] != b'\n' {
-                    pos += 1;
-                }
-                if pos == input.len() {
-                    return (pos, false);
-                } else {
-                    // found \n, skip it
-                    pos += 1
-                }
-            }
+pub fn next_entry_or_eof(input: &[u8], pos: usize) -> (usize, bool) {
+    let mut inside_comment = false;
+
+    for offset in memchr3_iter(b'@', b'%', b'\n', &input[pos..]) {
+        let idx = pos + offset;
+        match (input[idx], inside_comment) {
+            (b'\n', true) => inside_comment = false,
+            (b'@', false) => return (idx + 1, true),
+            (b'%', false) => inside_comment = true,
             _ => {}
         }
     }
