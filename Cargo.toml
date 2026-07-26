@@ -21,8 +21,8 @@ debug = true
 
 [dependencies]
 memchr = "2.7"
-pest = {version = "2.7", optional = true}
-pest_derive = {version = "2.7", optional = true}
+pest = { version = "2.7", optional = true }
+pest_derive = { version = "2.7", optional = true }
 serde = "1.0"
 unicase = "2.7"
 
@@ -57,3 +57,7 @@ name = "custom_formatter"
 [[example]]
 name = "tugboat"
 required-features = ["entry"]
+
+[[test]]
+name = "syntax"
+required-features = ["entry", "syntax"]

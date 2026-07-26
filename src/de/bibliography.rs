@@ -256,7 +256,7 @@ where
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "syntax"))]
 mod tests {
     use super::*;
     use crate::{
