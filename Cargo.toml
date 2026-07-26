@@ -20,11 +20,12 @@ rustdoc-args = ["--cfg", "docsrs"]
 debug = true
 
 [dependencies]
-memchr = "2.7"
+memchr = "2.8"
 pest = { version = "2.7", optional = true }
 pest_derive = { version = "2.7", optional = true }
+rkyv = { version = "0.8", optional = true }
 serde = "1.0"
-unicase = "2.7"
+unicase = "2.9"
 
 [features]
 all = ["entry", "syntax"]
