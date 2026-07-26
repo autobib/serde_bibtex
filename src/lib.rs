@@ -151,7 +151,7 @@ use serde::{Deserialize, Serialize};
 use crate::{de::Deserializer, ser::Serializer};
 pub use crate::{
     error::{Error, Result},
-    parse::{MacroDictionary, Read, SliceReader, StrReader},
+    parse::{BibtexRead, MacroDictionary, SliceReader, StrReader},
 };
 
 /// Deserialize an instance of type `D` from string of BibTeX.

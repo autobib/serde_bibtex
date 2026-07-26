@@ -6,7 +6,7 @@ use serde::forward_to_deserialize_any;
 use crate::{
     SliceReader, StrReader,
     error::{Error, Result},
-    parse::{BibtexParse, MacroDictionary},
+    parse::{BibtexParse, BibtexRead, MacroDictionary},
     token::{EntryType, Token},
 };
 
@@ -55,9 +55,9 @@ impl<'r> Deserializer<'r, SliceReader<'r>> {
 
 impl<'r, R> Deserializer<'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
-    /// Construct a new [`Deserializer`] from any [`BibtexParse`] implementation.
+    /// Construct a new [`Deserializer`] from any [`BibtexRead`] implementation.
     pub(crate) fn new(parser: R) -> Self {
         Self {
             parser,
@@ -66,7 +66,7 @@ where
         }
     }
 
-    /// Construct a new [`Deserializer`] from any [`BibtexParse`] implementation and pre-defined
+    /// Construct a new [`Deserializer`] from any [`BibtexRead`] implementation and pre-defined
     /// macros in [`MacroDictionary`].
     pub(crate) fn new_with_macros(parser: R, macros: MacroDictionary<&'r str, &'r [u8]>) -> Self {
         Self {
@@ -109,7 +109,7 @@ where
 
 impl<'de, R> de::Deserializer<'de> for &mut Deserializer<'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -153,7 +153,7 @@ where
 
 impl<'de, R> SeqAccess<'de> for &mut Deserializer<'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -177,7 +177,7 @@ where
 /// To deserialize into an arbitrary wrapper type, see [`Deserializer`].
 pub struct DeserializeIter<'r, R, D>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
     D: de::Deserialize<'r>,
 {
     de: Deserializer<'r, R>,
@@ -186,7 +186,7 @@ where
 
 impl<'de, R, D> Iterator for DeserializeIter<'de, R, D>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
     D: de::Deserialize<'de>,
 {
     type Item = Result<D>;
@@ -210,7 +210,7 @@ where
 /// To deserialize into an arbitrary wrapper type, see [`Deserializer`].
 pub struct DeserializeRegularEntryIter<'r, R, D>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
     D: de::Deserialize<'r>,
 {
     de: Deserializer<'r, R>,
@@ -219,7 +219,7 @@ where
 
 impl<'de, R, D> Iterator for DeserializeRegularEntryIter<'de, R, D>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
     D: de::Deserialize<'de>,
 {
     type Item = Result<D>;

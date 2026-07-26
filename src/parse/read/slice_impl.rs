@@ -1,14 +1,13 @@
 //! Warning: the `super::str_impl` module depends heavily on the implementation in this crate for
 //! safety! All of the cuts must be performed either immediately before or after an ascii codepoint,
 //! so the resulting slices are valid str if they began as valid str.
-use super::Read;
-use super::{Identifier, Text};
-use memchr::{memchr2_iter, memchr3_iter};
 use std::str::{from_utf8, from_utf8_unchecked};
 
+use memchr::{memchr2_iter, memchr3_iter};
+
+use super::{BibtexRead, Identifier, Text};
 use crate::{
     error::{Error, ErrorCode},
-    parse::BibtexParse,
     token::IDENTIFIER_ALLOWED,
 };
 

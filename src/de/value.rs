@@ -9,7 +9,7 @@ use serde::forward_to_deserialize_any;
 use crate::{
     error::{Error, Result},
     naming::{MACRO_TOKEN_VARIANT_NAME, TEXT_TOKEN_VARIANT_NAME},
-    parse::BibtexParse,
+    parse::{BibtexParse, BibtexRead},
     token::{Text, Token},
 };
 
@@ -30,7 +30,7 @@ impl<'a, 'r> KeyValueDeserializer<'a, 'r> {
         }
     }
 
-    pub fn new_from_de<R: BibtexParse<'r>>(
+    pub fn new_from_de<R: BibtexRead<'r>>(
         s: &'r str,
         de: &'a mut Deserializer<'r, R>,
     ) -> Result<Self> {
@@ -295,7 +295,7 @@ impl<'a, 'r> ValueDeserializer<'a, 'r> {
     /// Create a new value from the tokens after resolving macros.
     pub(crate) fn try_from_de_resolved<R>(de: &'a mut Deserializer<'r, R>) -> Result<Self>
     where
-        R: BibtexParse<'r>,
+        R: BibtexRead<'r>,
     {
         de.parser.value_into(&mut de.scratch)?;
         de.macros.resolve(&mut de.scratch);

@@ -8,21 +8,24 @@ pub use str_impl::StrReader;
 use crate::error::Error;
 use crate::token::{Identifier, Text};
 
-/// A trait to represent a type which can be parsed as BibTeX.
+/// A pull parser which can be driven by a [`Deserializer`](crate::de::Deserializer) to parse BibTeX.
 ///
 /// This trait is implemented by [`SliceReader`] and [`StrReader`].
-pub trait Read<'r> {
-    /// Peek a single byte.
+pub trait BibtexRead<'r> {
+    /// Peek the next byte in the input without advancing the position.
     fn peek(&self) -> Option<u8>;
 
-    /// Discard a single byte. This is only valid after a previous .peek() returned a value!
+    /// Advance forward a single byte, assuming that there are remaining bytes.
+    ///
+    /// Implementors may assume that a previous call to [`peek`](Self::peek) returned something
+    /// and no other methods were call in between.
     fn discard(&mut self);
 
-    /// Discard comments and whitespace.
+    /// Advance forward over comments and whitespace.
     fn comment(&mut self);
 
-    /// Discard junk characters between entries, and return true if another entry is found and
-    /// false otherwise.
+    /// Advance forward until the beginning of an entry is found, or the end of the file is reached,
+    /// returning if an entry was found.
     fn next_entry_or_eof(&mut self) -> bool;
 
     /// Parse a unicode identifier.

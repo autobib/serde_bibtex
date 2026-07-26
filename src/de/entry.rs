@@ -10,7 +10,7 @@ use crate::{
         COMMENT_ENTRY_VARIANT_NAME, ENTRY_KEY_NAME, ENTRY_TYPE_NAME, FIELDS_NAME,
         MACRO_ENTRY_VARIANT_NAME, PREAMBLE_ENTRY_VARIANT_NAME, REGULAR_ENTRY_VARIANT_NAME,
     },
-    parse::BibtexParse,
+    parse::{BibtexParse, BibtexRead},
     token::EntryType,
 };
 
@@ -23,7 +23,7 @@ use super::{
 
 pub struct EntryDeserializer<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     de: &'a mut Deserializer<'r, R>,
     entry_type: EntryType<&'r str>,
@@ -31,7 +31,7 @@ where
 
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for EntryDeserializer<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -127,7 +127,7 @@ where
 
 impl<'a, 'de: 'a, R> VariantAccess<'de> for EntryDeserializer<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -203,7 +203,7 @@ where
 
 impl<'a, 'de: 'a, R> EnumAccess<'de> for EntryDeserializer<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -227,7 +227,7 @@ where
 
 impl<'a, 'r, R> EntryDeserializer<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     pub fn new(de: &'a mut Deserializer<'r, R>, entry_type: EntryType<&'r str>) -> Self {
         Self { de, entry_type }
@@ -236,14 +236,14 @@ where
 
 pub struct MacroRuleDeserializer<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     de: &'a mut Deserializer<'r, R>,
 }
 
 impl<'a, 'r, R> MacroRuleDeserializer<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     pub fn new(de: &'a mut Deserializer<'r, R>) -> Self {
         Self { de }
@@ -262,7 +262,7 @@ where
 /// as a key-value pair, though this requires that the macro entry is non-empty.
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for MacroRuleDeserializer<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -322,7 +322,7 @@ where
 
 pub struct RegularEntryDeserializer<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     de: &'a mut Deserializer<'r, R>,
     name: &'r str,
@@ -330,7 +330,7 @@ where
 
 impl<'a, 'r, R> RegularEntryDeserializer<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     pub fn new(de: &'a mut Deserializer<'r, R>, name: &'r str) -> Self {
         Self { de, name }
@@ -339,7 +339,7 @@ where
 
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for RegularEntryDeserializer<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -440,7 +440,7 @@ enum EntryPosition {
 /// special cases to handle `@string`, `@preamble`, and `@comment`.
 struct EntryAccess<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     /// The top-level deserializer holding a reader.
     de: &'a mut Deserializer<'r, R>,
@@ -454,7 +454,7 @@ where
 
 impl<'a, 'r, R> EntryAccess<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     fn new(de: &'a mut Deserializer<'r, R>, name: &'r str) -> Self {
         Self {
@@ -477,7 +477,7 @@ where
 
 impl<'a, 'de: 'a, R> MapAccess<'de> for EntryAccess<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -528,7 +528,7 @@ where
 
 impl<'a, 'de: 'a, R> SeqAccess<'de> for EntryAccess<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -565,14 +565,14 @@ where
 /// Used to deserialize the fields key = value, ..
 struct FieldDeserializer<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     de: &'a mut Deserializer<'r, R>,
 }
 
 impl<'a, 'r, R> FieldDeserializer<'a, 'r, R>
 where
-    R: BibtexParse<'r>,
+    R: BibtexRead<'r>,
 {
     pub fn new(de: &'a mut Deserializer<'r, R>) -> Self {
         Self { de }
@@ -581,7 +581,7 @@ where
 
 impl<'a, 'de: 'a, R> de::Deserializer<'de> for FieldDeserializer<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -651,7 +651,7 @@ where
 
 impl<'a, 'de: 'a, R> MapAccess<'de> for FieldDeserializer<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 
@@ -678,7 +678,7 @@ where
 
 impl<'a, 'de: 'a, R> SeqAccess<'de> for FieldDeserializer<'a, 'de, R>
 where
-    R: BibtexParse<'de>,
+    R: BibtexRead<'de>,
 {
     type Error = Error;
 

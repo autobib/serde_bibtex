@@ -31,7 +31,7 @@ macro_rules! read_impl {
             }
         }
 
-        impl<'r> Read<'r> for $name<'r> {
+        impl<'r> BibtexRead<'r> for $name<'r> {
             #[inline]
             fn peek(&self) -> Option<u8> {
                 if self.pos < self.input.len() {
@@ -78,7 +78,6 @@ macro_rules! read_impl {
                 self.apply(number)
             }
         }
-        impl<'r> BibtexParse<'r> for $name<'r> {}
     };
 }
 

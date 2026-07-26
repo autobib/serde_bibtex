@@ -5,9 +5,11 @@ use crate::error::{Error, ErrorCode, Result};
 
 use crate::token::{EntryKey, EntryType, FieldKey, Text, Token, Variable};
 pub use macros::MacroDictionary;
-pub use read::{Read, SliceReader, StrReader};
+pub use read::{BibtexRead, SliceReader, StrReader};
 
-pub trait BibtexParse<'r>: Read<'r> {
+impl<'r, R: BibtexRead<'r>> BibtexParse<'r> for R {}
+
+pub trait BibtexParse<'r>: BibtexRead<'r> {
     /// Read the entry type, returning None if EOF was reached.
     fn entry_type(&mut self) -> Result<Option<EntryType<&'r str>>> {
         if self.next_entry_or_eof() {

@@ -4,16 +4,14 @@
 //! This module uses unsafe for string conversions. The unsafe are valid since all of the string slicing
 //! performed in `super::slice_impl` is adjacent to ascii codepoints, so the resulting slices are valid
 //! str if they began as valid str.
-use super::Read;
-use super::slice_impl;
-use super::{Identifier, Text};
-use crate::error::{Error, ErrorCode};
-use crate::token::FieldKey;
-use crate::token::IDENTIFIER_ALLOWED;
-use crate::token::Token;
 use std::str::from_utf8_unchecked;
 
-use crate::parse::BibtexParse;
+use super::{BibtexRead, Identifier, Text, slice_impl};
+use crate::{
+    error::{Error, ErrorCode},
+    parse::BibtexParse,
+    token::{FieldKey, IDENTIFIER_ALLOWED, Token},
+};
 
 #[inline]
 pub fn next_entry_or_eof(input: &str, pos: usize) -> (usize, bool) {
