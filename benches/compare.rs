@@ -92,6 +92,12 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         b.iter(|| RawBib::parse(input_str).unwrap())
     });
 
+    use biblatex::Bibliography as Bib;
+
+    c.bench_function("tugboat bibliography", |b| {
+        b.iter(|| Bib::parse(input_str).unwrap())
+    });
+
     use nom_bibtex::Bibtex;
 
     c.bench_function("tugboat nom", |b| {

@@ -27,7 +27,7 @@ See the [deserializer docs](https://docs.rs/serde_bibtex/latest/serde_bibtex/de/
 - Aim for compatibility with [biber](https://github.com/plk/biber) but without some of biber's [undocumented idiosyncracies](https://docs.rs/serde_bibtex/latest/serde_bibtex/syntax/index.html#differences-from-biber) or [unfixable parsing bugs](https://github.com/plk/biber/issues/456).
 
 ### Fast
-- Low overhead manual parser implementation (see [benchmarks](#benchmarks)).
+- Low overhead parser implementation (see [benchmarks](#benchmarks)).
 - Zero-copy deserialization.
 - Selective capturing of contents (see [benchmarks](#benchmarks) for speed differences)
 
@@ -37,7 +37,7 @@ Here are the main features.
 See the [serializer docs](https://docs.rs/serde_bibtex/latest/serde_bibtex/ser/index.html) for more detail.
 
 ### Flexible
-- Flexibly serialize many types which are vaguely structured like BibTeX entries.
+- Flexibly serialize types which are vaguely structured like BibTeX entries.
 - Sufficiently general to generate any valid BibTeX bibliography (up to syntactic equivalence), including all entry types such as `@string` macros, and out-putting unexpanded macros.
 - Implementable `Formatter` trait which allows total customization of generated BibTeX.
 
@@ -48,43 +48,56 @@ See the [serializer docs](https://docs.rs/serde_bibtex/latest/serde_bibtex/ser/i
 ### Robust
 - Validate during serialization to guarantee generation of valid BibTeX.
 
-
 ## Comparison with other crates
+
 ### [typst/biblatex](https://github.com/typst/biblatex)
-We do not attempt to interpret the contents of the entries in the `.bib` file and instead defer interpretation for downstream consumption.
-On the other hand, [biblatex](https://github.com/typst/biblatex) is intended to support [typst](https://github.com/typst/typst), which requires interpreting the contents of the fields (for example, parsing of `$math$` in field values).
-In this sense, we might consider our implementation closer to the `biblatex::RawBibliography` entrypoint, but with the substantial extra flexibility of reading into any type implementing an appropriate `Deserialize`.
+In short, `serde_bibtex` is less opinionated and more flexible than `biblatex`, whereas `biblatex` provides opinionated interpretation of the fields of a bibliography.
+
+Use `serde_bibtex` if you want:
+
+- to deserialize into your own types
+- to parse from raw bytes to handle non-UTF8 ASCII-compatible encodings
+- a faithful representation of a BibTeX file
+- custom handling and expansion of macros (`@string`)
+- finer control over the performance-convenience trade-off
+
+Use `biblatex` if you want:
+
+- a simple, opinionated interface for querying a bibliography
+- interpretation of field contents (for example, parsing of `$math` in field values, or parsing of lists of author or editor names).
 
 ### [charlesvdv/nom-bibtex](https://github.com/charlesvdv/nom-bibtex)
 The functionality in this crate essentially supercedes [nom-bibtex](https://github.com/charlesvdv/nom-bibtex).
-The only feature of `nom-bibtex` that we do not support is the capturing of comments not explicitly contained in a `@comment` entry.
+The only feature of `nom-bibtex` that we do not support is the capturing of TeX-style comments (like `% comment`).
 
 ### [typho/bibparser](https://github.com/typho/bibparser)
 The functionality in this crate essentially supercedes [bibparser](https://github.com/typho/bibparser).
 
 ## Benchmarks
-The benchmark code can be find in [`benches/compare.rs`](/benches/compare.rs).
+The benchmark code can be found in [`benches/compare.rs`](/benches/compare.rs).
 The bibliography file used is [`assets/tugboat.bib`](/assets/tugboat.bib), which is part of the testing data used by biber.
 It is a 2.64 MB 73,993-line `.bib` file.
 
 1. `ignore`: Deserialize using `serde::de::IgnoredAny` to parse the file but ignore the contents.
 2. `struct`: Deserialize using a struct with entries capturing every field present in `assets/tugboat.bib` (15 fields total), expanding macros and collapsing field values.
 3. `borrow`: Deserialize into a fully borrowed Rust type which captures all data in the file but does not expand macros or collapse field values.
-4. `biblatex`: Parse using `biblatex::RawBibliography::parse` (most similar to `borrow`).
+4. `biblatex`: Parse using `biblatex::RawBibliography::parse` (like `borrow`, but with less capturing and more allocation).
 5. `copy`: Deserialize into an owned Rust type with macro expansion, field value collapsing, and case-insensitive comparison where appropriate.
-6. `nom-bibtex`: Parse using `nom-bibtex::Bibtex::parse` (most similar to `copy`).
+6. `nom-bibtex`: Parse using `nom-bibtex::Bibtex::parse` (like `copy`, but with extra TeX-style comment capturing).
+7. `bibliography`: Parse using `biblatex::Bibliography::parse` (like `copy`, but with extra parsing of field contents into raw / verbatim / math and evaluation `xdata` and `crossref` fields).
 
-The benchmarks were performed on an Intel(R) Core(TM) i7-9750H CPU @ 2.60 GHz (2019 MacBook Pro).
+The benchmarks were performed on an Apple M4 Pro 48 GB (2024 MacBook Pro).
 The speedup factor is relative to `biblatex`.
 
-| benchmark  | factor | runtime                           | throughput |
-|------------|--------|-----------------------------------|------------|
-| ignore     | 4.8x   | `[3.3923 ms 3.3987 ms 3.4058 ms]` | 660 MB/s   |
-| struct     | 1.9x   | `[8.5496 ms 8.7481 ms 8.9924 ms]` | 300 MB/s   |
-| borrow     | 1.3x   | `[12.932 ms 12.962 ms 12.992 ms]` | 200 MB/s   |
-| biblatex   | 1.0x   | `[16.184 ms 16.224 ms 16.266 ms]` | 160 MB/s   |
-| copy       | 0.75x  | `[21.455 ms 21.690 ms 21.935 ms]` | 120 MB/s   |
-| nom-bibtex | 0.23x  | `[71.607 ms 71.912 ms 72.343 ms]` | 40 MB/s    |
+| benchmark    | factor | runtime                           | throughput |
+|--------------|--------|-----------------------------------|------------|
+| ignore       | 3.6x   | `[1.4657 ms 1.4688 ms 1.4722 ms]` | 1797 MB/s  |
+| struct       | 1.5x   | `[3.6063 ms 3.6128 ms 3.6208 ms]` | 731  MB/s  |
+| borrow       | 1.2x   | `[4.3324 ms 4.3433 ms 4.3546 ms]` | 608  MB/s  |
+| biblatex     | 1.0x   | `[5.2626 ms 5.2870 ms 5.3114 ms]` | 499  MB/s  |
+| copy         | 0.75x  | `[6.9917 ms 7.0027 ms 7.0141 ms]` | 377  MB/s  |
+| nom-bibtex   | 0.17x  | `[31.422 ms 31.474 ms 31.532 ms]` | 84   MB/s  |
+| bibliography | 0.17x  | `[31.599 ms 31.653 ms 31.708 ms]` | 83   MB/s  |
 
 The [bibparser](https://github.com/typho/bibparser) crate is not included in this benchmark as it is unable to parse the input file.
 
