@@ -75,37 +75,37 @@ pub fn is_variable(s: &str) -> bool {
     check_variable(s).is_ok()
 }
 
-/// Check if a given string is valid as an identifier.
+/// Returns if a given string is valid as an identifier.
 #[inline]
 pub fn is_identifier(s: &str) -> bool {
     check_identifier(s).is_ok()
 }
 
-/// Check if a given string is valid as an identifier, returning an error if not.
+/// Check if a given string is valid as an identifier.
 #[inline]
 pub fn check_field_key(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
 }
 
-/// Check if a given string is valid as a field key.
+/// Returns if a given string is valid as a field key.
 #[inline]
 pub fn is_field_key(s: &str) -> bool {
     check_field_key(s).is_ok()
 }
 
-/// Check if a given string is valid as an entry type, returning an error if not.
+/// Check if a given string is valid as an entry type.
 #[inline]
 pub fn check_entry_type(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
 }
 
-/// Check if a given string is valid as an entry type.
+/// Returns if a given string is valid as an entry type.
 #[inline]
 pub fn is_entry_type(s: &str) -> bool {
     check_entry_type(s).is_ok()
 }
 
-/// Check if a given string is valid as a regular entry type.
+/// Returns if a given string is valid as a regular entry type.
 #[inline]
 pub fn is_regular_entry_type(s: &str) -> bool {
     if s.eq_ignore_ascii_case("string")
@@ -118,31 +118,31 @@ pub fn is_regular_entry_type(s: &str) -> bool {
     }
 }
 
-/// Check if a given string is valid as an entry key, returning an error if not.
+/// Check if a given string is valid as an entry key.
 #[inline]
 pub fn check_entry_key(s: &str) -> Result<(), TokenError> {
     check_identifier(s)
 }
 
-/// Check if a given string is valid as an entry key.
+/// Returns if a given string is valid as an entry key.
 #[inline]
 pub fn is_entry_key(s: &str) -> bool {
     check_entry_key(s).is_ok()
 }
 
-/// Check if the given input has balanced `{}` brackets, returning the appropriate error if not.
+/// Check if the given input has balanced `{}` brackets.
 pub fn check_balanced(input: &[u8]) -> Result<(), TokenError> {
-    let mut bracket_depth = 0;
+    let mut bracket_depth: usize = 0;
 
     for pos in memchr2_iter(b'{', b'}', input) {
         if input[pos] == b'{' {
             bracket_depth += 1
         } else {
             // too many closing brackets
-            if bracket_depth == 0 {
-                return Err(TokenError::ExtraClosingBracket);
+            match bracket_depth.checked_sub(1) {
+                None => return Err(TokenError::ExtraClosingBracket),
+                Some(n) => bracket_depth = n,
             }
-            bracket_depth -= 1;
         }
     }
 
@@ -153,7 +153,7 @@ pub fn check_balanced(input: &[u8]) -> Result<(), TokenError> {
     }
 }
 
-/// Check if a given string has balanced `{}` brackets.
+/// Returns if a given string has balanced `{}` brackets.
 #[inline]
 pub fn is_balanced(input: &[u8]) -> bool {
     check_balanced(input).is_ok()
