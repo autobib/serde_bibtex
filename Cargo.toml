@@ -43,14 +43,17 @@ serde_bytes = "0.11"
 [[bench]]
 name = "small"
 harness = false
+required-features = ["entry"]
 
 [[bench]]
 name = "compare"
 harness = false
+required-features = ["entry"]
 
 [[bench]]
 name = "utf8_conversion"
 harness = false
+required-features = ["entry"]
 
 [[example]]
 name = "custom_formatter"
