@@ -158,7 +158,7 @@ impl Formatter for PrettyFormatter {}
 
 impl PrettyFormatter {
     /// Return a formatter with the same output, except that also validates the generated BibTeX.
-    pub fn validate(self) -> ValidatingFormatter<PrettyFormatter> {
+    pub fn validate(self) -> ValidatingFormatter<Self> {
         ValidatingFormatter::new(self)
     }
 }
@@ -168,7 +168,7 @@ pub struct CompactFormatter {}
 
 impl CompactFormatter {
     /// Return a formatter with the same output, except that also validates the generated BibTeX.
-    pub fn validate(self) -> ValidatingFormatter<CompactFormatter> {
+    pub fn validate(self) -> ValidatingFormatter<Self> {
         ValidatingFormatter::new(self)
     }
 }

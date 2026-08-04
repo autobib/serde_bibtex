@@ -68,7 +68,10 @@ where
         }
     }
 
-    fn serialize_tuple(self, len: usize) -> std::result::Result<Self::SerializeTuple, Self::Error> {
+    fn serialize_tuple(
+        self,
+        len: usize,
+    ) -> core::result::Result<Self::SerializeTuple, Self::Error> {
         if len == 3 {
             Ok(RegularEntryTupleSerializer::new(&mut *self.ser))
         } else {
@@ -219,7 +222,10 @@ where
     type SerializeStruct = RegularEntryStructSerializer<'a, W, F>;
 
     #[inline]
-    fn serialize_tuple(self, len: usize) -> std::result::Result<Self::SerializeTuple, Self::Error> {
+    fn serialize_tuple(
+        self,
+        len: usize,
+    ) -> core::result::Result<Self::SerializeTuple, Self::Error> {
         if len == 3 {
             Ok(RegularEntryTupleSerializer::new(&mut *self.ser))
         } else {
@@ -234,7 +240,7 @@ where
         self,
         _name: &'static str,
         len: usize,
-    ) -> std::result::Result<Self::SerializeTupleStruct, Self::Error> {
+    ) -> core::result::Result<Self::SerializeTupleStruct, Self::Error> {
         if len == 3 {
             Ok(RegularEntryTupleSerializer::new(&mut *self.ser))
         } else {
@@ -249,7 +255,7 @@ where
         self,
         _name: &'static str,
         _len: usize,
-    ) -> std::result::Result<Self::SerializeStruct, Self::Error> {
+    ) -> core::result::Result<Self::SerializeStruct, Self::Error> {
         Ok(RegularEntryStructSerializer::new(&mut *self.ser))
     }
 }
@@ -261,7 +267,7 @@ macro_rules! regular_entry_tuple_serializer_impl {
         serialize_trait_impl!(RegularEntryTupleSerializer, $trait, {
             type Ok = bool;
 
-            fn $fn<T>(&mut self, value: &T) -> std::result::Result<(), Self::Error>
+            fn $fn<T>(&mut self, value: &T) -> core::result::Result<(), Self::Error>
             where
                 T: ?Sized + ser::Serialize,
             {
@@ -313,7 +319,7 @@ macro_rules! regular_entry_serializer_impl {
                 &mut self,
                 key: &'static str,
                 value: &T,
-            ) -> std::result::Result<(), Self::Error>
+            ) -> core::result::Result<(), Self::Error>
             where
                 T: ?Sized + ser::Serialize,
             {
@@ -347,7 +353,7 @@ macro_rules! regular_entry_serializer_impl {
             }
 
             #[inline]
-            fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
+            fn end(self) -> core::result::Result<Self::Ok, Self::Error> {
                 if !self.wrote_entry_type {
                     Err(Error::custom("Missing entry type"))
                 } else if !self.wrote_entry_key {
@@ -474,19 +480,22 @@ where
     type SerializeTupleStruct = MacroTupleSerializer<'a, W, F>;
 
     #[inline]
-    fn serialize_none(self) -> std::result::Result<Self::Ok, Self::Error> {
+    fn serialize_none(self) -> core::result::Result<Self::Ok, Self::Error> {
         Ok(true)
     }
 
     #[inline]
-    fn serialize_some<T>(self, value: &T) -> std::result::Result<Self::Ok, Self::Error>
+    fn serialize_some<T>(self, value: &T) -> core::result::Result<Self::Ok, Self::Error>
     where
         T: ?Sized + ser::Serialize,
     {
         value.serialize(self)
     }
 
-    fn serialize_tuple(self, len: usize) -> std::result::Result<Self::SerializeTuple, Self::Error> {
+    fn serialize_tuple(
+        self,
+        len: usize,
+    ) -> core::result::Result<Self::SerializeTuple, Self::Error> {
         if len == 2 {
             Ok(Self::SerializeTuple::new(&mut *self.ser))
         } else {
@@ -501,7 +510,7 @@ where
         self,
         _name: &'static str,
         len: usize,
-    ) -> std::result::Result<Self::SerializeTupleStruct, Self::Error> {
+    ) -> core::result::Result<Self::SerializeTupleStruct, Self::Error> {
         if len == 2 {
             Ok(Self::SerializeTupleStruct::new(&mut *self.ser))
         } else {
@@ -591,7 +600,7 @@ where
     fn serialize_tuple(
         self,
         _len: usize,
-    ) -> std::result::Result<Self::SerializeTuple, Self::Error> {
+    ) -> core::result::Result<Self::SerializeTuple, Self::Error> {
         Ok(Self::SerializeTuple::new(&mut *self.ser))
     }
 
@@ -600,7 +609,7 @@ where
         self,
         _name: &'static str,
         _len: usize,
-    ) -> std::result::Result<Self::SerializeTupleStruct, Self::Error> {
+    ) -> core::result::Result<Self::SerializeTupleStruct, Self::Error> {
         Ok(Self::SerializeTupleStruct::new(&mut *self.ser))
     }
 
@@ -609,7 +618,7 @@ where
         self,
         _name: &'static str,
         _len: usize,
-    ) -> std::result::Result<Self::SerializeStruct, Self::Error> {
+    ) -> core::result::Result<Self::SerializeStruct, Self::Error> {
         Ok(Self::SerializeStruct::new(&mut *self.ser))
     }
 
@@ -617,7 +626,7 @@ where
     fn serialize_map(
         self,
         _len: Option<usize>,
-    ) -> std::result::Result<Self::SerializeMap, Self::Error> {
+    ) -> core::result::Result<Self::SerializeMap, Self::Error> {
         Ok(Self::SerializeMap::new(&mut *self.ser))
     }
 
@@ -625,7 +634,7 @@ where
     fn serialize_seq(
         self,
         _len: Option<usize>,
-    ) -> std::result::Result<Self::SerializeSeq, Self::Error> {
+    ) -> core::result::Result<Self::SerializeSeq, Self::Error> {
         Ok(Self::SerializeSeq::new(&mut *self.ser))
     }
 }
@@ -641,7 +650,7 @@ where
         &mut self,
         key: &'static str,
         value: &T,
-    ) -> std::result::Result<Self::Ok, Self::Error>
+    ) -> core::result::Result<Self::Ok, Self::Error>
     where
         T: ?Sized + ser::Serialize,
     {
@@ -655,7 +664,7 @@ where
         Ok(())
     }
     #[inline]
-    fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
+    fn end(self) -> core::result::Result<Self::Ok, Self::Error> {
         self.ser.buffer.write_body_end()?;
         Self::Ok::default();
         Ok(())
@@ -670,7 +679,7 @@ where
     type Ok = ();
     type Error = Error;
 
-    fn serialize_key<T>(&mut self, key: &T) -> std::result::Result<Self::Ok, Self::Error>
+    fn serialize_key<T>(&mut self, key: &T) -> core::result::Result<Self::Ok, Self::Error>
     where
         T: ?Sized + ser::Serialize,
     {
@@ -678,7 +687,7 @@ where
         key.serialize(FieldKeySerializer::new(&mut *self.ser))
     }
 
-    fn serialize_value<T>(&mut self, value: &T) -> std::result::Result<Self::Ok, Self::Error>
+    fn serialize_value<T>(&mut self, value: &T) -> core::result::Result<Self::Ok, Self::Error>
     where
         T: ?Sized + ser::Serialize,
     {
@@ -690,7 +699,7 @@ where
     }
 
     #[inline]
-    fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
+    fn end(self) -> core::result::Result<Self::Ok, Self::Error> {
         self.ser.buffer.write_body_end()?;
         Self::Ok::default();
         Ok(())
@@ -708,7 +717,7 @@ macro_rules! entry_fields_serializer_impl {
 
             type Error = Error;
 
-            fn $fn<T>(&mut self, value: &T) -> std::result::Result<Self::Ok, Self::Error>
+            fn $fn<T>(&mut self, value: &T) -> core::result::Result<Self::Ok, Self::Error>
             where
                 T: ?Sized + ser::Serialize,
             {
@@ -716,7 +725,7 @@ macro_rules! entry_fields_serializer_impl {
             }
 
             #[inline]
-            fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
+            fn end(self) -> core::result::Result<Self::Ok, Self::Error> {
                 self.ser.buffer.write_body_end()?;
                 Ok(Self::Ok::default())
             }
@@ -768,7 +777,10 @@ where
     type SerializeTuple = KeyValueTupleSerializer<'a, W, F>;
     type SerializeTupleStruct = KeyValueTupleSerializer<'a, W, F>;
 
-    fn serialize_tuple(self, len: usize) -> std::result::Result<Self::SerializeTuple, Self::Error> {
+    fn serialize_tuple(
+        self,
+        len: usize,
+    ) -> core::result::Result<Self::SerializeTuple, Self::Error> {
         if len == 2 {
             Ok(Self::SerializeTuple::new(&mut *self.ser))
         } else {
@@ -781,7 +793,7 @@ where
         self,
         _name: &'static str,
         len: usize,
-    ) -> std::result::Result<Self::SerializeTupleStruct, Self::Error> {
+    ) -> core::result::Result<Self::SerializeTupleStruct, Self::Error> {
         if len == 2 {
             Ok(Self::SerializeTupleStruct::new(&mut *self.ser))
         } else {

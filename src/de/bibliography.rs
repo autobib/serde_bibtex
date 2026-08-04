@@ -1,4 +1,4 @@
-use std::marker::PhantomData;
+use core::marker::PhantomData;
 
 use serde::de::{self, DeserializeSeed, SeqAccess};
 use serde::forward_to_deserialize_any;

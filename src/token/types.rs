@@ -48,18 +48,18 @@ where
     /// Convert the text token into an owned variant.
     pub fn own(&self) -> Text<String, Vec<u8>> {
         match self {
-            Text::Str(s) => Text::Str(s.as_ref().to_string()),
-            Text::Bytes(b) => Text::Bytes(b.as_ref().to_vec()),
+            Self::Str(s) => Text::Str(s.as_ref().to_string()),
+            Self::Bytes(b) => Text::Bytes(b.as_ref().to_vec()),
         }
     }
 }
 
 impl<'r> Text<&'r str, &'r [u8]> {
     /// Attempt to convert into a string slice.
-    pub fn into_str(self) -> Result<&'r str, std::str::Utf8Error> {
+    pub fn into_str(self) -> Result<&'r str, core::str::Utf8Error> {
         match self {
             Self::Str(s) => Ok(s),
-            Self::Bytes(b) => Ok(std::str::from_utf8(b)?),
+            Self::Bytes(b) => Ok(core::str::from_utf8(b)?),
         }
     }
 
@@ -152,7 +152,7 @@ impl<S: AsRef<str>> AsRef<str> for Variable<S> {
 impl<S: AsRef<str>> From<Identifier<S>> for Variable<S> {
     fn from(id: Identifier<S>) -> Self {
         let Identifier(s) = id;
-        Variable(UniCase::new(s))
+        Self(UniCase::new(s))
     }
 }
 
@@ -165,7 +165,7 @@ pub struct EntryKey<S: AsRef<str>>(S);
 impl<S: AsRef<str>> From<Identifier<S>> for EntryKey<S> {
     fn from(id: Identifier<S>) -> Self {
         let Identifier(s) = id;
-        EntryKey(s)
+        Self(s)
     }
 }
 
@@ -252,23 +252,23 @@ where
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn variable_unchecked(s: S) -> Self {
-        Token::Variable(Variable::new_unchecked(s))
+        Self::Variable(Variable::new_unchecked(s))
     }
 
     #[inline]
     pub(crate) fn str_unchecked(s: S) -> Self {
-        Token::Text(Text::Str(s))
+        Self::Text(Text::Str(s))
     }
 
     /// Construct a new variable variant.
     pub fn variable(s: S) -> Result<Self, TokenParseError<S>> {
-        Ok(Token::Variable(Variable::new(s)?))
+        Ok(Self::Variable(Variable::new(s)?))
     }
 
     /// Construct a new text string variant.
     pub fn str(input: S) -> Result<Self, TokenParseError<S>> {
         match check_balanced(input.as_ref().as_bytes()) {
-            Ok(()) => Ok(Token::Text(Text::Str(input))),
+            Ok(()) => Ok(Self::Text(Text::Str(input))),
             Err(error) => Err(TokenParseError { input, error }),
         }
     }
@@ -276,18 +276,18 @@ where
     /// Construct a new text bytes variant.
     pub fn bytes(input: B) -> Result<Self, TokenParseError<B>> {
         match check_balanced(input.as_ref()) {
-            Ok(()) => Ok(Token::Text(Text::Bytes(input))),
+            Ok(()) => Ok(Self::Text(Text::Bytes(input))),
             Err(error) => Err(TokenParseError { input, error }),
         }
     }
 
     /// Convert to an owned `String` variant.
-    pub fn own(value: &Token<S, B>) -> Token<String, Vec<u8>> {
+    pub fn own(value: &Self) -> Token<String, Vec<u8>> {
         match value {
-            Token::Variable(Variable(s)) => {
+            Self::Variable(Variable(s)) => {
                 Token::Variable(Variable::new_unchecked(s.as_ref().to_string()))
             }
-            Token::Text(text) => Token::Text(text.own()),
+            Self::Text(text) => Token::Text(text.own()),
         }
     }
 }

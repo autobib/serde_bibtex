@@ -57,7 +57,7 @@ where
     }
 
     /// Map deserialization is assumed to be of a regular entry.
-    fn deserialize_map<V>(self, visitor: V) -> std::result::Result<V::Value, Self::Error>
+    fn deserialize_map<V>(self, visitor: V) -> core::result::Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
@@ -90,7 +90,7 @@ where
         self,
         len: usize,
         visitor: V,
-    ) -> std::result::Result<V::Value, Self::Error>
+    ) -> core::result::Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {
@@ -117,7 +117,7 @@ where
         _name: &'static str,
         len: usize,
         visitor: V,
-    ) -> std::result::Result<V::Value, Self::Error>
+    ) -> core::result::Result<V::Value, Self::Error>
     where
         V: de::Visitor<'de>,
     {

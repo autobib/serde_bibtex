@@ -136,7 +136,7 @@ pub fn check_balanced(input: &[u8]) -> Result<(), TokenError> {
 
     for pos in memchr2_iter(b'{', b'}', input) {
         if input[pos] == b'{' {
-            bracket_depth += 1
+            bracket_depth += 1;
         } else {
             // too many closing brackets
             match bracket_depth.checked_sub(1) {

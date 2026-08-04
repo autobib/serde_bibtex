@@ -1,110 +1,110 @@
 macro_rules! serialize_err_helper {
     ($err:expr, bool) => {
         #[inline]
-        fn serialize_bool(self, _v: bool) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_bool(self, _v: bool) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as bool").to_string()))
         }
     };
 
     ($err:tt, i8) => {
         #[inline]
-        fn serialize_i8(self, _v: i8) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_i8(self, _v: i8) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as i8").to_string()))
         }
     };
 
     ($err:tt, i16) => {
         #[inline]
-        fn serialize_i16(self, _v: i16) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_i16(self, _v: i16) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as i16").to_string()))
         }
     };
 
     ($err:tt, i32) => {
         #[inline]
-        fn serialize_i32(self, _v: i32) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_i32(self, _v: i32) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as i32").to_string()))
         }
     };
 
     ($err:tt, i64) => {
         #[inline]
-        fn serialize_i64(self, _v: i64) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_i64(self, _v: i64) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as i64").to_string()))
         }
     };
 
     ($err:tt, u8) => {
         #[inline]
-        fn serialize_u8(self, _v: u8) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_u8(self, _v: u8) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as u8").to_string()))
         }
     };
 
     ($err:tt, u16) => {
         #[inline]
-        fn serialize_u16(self, _v: u16) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_u16(self, _v: u16) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as u16").to_string()))
         }
     };
 
     ($err:tt, u32) => {
         #[inline]
-        fn serialize_u32(self, _v: u32) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_u32(self, _v: u32) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as 32").to_string()))
         }
     };
 
     ($err:tt, u64) => {
         #[inline]
-        fn serialize_u64(self, _v: u64) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_u64(self, _v: u64) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as u64").to_string()))
         }
     };
 
     ($err:tt, f32) => {
         #[inline]
-        fn serialize_f32(self, _v: f32) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_f32(self, _v: f32) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as f32").to_string()))
         }
     };
 
     ($err:tt, f64) => {
         #[inline]
-        fn serialize_f64(self, _v: f64) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_f64(self, _v: f64) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as f64").to_string()))
         }
     };
 
     ($err:tt, char) => {
         #[inline]
-        fn serialize_char(self, _v: char) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_char(self, _v: char) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as char").to_string()))
         }
     };
 
     ($err:tt, str) => {
         #[inline]
-        fn serialize_str(self, _v: &str) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_str(self, _v: &str) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as str").to_string()))
         }
     };
 
     ($err:tt, bytes) => {
         #[inline]
-        fn serialize_bytes(self, _v: &[u8]) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_bytes(self, _v: &[u8]) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as bytes").to_string()))
         }
     };
 
     ($err:tt, option) => {
         #[inline]
-        fn serialize_none(self) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_none(self) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as option").to_string()))
         }
 
         #[inline]
-        fn serialize_some<T>(self, _v: &T) -> std::result::Result<Self::Ok, Self::Error>
+        fn serialize_some<T>(self, _v: &T) -> core::result::Result<Self::Ok, Self::Error>
         where
             T: ?Sized + ser::Serialize,
         {
@@ -114,7 +114,7 @@ macro_rules! serialize_err_helper {
 
     ($err:tt, unit) => {
         #[inline]
-        fn serialize_unit(self) -> std::result::Result<Self::Ok, Self::Error> {
+        fn serialize_unit(self) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as unit").to_string()))
         }
     };
@@ -124,7 +124,7 @@ macro_rules! serialize_err_helper {
         fn serialize_unit_struct(
             self,
             _name: &'static str,
-        ) -> std::result::Result<Self::Ok, Self::Error> {
+        ) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(
                 concat!($err, " as unit struct").to_string(),
             ))
@@ -138,7 +138,7 @@ macro_rules! serialize_err_helper {
             _name: &'static str,
             _variant_index: u32,
             _variant: &'static str,
-        ) -> std::result::Result<Self::Ok, Self::Error> {
+        ) -> core::result::Result<Self::Ok, Self::Error> {
             Err(Self::Error::ser(
                 concat!($err, " as unit variant").to_string(),
             ))
@@ -153,7 +153,7 @@ macro_rules! serialize_err_helper {
             _variant_index: u32,
             _variant: &'static str,
             _value: &T,
-        ) -> std::result::Result<Self::Ok, Self::Error>
+        ) -> core::result::Result<Self::Ok, Self::Error>
         where
             T: ?Sized + ser::Serialize,
         {
@@ -170,7 +170,7 @@ macro_rules! serialize_err_helper {
         fn serialize_seq(
             self,
             _len: Option<usize>,
-        ) -> std::result::Result<Self::SerializeSeq, Self::Error> {
+        ) -> core::result::Result<Self::SerializeSeq, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as sequence").to_string()))
         }
     };
@@ -182,7 +182,7 @@ macro_rules! serialize_err_helper {
         fn serialize_tuple(
             self,
             _len: usize,
-        ) -> std::result::Result<Self::SerializeTuple, Self::Error> {
+        ) -> core::result::Result<Self::SerializeTuple, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as tuple").to_string()))
         }
     };
@@ -195,7 +195,7 @@ macro_rules! serialize_err_helper {
             self,
             _name: &'static str,
             _len: usize,
-        ) -> std::result::Result<Self::SerializeTupleStruct, Self::Error> {
+        ) -> core::result::Result<Self::SerializeTupleStruct, Self::Error> {
             Err(Self::Error::ser(
                 concat!($err, " as tuple struct").to_string(),
             ))
@@ -212,7 +212,7 @@ macro_rules! serialize_err_helper {
             _variant_index: u32,
             _variant: &'static str,
             _len: usize,
-        ) -> std::result::Result<Self::SerializeTupleVariant, Self::Error> {
+        ) -> core::result::Result<Self::SerializeTupleVariant, Self::Error> {
             Err(Self::Error::ser(
                 concat!($err, " as tuple variant").to_string(),
             ))
@@ -226,7 +226,7 @@ macro_rules! serialize_err_helper {
         fn serialize_map(
             self,
             _len: Option<usize>,
-        ) -> std::result::Result<Self::SerializeMap, Self::Error> {
+        ) -> core::result::Result<Self::SerializeMap, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as map").to_string()))
         }
     };
@@ -239,7 +239,7 @@ macro_rules! serialize_err_helper {
             self,
             _name: &'static str,
             _len: usize,
-        ) -> std::result::Result<Self::SerializeStruct, Self::Error> {
+        ) -> core::result::Result<Self::SerializeStruct, Self::Error> {
             Err(Self::Error::ser(concat!($err, " as struct").to_string()))
         }
     };
@@ -254,7 +254,7 @@ macro_rules! serialize_err_helper {
             _variant_index: u32,
             _variant: &'static str,
             _len: usize,
-        ) -> std::result::Result<Self::SerializeStructVariant, Self::Error> {
+        ) -> core::result::Result<Self::SerializeStructVariant, Self::Error> {
             Err(Self::Error::ser(
                 concat!($err, " as struct variant").to_string(),
             ))
@@ -272,7 +272,7 @@ macro_rules! serialize_err {
             self,
             _name: &'static str,
             value: &T,
-        ) -> std::result::Result<Self::Ok, Self::Error>
+        ) -> core::result::Result<Self::Ok, Self::Error>
         where
             T: ?Sized + ser::Serialize,
         {
@@ -351,7 +351,7 @@ macro_rules! serialize_as_bytes {
                 _name: &'static str,
                 _variant_index: u32,
                 variant: &'static str,
-            ) -> std::result::Result<Self::Ok, Self::Error> {
+            ) -> core::result::Result<Self::Ok, Self::Error> {
                 self.serialize_bytes(variant.as_bytes())
             }
         }
@@ -370,7 +370,7 @@ macro_rules! serialize_trait_impl {
             $($byte_impl)*
 
             #[inline]
-            fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
+            fn end(self) -> core::result::Result<Self::Ok, Self::Error> {
                 Ok(Self::Ok::default())
             }
         }

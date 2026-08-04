@@ -179,7 +179,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
         let mut is_first_token = true;
 
         while let Some(token) = self.token(&mut is_first_token)? {
-            scratch.push(token)
+            scratch.push(token);
         }
         Ok(())
     }

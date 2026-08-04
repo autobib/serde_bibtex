@@ -1,7 +1,7 @@
 //! # Errors for serialization and deserialization.
 use std::io;
-use std::result;
-use std::str::Utf8Error;
+use core::result;
+use core::str::Utf8Error;
 
 use crate::token::ConversionError;
 
@@ -114,22 +114,22 @@ impl From<io::Error> for Error {
     }
 }
 
-impl std::error::Error for Error {}
+impl core::error::Error for Error {}
 
 impl serde::de::Error for Error {
-    fn custom<T: std::fmt::Display>(msg: T) -> Self {
+    fn custom<T: core::fmt::Display>(msg: T) -> Self {
         Self::syntax(ErrorCode::Message(msg.to_string()))
     }
 }
 
 impl serde::ser::Error for Error {
-    fn custom<T: std::fmt::Display>(msg: T) -> Self {
+    fn custom<T: core::fmt::Display>(msg: T) -> Self {
         Self::syntax(ErrorCode::Message(msg.to_string()))
     }
 }
 
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for Error {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         self.code.fmt(f)
     }
 }
@@ -155,8 +155,8 @@ pub(crate) enum ErrorCode {
     Empty,
 }
 
-impl std::fmt::Display for ErrorCode {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for ErrorCode {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             Self::ExpectedFieldSep => f.write_str("expected field separator '='"),
             Self::InvalidStartOfEntry => f.write_str("expected start of entry '{' or '('"),

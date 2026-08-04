@@ -1,6 +1,6 @@
-use std::error::Error;
+use core::error::Error;
 use std::fmt;
-use std::str::Utf8Error;
+use core::str::Utf8Error;
 
 /// Possible syntax errors in BibTeX tokens and identifiers.
 #[derive(Debug, PartialEq)]
@@ -34,13 +34,13 @@ impl From<Utf8Error> for ConversionError {
 impl fmt::Display for TokenError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            TokenError::Empty => f.write_str("identifier must be non-empty"),
-            TokenError::InvalidChar(ch) => {
+            Self::Empty => f.write_str("identifier must be non-empty"),
+            Self::InvalidChar(ch) => {
                 write!(f, "identifier contains invalid character {ch:?}")
             }
-            TokenError::StartsWithDigit => f.write_str("variable cannot start with digit"),
-            TokenError::ExtraClosingBracket => f.write_str("text token has extra closing bracket"),
-            TokenError::ExtraOpeningBracket => {
+            Self::StartsWithDigit => f.write_str("variable cannot start with digit"),
+            Self::ExtraClosingBracket => f.write_str("text token has extra closing bracket"),
+            Self::ExtraOpeningBracket => {
                 f.write_str("text token has unclosed opening bracket")
             }
         }

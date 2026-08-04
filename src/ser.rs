@@ -371,7 +371,7 @@ where
     fn serialize_tuple(
         self,
         _len: usize,
-    ) -> std::result::Result<Self::SerializeTuple, Self::Error> {
+    ) -> core::result::Result<Self::SerializeTuple, Self::Error> {
         Ok(Self::SerializeSeq::new(self))
     }
 
@@ -379,7 +379,7 @@ where
         self,
         _name: &'static str,
         _len: usize,
-    ) -> std::result::Result<Self::SerializeTupleStruct, Self::Error> {
+    ) -> core::result::Result<Self::SerializeTupleStruct, Self::Error> {
         Ok(Self::SerializeSeq::new(self))
     }
 }
@@ -411,7 +411,7 @@ macro_rules! bibliography_serializer_impl {
             }
 
             #[inline]
-            fn end(self) -> std::result::Result<Self::Ok, Self::Error> {
+            fn end(self) -> core::result::Result<Self::Ok, Self::Error> {
                 self.ser
                     .buffer
                     .write_bibliography_end(&mut self.ser.writer)?;

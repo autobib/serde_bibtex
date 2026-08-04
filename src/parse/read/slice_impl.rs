@@ -1,7 +1,7 @@
 //! Warning: the `super::str_impl` module depends heavily on the implementation in this crate for
 //! safety! All of the cuts must be performed either immediately before or after an ascii codepoint,
 //! so the resulting slices are valid str if they began as valid str.
-use std::str::{from_utf8, from_utf8_unchecked};
+use core::str::{from_utf8, from_utf8_unchecked};
 
 use memchr::{memchr2_iter, memchr3_iter};
 
@@ -48,7 +48,7 @@ pub fn comment(input: &[u8], mut pos: usize) -> usize {
                     return pos;
                 } else {
                     // found \n, skip it
-                    pos += 1
+                    pos += 1;
                 }
             }
             _ => return pos,
@@ -62,7 +62,7 @@ pub fn identifier(input: &[u8], start: usize) -> Result<(usize, Identifier<&str>
     let mut end = start;
 
     while end < input.len() && IDENTIFIER_ALLOWED[input[end] as usize] {
-        end += 1
+        end += 1;
     }
 
     if end == start {
@@ -80,7 +80,7 @@ pub fn number(input: &[u8], start: usize) -> Result<(usize, &str), Error> {
     let mut end = start;
 
     while end < input.len() && input[end].is_ascii_digit() {
-        end += 1
+        end += 1;
     }
 
     if end == start {
@@ -99,7 +99,7 @@ pub fn balanced(input: &[u8], start: usize) -> Result<(usize, &[u8]), Error> {
     for offset in memchr2_iter(b'{', b'}', &input[start..]) {
         let end = start + offset;
         if input[end] == b'{' {
-            bracket_depth += 1
+            bracket_depth += 1;
         } else {
             // found the closing bracket
             if bracket_depth == 0 {
@@ -153,7 +153,7 @@ super::create_input_impl::read_impl!(
 
     Bytes;
 
-    std::convert::identity;
+    core::convert::identity;
 );
 
 #[cfg(test)]

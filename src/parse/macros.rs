@@ -55,7 +55,7 @@ where
 
 impl<S, B> MacroDictionary<S, B>
 where
-    S: AsRef<str> + Eq + std::hash::Hash + From<&'static str>,
+    S: AsRef<str> + Eq + core::hash::Hash + From<&'static str>,
     B: AsRef<[u8]>,
 {
     /// Set "month macros", such as `@string{apr = {4}}`.
@@ -86,7 +86,7 @@ where
 
 impl<S, B> MacroDictionary<S, B>
 where
-    S: AsRef<str> + Eq + std::hash::Hash,
+    S: AsRef<str> + Eq + core::hash::Hash,
     B: AsRef<[u8]>,
 {
     pub(crate) fn insert_raw_tokens(
@@ -99,13 +99,13 @@ where
 
     /// Get the tokens associated with an identifier.
     pub fn get(&self, identifier: &Variable<S>) -> Option<&[Token<S, B>]> {
-        self.map.get(identifier).map(|v| v.as_slice())
+        self.map.get(identifier).map(std::vec::Vec::as_slice)
     }
 }
 
 impl<S, B> MacroDictionary<S, B>
 where
-    S: AsRef<str> + Eq + std::hash::Hash + Clone,
+    S: AsRef<str> + Eq + core::hash::Hash + Clone,
     B: AsRef<[u8]> + Clone,
 {
     /// Insert a new identifier and associated tokens.

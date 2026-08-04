@@ -4,7 +4,7 @@
 //! This module uses unsafe for string conversions. The unsafe are valid since all of the string slicing
 //! performed in `super::slice_impl` is adjacent to ascii codepoints, so the resulting slices are valid
 //! str if they began as valid str.
-use std::str::from_utf8_unchecked;
+use core::str::from_utf8_unchecked;
 
 use super::{BibtexRead, Identifier, Text, slice_impl};
 use crate::{
@@ -28,7 +28,7 @@ pub fn identifier(input: &str, start: usize) -> Result<(usize, Identifier<&str>)
     let mut end = start;
 
     while end < input.len() && IDENTIFIER_ALLOWED[input.as_bytes()[end] as usize] {
-        end += 1
+        end += 1;
     }
 
     if end == start {

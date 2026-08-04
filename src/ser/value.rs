@@ -91,7 +91,7 @@ macro_rules! token_list_serializer_impl {
         serialize_trait_impl!(TokenListSerializer, $trait, {
             type Ok = ();
 
-            fn $fn<T>(&mut self, value: &T) -> std::result::Result<Self::Ok, Self::Error>
+            fn $fn<T>(&mut self, value: &T) -> core::result::Result<Self::Ok, Self::Error>
             where
                 T: ?Sized + ser::Serialize,
             {
