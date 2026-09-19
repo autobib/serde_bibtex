@@ -6,6 +6,8 @@ macro_rules! read_impl {
         $var:ident;
 
         $convert:expr;
+
+        $($read_method:item)*
     ) => {
         $(#[$outer])*
         $vis struct $name<'r> {
@@ -25,13 +27,19 @@ macro_rules! read_impl {
                 &mut self,
                 mut parser: impl FnMut(&'r $target, usize) -> Result<(usize, O), Error>,
             ) -> Result<O, Error> {
-                let (new, ret) = parser(self.input, self.pos)?;
+                let (new, ret) = parser(self.input, self.pos)
+                    .map_err(|err| err.with_span(self.error_span()))?;
                 self.pos = new;
                 Ok(ret)
             }
         }
 
         impl<'r> BibtexRead<'r> for $name<'r> {
+            $($read_method)*
+
+            fn source(&self) -> Option<&'r [u8]> { Some($convert(self.input)) }
+            fn byte_offset(&self) -> Option<usize> { Some(self.pos) }
+
             #[inline]
             fn peek(&self) -> Option<u8> {
                 if self.pos < self.input.len() {

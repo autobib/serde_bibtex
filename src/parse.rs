@@ -10,6 +10,20 @@ pub use read::{BibtexRead, SliceReader, StrReader};
 impl<'r, R: BibtexRead<'r>> BibtexParse<'r> for R {}
 
 pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
+    fn locate(&self, error: Error) -> Error {
+        error.with_span(self.error_span())
+    }
+
+    fn opening_offset(&self) -> Option<usize> {
+        self.byte_offset().and_then(|pos| pos.checked_sub(1))
+    }
+
+    /// Locate an identifier immediately after parsing it.
+    fn identifier_span(&self, id: &str) -> Option<core::ops::Range<usize>> {
+        let end = self.byte_offset()?;
+        Some(end.checked_sub(id.len())?..end)
+    }
+
     /// Read the entry type, returning None if EOF was reached.
     fn entry_type(&mut self) -> Result<Option<EntryType<&'r str>>> {
         if self.next_entry_or_eof() {
@@ -28,7 +42,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
             self.discard();
             Ok(())
         } else {
-            Err(err(found))
+            Err(self.locate(err(found)))
         }
     }
 
@@ -44,7 +58,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
                 self.discard();
                 Ok(b')')
             }
-            found => Err(Error::expected("start of entry '{' or '('", found)),
+            found => Err(self.locate(Error::expected("start of entry '{' or '('", found))),
         }
     }
 
@@ -75,7 +89,9 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
         self.comment();
         match self.peek() {
             Some(b'}' | b')') => Ok(None),
-            Some(b'0'..=b'9') => Err(Error::syntax(ErrorCode::VariableStartsWithDigit)),
+            Some(b'0'..=b'9') => {
+                Err(self.locate(Error::syntax(ErrorCode::VariableStartsWithDigit)))
+            }
             _ => {
                 let id = self.identifier()?;
                 Ok(Some(id.into()))
@@ -99,9 +115,9 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
                 Ok(true)
             }
             Some(b'}' | b')' | b',') | None => Ok(false),
-            Some(_) => Err(Error::syntax(ErrorCode::Expected(
+            Some(_) => Err(self.locate(Error::syntax(ErrorCode::Expected(
                 "token separator '#' or end of value",
-            ))),
+            )))),
         }
     }
 
@@ -125,7 +141,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
             Some(b) if IDENTIFIER_ALLOWED[b as usize] => {
                 Ok(Token::Variable(self.identifier()?.into()))
             }
-            found => Err(Error::expected("value", found)),
+            found => Err(self.locate(Error::expected("value", found))),
         }
     }
 
@@ -162,37 +178,48 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
     fn comment_contents(&mut self) -> Result<Text<&'r str, &'r [u8]>> {
         self.comment();
         let closing = self.initial()?;
+        let opening = self.opening_offset();
         let result = match closing {
             b')' => self.protected(closing)?,
             b'}' => self.balanced()?,
             _ => unreachable!(),
         };
-        self.terminal(closing)?;
+        self.terminal(closing, opening)?;
         Ok(result)
     }
 
     /// Consume a closing bracket `closing`.
-    fn terminal(&mut self, closing: u8) -> Result<()> {
+    fn terminal(&mut self, closing: u8, opening: Option<usize>) -> Result<()> {
         self.comment();
         self.expect(closing, |found| match found {
             Some(found) => Error::syntax(ErrorCode::ExpectedEndOfEntry {
                 expected: closing,
                 found,
             }),
-            None => Error::expected("end of entry", None).in_entry(closing),
+            None => Error::expected("end of entry", None).in_entry(closing, opening),
         })?;
         Ok(())
     }
 
     /// Read tokens until there are no more remaining in the buffer.
     fn value_into(&mut self, scratch: &mut Vec<Token<&'r str, &'r [u8]>>) -> Result<()> {
-        scratch.clear();
-        let mut is_first_token = true;
+        self.value_into_spanned(scratch).map(|_| ())
+    }
 
-        while let Some(token) = self.token(&mut is_first_token)? {
-            scratch.push(token);
+    fn value_into_spanned(
+        &mut self,
+        scratch: &mut Vec<Token<&'r str, &'r [u8]>>,
+    ) -> Result<Option<core::ops::Range<usize>>> {
+        scratch.clear();
+        self.comment();
+        let start = self.byte_offset();
+        loop {
+            scratch.push(self.single_token()?);
+            let end = self.byte_offset();
+            if !self.next_token_or_end()? {
+                return Ok(start.zip(end).map(|(start, end)| start..end));
+            }
         }
-        Ok(())
     }
 
     /// Ignore an entire bibliography, while still checking validity.
@@ -236,8 +263,9 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
     /// Parse an entry body.
     fn entry<T>(&mut self, body: impl FnOnce(&mut Self) -> Result<T>) -> Result<T> {
         let closing = self.initial()?;
-        let value = body(self).map_err(|err| err.in_entry(closing))?;
-        self.terminal(closing)?;
+        let opening = self.opening_offset();
+        let value = body(self).map_err(|err| err.in_entry(closing, opening))?;
+        self.terminal(closing, opening)?;
         Ok(value)
     }
 
@@ -306,6 +334,45 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
 mod tests {
     use super::*;
     use crate::error::Category;
+
+    struct CustomSpanReader;
+
+    impl<'r> BibtexRead<'r> for CustomSpanReader {
+        fn error_span(&self) -> Option<core::ops::Range<usize>> {
+            Some(10..20)
+        }
+        fn peek(&self) -> Option<u8> {
+            Some(b'!')
+        }
+        fn comment(&mut self) {}
+        fn discard(&mut self) {
+            unreachable!()
+        }
+        fn next_entry_or_eof(&mut self) -> bool {
+            unreachable!()
+        }
+        fn identifier(&mut self) -> Result<crate::token::Identifier<&'r str>> {
+            unreachable!()
+        }
+        fn balanced(&mut self) -> Result<Text<&'r str, &'r [u8]>> {
+            unreachable!()
+        }
+        fn protected(&mut self, _: u8) -> Result<Text<&'r str, &'r [u8]>> {
+            unreachable!()
+        }
+        fn number(&mut self) -> Result<&'r str> {
+            unreachable!()
+        }
+    }
+
+    #[test]
+    fn parser_uses_custom_reader_spans() {
+        let mut reader = CustomSpanReader;
+        assert_eq!(reader.byte_offset(), None);
+        assert_eq!(reader.field_sep().unwrap_err().span(), Some(10..20));
+        let error = Error::expected("value", None).with_span(Some(3..3));
+        assert_eq!(reader.locate(error).span(), Some(3..3));
+    }
 
     #[test]
     fn expect_constructs_errors_only_on_failure() {

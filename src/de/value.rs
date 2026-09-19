@@ -15,29 +15,48 @@ use crate::{
 
 use super::Deserializer;
 
+/// The complete value's location, used for errors concerning the combined value.
+#[derive(Debug, Clone, Copy, Default)]
+struct ValueContext {
+    bounds: Option<(usize, usize)>,
+}
+
+impl ValueContext {
+    fn error(self, error: Error) -> Error {
+        error.with_span(self.bounds.map(|(start, end)| start..end))
+    }
+
+    fn parse<'r, R: BibtexRead<'r>>(de: &mut Deserializer<'r, R>) -> Result<Self> {
+        let span = de.parser.value_into_spanned(&mut de.scratch)?;
+        de.macros.resolve(&mut de.scratch);
+        Ok(Self {
+            bounds: span.map(|span| (span.start, span.end)),
+        })
+    }
+}
+
 pub struct KeyValueDeserializer<'a, 'r> {
     key: Option<&'r str>,
+    key_span: Option<core::ops::Range<usize>>,
     tokens: &'a mut Vec<Token<&'r str, &'r [u8]>>,
     complete: bool,
+    context: ValueContext,
 }
 
 impl<'a, 'r> KeyValueDeserializer<'a, 'r> {
-    pub fn new(s: &'r str, tokens: &'a mut Vec<Token<&'r str, &'r [u8]>>) -> Self {
-        Self {
-            key: Some(s),
-            tokens,
-            complete: false,
-        }
-    }
-
     pub fn new_from_de<R: BibtexRead<'r>>(
         s: &'r str,
+        key_span: Option<core::ops::Range<usize>>,
         de: &'a mut Deserializer<'r, R>,
     ) -> Result<Self> {
-        de.scratch.clear();
-        de.parser.value_into(&mut de.scratch)?;
-        de.macros.resolve(&mut de.scratch);
-        Ok(Self::new(s, &mut de.scratch))
+        let context = ValueContext::parse(de)?;
+        Ok(Self {
+            key: Some(s),
+            key_span,
+            tokens: &mut de.scratch,
+            complete: false,
+            context,
+        })
     }
 }
 
@@ -68,11 +87,16 @@ impl<'a, 'de: 'a> SeqAccess<'de> for KeyValueDeserializer<'a, 'de> {
         match (self.key.take(), self.complete) {
             (Some(cow), false) => seed
                 .deserialize(WrappedBorrowStrDeserializer::new(cow))
+                .map_err(|err| err.with_span(self.key_span.clone()))
                 .map(Some),
             (None, false) => {
                 self.complete = true;
-                seed.deserialize(ValueDeserializer::new(self.tokens))
-                    .map(Some)
+                ValueDeserializer {
+                    iter: self.tokens.drain(..),
+                    context: self.context,
+                }
+                .deserialize_seed(seed)
+                .map(Some)
             }
             _ => Ok(None),
         }
@@ -260,7 +284,11 @@ macro_rules! as_cow_impl {
             let mut init = loop {
                 match self.iter.next() {
                     Some(token) => {
-                        let cow: Cow<'r, $target> = Cow::Borrowed(token.try_into()?);
+                        let cow: Cow<'r, $target> = Cow::Borrowed(
+                            token
+                                .try_into()
+                                .map_err(|err| self.context.error(Error::from(err)))?,
+                        );
                         if cow.len() > 0 {
                             break cow;
                         }
@@ -270,7 +298,11 @@ macro_rules! as_cow_impl {
             };
 
             for token in self.iter.by_ref() {
-                let cow: Cow<'r, $target> = Cow::Borrowed(token.try_into()?);
+                let cow: Cow<'r, $target> = Cow::Borrowed(
+                    token
+                        .try_into()
+                        .map_err(|err| self.context.error(Error::from(err)))?,
+                );
                 if cow.len() > 0 {
                     init.to_mut().$push(&cow)
                 }
@@ -283,25 +315,25 @@ macro_rules! as_cow_impl {
 #[derive(Debug)]
 pub struct ValueDeserializer<'a, 'r> {
     iter: std::vec::Drain<'a, Token<&'r str, &'r [u8]>>,
+    context: ValueContext,
 }
 
 impl<'a, 'r> ValueDeserializer<'a, 'r> {
-    pub fn new(scratch: &'a mut Vec<Token<&'r str, &'r [u8]>>) -> Self {
-        Self {
-            iter: scratch.drain(..),
-        }
-    }
-
     /// Create a new value from the tokens after resolving macros.
     pub(crate) fn try_from_de_resolved<R>(de: &'a mut Deserializer<'r, R>) -> Result<Self>
     where
         R: BibtexRead<'r>,
     {
-        de.parser.value_into(&mut de.scratch)?;
-        de.macros.resolve(&mut de.scratch);
+        let context = ValueContext::parse(de)?;
         Ok(Self {
             iter: de.scratch.drain(..),
+            context,
         })
+    }
+
+    pub(crate) fn deserialize_seed<S: DeserializeSeed<'r>>(self, seed: S) -> Result<S::Value> {
+        let context = self.context;
+        seed.deserialize(self).map_err(|err| context.error(err))
     }
 
     as_cow_impl!(as_cow_str, str, push_str, "");
@@ -437,7 +469,10 @@ impl<'a, 'de: 'a> SeqAccess<'de> for ValueDeserializer<'a, 'de> {
         T: DeserializeSeed<'de>,
     {
         match self.iter.next() {
-            Some(token) => seed.deserialize(TokenDeserializer::new(token)).map(Some),
+            Some(token) => seed
+                .deserialize(TokenDeserializer::new(token))
+                .map_err(|err| self.context.error(err))
+                .map(Some),
             None => Ok(None),
         }
     }

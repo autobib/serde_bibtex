@@ -1,6 +1,6 @@
 //! # Errors for serialization and deserialization.
-use core::result;
 use core::str::Utf8Error;
+use core::{ops::Range, result};
 use std::io;
 
 use crate::token::ConversionError;
@@ -23,14 +23,24 @@ pub enum Category {
 /// [`ser::Serializer`](crate::ser::Serializer).
 #[derive(Debug)]
 pub struct Error {
-    /// The underlying error type.
-    pub(crate) code: ErrorCode,
+    inner: Box<ErrorImpl>,
+}
+
+#[derive(Debug)]
+struct ErrorImpl {
+    code: ErrorCode,
+    span: Option<Range<usize>>,
 }
 
 /// An alias for a [`Result`](std::result::Result) with error type [`serde_bibtex::Error`](Error).
 pub type Result<T> = result::Result<T, Error>;
 
 impl Error {
+    #[cfg(test)]
+    pub(crate) fn inner_code(&self) -> &ErrorCode {
+        &self.inner.code
+    }
+
     /// Categorize the type of the error.
     ///
     /// ```
@@ -40,7 +50,7 @@ impl Error {
     /// assert_eq!(err.to_string(), "unclosed '('");
     /// ```
     pub fn classify(&self) -> Category {
-        match &self.code {
+        match &self.inner.code {
             ErrorCode::VariableStartsWithDigit
             | ErrorCode::UnexpectedClosingBracket
             | ErrorCode::Expected(_)
@@ -57,28 +67,24 @@ impl Error {
 
     #[inline]
     pub(crate) fn syntax(code: ErrorCode) -> Self {
-        Self { code }
+        Self {
+            inner: Box::new(ErrorImpl { code, span: None }),
+        }
     }
 
     #[inline]
     pub(crate) fn utf8(err: Utf8Error) -> Self {
-        Self {
-            code: ErrorCode::InvalidUtf8(err),
-        }
+        Self::syntax(ErrorCode::InvalidUtf8(err))
     }
 
     #[inline]
     pub(crate) fn ser(msg: String) -> Self {
-        Self {
-            code: ErrorCode::InvalidSerializationFormat(msg),
-        }
+        Self::syntax(ErrorCode::InvalidSerializationFormat(msg))
     }
 
     #[inline]
     pub(crate) fn io(err: io::Error) -> Self {
-        Self {
-            code: ErrorCode::Io(err),
-        }
+        Self::syntax(ErrorCode::Io(err))
     }
 
     #[inline]
@@ -90,17 +96,52 @@ impl Error {
         })
     }
 
-    /// Add an entry's delimiter context only to otherwise context-free EOF errors.
-    /// Inner scanner diagnostics and visitor errors must survive unchanged.
-    pub(crate) fn in_entry(self, closing: u8) -> Self {
-        if matches!(self.code, ErrorCode::UnexpectedEof(_)) {
-            Self::syntax(ErrorCode::UnclosedDelimiter(match closing {
-                b')' => b'(',
-                _ => b'{',
-            }))
+    /// The byte range in the original input associated with this error.
+    ///
+    /// This is the error span produced by the [`BibtexRead`](crate::parse::BibtexRead)
+    /// implementation. When produced by a [`StrReader`](crate::parse::StrReader), the range is
+    /// guaranteed to correspond to a valid string slice in the original input.
+    ///
+    /// For errors with no source (for instance, serialization errors or IO errors), this
+    /// returns `None`.
+    ///
+    /// ```
+    /// let error = serde_bibtex::from_str::<()>("@comment(unfinished").unwrap_err();
+    /// assert_eq!(error.span(), Some(8..9));
+    /// ```
+    pub fn span(&self) -> Option<Range<usize>> {
+        self.inner.span.clone()
+    }
+
+    pub(crate) fn with_span(mut self, span: Option<Range<usize>>) -> Self {
+        if self.inner.span.is_none() {
+            self.inner.span = span;
+        }
+        self
+    }
+
+    /// Refine a literal's content span to the invalid UTF-8 bytes, when applicable.
+    pub(crate) fn with_utf8_span(self, content: Option<Range<usize>>) -> Self {
+        if let ErrorCode::InvalidUtf8(err) = &self.inner.code {
+            let span = content.map(|mut span| {
+                span.start += err.valid_up_to();
+                span.end = err.error_len().map_or(span.end, |len| span.start + len);
+                span
+            });
+            self.with_span(span)
         } else {
             self
         }
+    }
+
+    /// Add entry context to context-free EOF errors, replacing their EOF location with the opener.
+    pub(crate) fn in_entry(mut self, closing: u8, opening: Option<usize>) -> Self {
+        if matches!(self.inner.code, ErrorCode::UnexpectedEof(_)) {
+            self.inner.code =
+                ErrorCode::UnclosedDelimiter(if closing == b')' { b'(' } else { b'{' });
+            self.inner.span = opening.map(|start| start..start + 1);
+        }
+        self
     }
 }
 
@@ -108,9 +149,7 @@ impl From<ConversionError> for Error {
     #[inline]
     fn from(value: ConversionError) -> Self {
         match value {
-            ConversionError::UnexpandedMacro(s) => Self {
-                code: ErrorCode::UnexpandedMacro(s),
-            },
+            ConversionError::UnexpandedMacro(s) => Self::syntax(ErrorCode::UnexpandedMacro(s)),
             ConversionError::InvalidUtf8(err) => Self::utf8(err),
         }
     }
@@ -119,9 +158,7 @@ impl From<ConversionError> for Error {
 impl From<Utf8Error> for Error {
     #[inline]
     fn from(err: Utf8Error) -> Self {
-        Self {
-            code: ErrorCode::InvalidUtf8(err),
-        }
+        Self::syntax(ErrorCode::InvalidUtf8(err))
     }
 }
 
@@ -147,7 +184,7 @@ impl serde::ser::Error for Error {
 
 impl core::fmt::Display for Error {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        self.code.fmt(f)
+        self.inner.code.fmt(f)
     }
 }
 

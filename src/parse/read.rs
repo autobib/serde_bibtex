@@ -12,6 +12,25 @@ use crate::token::{Identifier, Text};
 ///
 /// This trait is implemented by [`SliceReader`] and [`StrReader`].
 pub trait BibtexRead<'r> {
+    /// The original input bytes, if any.
+    fn source(&self) -> Option<&'r [u8]> {
+        None
+    }
+
+    /// The current zero-based byte offset in the source.
+    fn byte_offset(&self) -> Option<usize> {
+        None
+    }
+
+    /// The span associate with an error at the current position.
+    ///
+    /// By default, this returns exactly one byte or an empty range if there are no more bytes.
+    /// A [`StrReader`] reports the span corresponding to entire character at the current position.
+    fn error_span(&self) -> Option<core::ops::Range<usize>> {
+        self.byte_offset()
+            .map(|start| start..start + usize::from(self.peek().is_some()))
+    }
+
     /// Peek the next byte in the input without advancing the position.
     fn peek(&self) -> Option<u8>;
 

@@ -1,4 +1,4 @@
-//! Exact-message regression tests; see diagnostics.md for the error-site matrix.
+//! Exact diagnostic, category, and grammar-span regression matrix.
 #![allow(dead_code)]
 
 use std::{collections::BTreeMap, io};
@@ -47,7 +47,7 @@ fn check(error: Error, message: &str, category: Category) {
     assert_eq!(error.classify(), category, "{message}");
 }
 
-fn syntax_case(input: &str, message: &str, eof: bool) {
+fn syntax_case(input: &str, message: &str, eof: bool, span: core::ops::Range<usize>) {
     let errors = [
         from_str::<Vec<Entry>>(input).unwrap_err(),
         from_bytes::<Vec<Entry>>(input.as_bytes()).unwrap_err(),
@@ -84,6 +84,7 @@ fn syntax_case(input: &str, message: &str, eof: bool) {
             .unwrap_err(),
     ];
     for error in errors {
+        assert_eq!(error.span(), Some(span.clone()), "input: {input:?}");
         assert_eq!(error.to_string(), message, "input: {input:?}");
         assert_eq!(
             error.classify(),
@@ -95,80 +96,129 @@ fn syntax_case(input: &str, message: &str, eof: bool) {
 
 #[test]
 fn entry_error_matrix() {
-    for (input, message, eof) in [
-        ("@", "unexpected end of input; expected identifier", true),
+    for (input, message, eof, span) in [
+        (
+            "@",
+            "unexpected end of input; expected identifier",
+            true,
+            1..1,
+        ),
         (
             "@ %comment",
             "unexpected end of input; expected identifier",
             true,
+            10..10,
         ),
-        ("@{", "expected identifier", false),
+        ("@{", "expected identifier", false, 1..2),
         (
             "@article",
             "unexpected end of input; expected start of entry '{' or '('",
             true,
+            8..8,
         ),
-        ("@article=", "expected start of entry '{' or '('", false),
-        ("@article{}", "expected identifier", false),
-        ("@article{k,,}", "expected identifier", false),
-        ("@article{k,f {x}}", "expected field separator '='", false),
-        ("@article{k,f=}", "expected value", false),
-        ("@article{k,f=#}", "expected value", false),
-        ("@article{k,f={x} # ,}", "expected value", false),
+        (
+            "@article=",
+            "expected start of entry '{' or '('",
+            false,
+            8..9,
+        ),
+        ("@article{}", "expected identifier", false, 9..10),
+        ("@article{k,,}", "expected identifier", false, 11..12),
+        (
+            "@article{k,f {x}}",
+            "expected field separator '='",
+            false,
+            13..14,
+        ),
+        ("@article{k,f=}", "expected value", false, 13..14),
+        ("@article{k,f=#}", "expected value", false, 13..14),
+        ("@article{k,f={x} # ,}", "expected value", false, 19..20),
         (
             "@article{k,f={x} {y}}",
             "expected token separator '#' or end of value",
             false,
+            17..18,
         ),
-        ("@article{k)", "expected end of entry '}', found ')'", false),
-        ("@article(k}", "expected end of entry ')', found '}'", false),
+        (
+            "@article{k)",
+            "expected end of entry '}', found ')'",
+            false,
+            10..11,
+        ),
+        (
+            "@article(k}",
+            "expected end of entry ')', found '}'",
+            false,
+            10..11,
+        ),
         (
             "@article{k,)",
             "expected end of entry '}', found ')'",
             false,
+            11..12,
         ),
         (
             "@article{k,f={x})",
             "expected end of entry '}', found ')'",
             false,
+            16..17,
         ),
         (
             "@article{k=}",
             "expected end of entry '}', found '='",
             false,
+            10..11,
         ),
-        ("@article{k,f=\"}\"}", "unmatched closing '}'", false),
+        (
+            "@article{k,f=\"}\"}",
+            "unmatched closing '}'",
+            false,
+            14..15,
+        ),
         (
             "@string{1x={x}}",
             "identifier starts with ASCII digit",
             false,
+            8..9,
         ),
-        ("@string{=}", "expected identifier", false),
-        ("@string{x {x}}", "expected field separator '='", false),
-        ("@string{x=}", "expected value", false),
-        ("@string{)", "expected end of entry '}', found ')'", false),
+        ("@string{=}", "expected identifier", false, 8..9),
+        (
+            "@string{x {x}}",
+            "expected field separator '='",
+            false,
+            10..11,
+        ),
+        ("@string{x=}", "expected value", false, 10..11),
+        (
+            "@string{)",
+            "expected end of entry '}', found ')'",
+            false,
+            8..9,
+        ),
         (
             "@string(x={x},}",
             "expected end of entry ')', found '}'",
             false,
+            14..15,
         ),
-        ("@preamble{}", "expected value", false),
+        ("@preamble{}", "expected value", false, 10..11),
         (
             "@preamble({x}}",
             "expected end of entry ')', found '}'",
             false,
+            13..14,
         ),
-        ("@comment(})", "unmatched closing '}'", false),
-        ("@comment(text", "unclosed '('", true),
-        ("@comment({text", "unclosed '{'", true),
-        ("@comment({text}", "unclosed '('", true),
-        ("@comment{text", "unclosed '{'", true),
-        ("@article(k,f=\"text", "unclosed '\"'", true),
-        ("@article(k,f=\"{text", "unclosed '{'", true),
-        ("@article(k,f=\"{text}", "unclosed '\"'", true),
-        ("@article(k,f={text", "unclosed '{'", true),
+        ("@comment(})", "unmatched closing '}'", false, 9..10),
+        ("@comment(text", "unclosed '('", true, 8..9),
+        ("@comment({text", "unclosed '{'", true, 9..10),
+        ("@comment({text}", "unclosed '('", true, 8..9),
+        ("@comment{text", "unclosed '{'", true, 8..9),
+        ("@article(k,f=\"text", "unclosed '\"'", true, 13..14),
+        ("@article(k,f=\"{text", "unclosed '{'", true, 14..15),
+        ("@article(k,f=\"{text}", "unclosed '\"'", true, 13..14),
+        ("@article(k,f={text", "unclosed '{'", true, 13..14),
     ] {
-        syntax_case(input, message, eof);
+        syntax_case(input, message, eof, span);
     }
 
     // Every grammar position where EOF can occur inherits the entry opener.
@@ -180,6 +230,7 @@ fn entry_error_matrix() {
                 &format!("@article{opener}{body}"),
                 &format!("unclosed '{opener}'"),
                 true,
+                8..9,
             );
         }
         for body in ["", "x", "x=", "x={x}", "x={x}#", "x={x},"] {
@@ -187,6 +238,7 @@ fn entry_error_matrix() {
                 &format!("@string{opener}{body}"),
                 &format!("unclosed '{opener}'"),
                 true,
+                7..8,
             );
         }
         for body in ["", "{x}", "{x}#"] {
@@ -194,6 +246,7 @@ fn entry_error_matrix() {
                 &format!("@preamble{opener}{body}"),
                 &format!("unclosed '{opener}'"),
                 true,
+                9..10,
             );
         }
     }
@@ -672,6 +725,10 @@ fn conversion_errors_survive_propagation() {
 
 #[test]
 fn serialization_diagnostics() {
+    fn check(error: Error, message: &str, category: Category) {
+        assert_eq!(error.span(), None);
+        crate::check(error, message, category);
+    }
     check(
         to_string(&true).unwrap_err(),
         "invalid serialization format: bibliography as bool",

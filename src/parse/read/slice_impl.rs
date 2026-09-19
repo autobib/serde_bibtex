@@ -11,6 +11,10 @@ use crate::{
     token::IDENTIFIER_ALLOWED,
 };
 
+fn error_span(input: &[u8], start: usize) -> core::ops::Range<usize> {
+    start..start + usize::from(start < input.len())
+}
+
 /// Ignore junk characters between entries.
 ///
 /// Returns (updated_pos, true) if an entry was found; otherwise (input.len(), false) if hit EOF.
@@ -69,7 +73,8 @@ pub fn identifier(input: &[u8], start: usize) -> Result<(usize, Identifier<&str>
         return Err(Error::expected("identifier", input.get(start).copied()));
     }
 
-    let s = from_utf8(&input[start..end])?;
+    let bytes = &input[start..end];
+    let s = from_utf8(bytes).map_err(|err| Error::utf8(err).with_utf8_span(Some(start..end)))?;
     Ok((end, Identifier(s)))
 }
 
@@ -110,7 +115,7 @@ pub fn balanced(input: &[u8], start: usize) -> Result<(usize, &[u8]), Error> {
     }
 
     // we did not find find the closing bracket
-    Err(Error::syntax(ErrorCode::UnclosedDelimiter(b'{')))
+    Err(unclosed(input, start, b'{', bracket_depth))
 }
 
 /// Consume a string with balanced brackets, terminating when we hit a top-level byte 'until'.
@@ -131,7 +136,8 @@ pub fn protected(until: u8) -> impl FnMut(&[u8], usize) -> Result<(usize, &[u8])
                 b'{' => bracket_depth += 1,
                 _ => {
                     if bracket_depth == 0 {
-                        return Err(Error::syntax(ErrorCode::UnexpectedClosingBracket));
+                        return Err(Error::syntax(ErrorCode::UnexpectedClosingBracket)
+                            .with_span(Some(error_span(input, end))));
                     }
                     bracket_depth -= 1;
                 }
@@ -146,8 +152,35 @@ pub fn protected(until: u8) -> impl FnMut(&[u8], usize) -> Result<(usize, &[u8])
         } else {
             until
         };
-        Err(Error::syntax(ErrorCode::UnclosedDelimiter(opening)))
+        Err(unclosed(input, start, opening, bracket_depth))
     }
+}
+
+// Produce better failur spans by iterating backwards to recover the innermost unmatched brace.
+fn unclosed(input: &[u8], start: usize, opening: u8, depth: usize) -> Error {
+    let span = if depth > 0 {
+        let mut closed = 0;
+        let offset = memchr2_iter(b'{', b'}', &input[start..])
+            .rev()
+            .find(|&offset| {
+                if input[start + offset] == b'}' {
+                    closed += 1;
+                    false
+                } else if closed > 0 {
+                    closed -= 1;
+                    false
+                } else {
+                    true
+                }
+            })
+            .expect("positive brace depth implies an unmatched opener");
+        start + offset..start + offset + 1
+    } else if start > 0 && input[start - 1] == opening {
+        start - 1..start
+    } else {
+        start..start
+    };
+    Error::syntax(ErrorCode::UnclosedDelimiter(opening)).with_span(Some(span))
 }
 
 super::create_input_impl::read_impl!(
@@ -209,16 +242,12 @@ mod tests {
         // did not find unprotected
         assert!(matches!(
             protected(b'"')(b"{\"", 0),
-            Err(Error {
-                code: ErrorCode::UnclosedDelimiter(b'{')
-            })
+            Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
         // unexpected closing
         assert!(matches!(
             protected(b'"')(b"}\"", 0),
-            Err(Error {
-                code: ErrorCode::UnexpectedClosingBracket
-            })
+            Err(ref err) if matches!(err.inner_code(), ErrorCode::UnexpectedClosingBracket)
         ));
     }
 
@@ -233,15 +262,11 @@ mod tests {
 
         assert!(matches!(
             balanced(b"none", 0),
-            Err(Error {
-                code: ErrorCode::UnclosedDelimiter(b'{')
-            })
+            Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
         assert!(matches!(
             balanced(b"{no}e", 0),
-            Err(Error {
-                code: ErrorCode::UnclosedDelimiter(b'{')
-            })
+            Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
     }
 

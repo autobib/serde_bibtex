@@ -13,6 +13,15 @@ use crate::{
     token::{FieldKey, IDENTIFIER_ALLOWED, Token},
 };
 
+fn error_span(input: &str, start: usize) -> core::ops::Range<usize> {
+    debug_assert!(input.is_char_boundary(start));
+    let mut end = start + usize::from(start < input.len());
+    while !input.is_char_boundary(end) {
+        end += 1;
+    }
+    start..end
+}
+
 #[inline]
 pub fn next_entry_or_eof(input: &str, pos: usize) -> (usize, bool) {
     slice_impl::next_entry_or_eof(input.as_bytes(), pos)
@@ -74,6 +83,10 @@ super::create_input_impl::read_impl!(
     Str;
 
     str::as_bytes;
+
+    fn error_span(&self) -> Option<core::ops::Range<usize>> {
+        Some(error_span(self.input, self.pos))
+    }
 );
 
 impl<'r> StrReader<'r> {
@@ -91,10 +104,12 @@ impl<'r> StrReader<'r> {
     /// Read a single text token, which is one of `{text}`, `"text"`, or `01234`.
     pub fn read_text_token(&mut self) -> crate::error::Result<&'r str> {
         self.comment();
+        let start = self.pos;
         match self.single_token()? {
             Token::Text(Text::Bytes(_)) | Token::Variable(_) => Err(crate::error::Error::syntax(
                 crate::error::ErrorCode::ExpectedTextToken,
-            )),
+            )
+            .with_span(Some(start..self.pos))),
             Token::Text(Text::Str(text)) => Ok(text),
         }
     }
@@ -136,15 +151,11 @@ mod tests {
 
         assert!(matches!(
             balanced("none", 2),
-            Err(Error {
-                code: ErrorCode::UnclosedDelimiter(b'{')
-            })
+            Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
         assert!(matches!(
             balanced("{n🍄}e", 0),
-            Err(Error {
-                code: ErrorCode::UnclosedDelimiter(b'{')
-            })
+            Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
     }
 

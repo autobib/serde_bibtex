@@ -6,6 +6,7 @@ fn data<T: Serialize>(value: T, message: &str) {
     let error = to_string(&value).unwrap_err();
     assert_eq!(error.to_string(), message);
     assert_eq!(error.classify(), Category::Data);
+    assert_eq!(error.span(), None);
 }
 
 #[test]
@@ -261,6 +262,7 @@ fn source_free_errors() {
             "invalid utf-8 sequence of 1 bytes from index 0"
         );
         assert_eq!(error.classify(), Category::Data);
+        assert_eq!(error.span(), None);
     }
     let error = Error::from(serde_bibtex::token::ConversionError::UnexpandedMacro(
         "unknown".into(),
@@ -270,7 +272,9 @@ fn source_free_errors() {
         "expected text, got unresolved macro unknown"
     );
     assert_eq!(error.classify(), Category::Data);
+    assert_eq!(error.span(), None);
     let error = Error::from(std::io::Error::other("writer failed"));
     assert_eq!(error.to_string(), "IO error: writer failed");
     assert_eq!(error.classify(), Category::Io);
+    assert_eq!(error.span(), None);
 }

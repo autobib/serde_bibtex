@@ -26,6 +26,10 @@ See the [deserializer docs](https://docs.rs/serde_bibtex/latest/serde_bibtex/de/
 - Aims for compatibility with and tested against an independently implemented [pest grammar](/src/syntax/bibtex.pest).
 - Aim for compatibility with [biber](https://github.com/plk/biber) but without some of biber's [undocumented idiosyncracies](https://docs.rs/serde_bibtex/latest/serde_bibtex/syntax/index.html#differences-from-biber) or [unfixable parsing bugs](https://github.com/plk/biber/issues/456).
 
+### Precise errors
+- Precise deserialization errors for syntax and data problems.
+- Parse errors report precise byte ranges and span information.
+
 ### Fast
 - Low overhead parser implementation (see [benchmarks](#benchmarks)).
 - Zero-copy deserialization.
