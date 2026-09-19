@@ -1,6 +1,6 @@
 use core::error::Error;
-use std::fmt;
 use core::str::Utf8Error;
+use std::fmt;
 
 /// Possible syntax errors in BibTeX tokens and identifiers.
 #[derive(Debug, PartialEq)]
@@ -40,9 +40,7 @@ impl fmt::Display for TokenError {
             }
             Self::StartsWithDigit => f.write_str("variable cannot start with digit"),
             Self::ExtraClosingBracket => f.write_str("text token has extra closing bracket"),
-            Self::ExtraOpeningBracket => {
-                f.write_str("text token has unclosed opening bracket")
-            }
+            Self::ExtraOpeningBracket => f.write_str("text token has unclosed opening bracket"),
         }
     }
 }

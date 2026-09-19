@@ -1,7 +1,7 @@
 //! # Errors for serialization and deserialization.
-use std::io;
 use core::result;
 use core::str::Utf8Error;
+use std::io;
 
 use crate::token::ConversionError;
 
