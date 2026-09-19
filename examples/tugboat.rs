@@ -9,6 +9,10 @@ use serde_bibtex::{MacroDictionary, de::Deserializer};
 
 use std::borrow::Cow;
 
+#[expect(
+    clippy::print_stderr,
+    reason = "CLI usage errors are reported to stderr"
+)]
 fn main() {
     #[derive(Debug, PartialEq, Deserialize)]
     struct Fields<'r> {

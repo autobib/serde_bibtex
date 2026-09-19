@@ -548,7 +548,8 @@ mod tests {
             "@article{key,author={Author},year={2023}}@book{key2,a={A},b={B}}"
         );
 
-        let bib: Vec<(&str, &str, [(&str, &str); 0])> = vec![("article", "key", [])];
+        let fields: [(&str, &str); 0] = [];
+        let bib = vec![("article", "key", fields)];
 
         let out = to_string_compact(&bib).unwrap();
         assert_eq!(out, "@article{key}");

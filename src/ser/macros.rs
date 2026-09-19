@@ -51,7 +51,7 @@ macro_rules! serialize_err_helper {
     ($err:tt, u32) => {
         #[inline]
         fn serialize_u32(self, _v: u32) -> core::result::Result<Self::Ok, Self::Error> {
-            Err(Self::Error::ser(concat!($err, " as 32").to_string()))
+            Err(Self::Error::ser(concat!($err, " as u32").to_string()))
         }
     };
 

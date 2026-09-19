@@ -76,6 +76,14 @@ where
         }
     }
 
+    /// Deserialize an entry body before checking the terminator, retaining the first error.
+    pub(crate) fn entry<T>(&mut self, body: impl FnOnce(&mut Self) -> Result<T>) -> Result<T> {
+        let closing = self.parser.initial()?;
+        let value = body(self).map_err(|err| err.in_entry(closing))?;
+        self.parser.terminal(closing)?;
+        Ok(value)
+    }
+
     /// Returns an iterator over the entries in the underlying BibTeX data.
     ///
     /// Note that a [`Deserializer`] does not implement [`IntoIterator`] because of lifetime
@@ -428,7 +436,6 @@ mod tests {
         let mut bib_de = Deserializer::new(reader);
 
         let _ = TestBibIgnoreMacro::deserialize(&mut bib_de).unwrap();
-        println!("{:?}", bib_de.macros);
         assert!(bib_de.macros.get(&Variable::new_unchecked("a")).is_none());
     }
 

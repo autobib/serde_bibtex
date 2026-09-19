@@ -12,9 +12,10 @@ pub enum Category {
     Io,
     /// Syntax error during deserialization.
     Syntax,
-    /// Data error, such as unexpanded macros or invalid serialization format.
+    /// Data representation or conversion errors (such as Serde visitor errors,
+    /// unexpanded macros, invalid UTF-8, etc.)
     Data,
-    /// Unexpected end of input.
+    /// Incomplete input.
     Eof,
 }
 
@@ -31,22 +32,23 @@ pub type Result<T> = result::Result<T, Error>;
 
 impl Error {
     /// Categorize the type of the error.
+    ///
+    /// ```
+    /// use serde_bibtex::{from_str, error::Category};
+    /// let err = from_str::<()>("@comment(unfinished").unwrap_err();
+    /// assert_eq!(err.classify(), Category::Eof);
+    /// assert_eq!(err.to_string(), "unclosed '('");
+    /// ```
     pub fn classify(&self) -> Category {
         match &self.code {
-            ErrorCode::Message(_)
-            | ErrorCode::VariableStartsWithDigit
+            ErrorCode::VariableStartsWithDigit
             | ErrorCode::UnexpectedClosingBracket
-            | ErrorCode::ExpectedNextTokenOrEndOfField
-            | ErrorCode::UnterminatedTextToken
-            | ErrorCode::InvalidStartOfEntry
-            | ErrorCode::ExpectedFieldSep
+            | ErrorCode::Expected(_)
             | ErrorCode::ExpectedTextToken
-            | ErrorCode::Empty
-            | ErrorCode::ExpectedEndOfEntry => Category::Syntax,
-            ErrorCode::UnclosedQuote | ErrorCode::UnexpectedEof | ErrorCode::UnclosedBracket => {
-                Category::Eof
-            }
-            ErrorCode::InvalidUtf8(_)
+            | ErrorCode::ExpectedEndOfEntry { .. } => Category::Syntax,
+            ErrorCode::UnclosedDelimiter(_) | ErrorCode::UnexpectedEof(_) => Category::Eof,
+            ErrorCode::Message(_)
+            | ErrorCode::InvalidUtf8(_)
             | ErrorCode::UnexpandedMacro(_)
             | ErrorCode::InvalidSerializationFormat(_) => Category::Data,
             ErrorCode::Io(_) => Category::Io,
@@ -80,9 +82,24 @@ impl Error {
     }
 
     #[inline]
-    pub(crate) fn eof() -> Self {
-        Self {
-            code: ErrorCode::UnexpectedEof,
+    pub(crate) fn expected(item: &'static str, found: Option<u8>) -> Self {
+        Self::syntax(if found.is_none() {
+            ErrorCode::UnexpectedEof(item)
+        } else {
+            ErrorCode::Expected(item)
+        })
+    }
+
+    /// Add an entry's delimiter context only to otherwise context-free EOF errors.
+    /// Inner scanner diagnostics and visitor errors must survive unchanged.
+    pub(crate) fn in_entry(self, closing: u8) -> Self {
+        if matches!(self.code, ErrorCode::UnexpectedEof(_)) {
+            Self::syntax(ErrorCode::UnclosedDelimiter(match closing {
+                b')' => b'(',
+                _ => b'{',
+            }))
+        } else {
+            self
         }
     }
 }
@@ -139,45 +156,35 @@ pub(crate) enum ErrorCode {
     Message(String),
     VariableStartsWithDigit,
     UnexpectedClosingBracket,
-    ExpectedNextTokenOrEndOfField,
+    Expected(&'static str),
     InvalidSerializationFormat(String),
-    UnterminatedTextToken,
-    InvalidStartOfEntry,
-    ExpectedEndOfEntry,
+    ExpectedEndOfEntry { expected: u8, found: u8 },
     UnexpandedMacro(String),
-    UnclosedBracket,
-    UnclosedQuote,
-    UnexpectedEof,
+    UnclosedDelimiter(u8),
+    UnexpectedEof(&'static str),
     ExpectedTextToken,
-    ExpectedFieldSep,
     InvalidUtf8(Utf8Error),
     Io(io::Error),
-    Empty,
 }
 
 impl core::fmt::Display for ErrorCode {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
-            Self::ExpectedFieldSep => f.write_str("expected field separator '='"),
-            Self::InvalidStartOfEntry => f.write_str("expected start of entry '{' or '('"),
+            Self::Expected(item) => write!(f, "expected {item}"),
             Self::VariableStartsWithDigit => f.write_str("identifier starts with ASCII digit"),
-            Self::UnexpectedClosingBracket => f.write_str("unmatched closing bracket"),
-            Self::UnterminatedTextToken => f.write_str("unmatched opening bracket"),
+            Self::UnexpectedClosingBracket => f.write_str("unmatched closing '}'"),
             Self::InvalidUtf8(err) => err.fmt(f),
-            Self::Empty => f.write_str("identifier missing or length 0"),
             Self::Message(msg) => f.write_str(msg),
-            Self::UnexpectedEof => f.write_str("unexpected end of input"),
-            Self::ExpectedNextTokenOrEndOfField => {
-                f.write_str("expected another token or a field terminator")
-            }
-            Self::UnclosedBracket => f.write_str("unclosed '{' in token"),
-            Self::UnclosedQuote => f.write_str("unclosed '\"' in token"),
-            Self::ExpectedEndOfEntry => f.write_str("expected end of entry"),
-            Self::Io(err) => write!(f, "IO error: {err}"),
-            Self::ExpectedTextToken => write!(
+            Self::UnexpectedEof(item) => write!(f, "unexpected end of input; expected {item}"),
+            Self::UnclosedDelimiter(opening) => write!(f, "unclosed '{}'", char::from(*opening)),
+            Self::ExpectedEndOfEntry { expected, found } => write!(
                 f,
-                "expected text-token but recevied a token which is not text"
+                "expected end of entry '{}', found '{}'",
+                char::from(*expected),
+                char::from(*found).escape_default(),
             ),
+            Self::Io(err) => write!(f, "IO error: {err}"),
+            Self::ExpectedTextToken => f.write_str("expected text token, found variable"),
             Self::UnexpandedMacro(s) => write!(f, "expected text, got unresolved macro {s}"),
             Self::InvalidSerializationFormat(msg) => {
                 write!(f, "invalid serialization format: {msg}")

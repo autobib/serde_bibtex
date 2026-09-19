@@ -58,22 +58,23 @@ macro_rules! test_file_types {
 
 macro_rules! test_file_slice {
     ($fname:expr) => {
-        let input_bytes = std::fs::read($fname).unwrap();
+        let fname = $fname;
+        let input_bytes = std::fs::read(&fname).unwrap();
 
         let mut de = Deserializer::from_slice(&input_bytes);
         let data: Result<IgnoredAny> = IgnoredAny::deserialize(&mut de);
-        assert!(data.is_ok(), "{:?}", data);
+        assert!(data.is_ok(), "{fname:?}: {data:?}");
 
         let mut de = Deserializer::from_slice(&input_bytes);
         let data: Result<TestBib> = TestBib::deserialize(&mut de);
-        assert!(data.is_ok(), "{:?}", data);
+        assert!(data.is_ok(), "{fname:?}: {data:?}");
     };
 }
 
 macro_rules! test_file_str {
     ($fname:expr) => {
         let input_bytes = std::fs::read($fname).unwrap();
-        let input_str = std::str::from_utf8(&input_bytes).unwrap();
+        let input_str = core::str::from_utf8(&input_bytes).unwrap();
 
         let mut de = Deserializer::from_str(&input_str);
         let data: Result<IgnoredAny> = IgnoredAny::deserialize(&mut de);
@@ -108,7 +109,6 @@ fn test_syntax_biber() {
 fn test_syntax_large() {
     let paths = std::fs::read_dir("assets/syntax").unwrap();
     for path in paths {
-        println!("Testing: {:?}", path.as_ref().unwrap().path());
         test_file_slice!(path.as_ref().unwrap().path());
     }
 }

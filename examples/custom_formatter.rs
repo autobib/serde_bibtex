@@ -44,7 +44,7 @@ fn main() -> Result<(), Error> {
     let bibliography: Vec<Record> = from_str(input)?;
     let mut stdout = io::stdout();
 
-    let formatter = ValidatingFormatter::new(NormalizingFormatter::default());
+    let formatter = ValidatingFormatter::new(NormalizingFormatter);
     let mut ser = Serializer::new_with_formatter(&mut stdout, formatter);
 
     bibliography.serialize(&mut ser)?;

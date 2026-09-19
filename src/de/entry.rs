@@ -150,12 +150,9 @@ where
             EntryType::Comment => {
                 seed.deserialize(TextDeserializer::new(self.de.parser.comment_contents()?))
             }
-            EntryType::Preamble => {
-                let closing_bracket = self.de.parser.initial()?;
-                let val = seed.deserialize(ValueDeserializer::try_from_de_resolved(&mut *self.de)?);
-                self.de.parser.terminal(closing_bracket)?;
-                val
-            }
+            EntryType::Preamble => self
+                .de
+                .entry(|de| seed.deserialize(ValueDeserializer::try_from_de_resolved(de)?)),
         }
     }
 
@@ -270,39 +267,30 @@ where
     where
         V: de::Visitor<'de>,
     {
-        let closing_bracket = self.de.parser.initial()?;
-        let var = self.de.parser.variable()?;
-        self.de.parser.field_sep()?;
-        let val = visitor.visit_seq(KeyValueDeserializer::new_from_de(
-            var.into_inner(),
-            &mut *self.de,
-        )?);
-        self.de.parser.comma_opt();
-        self.de.parser.terminal(closing_bracket)?;
-        val
+        self.de.entry(|de| {
+            let var = de.parser.variable()?;
+            de.parser.field_sep()?;
+            let val =
+                visitor.visit_seq(KeyValueDeserializer::new_from_de(var.into_inner(), de)?)?;
+            de.parser.comma_opt();
+            Ok(val)
+        })
     }
 
     fn deserialize_option<V>(self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
     {
-        let closing_bracket = self.de.parser.initial()?;
-        let key = self.de.parser.macro_variable_opt()?;
-        let val = match key {
+        self.de.entry(|de| match de.parser.macro_variable_opt()? {
             Some(var) => {
-                self.de.parser.field_sep()?;
-                let val = visitor.visit_some(KeyValueDeserializer::new_from_de(
-                    var.into_inner(),
-                    &mut *self.de,
-                )?);
-                self.de.parser.comma_opt();
-                val
+                de.parser.field_sep()?;
+                let val =
+                    visitor.visit_some(KeyValueDeserializer::new_from_de(var.into_inner(), de)?)?;
+                de.parser.comma_opt();
+                Ok(val)
             }
             None => visitor.visit_none(),
-        };
-
-        self.de.parser.terminal(closing_bracket)?;
-        val
+        })
     }
 
     fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value>
@@ -511,11 +499,17 @@ where
             EntryPosition::CitationKey => {
                 self.closing_bracket = self.de.parser.initial()?;
                 seed.deserialize(WrappedBorrowStrDeserializer::new(
-                    self.de.parser.entry_key()?.into_inner(),
+                    self.de
+                        .parser
+                        .entry_key()
+                        .map_err(|err| err.in_entry(self.closing_bracket))?
+                        .into_inner(),
                 ))
             }
             EntryPosition::Fields => {
-                let val = seed.deserialize(FieldDeserializer::new(&mut *self.de))?;
+                let val = seed
+                    .deserialize(FieldDeserializer::new(&mut *self.de))
+                    .map_err(|err| err.in_entry(self.closing_bracket))?;
                 self.de.parser.comma_opt();
                 self.de.parser.terminal(self.closing_bracket)?;
                 Ok(val)
@@ -544,14 +538,19 @@ where
             EntryPosition::CitationKey => {
                 self.closing_bracket = self.de.parser.initial()?;
                 seed.deserialize(WrappedBorrowStrDeserializer::new(
-                    self.de.parser.entry_key()?.into_inner(),
+                    self.de
+                        .parser
+                        .entry_key()
+                        .map_err(|err| err.in_entry(self.closing_bracket))?
+                        .into_inner(),
                 ))
                 .map(Some)
             }
             EntryPosition::Fields => {
                 let val = seed
                     .deserialize(FieldDeserializer::new(&mut *self.de))
-                    .map(Some)?;
+                    .map(Some)
+                    .map_err(|err| err.in_entry(self.closing_bracket))?;
                 self.de.parser.comma_opt();
                 self.de.parser.terminal(self.closing_bracket)?;
                 Ok(val)
@@ -934,7 +933,7 @@ mod tests {
         let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a");
         let res = IgnoredAny::deserialize(deserializer);
-        assert!(res.is_ok())
+        assert!(res.is_ok());
     }
 
     #[test]
@@ -945,7 +944,7 @@ mod tests {
         let mut bib_de = Deserializer::new(reader);
         let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article");
         let data = Unit::deserialize(deserializer);
-        assert!(data.is_ok(), "{:?}", data)
+        assert!(data.is_ok(), "{data:?}");
     }
 
     #[test]

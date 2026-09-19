@@ -66,7 +66,7 @@ pub fn identifier(input: &[u8], start: usize) -> Result<(usize, Identifier<&str>
     }
 
     if end == start {
-        return Err(Error::syntax(ErrorCode::Empty));
+        return Err(Error::expected("identifier", input.get(start).copied()));
     }
 
     let s = from_utf8(&input[start..end])?;
@@ -84,7 +84,7 @@ pub fn number(input: &[u8], start: usize) -> Result<(usize, &str), Error> {
     }
 
     if end == start {
-        return Err(Error::syntax(ErrorCode::Empty));
+        return Err(Error::expected("number", input.get(start).copied()));
     }
 
     // SAFETY: we only parsed ascii digits so this is guaranteed to be
@@ -110,7 +110,7 @@ pub fn balanced(input: &[u8], start: usize) -> Result<(usize, &[u8]), Error> {
     }
 
     // we did not find find the closing bracket
-    Err(Error::syntax(ErrorCode::UnterminatedTextToken))
+    Err(Error::syntax(ErrorCode::UnclosedDelimiter(b'{')))
 }
 
 /// Consume a string with balanced brackets, terminating when we hit a top-level byte 'until'.
@@ -138,8 +138,15 @@ pub fn protected(until: u8) -> impl FnMut(&[u8], usize) -> Result<(usize, &[u8])
             }
         }
 
-        // we did not find an unprotected `"`
-        Err(Error::syntax(ErrorCode::UnterminatedTextToken))
+        // A nested brace is more specific than the outer protected delimiter.
+        let opening = if bracket_depth > 0 {
+            b'{'
+        } else if until == b')' {
+            b'('
+        } else {
+            until
+        };
+        Err(Error::syntax(ErrorCode::UnclosedDelimiter(opening)))
     }
 }
 
@@ -203,7 +210,7 @@ mod tests {
         assert!(matches!(
             protected(b'"')(b"{\"", 0),
             Err(Error {
-                code: ErrorCode::UnterminatedTextToken
+                code: ErrorCode::UnclosedDelimiter(b'{')
             })
         ));
         // unexpected closing
@@ -227,13 +234,13 @@ mod tests {
         assert!(matches!(
             balanced(b"none", 0),
             Err(Error {
-                code: ErrorCode::UnterminatedTextToken
+                code: ErrorCode::UnclosedDelimiter(b'{')
             })
         ));
         assert!(matches!(
             balanced(b"{no}e", 0),
             Err(Error {
-                code: ErrorCode::UnterminatedTextToken
+                code: ErrorCode::UnclosedDelimiter(b'{')
             })
         ));
     }

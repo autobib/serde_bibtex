@@ -8,7 +8,7 @@ use core::str::from_utf8_unchecked;
 
 use super::{BibtexRead, Identifier, Text, slice_impl};
 use crate::{
-    error::{Error, ErrorCode},
+    error::Error,
     parse::BibtexParse,
     token::{FieldKey, IDENTIFIER_ALLOWED, Token},
 };
@@ -32,7 +32,10 @@ pub fn identifier(input: &str, start: usize) -> Result<(usize, Identifier<&str>)
     }
 
     if end == start {
-        return Err(Error::syntax(ErrorCode::Empty));
+        return Err(Error::expected(
+            "identifier",
+            input.as_bytes().get(start).copied(),
+        ));
     }
 
     Ok((end, Identifier(unsafe { input.get_unchecked(start..end) })))
@@ -134,13 +137,13 @@ mod tests {
         assert!(matches!(
             balanced("none", 2),
             Err(Error {
-                code: ErrorCode::UnterminatedTextToken
+                code: ErrorCode::UnclosedDelimiter(b'{')
             })
         ));
         assert!(matches!(
             balanced("{n🍄}e", 0),
             Err(Error {
-                code: ErrorCode::UnterminatedTextToken
+                code: ErrorCode::UnclosedDelimiter(b'{')
             })
         ));
     }

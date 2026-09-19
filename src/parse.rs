@@ -3,13 +3,13 @@ mod read;
 
 use crate::error::{Error, ErrorCode, Result};
 
-use crate::token::{EntryKey, EntryType, FieldKey, Text, Token, Variable};
+use crate::token::{EntryKey, EntryType, FieldKey, IDENTIFIER_ALLOWED, Text, Token, Variable};
 pub use macros::MacroDictionary;
 pub use read::{BibtexRead, SliceReader, StrReader};
 
 impl<'r, R: BibtexRead<'r>> BibtexParse<'r> for R {}
 
-pub trait BibtexParse<'r>: BibtexRead<'r> {
+pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
     /// Read the entry type, returning None if EOF was reached.
     fn entry_type(&mut self) -> Result<Option<EntryType<&'r str>>> {
         if self.next_entry_or_eof() {
@@ -22,12 +22,13 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
     }
 
     #[inline]
-    fn expect(&mut self, expected: u8, err: Error) -> Result<()> {
-        if self.peek() == Some(expected) {
+    fn expect(&mut self, expected: u8, err: impl FnOnce(Option<u8>) -> Error) -> Result<()> {
+        let found = self.peek();
+        if found == Some(expected) {
             self.discard();
             Ok(())
         } else {
-            Err(err)
+            Err(err(found))
         }
     }
 
@@ -43,7 +44,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
                 self.discard();
                 Ok(b')')
             }
-            _ => Err(Error::syntax(ErrorCode::InvalidStartOfEntry)),
+            found => Err(Error::expected("start of entry '{' or '('", found)),
         }
     }
 
@@ -85,7 +86,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
     /// Ignore a field separator  `=`.
     fn field_sep(&mut self) -> Result<()> {
         self.comment();
-        self.expect(b'=', Error::syntax(ErrorCode::ExpectedFieldSep))?;
+        self.expect(b'=', |found| Error::expected("field separator '='", found))?;
         Ok(())
     }
 
@@ -98,7 +99,9 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
                 Ok(true)
             }
             Some(b'}' | b')' | b',') | None => Ok(false),
-            Some(_) => Err(Error::syntax(ErrorCode::ExpectedNextTokenOrEndOfField)),
+            Some(_) => Err(Error::syntax(ErrorCode::Expected(
+                "token separator '#' or end of value",
+            ))),
         }
     }
 
@@ -109,18 +112,20 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
             Some(b'{') => {
                 self.discard();
                 let result = self.balanced()?;
-                self.expect(b'}', Error::syntax(ErrorCode::UnclosedBracket))?;
+                self.expect(b'}', |_| Error::syntax(ErrorCode::UnclosedDelimiter(b'{')))?;
                 Ok(Token::Text(result))
             }
             Some(b'"') => {
                 self.discard();
                 let result = self.protected(b'"')?;
-                self.expect(b'"', Error::syntax(ErrorCode::UnclosedQuote))?;
+                self.expect(b'"', |_| Error::syntax(ErrorCode::UnclosedDelimiter(b'"')))?;
                 Ok(Token::Text(result))
             }
             Some(b'0'..=b'9') => Ok(Token::Text(Text::Str(self.number()?))),
-            Some(_) => Ok(Token::Variable(self.identifier()?.into())),
-            _ => Err(Error::eof()),
+            Some(b) if IDENTIFIER_ALLOWED[b as usize] => {
+                Ok(Token::Variable(self.identifier()?.into()))
+            }
+            found => Err(Error::expected("value", found)),
         }
     }
 
@@ -153,7 +158,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
         }
     }
 
-    /// Parse bracketed text inside `@string` and `@preamble`.
+    /// Parse protected text inside `@comment`.
     fn comment_contents(&mut self) -> Result<Text<&'r str, &'r [u8]>> {
         self.comment();
         let closing = self.initial()?;
@@ -169,7 +174,13 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
     /// Consume a closing bracket `closing`.
     fn terminal(&mut self, closing: u8) -> Result<()> {
         self.comment();
-        self.expect(closing, Error::syntax(ErrorCode::ExpectedEndOfEntry))?;
+        self.expect(closing, |found| match found {
+            Some(found) => Error::syntax(ErrorCode::ExpectedEndOfEntry {
+                expected: closing,
+                found,
+            }),
+            None => Error::expected("end of entry", None).in_entry(closing),
+        })?;
         Ok(())
     }
 
@@ -222,22 +233,29 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
         Ok(())
     }
 
+    /// Parse an entry body.
+    fn entry<T>(&mut self, body: impl FnOnce(&mut Self) -> Result<T>) -> Result<T> {
+        let closing = self.initial()?;
+        let value = body(self).map_err(|err| err.in_entry(closing))?;
+        self.terminal(closing)?;
+        Ok(value)
+    }
+
     /// Ignore the contents of a preamble.
     fn ignore_preamble(&mut self) -> Result<()> {
-        let closing_bracket = self.initial()?;
-        self.ignore_value()?;
-        self.terminal(closing_bracket)
+        self.entry(Self::ignore_value)
     }
 
     /// Ignore the contents of a macro definition.
     fn ignore_macro(&mut self) -> Result<()> {
-        let closing_bracket = self.initial()?;
-        if (self.macro_variable_opt()?).is_some() {
-            self.field_sep()?;
-            self.ignore_value()?;
-            self.comma_opt();
-        }
-        self.terminal(closing_bracket)
+        self.entry(|parser| {
+            if parser.macro_variable_opt()?.is_some() {
+                parser.field_sep()?;
+                parser.ignore_value()?;
+                parser.comma_opt();
+            }
+            Ok(())
+        })
     }
 
     /// Ignore the contents of a macro definition, but capture into `abbrevs`.
@@ -245,25 +263,26 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
         &mut self,
         abbrevs: &mut MacroDictionary<&'r str, &'r [u8]>,
     ) -> Result<()> {
-        let closing_bracket = self.initial()?;
-        if let Some(identifier) = self.macro_variable_opt()? {
-            let mut tokens = Vec::new();
-            self.field_sep()?;
-            self.value_into(&mut tokens)?;
-            abbrevs.insert(identifier, tokens);
-            self.comma_opt();
-        }
-        self.terminal(closing_bracket)
+        self.entry(|parser| {
+            if let Some(identifier) = parser.macro_variable_opt()? {
+                let mut tokens = Vec::new();
+                parser.field_sep()?;
+                parser.value_into(&mut tokens)?;
+                abbrevs.insert(identifier, tokens);
+                parser.comma_opt();
+            }
+            Ok(())
+        })
     }
 
     /// Ignore the contents of a regular entry.
     fn ignore_regular_entry(&mut self) -> Result<()> {
-        let closing_bracket = self.initial()?;
-        let _ = self.entry_key()?;
-        self.ignore_fields()?;
-        self.comma_opt();
-        self.terminal(closing_bracket)?;
-        Ok(())
+        self.entry(|parser| {
+            let _ = parser.entry_key()?;
+            parser.ignore_fields()?;
+            parser.comma_opt();
+            Ok(())
+        })
     }
 
     /// Ignore the fields in a regular entry.
@@ -280,5 +299,45 @@ pub trait BibtexParse<'r>: BibtexRead<'r> {
         let mut is_first_token = true;
         while (self.token(&mut is_first_token)?).is_some() {}
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::error::Category;
+
+    #[test]
+    fn expect_constructs_errors_only_on_failure() {
+        let mut reader = StrReader::new("=");
+        reader
+            .expect(b'=', |_| panic!("constructed an error on success"))
+            .unwrap();
+        let error = reader
+            .expect(b'=', |found| Error::expected("field separator '='", found))
+            .unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "unexpected end of input; expected field separator '='"
+        );
+        assert_eq!(error.classify(), Category::Eof);
+    }
+
+    #[test]
+    fn standalone_grammar_eof_has_no_entry_context() {
+        for error in [
+            StrReader::new("").variable().unwrap_err(),
+            StrReader::new("").macro_variable_opt().unwrap_err(),
+            StrReader::new(",").field_or_terminal().unwrap_err(),
+        ] {
+            assert_eq!(
+                error.to_string(),
+                "unexpected end of input; expected identifier"
+            );
+            assert_eq!(error.classify(), Category::Eof);
+        }
+        let error = StrReader::new("{x}#").ignore_value().unwrap_err();
+        assert_eq!(error.to_string(), "unexpected end of input; expected value");
+        assert_eq!(error.classify(), Category::Eof);
     }
 }

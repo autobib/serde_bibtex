@@ -794,8 +794,8 @@ mod tests {
 
     use serde::Deserialize;
 
+    use core::iter::zip;
     use std::borrow::Cow;
-    use std::iter::zip;
 
     #[derive(Deserialize, Debug, PartialEq)]
     enum TestEntry<'a> {
@@ -862,8 +862,7 @@ mod tests {
         ];
 
         let reader = StrReader::new(input);
-        for (expected, received) in zip(expected.into_iter(), Deserializer::new(reader).into_iter())
-        {
+        for (expected, received) in zip(expected, Deserializer::new(reader).into_iter()) {
             assert!(received.is_ok());
             assert_eq!(expected, received.unwrap());
         }
@@ -893,8 +892,7 @@ mod tests {
         ];
 
         let reader = StrReader::new(input);
-        for (expected, received) in zip(expected.into_iter(), Deserializer::new(reader).into_iter())
-        {
+        for (expected, received) in zip(expected, Deserializer::new(reader).into_iter()) {
             assert!(received.is_ok());
             assert_eq!(expected, received.unwrap());
         }
@@ -945,8 +943,7 @@ mod tests {
         ];
 
         let reader = StrReader::new(input);
-        for (expected, received) in zip(expected.into_iter(), Deserializer::new(reader).into_iter())
-        {
+        for (expected, received) in zip(expected, Deserializer::new(reader).into_iter()) {
             assert!(received.is_ok());
             assert_eq!(expected, received.unwrap());
         }
@@ -991,7 +988,7 @@ mod tests {
 
         let reader = StrReader::new(input);
         for (expected, received) in zip(
-            expected.into_iter(),
+            expected,
             Deserializer::new(reader).into_iter_regular_entry(),
         ) {
             assert!(received.is_ok());
