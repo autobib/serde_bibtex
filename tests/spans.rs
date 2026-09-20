@@ -9,7 +9,7 @@ use serde::{
     de::{DeserializeOwned, IgnoredAny},
 };
 use serde_bibtex::{
-    BibtexRead, Error, MacroDictionary, SliceReader, StrReader,
+    Error, MacroDictionary, StrReader,
     de::Deserializer,
     from_bytes, from_str,
     token::{Token, Variable},
@@ -177,90 +177,6 @@ fn containers_and_bibliographies() {
 }
 
 #[test]
-fn nested_openers_and_reader_offsets() {
-    for (input, expected) in [
-        ("", 0..0),
-        ("text", 0..0),
-        ("{a{b", 2..3),
-        ("{a{b}", 0..1),
-        ("{a}x{b{c}d", 4..5),
-        ("{a{b}}", 0..0),
-    ] {
-        span(
-            StrReader::new(input).balanced().unwrap_err(),
-            expected.clone(),
-        );
-        span(
-            SliceReader::new(input.as_bytes()).balanced().unwrap_err(),
-            expected.clone(),
-        );
-        for until in *b"\")" {
-            span(
-                StrReader::new(input).protected(until).unwrap_err(),
-                expected.clone(),
-            );
-            span(
-                SliceReader::new(input.as_bytes())
-                    .protected(until)
-                    .unwrap_err(),
-                expected.clone(),
-            );
-        }
-    }
-    for input in [
-        "@comment({a{b",
-        "@comment{{a{b",
-        "@preamble{\"{a{b",
-        "@a{k,f={{a{b",
-    ] {
-        let start = input.rfind('{').unwrap();
-        span(from_str::<IgnoredAny>(input).unwrap_err(), start..start + 1);
-        span(
-            from_bytes::<IgnoredAny>(input.as_bytes()).unwrap_err(),
-            start..start + 1,
-        );
-    }
-    for input in ["", ","] {
-        let expected = 0..input.len();
-        span(
-            StrReader::new(input).identifier().unwrap_err(),
-            expected.clone(),
-        );
-        span(
-            SliceReader::new(input.as_bytes()).identifier().unwrap_err(),
-            expected.clone(),
-        );
-        span(
-            StrReader::new(input).number().unwrap_err(),
-            expected.clone(),
-        );
-        span(
-            SliceReader::new(input.as_bytes()).number().unwrap_err(),
-            expected,
-        );
-    }
-    span(StrReader::new(" %end").read_field_key().unwrap_err(), 5..5);
-    span(StrReader::new(" x").skip_field_sep().unwrap_err(), 1..2);
-    span(StrReader::new(" %end").skip_field_sep().unwrap_err(), 5..5);
-    span(StrReader::new(" %end").read_text_token().unwrap_err(), 5..5);
-    span(StrReader::new(" #").read_text_token().unwrap_err(), 1..2);
-    span(
-        StrReader::new("  macro ").read_text_token().unwrap_err(),
-        2..7,
-    );
-    let mut reader = StrReader::new("{ok} {bad{inner");
-    reader.read_text_token().unwrap();
-    span(reader.read_text_token().unwrap_err(), 9..10);
-    assert_eq!(reader.byte_offset(), Some(6)); // A scanner failure does not advance the cursor.
-    assert_eq!(reader.source(), Some(b"{ok} {bad{inner".as_slice()));
-    span(StrReader::new("text}").protected(b'"').unwrap_err(), 4..5);
-    span(
-        SliceReader::new(b"text}").protected(b')').unwrap_err(),
-        4..5,
-    );
-}
-
-#[test]
 fn unicode_syntax_spans() {
     for ch in ['é', '中', '🍄'] {
         for input in [
@@ -312,43 +228,11 @@ fn unicode_syntax_spans() {
                 span(error, start..start + 1);
             }
         }
-        let input = format!("{ch}rest");
-        for error in [
-            StrReader::new(&input).number().unwrap_err(),
-            StrReader::new(&input).skip_field_sep().unwrap_err(),
-        ] {
-            assert_eq!(
-                input.get(error.span().unwrap()),
-                Some(&input[..ch.len_utf8()])
-            );
-            span(error, 0..ch.len_utf8());
-        }
-        span(
-            SliceReader::new(input.as_bytes()).number().unwrap_err(),
-            0..1,
-        );
         regular::<(Reject, String, IgnoredAny)>(&format!("@{ch}{{key}}"), 1..1 + ch.len_utf8());
         regular::<Record<Vec<Reject>>>(
             &format!("@article{{key,field={{{ch}}}}}"),
             19..21 + ch.len_utf8(),
         );
-    }
-}
-
-#[test]
-fn reader_error_spans_preserve_the_start() {
-    let mut reader = StrReader::new("123🍄");
-    assert_eq!(reader.number().unwrap(), "123");
-    span(reader.number().unwrap_err(), 3..7);
-    assert_eq!(reader.byte_offset(), Some(3));
-
-    // Byte spans stay byte spans, even within valid UTF-8 or a run of continuation bytes.
-    for input in ["🍄".as_bytes(), b"\x80\x81\x82"] {
-        let mut reader = SliceReader::new(input);
-        span(reader.number().unwrap_err(), 0..1);
-        assert!(reader.peek().is_some());
-        reader.discard();
-        span(reader.number().unwrap_err(), 1..2);
     }
 }
 
@@ -389,7 +273,7 @@ proptest::proptest! {
                 let span = error.span().expect("string input has an error span");
                 proptest::prop_assert!(input.get(span.clone()).is_some(), "{span:?} in {input:?}: {error}");
             }
-            if let Err(error) = StrReader::new(&input).number() {
+            if let Err(error) = StrReader::new(&input).read_field_key() {
                 proptest::prop_assert!(input.get(error.span().unwrap()).is_some());
             }
         }
@@ -398,15 +282,7 @@ proptest::proptest! {
 
 #[test]
 fn utf8_spans() {
-    for (bytes, expected) in [
-        (b"a\xffz".as_slice(), 1..2),
-        (b"a\xe2\x82", 1..3),
-        (b"a\xe2\x82!", 1..3),
-    ] {
-        span(
-            SliceReader::new(bytes).identifier().unwrap_err(),
-            expected.clone(),
-        );
+    for bytes in [b"a\xffz".as_slice(), b"a\xe2\x82", b"a\xe2\x82!"] {
         let mut input = b"@article{k,f={".to_vec();
         input.extend_from_slice(bytes);
         input.extend_from_slice(b"}}");
@@ -616,6 +492,11 @@ fn macro_sources_and_external_dictionaries() {
 
 #[test]
 fn source_free_and_compact_errors() {
+    let input = String::from("@comment(unclosed");
+    let error = from_str::<IgnoredAny>(&input).unwrap_err();
+    drop(input);
+    span(error, 8..9);
+
     assert_eq!(core::mem::size_of::<Error>(), core::mem::size_of::<usize>());
     for error in [
         <Error as serde::de::Error>::custom("standalone"),
@@ -633,57 +514,4 @@ fn source_free_and_compact_errors() {
         Error::from(core::str::from_utf8(&invalid).unwrap_err()).span(),
         None
     );
-}
-
-// Intentionally implements only the original trait methods. Span hooks remain optional.
-struct LegacyReader<'r>(StrReader<'r>);
-impl<'r> BibtexRead<'r> for LegacyReader<'r> {
-    fn peek(&self) -> Option<u8> {
-        self.0.peek()
-    }
-    fn discard(&mut self) {
-        self.0.discard();
-    }
-    fn comment(&mut self) {
-        self.0.comment();
-    }
-    fn next_entry_or_eof(&mut self) -> bool {
-        self.0.next_entry_or_eof()
-    }
-    fn identifier(&mut self) -> Result<serde_bibtex::token::Identifier<&'r str>, Error> {
-        self.0.identifier()
-    }
-    fn number(&mut self) -> Result<&'r str, Error> {
-        self.0.number()
-    }
-    fn balanced(&mut self) -> Result<serde_bibtex::token::Text<&'r str, &'r [u8]>, Error> {
-        self.0.balanced()
-    }
-    fn protected(
-        &mut self,
-        until: u8,
-    ) -> Result<serde_bibtex::token::Text<&'r str, &'r [u8]>, Error> {
-        self.0.protected(until)
-    }
-}
-
-#[test]
-fn existing_reader_implementations_need_no_new_methods() {
-    let mut reader = LegacyReader(StrReader::new("identifier"));
-    assert_eq!(reader.source(), None);
-    assert_eq!(reader.byte_offset(), None);
-    assert_eq!(reader.error_span(), None);
-    assert_eq!(reader.identifier().unwrap().into_inner(), "identifier");
-    let input = String::from("@comment(unclosed");
-    let error = from_str::<IgnoredAny>(&input).unwrap_err();
-    drop(input);
-    span(error, 8..9);
-}
-
-#[test]
-fn reader_error_span_defaults_and_override() {
-    assert_eq!(StrReader::new("🍄").error_span(), Some(0..4));
-    assert_eq!(SliceReader::new("🍄".as_bytes()).error_span(), Some(0..1));
-    assert_eq!(StrReader::new("").error_span(), Some(0..0));
-    assert_eq!(SliceReader::new(b"").error_span(), Some(0..0));
 }

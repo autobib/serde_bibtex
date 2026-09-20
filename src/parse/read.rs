@@ -1,61 +1,71 @@
 mod create_input_impl;
+mod inner;
 mod slice_impl;
 mod str_impl;
 
-pub use slice_impl::SliceReader;
-pub use str_impl::StrReader;
+#[cfg(test)]
+mod tests;
 
-use crate::error::Error;
-use crate::token::{Identifier, Text};
+pub use self::{slice_impl::SliceReader, str_impl::StrReader};
+pub(crate) use inner::BibtexReadInner;
 
-/// A pull parser which can be driven by a [`Deserializer`](crate::de::Deserializer) to parse BibTeX.
-///
-/// This trait is implemented by [`SliceReader`] and [`StrReader`].
-pub trait BibtexRead<'r> {
-    /// The original input bytes, if any.
-    fn source(&self) -> Option<&'r [u8]> {
-        None
-    }
-
-    /// The current zero-based byte offset in the source.
-    fn byte_offset(&self) -> Option<usize> {
-        None
-    }
-
-    /// The span associate with an error at the current position.
-    ///
-    /// By default, this returns exactly one byte or an empty range if there are no more bytes.
-    /// A [`StrReader`] reports the span corresponding to entire character at the current position.
-    fn error_span(&self) -> Option<core::ops::Range<usize>> {
-        self.byte_offset()
-            .map(|start| start..start + usize::from(self.peek().is_some()))
-    }
-
-    /// Peek the next byte in the input without advancing the position.
-    fn peek(&self) -> Option<u8>;
-
-    /// Advance forward a single byte, assuming that there are remaining bytes.
-    ///
-    /// Implementors may assume that a previous call to [`peek`](Self::peek) returned something
-    /// and no other methods were call in between.
-    fn discard(&mut self);
-
-    /// Advance forward over comments and whitespace.
-    fn comment(&mut self);
-
-    /// Advance forward until the beginning of an entry is found, or the end of the file is reached,
-    /// returning if an entry was found.
-    fn next_entry_or_eof(&mut self) -> bool;
-
-    /// Parse a unicode identifier.
-    fn identifier(&mut self) -> Result<Identifier<&'r str>, Error>;
-
-    /// Parse a balanced text token.
-    fn balanced(&mut self) -> Result<Text<&'r str, &'r [u8]>, Error>;
-
-    /// Parse a quoted or bracketed text token.
-    fn protected(&mut self, until: u8) -> Result<Text<&'r str, &'r [u8]>, Error>;
-
-    /// Parse a text number token.
-    fn number(&mut self) -> Result<&'r str, Error>;
+/// Valid delimiters for an entry body.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
+pub enum EntryDelimiter {
+    /// An entry delimited by `{` and `}`.
+    Brace = b'}',
+    /// An entry delimited by `(` and `)`.
+    Parenthesis = b')',
 }
+
+impl EntryDelimiter {
+    pub(crate) fn opening(self) -> u8 {
+        match self {
+            Self::Brace => b'{',
+            Self::Parenthesis => b'(',
+        }
+    }
+}
+
+/// A delimiter terminating text outside balanced curly braces.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
+pub enum TextDelimiter {
+    /// A closing brace terminating braced text.
+    Brace = b'}',
+    /// A double quote terminating a quoted text token.
+    Quote = b'"',
+    /// A closing parenthesis terminating a comment entry.
+    Parenthesis = b')',
+}
+
+/// Types which can be driven by a [`Deserializer`](crate::de::Deserializer) to read BibTeX input.
+///
+/// This trait is implemented by [`SliceReader`], [`StrReader`], and mutable references to
+/// these readers. Use them with [`Deserializer::new`](crate::de::Deserializer::new).
+///
+/// This trait is sealed and cannot be implemented for types outside of `serde_bibtex`.
+/// The reader methods are private; [`StrReader`] provides helpers for parsing individual
+/// field keys, separators, and text tokens.
+///
+/// ```compile_fail
+/// use serde_bibtex::BibtexRead;
+///
+/// struct CustomReader;
+/// impl<'r> BibtexRead<'r> for CustomReader {}
+/// ```
+///
+/// Importing this trait does not expose the internal reader primitives:
+///
+/// ```compile_fail
+/// use serde_bibtex::{BibtexRead, StrReader};
+///
+/// let mut reader = StrReader::new("text");
+/// reader.identifier();
+/// ```
+// The private supertrait seals this trait and keeps its methods out of the public API.
+#[allow(private_bounds)]
+pub trait BibtexRead<'r>: BibtexReadInner<'r> {}
+
+impl<'r, R: BibtexRead<'r> + ?Sized> BibtexRead<'r> for &mut R {}

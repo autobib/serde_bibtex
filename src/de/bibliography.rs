@@ -6,7 +6,7 @@ use serde::forward_to_deserialize_any;
 use crate::{
     SliceReader, StrReader,
     error::{Error, Result},
-    parse::{BibtexParse, BibtexRead, MacroDictionary},
+    parse::{BibtexRead, MacroDictionary},
     token::{EntryType, Token},
 };
 
@@ -58,9 +58,9 @@ where
     R: BibtexRead<'r>,
 {
     /// Construct a new [`Deserializer`] from any [`BibtexRead`] implementation.
-    pub(crate) fn new(parser: R) -> Self {
+    pub fn new(reader: R) -> Self {
         Self {
-            parser,
+            parser: reader,
             macros: MacroDictionary::default(),
             scratch: Vec::new(),
         }
@@ -68,7 +68,7 @@ where
 
     /// Construct a new [`Deserializer`] from any [`BibtexRead`] implementation and pre-defined
     /// macros in [`MacroDictionary`].
-    pub(crate) fn new_with_macros(parser: R, macros: MacroDictionary<&'r str, &'r [u8]>) -> Self {
+    pub fn new_with_macros(parser: R, macros: MacroDictionary<&'r str, &'r [u8]>) -> Self {
         Self {
             parser,
             macros,
@@ -82,7 +82,7 @@ where
         context: &mut EntryContext,
         body: impl FnOnce(&mut Self) -> Result<T>,
     ) -> Result<T> {
-        let closing = self.parser.initial()?;
+        let closing = self.parser.start_entry()?;
         let opening = self.parser.opening_offset();
         let value = body(self).map_err(|err| err.in_entry(closing, opening))?;
         context.end(&mut self.parser, closing, opening)?;
@@ -120,7 +120,7 @@ where
     ///
     /// Note that a [`Deserializer`] does not implement [`IntoIterator`] because of lifetime
     /// restrictions.
-    #[allow(clippy::should_implement_trait)]
+    #[expect(clippy::should_implement_trait)]
     pub fn into_iter<D: de::Deserialize<'r>>(self) -> DeserializeIter<'r, R, D> {
         // We cannot implement Iterator since the Item is not known in advance.
         DeserializeIter {

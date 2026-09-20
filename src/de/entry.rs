@@ -10,7 +10,7 @@ use crate::{
         COMMENT_ENTRY_VARIANT_NAME, ENTRY_KEY_NAME, ENTRY_TYPE_NAME, FIELDS_NAME,
         MACRO_ENTRY_VARIANT_NAME, PREAMBLE_ENTRY_VARIANT_NAME, REGULAR_ENTRY_VARIANT_NAME,
     },
-    parse::{BibtexParse, BibtexRead},
+    parse::{BibtexRead, EntryDelimiter},
     token::EntryType,
 };
 
@@ -37,18 +37,20 @@ impl EntryContext {
     pub(super) fn end<'r, R: BibtexRead<'r>>(
         &mut self,
         parser: &mut R,
-        closing: u8,
+        closing: EntryDelimiter,
         opening: Option<usize>,
     ) -> Result<()> {
-        parser.terminal(closing, opening)?;
+        parser.end_entry(closing, opening)?;
         self.complete = true;
         Ok(())
     }
 
     pub(super) fn error<'r, R: BibtexRead<'r>>(&self, parser: &R, error: Error) -> Error {
-        error.with_span(self.start.zip(parser.byte_offset()).map(|(start, end)| {
-            start..end + usize::from(!self.complete && matches!(parser.peek(), Some(b'}' | b')')))
-        }))
+        error.with_span(
+            self.start.zip(parser.byte_offset()).map(|(start, end)| {
+                start..end + usize::from(!self.complete && parser.at_entry_end())
+            }),
+        )
     }
 }
 
@@ -509,7 +511,7 @@ where
     /// The current position inside the Entry
     pos: EntryPosition,
     /// What closing bracket to expect.
-    closing_bracket: u8,
+    closing_bracket: EntryDelimiter,
     opening: Option<usize>,
 }
 
@@ -523,7 +525,7 @@ where
             name,
             context,
             pos: EntryPosition::EndOfEntry,
-            closing_bracket: b'}',
+            closing_bracket: EntryDelimiter::Brace,
             opening: None,
         }
     }
@@ -570,7 +572,7 @@ where
         match self.pos {
             EntryPosition::EntryType => self.de.identifier_seed(seed, self.name),
             EntryPosition::CitationKey => {
-                self.closing_bracket = self.de.parser.initial()?;
+                self.closing_bracket = self.de.parser.start_entry()?;
                 self.opening = self.de.parser.opening_offset();
                 let id = self
                     .de
@@ -609,7 +611,7 @@ where
         match self.pos {
             EntryPosition::EntryType => self.de.identifier_seed(seed, self.name).map(Some),
             EntryPosition::CitationKey => {
-                self.closing_bracket = self.de.parser.initial()?;
+                self.closing_bracket = self.de.parser.start_entry()?;
                 self.opening = self.de.parser.opening_offset();
                 let id = self
                     .de

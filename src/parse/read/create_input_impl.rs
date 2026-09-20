@@ -6,8 +6,6 @@ macro_rules! read_impl {
         $var:ident;
 
         $convert:expr;
-
-        $($read_method:item)*
     ) => {
         $(#[$outer])*
         $vis struct $name<'r> {
@@ -34,11 +32,16 @@ macro_rules! read_impl {
             }
         }
 
-        impl<'r> BibtexRead<'r> for $name<'r> {
-            $($read_method)*
+        impl<'r> BibtexRead<'r> for $name<'r> {}
 
-            fn source(&self) -> Option<&'r [u8]> { Some($convert(self.input)) }
-            fn byte_offset(&self) -> Option<usize> { Some(self.pos) }
+        impl<'r> BibtexReadInner<'r> for $name<'r> {
+            fn byte_offset(&self) -> Option<usize> {
+                Some(self.pos)
+            }
+
+            fn error_span(&self) -> Option<core::ops::Range<usize>> {
+                Some(error_span(self.input, self.pos))
+            }
 
             #[inline]
             fn peek(&self) -> Option<u8> {
@@ -50,8 +53,14 @@ macro_rules! read_impl {
             }
 
             #[inline]
-            fn discard(&mut self) {
-                self.pos += 1
+            unsafe fn consume_ascii(&mut self, expected: u8) -> bool {
+                debug_assert!(expected.is_ascii());
+                if self.peek() == Some(expected) {
+                    self.pos += 1;
+                    true
+                } else {
+                    false
+                }
             }
 
             #[inline]
@@ -63,7 +72,7 @@ macro_rules! read_impl {
 
             #[inline]
             fn comment(&mut self) {
-                self.pos = comment(self.input, self.pos)
+                self.pos = comment(self.input, self.pos);
             }
 
             #[inline]
@@ -72,13 +81,8 @@ macro_rules! read_impl {
             }
 
             #[inline]
-            fn balanced(&mut self) -> Result<Text<&'r str, &'r [u8]>, Error> {
-                Ok(Text::$var(self.apply(balanced)?))
-            }
-
-            #[inline]
-            fn protected(&mut self, until: u8) -> Result<Text<&'r str, &'r [u8]>, Error> {
-                Ok(Text::$var(self.apply(protected(until))?))
+            fn text_until(&mut self, delimiter: TextDelimiter) -> Result<Text<&'r str, &'r [u8]>, Error> {
+                Ok(Text::$var(self.apply(text_until(delimiter))?))
             }
 
             #[inline]

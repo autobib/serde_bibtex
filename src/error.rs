@@ -3,7 +3,7 @@ use core::str::Utf8Error;
 use core::{ops::Range, result};
 use std::io;
 
-use crate::token::ConversionError;
+use crate::{parse::EntryDelimiter, token::ConversionError};
 
 /// The error category of an [`Error`].
 #[derive(Debug, PartialEq)]
@@ -138,10 +138,9 @@ impl Error {
     }
 
     /// Add entry context to context-free EOF errors, replacing their EOF location with the opener.
-    pub(crate) fn in_entry(mut self, closing: u8, opening: Option<usize>) -> Self {
+    pub(crate) fn in_entry(mut self, closing: EntryDelimiter, opening: Option<usize>) -> Self {
         if matches!(self.inner.code, ErrorCode::UnexpectedEof(_)) {
-            self.inner.code =
-                ErrorCode::UnclosedDelimiter(if closing == b')' { b'(' } else { b'{' });
+            self.inner.code = ErrorCode::UnclosedDelimiter(closing.opening());
             self.inner.span = opening.map(|start| start..start + 1);
         }
         self

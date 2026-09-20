@@ -9,7 +9,7 @@ use serde::forward_to_deserialize_any;
 use crate::{
     error::{Error, Result},
     naming::{MACRO_TOKEN_VARIANT_NAME, TEXT_TOKEN_VARIANT_NAME},
-    parse::{BibtexParse, BibtexRead},
+    parse::BibtexRead,
     token::{Text, Token},
 };
 

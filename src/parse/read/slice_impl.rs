@@ -5,10 +5,10 @@ use core::str::{from_utf8, from_utf8_unchecked};
 
 use memchr::{memchr2_iter, memchr3_iter};
 
-use super::{BibtexRead, Identifier, Text};
+use super::{BibtexRead, BibtexReadInner, TextDelimiter};
 use crate::{
     error::{Error, ErrorCode},
-    token::IDENTIFIER_ALLOWED,
+    token::{IDENTIFIER_ALLOWED, Identifier, Text},
 };
 
 fn error_span(input: &[u8], start: usize) -> core::ops::Range<usize> {
@@ -97,66 +97,47 @@ pub fn number(input: &[u8], start: usize) -> Result<(usize, &str), Error> {
     Ok((end, unsafe { from_utf8_unchecked(&input[start..end]) }))
 }
 
-/// Consume a string with balanced brackets, until the string becomes unbalanced.
-pub fn balanced(input: &[u8], start: usize) -> Result<(usize, &[u8]), Error> {
-    let mut bracket_depth = 0;
-
-    for offset in memchr2_iter(b'{', b'}', &input[start..]) {
-        let end = start + offset;
-        if input[end] == b'{' {
-            bracket_depth += 1;
-        } else {
-            // found the closing bracket
-            if bracket_depth == 0 {
-                return Ok((end, &input[start..end]));
-            }
-            bracket_depth -= 1;
-        }
-    }
-
-    // we did not find find the closing bracket
-    Err(unclosed(input, start, b'{', bracket_depth))
-}
-
-/// Consume a string with balanced brackets, terminating when we hit a top-level byte 'until'.
-///
-///SAFETY: for the string version, `until` must be valid ASCII.
-pub fn protected(until: u8) -> impl FnMut(&[u8], usize) -> Result<(usize, &[u8]), Error> {
+/// Read text up to a delimiter outside balanced curly braces.
+pub fn text_until(
+    delimiter: TextDelimiter,
+) -> impl FnMut(&[u8], usize) -> Result<(usize, &[u8]), Error> {
     move |input: &[u8], start: usize| {
         let mut bracket_depth = 0;
 
-        for offset in memchr3_iter(until, b'{', b'}', &input[start..]) {
+        for offset in memchr3_iter(delimiter as u8, b'{', b'}', &input[start..]) {
             let end = start + offset;
-            match input[end] {
-                b if b == until => {
-                    if bracket_depth == 0 {
-                        return Ok((end, &input[start..end]));
-                    }
-                }
+            let byte = input[end];
+            if byte == delimiter as u8 && bracket_depth == 0 {
+                return Ok((end, &input[start..end]));
+            }
+            match byte {
                 b'{' => bracket_depth += 1,
-                _ => {
+                b'}' => {
                     if bracket_depth == 0 {
                         return Err(Error::syntax(ErrorCode::UnexpectedClosingBracket)
                             .with_span(Some(error_span(input, end))));
                     }
                     bracket_depth -= 1;
                 }
+                _ => {}
             }
         }
 
-        // A nested brace is more specific than the outer protected delimiter.
+        // A nested brace is more specific than the outer delimiter.
         let opening = if bracket_depth > 0 {
             b'{'
-        } else if until == b')' {
-            b'('
         } else {
-            until
+            match delimiter {
+                TextDelimiter::Brace => b'{',
+                TextDelimiter::Quote => b'"',
+                TextDelimiter::Parenthesis => b'(',
+            }
         };
         Err(unclosed(input, start, opening, bracket_depth))
     }
 }
 
-// Produce better failur spans by iterating backwards to recover the innermost unmatched brace.
+// Produce better failure spans by iterating backwards to recover the innermost unmatched brace.
 fn unclosed(input: &[u8], start: usize, opening: u8, depth: usize) -> Error {
     let span = if depth > 0 {
         let mut closed = 0;
@@ -229,43 +210,55 @@ mod tests {
 
     #[test]
     fn test_protected() {
-        assert!(matches!(protected(b'"')(b"cap\"rest", 0), Ok((3, b"cap"))));
-        assert!(matches!(protected(b'"')(b"cap\"rest", 1), Ok((3, b"ap"))));
         assert!(matches!(
-            protected(b'"')(b"a{\"}\"rest", 0),
+            text_until(TextDelimiter::Quote)(b"cap\"rest", 0),
+            Ok((3, b"cap"))
+        ));
+        assert!(matches!(
+            text_until(TextDelimiter::Quote)(b"cap\"rest", 1),
+            Ok((3, b"ap"))
+        ));
+        assert!(matches!(
+            text_until(TextDelimiter::Quote)(b"a{\"}\"rest", 0),
             Ok((4, b"a{\"}"))
         ));
         assert!(matches!(
-            protected(b'"')(b"a{{\"} \"}\"rest", 0),
+            text_until(TextDelimiter::Quote)(b"a{{\"} \"}\"rest", 0),
             Ok((8, b"a{{\"} \"}"))
         ));
         // did not find unprotected
         assert!(matches!(
-            protected(b'"')(b"{\"", 0),
+            text_until(TextDelimiter::Quote)(b"{\"", 0),
             Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
         // unexpected closing
         assert!(matches!(
-            protected(b'"')(b"}\"", 0),
+            text_until(TextDelimiter::Quote)(b"}\"", 0),
             Err(ref err) if matches!(err.inner_code(), ErrorCode::UnexpectedClosingBracket)
         ));
     }
 
     #[test]
     fn test_balanced() {
-        assert!(matches!(balanced(b"url}abc", 0), Ok((3, b"url"))));
         assert!(matches!(
-            balanced("u{}rl}🍄c".as_bytes(), 0),
+            text_until(TextDelimiter::Brace)(b"url}abc", 0),
+            Ok((3, b"url"))
+        ));
+        assert!(matches!(
+            text_until(TextDelimiter::Brace)("u{}rl}🍄c".as_bytes(), 0),
             Ok((5, b"u{}rl"))
         ));
-        assert!(matches!(balanced(b"u{{}}rl}abc", 1), Ok((7, b"{{}}rl"))));
+        assert!(matches!(
+            text_until(TextDelimiter::Brace)(b"u{{}}rl}abc", 1),
+            Ok((7, b"{{}}rl"))
+        ));
 
         assert!(matches!(
-            balanced(b"none", 0),
+            text_until(TextDelimiter::Brace)(b"none", 0),
             Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
         assert!(matches!(
-            balanced(b"{no}e", 0),
+            text_until(TextDelimiter::Brace)(b"{no}e", 0),
             Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
     }

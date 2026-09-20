@@ -6,11 +6,10 @@
 //! str if they began as valid str.
 use core::str::from_utf8_unchecked;
 
-use super::{BibtexRead, Identifier, Text, slice_impl};
+use super::{BibtexRead, BibtexReadInner, TextDelimiter, slice_impl};
 use crate::{
     error::Error,
-    parse::BibtexParse,
-    token::{FieldKey, IDENTIFIER_ALLOWED, Token},
+    token::{FieldKey, IDENTIFIER_ALLOWED, Identifier, Text, Token},
 };
 
 fn error_span(input: &str, start: usize) -> core::ops::Range<usize> {
@@ -56,16 +55,12 @@ pub fn number(input: &str, pos: usize) -> Result<(usize, &str), Error> {
 }
 
 #[inline]
-pub fn balanced(input: &str, pos: usize) -> Result<(usize, &str), Error> {
-    let (new, res) = slice_impl::balanced(input.as_bytes(), pos)?;
-    unsafe { Ok((new, from_utf8_unchecked(res))) }
-}
-
-#[inline]
-pub fn protected(until: u8) -> impl FnMut(&str, usize) -> Result<(usize, &str), Error> {
-    debug_assert!(until.is_ascii());
+pub fn text_until(
+    delimiter: TextDelimiter,
+) -> impl FnMut(&str, usize) -> Result<(usize, &str), Error> {
     move |input: &str, pos: usize| {
-        let (new, res) = slice_impl::protected(until)(input.as_bytes(), pos)?;
+        let (new, res) = slice_impl::text_until(delimiter)(input.as_bytes(), pos)?;
+        // SAFETY: the scanner starts at a character boundary and ends at an ASCII delimiter.
         unsafe { Ok((new, from_utf8_unchecked(res))) }
     }
 }
@@ -76,17 +71,24 @@ super::create_input_impl::read_impl!(
     /// This is the same as a [`SliceReader`](crate::SliceReader), but is able to skip some
     /// UTF-8 checks.
     ///
-    /// This struct also exposes a few internal parsing methods.
+    /// Use [`Self::read_field_key`], [`Self::skip_field_sep`], and [`Self::read_text_token`]
+    /// to parse individual field keys, separators, and text tokens.
+    ///
+    /// ```
+    /// use serde_bibtex::StrReader;
+    ///
+    /// let mut reader = StrReader::new(" % comment\n title = {hé{llo}}");
+    /// assert_eq!(reader.read_field_key()?.into_inner(), "title");
+    /// reader.skip_field_sep()?;
+    /// assert_eq!(reader.read_text_token()?, "hé{llo}");
+    /// # Ok::<(), serde_bibtex::Error>(())
+    /// ```
     #[derive(Debug, Clone)]
     pub struct StrReader<'r>(&'r str);
 
     Str;
 
     str::as_bytes;
-
-    fn error_span(&self) -> Option<core::ops::Range<usize>> {
-        Some(error_span(self.input, self.pos))
-    }
 );
 
 impl<'r> StrReader<'r> {
@@ -118,7 +120,7 @@ impl<'r> StrReader<'r> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::parse::ErrorCode;
+    use crate::error::ErrorCode;
 
     #[test]
     fn test_next_entry_or_eof() {
@@ -137,24 +139,33 @@ mod tests {
 
     #[test]
     fn test_protected() {
-        assert!(matches!(protected(b'"')("🍄\"🍄rest", 0), Ok((4, "🍄"))));
         assert!(matches!(
-            protected(b'"')("🍄{\"}\"🍄est", 0),
+            text_until(TextDelimiter::Quote)("🍄\"🍄rest", 0),
+            Ok((4, "🍄"))
+        ));
+        assert!(matches!(
+            text_until(TextDelimiter::Quote)("🍄{\"}\"🍄est", 0),
             Ok((7, "🍄{\"}"))
         ));
     }
 
     #[test]
     fn test_balanced() {
-        assert!(matches!(balanced("url}🍄bc", 0), Ok((3, "url"))));
-        assert!(matches!(balanced("u{}r🍄}🍄c", 0), Ok((8, "u{}r🍄"))));
+        assert!(matches!(
+            text_until(TextDelimiter::Brace)("url}🍄bc", 0),
+            Ok((3, "url"))
+        ));
+        assert!(matches!(
+            text_until(TextDelimiter::Brace)("u{}r🍄}🍄c", 0),
+            Ok((8, "u{}r🍄"))
+        ));
 
         assert!(matches!(
-            balanced("none", 2),
+            text_until(TextDelimiter::Brace)("none", 2),
             Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
         assert!(matches!(
-            balanced("{n🍄}e", 0),
+            text_until(TextDelimiter::Brace)("{n🍄}e", 0),
             Err(ref err) if matches!(err.inner_code(), ErrorCode::UnclosedDelimiter(b'{'))
         ));
     }
@@ -167,9 +178,9 @@ mod tests {
             let _ = comment(&s, 0);
             let _ = identifier(&s, 0);
             let _ = number(&s, 0);
-            let _ = balanced(&s, 0);
-            let _ = protected(b'"')(&s, 0);
-            let _ = protected(b')')(&s, 0);
+            let _ = text_until(TextDelimiter::Brace)(&s, 0);
+            let _ = text_until(TextDelimiter::Quote)(&s, 0);
+            let _ = text_until(TextDelimiter::Parenthesis)(&s, 0);
         }
     }
 }

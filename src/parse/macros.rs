@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::{Token, Variable};
+use crate::token::{Token, Variable};
 
 /// A dictionary used to expand uncaptured macros during deserialization.
 ///

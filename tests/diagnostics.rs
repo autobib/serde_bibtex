@@ -5,8 +5,7 @@ use std::{collections::BTreeMap, io};
 
 use serde::{Deserialize, Serialize, de::IgnoredAny};
 use serde_bibtex::{
-    BibtexRead, Error, SliceReader, StrReader, de::Deserializer, error::Category, from_bytes,
-    from_str, to_string, to_writer,
+    Error, StrReader, de::Deserializer, error::Category, from_bytes, from_str, to_string, to_writer,
 };
 
 #[derive(Debug, Deserialize)]
@@ -253,88 +252,7 @@ fn entry_error_matrix() {
 }
 
 #[test]
-fn reader_error_matrix() {
-    for (input, message, category) in [
-        (
-            "",
-            "unexpected end of input; expected identifier",
-            Category::Eof,
-        ),
-        (",", "expected identifier", Category::Syntax),
-    ] {
-        check(
-            StrReader::new(input).identifier().unwrap_err(),
-            message,
-            category,
-        );
-        check(
-            SliceReader::new(input.as_bytes()).identifier().unwrap_err(),
-            message,
-            if input.is_empty() {
-                Category::Eof
-            } else {
-                Category::Syntax
-            },
-        );
-    }
-    for input in ["", "x"] {
-        let message = if input.is_empty() {
-            "unexpected end of input; expected number"
-        } else {
-            "expected number"
-        };
-        check(
-            StrReader::new(input).number().unwrap_err(),
-            message,
-            if input.is_empty() {
-                Category::Eof
-            } else {
-                Category::Syntax
-            },
-        );
-        check(
-            SliceReader::new(input.as_bytes()).number().unwrap_err(),
-            message,
-            if input.is_empty() {
-                Category::Eof
-            } else {
-                Category::Syntax
-            },
-        );
-    }
-    for input in ["", "text", "{{text}"] {
-        check(
-            StrReader::new(input).balanced().unwrap_err(),
-            "unclosed '{'",
-            Category::Eof,
-        );
-        check(
-            SliceReader::new(input.as_bytes()).balanced().unwrap_err(),
-            "unclosed '{'",
-            Category::Eof,
-        );
-    }
-    for (until, input, message, eof) in [
-        (b'"', "", "unclosed '\"'", true),
-        (b'"', "{", "unclosed '{'", true),
-        (b'"', "}", "unmatched closing '}'", false),
-        (b')', "", "unclosed '('", true),
-        (b')', "{", "unclosed '{'", true),
-        (b')', "}", "unmatched closing '}'", false),
-    ] {
-        check(
-            StrReader::new(input).protected(until).unwrap_err(),
-            message,
-            if eof { Category::Eof } else { Category::Syntax },
-        );
-        check(
-            SliceReader::new(input.as_bytes())
-                .protected(until)
-                .unwrap_err(),
-            message,
-            if eof { Category::Eof } else { Category::Syntax },
-        );
-    }
+fn reader_helper_error_matrix() {
     check(
         StrReader::new(" %end").read_field_key().unwrap_err(),
         "unexpected end of input; expected identifier",
@@ -678,11 +596,6 @@ fn conversion_errors_survive_propagation() {
         );
     }
     let utf8 = "invalid utf-8 sequence of 1 bytes from index 0";
-    check(
-        SliceReader::new(b"\xff").identifier().unwrap_err(),
-        utf8,
-        Category::Data,
-    );
     for input in [
         b"@\xff{}".as_slice(),
         b"@article{\xff}",
