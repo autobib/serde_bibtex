@@ -3,7 +3,7 @@ use core::str::Utf8Error;
 use core::{ops::Range, result};
 use std::io;
 
-use crate::{parse::EntryDelimiter, token::ConversionError};
+use crate::token::ConversionError;
 
 /// The error category of an [`Error`].
 #[derive(Debug, PartialEq)]
@@ -66,7 +66,7 @@ impl Error {
     }
 
     #[inline]
-    pub(crate) fn syntax(code: ErrorCode) -> Self {
+    pub(crate) fn new(code: ErrorCode) -> Self {
         Self {
             inner: Box::new(ErrorImpl { code, span: None }),
         }
@@ -74,22 +74,22 @@ impl Error {
 
     #[inline]
     pub(crate) fn utf8(err: Utf8Error) -> Self {
-        Self::syntax(ErrorCode::InvalidUtf8(err))
+        Self::new(ErrorCode::InvalidUtf8(err))
     }
 
     #[inline]
     pub(crate) fn ser(msg: String) -> Self {
-        Self::syntax(ErrorCode::InvalidSerializationFormat(msg))
+        Self::new(ErrorCode::InvalidSerializationFormat(msg))
     }
 
     #[inline]
     pub(crate) fn io(err: io::Error) -> Self {
-        Self::syntax(ErrorCode::Io(err))
+        Self::new(ErrorCode::Io(err))
     }
 
     #[inline]
     pub(crate) fn expected(item: &'static str, found: Option<u8>) -> Self {
-        Self::syntax(if found.is_none() {
+        Self::new(if found.is_none() {
             ErrorCode::UnexpectedEof(item)
         } else {
             ErrorCode::Expected(item)
@@ -101,6 +101,9 @@ impl Error {
     /// This is the error span produced by the [`BibtexRead`](crate::parse::BibtexRead)
     /// implementation. When produced by a [`StrReader`](crate::parse::StrReader), the range is
     /// guaranteed to correspond to a valid string slice in the original input.
+    ///
+    /// Errors concerning an entire entry cover the input consumed so far, excluding any
+    /// unconsumed closing delimiter.
     ///
     /// For errors with no source (for instance, serialization errors or IO errors), this
     /// returns `None`.
@@ -136,22 +139,13 @@ impl Error {
             self
         }
     }
-
-    /// Add entry context to context-free EOF errors, replacing their EOF location with the opener.
-    pub(crate) fn in_entry(mut self, closing: EntryDelimiter, opening: Option<usize>) -> Self {
-        if matches!(self.inner.code, ErrorCode::UnexpectedEof(_)) {
-            self.inner.code = ErrorCode::UnclosedDelimiter(closing.opening());
-            self.inner.span = opening.map(|start| start..start + 1);
-        }
-        self
-    }
 }
 
 impl From<ConversionError> for Error {
     #[inline]
     fn from(value: ConversionError) -> Self {
         match value {
-            ConversionError::UnexpandedMacro(s) => Self::syntax(ErrorCode::UnexpandedMacro(s)),
+            ConversionError::UnexpandedMacro(s) => Self::new(ErrorCode::UnexpandedMacro(s)),
             ConversionError::InvalidUtf8(err) => Self::utf8(err),
         }
     }
@@ -160,7 +154,7 @@ impl From<ConversionError> for Error {
 impl From<Utf8Error> for Error {
     #[inline]
     fn from(err: Utf8Error) -> Self {
-        Self::syntax(ErrorCode::InvalidUtf8(err))
+        Self::new(ErrorCode::InvalidUtf8(err))
     }
 }
 
@@ -174,13 +168,13 @@ impl core::error::Error for Error {}
 
 impl serde::de::Error for Error {
     fn custom<T: core::fmt::Display>(msg: T) -> Self {
-        Self::syntax(ErrorCode::Message(msg.to_string()))
+        Self::new(ErrorCode::Message(msg.to_string()))
     }
 }
 
 impl serde::ser::Error for Error {
     fn custom<T: core::fmt::Display>(msg: T) -> Self {
-        Self::syntax(ErrorCode::Message(msg.to_string()))
+        Self::new(ErrorCode::Message(msg.to_string()))
     }
 }
 

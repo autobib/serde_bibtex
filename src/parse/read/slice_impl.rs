@@ -114,7 +114,7 @@ pub fn text_until(
                 b'{' => bracket_depth += 1,
                 b'}' => {
                     if bracket_depth == 0 {
-                        return Err(Error::syntax(ErrorCode::UnexpectedClosingBracket)
+                        return Err(Error::new(ErrorCode::UnexpectedClosingBracket)
                             .with_span(Some(error_span(input, end))));
                     }
                     bracket_depth -= 1;
@@ -161,7 +161,7 @@ fn unclosed(input: &[u8], start: usize, opening: u8, depth: usize) -> Error {
     } else {
         start..start
     };
-    Error::syntax(ErrorCode::UnclosedDelimiter(opening)).with_span(Some(span))
+    Error::new(ErrorCode::UnclosedDelimiter(opening)).with_span(Some(span))
 }
 
 super::create_input_impl::read_impl!(

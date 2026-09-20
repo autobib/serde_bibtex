@@ -108,7 +108,7 @@ impl<'r> StrReader<'r> {
         self.comment();
         let start = self.pos;
         match self.single_token()? {
-            Token::Text(Text::Bytes(_)) | Token::Variable(_) => Err(crate::error::Error::syntax(
+            Token::Text(Text::Bytes(_)) | Token::Variable(_) => Err(crate::error::Error::new(
                 crate::error::ErrorCode::ExpectedTextToken,
             )
             .with_span(Some(start..self.pos))),

@@ -219,34 +219,58 @@ fn entry_error_matrix() {
     ] {
         syntax_case(input, message, eof, span);
     }
+}
 
-    // Every grammar position where EOF can occur inherits the entry opener.
+#[test]
+fn incomplete_entry_components_point_to_eof() {
     for opener in ['{', '('] {
-        for body in [
-            "", "k", "k,", "k,f", "k,f=", "k,f={x}", "k,f={x}#", "k,f={x},",
+        for (entry_type, body, expected) in [
+            ("article", "", "identifier"),
+            ("article", "k,", "identifier"),
+            ("article", "k,f", "field separator '='"),
+            ("article", "k,f=", "value"),
+            ("article", "k,f={x}#", "value"),
+            ("article", "k,f={x},", "identifier"),
+            ("string", "", "identifier"),
+            ("string", "x", "field separator '='"),
+            ("string", "x=", "value"),
+            ("string", "x={x}#", "value"),
+            ("preamble", "", "value"),
+            ("preamble", "{x}#", "value"),
         ] {
-            syntax_case(
-                &format!("@article{opener}{body}"),
-                &format!("unclosed '{opener}'"),
-                true,
-                8..9,
-            );
+            for trailing in ["", " \n% trailing comment 🍄"] {
+                let input = format!("@{entry_type}{opener}{body}{trailing}");
+                syntax_case(
+                    &input,
+                    &format!("unexpected end of input; expected {expected}"),
+                    true,
+                    input.len()..input.len(),
+                );
+            }
         }
-        for body in ["", "x", "x=", "x={x}", "x={x}#", "x={x},"] {
-            syntax_case(
-                &format!("@string{opener}{body}"),
-                &format!("unclosed '{opener}'"),
-                true,
-                7..8,
-            );
-        }
-        for body in ["", "{x}", "{x}#"] {
-            syntax_case(
-                &format!("@preamble{opener}{body}"),
-                &format!("unclosed '{opener}'"),
-                true,
-                9..10,
-            );
+    }
+}
+
+#[test]
+fn missing_entry_closers_point_to_openers() {
+    for opener in ['{', '('] {
+        for (entry_type, body) in [
+            ("article", "k"),
+            ("article", "k,f={x}"),
+            ("string", "x={x}"),
+            ("string", "x={x},"),
+            ("preamble", "{x}"),
+        ] {
+            for trailing in ["", " \n% trailing comment 🍄"] {
+                let input = format!("@{entry_type}{opener}{body}{trailing}");
+                let opening = 1 + entry_type.len();
+                syntax_case(
+                    &input,
+                    &format!("unclosed '{opener}'"),
+                    true,
+                    opening..opening + 1,
+                );
+            }
         }
     }
 }
@@ -520,12 +544,21 @@ fn adapter_representation_matrix() {
     enum MacroPair {
         Macro(String, Vec<Token>),
     }
-    for body in ["", "x", "x=", "x={x}", "x={x}#"] {
-        check(
-            from_str::<Vec<MacroPair>>(&format!("@string({body}")).unwrap_err(),
-            "unclosed '('",
-            Category::Eof,
-        );
+    for (body, message, span) in [
+        ("", "unexpected end of input; expected identifier", 8..8),
+        (
+            "x",
+            "unexpected end of input; expected field separator '='",
+            9..9,
+        ),
+        ("x=", "unexpected end of input; expected value", 10..10),
+        ("x={x}", "unclosed '('", 7..8),
+        ("x={x}#", "unexpected end of input; expected value", 14..14),
+    ] {
+        let input = format!("@string({body}");
+        let error = from_str::<Vec<MacroPair>>(&input).unwrap_err();
+        assert_eq!(error.span(), Some(span), "input: {input:?}");
+        check(error, message, Category::Eof);
     }
     check(
         from_str::<Vec<MacroPair>>("@string{=}").unwrap_err(),

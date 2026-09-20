@@ -19,47 +19,11 @@ use super::{
     value::{KeyValueDeserializer, TextDeserializer, ValueDeserializer},
 };
 
-/// Context required while deserializing an entry.
-#[derive(Default)]
-pub(super) struct EntryContext {
-    start: Option<usize>,
-    complete: bool,
-}
-
-impl EntryContext {
-    pub(super) fn new(start: Option<usize>) -> Self {
-        Self {
-            start,
-            complete: false,
-        }
-    }
-
-    pub(super) fn end<'r, R: BibtexRead<'r>>(
-        &mut self,
-        parser: &mut R,
-        closing: EntryDelimiter,
-        opening: Option<usize>,
-    ) -> Result<()> {
-        parser.end_entry(closing, opening)?;
-        self.complete = true;
-        Ok(())
-    }
-
-    pub(super) fn error<'r, R: BibtexRead<'r>>(&self, parser: &R, error: Error) -> Error {
-        error.with_span(
-            self.start.zip(parser.byte_offset()).map(|(start, end)| {
-                start..end + usize::from(!self.complete && parser.at_entry_end())
-            }),
-        )
-    }
-}
-
 pub struct EntryDeserializer<'a, 'r, R>
 where
     R: BibtexRead<'r>,
 {
     de: &'a mut Deserializer<'r, R>,
-    context: &'a mut EntryContext,
     entry_type: EntryType<&'r str>,
 }
 
@@ -97,7 +61,7 @@ where
     {
         match self.entry_type {
             EntryType::Regular(entry_type) => de::Deserializer::deserialize_map(
-                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner(), self.context),
+                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
                 visitor,
             ),
             _ => Err(de::Error::invalid_type(
@@ -130,7 +94,7 @@ where
     {
         match (self.entry_type, len) {
             (EntryType::Regular(entry_type), 3) => de::Deserializer::deserialize_tuple(
-                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner(), self.context),
+                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
                 3,
                 visitor,
             ),
@@ -168,9 +132,7 @@ where
     fn unit_variant(self) -> Result<()> {
         self.de
             .parser
-            .ignore_entry_captured(self.entry_type, &mut self.de.macros)?;
-        self.context.complete = true;
-        Ok(())
+            .ignore_entry_captured(self.entry_type, &mut self.de.macros)
     }
 
     fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value>
@@ -181,16 +143,12 @@ where
             EntryType::Regular(entry_type) => seed.deserialize(RegularEntryDeserializer::new(
                 &mut *self.de,
                 entry_type.into_inner(),
-                self.context,
             )),
-            EntryType::Macro => {
-                seed.deserialize(MacroRuleDeserializer::new(&mut *self.de, self.context))
-            }
+            EntryType::Macro => seed.deserialize(MacroRuleDeserializer::new(&mut *self.de)),
             EntryType::Comment => {
                 self.de.parser.comment();
                 let start = self.de.parser.byte_offset();
                 let text = self.de.parser.comment_contents()?;
-                self.context.complete = true;
                 let span = start
                     .zip(self.de.parser.byte_offset())
                     .map(|(start, end)| start..end);
@@ -198,9 +156,9 @@ where
                 seed.deserialize(TextDeserializer::new(text))
                     .map_err(|err| err.with_utf8_span(content).with_span(span))
             }
-            EntryType::Preamble => self.de.entry(self.context, |de| {
-                ValueDeserializer::try_from_de_resolved(de)?.deserialize_seed(seed)
-            }),
+            EntryType::Preamble => self
+                .de
+                .entry(|de| ValueDeserializer::try_from_de_resolved(de)?.deserialize_seed(seed)),
         }
     }
 
@@ -217,12 +175,12 @@ where
     {
         match (self.entry_type, len) {
             (EntryType::Regular(entry_type), 3) => de::Deserializer::deserialize_tuple(
-                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner(), self.context),
+                RegularEntryDeserializer::new(&mut *self.de, entry_type.into_inner()),
                 len,
                 visitor,
             ),
             (EntryType::Macro, 2) => de::Deserializer::deserialize_tuple(
-                MacroRuleDeserializer::new(&mut *self.de, self.context),
+                MacroRuleDeserializer::new(&mut *self.de),
                 len,
                 visitor,
             ),
@@ -274,16 +232,8 @@ impl<'a, 'r, R> EntryDeserializer<'a, 'r, R>
 where
     R: BibtexRead<'r>,
 {
-    pub fn new(
-        de: &'a mut Deserializer<'r, R>,
-        entry_type: EntryType<&'r str>,
-        context: &'a mut EntryContext,
-    ) -> Self {
-        Self {
-            de,
-            entry_type,
-            context,
-        }
+    pub fn new(de: &'a mut Deserializer<'r, R>, entry_type: EntryType<&'r str>) -> Self {
+        Self { de, entry_type }
     }
 }
 
@@ -292,15 +242,14 @@ where
     R: BibtexRead<'r>,
 {
     de: &'a mut Deserializer<'r, R>,
-    context: &'a mut EntryContext,
 }
 
 impl<'a, 'r, R> MacroRuleDeserializer<'a, 'r, R>
 where
     R: BibtexRead<'r>,
 {
-    pub fn new(de: &'a mut Deserializer<'r, R>, context: &'a mut EntryContext) -> Self {
-        Self { de, context }
+    pub fn new(de: &'a mut Deserializer<'r, R>) -> Self {
+        Self { de }
     }
 }
 
@@ -324,7 +273,7 @@ where
     where
         V: de::Visitor<'de>,
     {
-        self.de.entry(self.context, |de| {
+        self.de.entry(|de| {
             let var = de.parser.variable()?;
             let key_span = de.parser.identifier_span(var.as_ref());
             de.parser.field_sep()?;
@@ -342,21 +291,20 @@ where
     where
         V: de::Visitor<'de>,
     {
-        self.de
-            .entry(self.context, |de| match de.parser.macro_variable_opt()? {
-                Some(var) => {
-                    let key_span = de.parser.identifier_span(var.as_ref());
-                    de.parser.field_sep()?;
-                    let val = visitor.visit_some(KeyValueDeserializer::new_from_de(
-                        var.into_inner(),
-                        key_span,
-                        de,
-                    )?)?;
-                    de.parser.comma_opt();
-                    Ok(val)
-                }
-                None => visitor.visit_none(),
-            })
+        self.de.entry(|de| match de.parser.macro_variable_opt()? {
+            Some(var) => {
+                let key_span = de.parser.identifier_span(var.as_ref());
+                de.parser.field_sep()?;
+                let val = visitor.visit_some(KeyValueDeserializer::new_from_de(
+                    var.into_inner(),
+                    key_span,
+                    de,
+                )?)?;
+                de.parser.comma_opt();
+                Ok(val)
+            }
+            None => visitor.visit_none(),
+        })
     }
 
     fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value>
@@ -364,7 +312,6 @@ where
         V: de::Visitor<'de>,
     {
         self.de.parser.ignore_macro()?;
-        self.context.complete = true;
         visitor.visit_unit()
     }
 
@@ -380,7 +327,6 @@ where
     R: BibtexRead<'r>,
 {
     de: &'a mut Deserializer<'r, R>,
-    context: &'a mut EntryContext,
     name: &'r str,
 }
 
@@ -388,12 +334,8 @@ impl<'a, 'r, R> RegularEntryDeserializer<'a, 'r, R>
 where
     R: BibtexRead<'r>,
 {
-    pub fn new(
-        de: &'a mut Deserializer<'r, R>,
-        name: &'r str,
-        context: &'a mut EntryContext,
-    ) -> Self {
-        Self { de, name, context }
+    pub fn new(de: &'a mut Deserializer<'r, R>, name: &'r str) -> Self {
+        Self { de, name }
     }
 }
 
@@ -408,7 +350,7 @@ where
     where
         V: de::Visitor<'de>,
     {
-        visitor.visit_map(EntryAccess::new(&mut *self.de, self.name, self.context))
+        visitor.visit_map(EntryAccess::new(&mut *self.de, self.name))
     }
 
     fn deserialize_seq<V>(self, _visitor: V) -> Result<V::Value>
@@ -427,7 +369,7 @@ where
         V: de::Visitor<'de>,
     {
         if len == 3 {
-            visitor.visit_seq(EntryAccess::new(&mut *self.de, self.name, self.context))
+            visitor.visit_seq(EntryAccess::new(&mut *self.de, self.name))
         } else {
             Err(de::Error::invalid_type(
                 Unexpected::Seq,
@@ -454,7 +396,6 @@ where
         V: de::Visitor<'de>,
     {
         self.de.parser.ignore_regular_entry()?;
-        self.context.complete = true;
         visitor.visit_unit()
     }
 
@@ -505,7 +446,6 @@ where
 {
     /// The top-level deserializer holding a reader.
     de: &'a mut Deserializer<'r, R>,
-    context: &'a mut EntryContext,
     /// The previously parsed entry type
     name: &'r str,
     /// The current position inside the Entry
@@ -519,11 +459,10 @@ impl<'a, 'r, R> EntryAccess<'a, 'r, R>
 where
     R: BibtexRead<'r>,
 {
-    fn new(de: &'a mut Deserializer<'r, R>, name: &'r str, context: &'a mut EntryContext) -> Self {
+    fn new(de: &'a mut Deserializer<'r, R>, name: &'r str) -> Self {
         Self {
             de,
             name,
-            context,
             pos: EntryPosition::EndOfEntry,
             closing_bracket: EntryDelimiter::Brace,
             opening: None,
@@ -537,6 +476,32 @@ where
             EntryPosition::Fields => EntryPosition::EndOfEntry,
             EntryPosition::EndOfEntry => EntryPosition::EntryType,
         };
+    }
+
+    /// Deserialize the current component without advancing the entry position.
+    fn deserialize_value<V>(&mut self, seed: V) -> Result<V::Value>
+    where
+        V: DeserializeSeed<'r>,
+    {
+        match self.pos {
+            EntryPosition::EntryType => self.de.identifier_seed(seed, self.name),
+            EntryPosition::CitationKey => {
+                self.closing_bracket = self.de.parser.start_entry()?;
+                self.opening = self.de.parser.opening_offset();
+                let id = self.de.parser.entry_key()?.into_inner();
+                self.de.identifier_seed(seed, id)
+            }
+            EntryPosition::Fields => {
+                let val = seed.deserialize(FieldDeserializer::new(&mut *self.de))?;
+                self.de.parser.comma_opt();
+                self.de
+                    .parser
+                    .end_entry(self.closing_bracket, self.opening)?;
+                Ok(val)
+            }
+            // Map access stops at EndOfEntry; tuple access requests exactly three components.
+            EntryPosition::EndOfEntry => unreachable!(),
+        }
     }
 }
 
@@ -569,31 +534,7 @@ where
     where
         V: DeserializeSeed<'de>,
     {
-        match self.pos {
-            EntryPosition::EntryType => self.de.identifier_seed(seed, self.name),
-            EntryPosition::CitationKey => {
-                self.closing_bracket = self.de.parser.start_entry()?;
-                self.opening = self.de.parser.opening_offset();
-                let id = self
-                    .de
-                    .parser
-                    .entry_key()
-                    .map_err(|err| err.in_entry(self.closing_bracket, self.opening))?
-                    .into_inner();
-                self.de.identifier_seed(seed, id)
-            }
-            EntryPosition::Fields => {
-                let val = seed
-                    .deserialize(FieldDeserializer::new(&mut *self.de))
-                    .map_err(|err| err.in_entry(self.closing_bracket, self.opening))?;
-                self.de.parser.comma_opt();
-                self.context
-                    .end(&mut self.de.parser, self.closing_bracket, self.opening)?;
-                Ok(val)
-            }
-            // SAFETY: MapAccess ends when Parsed::EndOfEntry is reached in `self.next_key_seed`
-            EntryPosition::EndOfEntry => unreachable!(),
-        }
+        self.deserialize_value(seed)
     }
 }
 
@@ -608,32 +549,7 @@ where
         T: DeserializeSeed<'de>,
     {
         self.step_position();
-        match self.pos {
-            EntryPosition::EntryType => self.de.identifier_seed(seed, self.name).map(Some),
-            EntryPosition::CitationKey => {
-                self.closing_bracket = self.de.parser.start_entry()?;
-                self.opening = self.de.parser.opening_offset();
-                let id = self
-                    .de
-                    .parser
-                    .entry_key()
-                    .map_err(|err| err.in_entry(self.closing_bracket, self.opening))?
-                    .into_inner();
-                self.de.identifier_seed(seed, id).map(Some)
-            }
-            EntryPosition::Fields => {
-                let val = seed
-                    .deserialize(FieldDeserializer::new(&mut *self.de))
-                    .map(Some)
-                    .map_err(|err| err.in_entry(self.closing_bracket, self.opening))?;
-                self.de.parser.comma_opt();
-                self.context
-                    .end(&mut self.de.parser, self.closing_bracket, self.opening)?;
-                Ok(val)
-            }
-            // SAFETY: We only permit deserialization into a tuple of length 3
-            EntryPosition::EndOfEntry => unreachable!(),
-        }
+        self.deserialize_value(seed).map(Some)
     }
 }
 
@@ -838,12 +754,8 @@ mod tests {
             }"#,
         );
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = EntryDeserializer::new(
-            &mut bib_de,
-            EntryType::Regular("article".into()),
-            &mut context,
-        );
+        let deserializer =
+            EntryDeserializer::new(&mut bib_de, EntryType::Regular("article".into()));
 
         let data: TestEntryStruct = TestEntryStruct::deserialize(deserializer).unwrap();
 
@@ -866,12 +778,8 @@ mod tests {
             {k,author = {Author}}"#,
         );
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = EntryDeserializer::new(
-            &mut bib_de,
-            EntryType::Regular("article".into()),
-            &mut context,
-        );
+        let deserializer =
+            EntryDeserializer::new(&mut bib_de, EntryType::Regular("article".into()));
 
         let data: TestEntryTuple = TestEntryTuple::deserialize(deserializer).unwrap();
 
@@ -893,8 +801,7 @@ mod tests {
             }"#,
         );
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article", &mut context);
+        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article");
 
         let data: TestEntryStruct = TestEntryStruct::deserialize(deserializer).unwrap();
         let expected_data = TestEntryStruct {
@@ -916,9 +823,7 @@ mod tests {
         ($input:expr, $identifier: expr, $expected:expr, $target:tt) => {
             let reader = StrReader::new($input);
             let mut bib_de = Deserializer::new(reader);
-            let mut context = EntryContext::default();
-            let deserializer =
-                RegularEntryDeserializer::new(&mut bib_de, $identifier, &mut context);
+            let deserializer = RegularEntryDeserializer::new(&mut bib_de, $identifier);
             assert_eq!($expected, $target::deserialize(deserializer).unwrap());
         };
     }
@@ -981,8 +886,7 @@ mod tests {
             }"#,
         );
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article", &mut context);
+        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article");
 
         let data: EntryT = EntryT::deserialize(deserializer).unwrap();
         let expected_field_data = TestFields {
@@ -997,22 +901,19 @@ mod tests {
         type Short<'a> = (&'a str, &'a str);
         let reader = StrReader::new("{k,a=b}");
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a", &mut context);
+        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a");
         assert!(Short::deserialize(deserializer).is_err());
 
         type Long<'a> = (&'a str, &'a str, &'a str, &'a str);
         let reader = StrReader::new("{k,a=b}");
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a", &mut context);
+        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a");
         assert!(Long::deserialize(deserializer).is_err());
 
         type Inf<'a> = Vec<&'a str>;
         let reader = StrReader::new("{k,a=b}");
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a", &mut context);
+        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a");
         assert!(Inf::deserialize(deserializer).is_err());
     }
 
@@ -1022,8 +923,7 @@ mod tests {
 
         let reader = StrReader::new(r#"(k,b="c",d=e # f,)"#);
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a", &mut context);
+        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "a");
         let res = IgnoredAny::deserialize(deserializer);
         assert!(res.is_ok());
     }
@@ -1034,8 +934,7 @@ mod tests {
         struct Unit;
         let reader = StrReader::new("{k,a=b}");
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article", &mut context);
+        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article");
         let data = Unit::deserialize(deserializer);
         assert!(data.is_ok(), "{data:?}");
     }
@@ -1065,8 +964,7 @@ mod tests {
             }"#,
         );
         let mut bib_de = Deserializer::new(reader);
-        let mut context = EntryContext::default();
-        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article", &mut context);
+        let deserializer = RegularEntryDeserializer::new(&mut bib_de, "article");
 
         let data: TestSkipEntry = TestSkipEntry::deserialize(deserializer).unwrap();
         let expected_data = TestSkipEntry {

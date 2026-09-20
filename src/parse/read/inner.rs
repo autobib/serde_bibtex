@@ -127,7 +127,7 @@ pub(crate) trait BibtexReadInner<'r> {
         match self.peek() {
             Some(b'}' | b')') => Ok(None),
             Some(b'0'..=b'9') => {
-                Err(self.with_error_span(Error::syntax(ErrorCode::VariableStartsWithDigit)))
+                Err(self.with_error_span(Error::new(ErrorCode::VariableStartsWithDigit)))
             }
             _ => self.identifier().map(|id| Some(id.into())),
         }
@@ -156,7 +156,7 @@ pub(crate) trait BibtexReadInner<'r> {
                 Ok(true)
             }
             Some(b'}' | b')' | b',') | None => Ok(false),
-            Some(_) => Err(self.with_error_span(Error::syntax(ErrorCode::Expected(
+            Some(_) => Err(self.with_error_span(Error::new(ErrorCode::Expected(
                 "token separator '#' or end of value",
             )))),
         }
@@ -174,7 +174,7 @@ pub(crate) trait BibtexReadInner<'r> {
                     self.consume_ascii(b'{');
                 }
                 let result = self.balanced()?;
-                self.expect(b'}', |_| Error::syntax(ErrorCode::UnclosedDelimiter(b'{')))?;
+                self.expect(b'}', |_| Error::new(ErrorCode::UnclosedDelimiter(b'{')))?;
                 Ok(Token::Text(result))
             }
             Some(b'"') => {
@@ -183,7 +183,7 @@ pub(crate) trait BibtexReadInner<'r> {
                     self.consume_ascii(b'"');
                 }
                 let result = self.protected(TextDelimiter::Quote)?;
-                self.expect(b'"', |_| Error::syntax(ErrorCode::UnclosedDelimiter(b'"')))?;
+                self.expect(b'"', |_| Error::new(ErrorCode::UnclosedDelimiter(b'"')))?;
                 Ok(Token::Text(result))
             }
             Some(b'0'..=b'9') => Ok(Token::Text(Text::Str(self.number()?))),
@@ -216,17 +216,18 @@ pub(crate) trait BibtexReadInner<'r> {
 
     /// Skip comments and whitespace, then validate and consume the closing entry delimiter.
     ///
-    /// Opening is the optional opener offset for EOF diagnostics. A mismatch consumes
-    /// only leading comments and whitespace.
+    /// EOF here reports an unclosed delimiter at the optional opener offset.
+    /// A mismatch consumes only leading comments and whitespace.
     #[inline]
     fn end_entry(&mut self, closing: EntryDelimiter, opening: Option<usize>) -> Result<()> {
         self.comment();
         self.expect(closing as u8, |found| match found {
-            Some(found) => Error::syntax(ErrorCode::ExpectedEndOfEntry {
+            Some(found) => Error::new(ErrorCode::ExpectedEndOfEntry {
                 expected: closing as u8,
                 found,
             }),
-            None => Error::expected("end of entry", None).in_entry(closing, opening),
+            None => Error::new(ErrorCode::UnclosedDelimiter(closing.opening()))
+                .with_span(opening.map(|start| start..start + 1)),
         })
     }
 
@@ -468,7 +469,7 @@ fn entry<'r, R: BibtexReadInner<'r> + ?Sized, T>(
 ) -> Result<T> {
     let closing = reader.start_entry()?;
     let opening = reader.opening_offset();
-    let value = body(reader).map_err(|err| err.in_entry(closing, opening))?;
+    let value = body(reader)?;
     reader.end_entry(closing, opening)?;
     Ok(value)
 }

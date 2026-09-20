@@ -10,7 +10,7 @@ use crate::{
     token::{EntryType, Token},
 };
 
-use super::entry::{EntryContext, EntryDeserializer, RegularEntryDeserializer};
+use super::entry::{EntryDeserializer, RegularEntryDeserializer};
 
 /// The core `.bib` deserializer.
 ///
@@ -77,29 +77,26 @@ where
     }
 
     /// Deserialize an entry body before checking the terminator, retaining the first error.
-    pub(super) fn entry<T>(
-        &mut self,
-        context: &mut EntryContext,
-        body: impl FnOnce(&mut Self) -> Result<T>,
-    ) -> Result<T> {
+    pub(super) fn entry<T>(&mut self, body: impl FnOnce(&mut Self) -> Result<T>) -> Result<T> {
         let closing = self.parser.start_entry()?;
         let opening = self.parser.opening_offset();
-        let value = body(self).map_err(|err| err.in_entry(closing, opening))?;
-        context.end(&mut self.parser, closing, opening)?;
+        let value = body(self)?;
+        self.parser.end_entry(closing, opening)?;
         Ok(value)
     }
 
-    fn next_entry(&mut self) -> Result<Option<(EntryType<&'r str>, EntryContext)>> {
+    fn next_entry(&mut self) -> Result<Option<(EntryType<&'r str>, Option<usize>)>> {
         if self.parser.next_entry_or_eof() {
-            let context = EntryContext::new(self.parser.opening_offset());
+            let start = self.parser.opening_offset();
             self.parser.comment();
-            Ok(Some((self.parser.identifier()?.into(), context)))
+            Ok(Some((self.parser.identifier()?.into(), start)))
         } else {
             Ok(None)
         }
     }
 
-    pub(crate) fn bibliography_error(&self, error: Error, start: Option<usize>) -> Error {
+    /// Attach the consumed input range without replacing a more specific error span.
+    pub(crate) fn error_with_span(&self, error: Error, start: Option<usize>) -> Error {
         error.with_span(
             start
                 .zip(self.parser.byte_offset())
@@ -160,7 +157,7 @@ where
         let start = self.parser.byte_offset();
         visitor
             .visit_seq(&mut *self)
-            .map_err(|err| self.bibliography_error(err, start))
+            .map_err(|err| self.error_with_span(err, start))
     }
 
     #[inline]
@@ -187,7 +184,7 @@ where
         self.parser.ignore_bibliography()?;
         visitor
             .visit_unit()
-            .map_err(|err| self.bibliography_error(err, start))
+            .map_err(|err| self.error_with_span(err, start))
     }
 
     forward_to_deserialize_any! {
@@ -208,9 +205,9 @@ where
         T: DeserializeSeed<'de>,
     {
         match self.next_entry()? {
-            Some((entry, mut context)) => seed
-                .deserialize(EntryDeserializer::new(*self, entry, &mut context))
-                .map_err(|err| context.error(&self.parser, err))
+            Some((entry, start)) => seed
+                .deserialize(EntryDeserializer::new(*self, entry))
+                .map_err(|err| self.error_with_span(err, start))
                 .map(Some),
             None => Ok(None),
         }
@@ -240,9 +237,9 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.de.next_entry() {
-            Ok(Some((entry, mut context))) => Some(
-                D::deserialize(EntryDeserializer::new(&mut self.de, entry, &mut context))
-                    .map_err(|err| context.error(&self.de.parser, err)),
+            Ok(Some((entry, start))) => Some(
+                D::deserialize(EntryDeserializer::new(&mut self.de, entry))
+                    .map_err(|err| self.de.error_with_span(err, start)),
             ),
             Ok(None) => None,
             Err(err) => Some(Err(err)),
@@ -277,7 +274,7 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         loop {
             match self.de.next_entry() {
-                Ok(Some((entry, mut context))) => match entry {
+                Ok(Some((entry, start))) => match entry {
                     EntryType::Macro => {
                         match self.de.parser.ignore_macro_captured(&mut self.de.macros) {
                             Ok(()) => {}
@@ -297,9 +294,8 @@ where
                             D::deserialize(RegularEntryDeserializer::new(
                                 &mut self.de,
                                 entry_type.into_inner(),
-                                &mut context,
                             ))
-                            .map_err(|err| context.error(&self.de.parser, err)),
+                            .map_err(|err| self.de.error_with_span(err, start)),
                         );
                     }
                 },

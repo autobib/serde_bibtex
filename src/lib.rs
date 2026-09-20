@@ -161,7 +161,7 @@ where
 {
     let reader = StrReader::new(s);
     let mut deserializer = Deserializer::new(reader);
-    D::deserialize(&mut deserializer).map_err(|err| deserializer.bibliography_error(err, Some(0)))
+    D::deserialize(&mut deserializer).map_err(|err| deserializer.error_with_span(err, Some(0)))
 }
 
 /// Deserialize an instance of type `D` from bytes of BibTeX.
@@ -171,7 +171,7 @@ where
 {
     let reader = SliceReader::new(s);
     let mut deserializer = Deserializer::new(reader);
-    D::deserialize(&mut deserializer).map_err(|err| deserializer.bibliography_error(err, Some(0)))
+    D::deserialize(&mut deserializer).map_err(|err| deserializer.error_with_span(err, Some(0)))
 }
 
 /// Serialize as BibTeX into the I/O stream.

@@ -130,10 +130,20 @@ fn containers_and_bibliographies() {
     struct Missing {
         required: String,
     }
+    // Entry validation runs after the closing delimiter has been consumed.
     regular::<Missing>("@article{k}", 0..11);
     regular::<Missing>("@article{k}}", 0..11);
+    regular::<Missing>("@article{k,author={author}}", 0..27);
     regular::<Record<Missing>>("@article{k,f={x}}", 13..16);
-    regular::<(String, String, Missing)>("@article{k}", 0..11);
+    // Field validation runs before the entry's closing delimiter is consumed.
+    regular::<(String, String, Missing)>("@article{k}", 0..10);
+    regular::<(String, String, Missing)>("@article{k,author={author}}", 0..26);
+    regular::<(String, String, Missing)>("@article(k,author={author})", 0..26);
+    #[derive(Debug, Deserialize)]
+    struct MissingFields {
+        fields: Missing,
+    }
+    regular::<MissingFields>("@article{k,author={author}}", 0..26);
     regular::<(String, String)>("@article{k}", 0..8);
     #[derive(Debug, Deserialize)]
     enum OnlyComment {
