@@ -73,7 +73,7 @@ pub fn protected(until: u8) -> impl FnMut(&str, usize) -> Result<(usize, &str), 
 super::create_input_impl::read_impl!(
     /// A reader that can parse BibTeX from a string slice.
     ///
-    /// This the same as a [`SliceReader`](crate::SliceReader), but is able to skip some
+    /// This is the same as a [`SliceReader`](crate::SliceReader), but is able to skip some
     /// UTF-8 checks.
     ///
     /// This struct also exposes a few internal parsing methods.

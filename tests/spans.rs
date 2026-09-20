@@ -635,7 +635,7 @@ fn source_free_and_compact_errors() {
     );
 }
 
-// Intentionally implements only the original trait methods. Location hooks remain optional.
+// Intentionally implements only the original trait methods. Span hooks remain optional.
 struct LegacyReader<'r>(StrReader<'r>);
 impl<'r> BibtexRead<'r> for LegacyReader<'r> {
     fn peek(&self) -> Option<u8> {

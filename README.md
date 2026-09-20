@@ -10,7 +10,7 @@ Until this is stabilized, use at your own risk!
 A [Rust](https://www.rust-lang.org/) library providing a [serde](https://serde.rs/) interface for `.bib` file (de)serialization.
 The implementation is minimally opinionated and feature-rich for convenient downstream consumption by other libraries or binaries.
 
-For examples and a thorough documentation of features, visit the [docs](https://docs.rs/serde_bibtex/latest/serde_bibtex).
+For an example-based introduction, see the [`format` example](examples/format.rs).
 
 ## Deserializer
 Here are the main features.

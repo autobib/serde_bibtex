@@ -32,6 +32,7 @@ entry = ["serde/derive"]
 syntax = ["dep:pest", "dep:pest_derive"]
 
 [dev-dependencies]
+annotate-snippets = "0.12"
 biblatex = "0.10"
 criterion = { version = "0.7", features = ["html_reports"] }
 nom-bibtex = "0.5.0"
@@ -56,6 +57,10 @@ required-features = ["entry"]
 
 [[example]]
 name = "custom_formatter"
+
+[[example]]
+name = "format"
+required-features = ["entry"]
 
 [[example]]
 name = "tugboat"

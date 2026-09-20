@@ -10,7 +10,7 @@ pub use read::{BibtexRead, SliceReader, StrReader};
 impl<'r, R: BibtexRead<'r>> BibtexParse<'r> for R {}
 
 pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
-    fn locate(&self, error: Error) -> Error {
+    fn with_error_span(&self, error: Error) -> Error {
         error.with_span(self.error_span())
     }
 
@@ -42,7 +42,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
             self.discard();
             Ok(())
         } else {
-            Err(self.locate(err(found)))
+            Err(self.with_error_span(err(found)))
         }
     }
 
@@ -58,7 +58,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
                 self.discard();
                 Ok(b')')
             }
-            found => Err(self.locate(Error::expected("start of entry '{' or '('", found))),
+            found => Err(self.with_error_span(Error::expected("start of entry '{' or '('", found))),
         }
     }
 
@@ -90,7 +90,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
         match self.peek() {
             Some(b'}' | b')') => Ok(None),
             Some(b'0'..=b'9') => {
-                Err(self.locate(Error::syntax(ErrorCode::VariableStartsWithDigit)))
+                Err(self.with_error_span(Error::syntax(ErrorCode::VariableStartsWithDigit)))
             }
             _ => {
                 let id = self.identifier()?;
@@ -115,7 +115,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
                 Ok(true)
             }
             Some(b'}' | b')' | b',') | None => Ok(false),
-            Some(_) => Err(self.locate(Error::syntax(ErrorCode::Expected(
+            Some(_) => Err(self.with_error_span(Error::syntax(ErrorCode::Expected(
                 "token separator '#' or end of value",
             )))),
         }
@@ -141,7 +141,7 @@ pub trait BibtexParse<'r>: BibtexRead<'r> + Sized {
             Some(b) if IDENTIFIER_ALLOWED[b as usize] => {
                 Ok(Token::Variable(self.identifier()?.into()))
             }
-            found => Err(self.locate(Error::expected("value", found))),
+            found => Err(self.with_error_span(Error::expected("value", found))),
         }
     }
 
@@ -371,7 +371,7 @@ mod tests {
         assert_eq!(reader.byte_offset(), None);
         assert_eq!(reader.field_sep().unwrap_err().span(), Some(10..20));
         let error = Error::expected("value", None).with_span(Some(3..3));
-        assert_eq!(reader.locate(error).span(), Some(3..3));
+        assert_eq!(reader.with_error_span(error).span(), Some(3..3));
     }
 
     #[test]

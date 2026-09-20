@@ -105,6 +105,9 @@ impl Error {
     /// For errors with no source (for instance, serialization errors or IO errors), this
     /// returns `None`.
     ///
+    /// Pass this range and the original input to a diagnostic renderer such as
+    /// `annotate-snippets` to highlight the error. See `examples/format.rs` for an example.
+    ///
     /// ```
     /// let error = serde_bibtex::from_str::<()>("@comment(unfinished").unwrap_err();
     /// assert_eq!(error.span(), Some(8..9));
